@@ -1,7 +1,11 @@
 import {makeReducer} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
+import {makeInstanceAction} from '#/main/app/store/actions'
 import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
+
+import {RESOURCE_LOAD} from '#/main/core/resource/store/actions'
+
 import {
   INIT_DATALIST,
   POST_LOAD,
@@ -23,7 +27,8 @@ const reducer = {
       [FORM_SUBMIT_SUCCESS+'/' + selectors.STORE_NAME + '.blog.data.options']: () => true,
       [POST_UPDATE_PUBLICATION]: () => true,
       [INIT_DATALIST]: () => true,
-      [POST_DELETE]: () => true
+      [POST_DELETE]: () => true,
+      [makeInstanceAction(RESOURCE_LOAD, selectors.STORE_NAME)]: () => true
     })
   }),
   post: makeReducer({}, {
