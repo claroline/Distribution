@@ -7,13 +7,12 @@ import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 import {selectors} from '#/main/core/tools/parameters/store/selectors'
 
 const reducer = combineReducers({
-  list: makeListReducer('tokens.list', {}, {
+  list: makeListReducer(selectors.STORE_NAME+'.tokens.list', {}, {
     invalidated: makeReducer(false, {
       [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: () => true
     })
   }),
-  current: makeFormReducer('tokens.current', {}, {
-  })
+  current: makeFormReducer(selectors.STORE_NAME+'.tokens.current')
 })
 
 export {

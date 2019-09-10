@@ -3,22 +3,21 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/app/intl/translation'
-
 import {FormData} from '#/main/app/content/form/containers/data'
-import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {selectors as toolSelectors} from '#/main/core/tool/store'
 
+import {selectors} from '#/main/core/tools/parameters/store/selectors'
 
-
-const TokenForm = () =>
+const TokenForm = (props) =>
   <FormData
     level={3}
-    name="tokens.current"
+    name={`${selectors.STORE_NAME}.tokens.current`}
     buttons={true}
     target={(token) => ['apiv2_apitoken_update', {id: token.id}]}
     cancel={{
       type: LINK_BUTTON,
-      target: '/tokens',
+      target: props.path + '/tokens',
       exact: true
     }}
     sections={[
@@ -42,22 +41,15 @@ const TokenForm = () =>
         ]
       }
     ]}
-  >
-  </FormData>
+  />
 
 TokenForm.propTypes = {
-  new: T.bool.isRequired,
-  token: T.shape({
-    id: T.string
-  }).isRequired
+  path: T.string.isRequired
 }
 
 const Token = connect(
   state => ({
-    new: formSelect.isNew(formSelect.form(state, 'tokens.current')),
-    token: formSelect.data(formSelect.form(state, 'tokens.current'))
-  }),
-  () => ({
+    path: toolSelectors.path(state)
   })
 )(TokenForm)
 

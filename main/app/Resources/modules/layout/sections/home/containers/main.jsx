@@ -1,5 +1,6 @@
 import {connect} from 'react-redux'
 
+import {selectors as configSelectors} from '#/main/app/config/store'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 import {selectors as layoutSelectors} from '#/main/app/layout/store'
 
@@ -15,7 +16,8 @@ const HomeMain = connect(
     hasHome: selectors.hasHome(state),
     homeType: selectors.homeType(state),
     homeData: selectors.homeData(state),
-    isAuthenticated: securitySelectors.isAuthenticated(state)
+    isAuthenticated: securitySelectors.isAuthenticated(state),
+    selfRegistration: configSelectors.param(state, 'selfRegistration')
   }),
   (dispatch) => ({
     openHome(type) {
@@ -26,6 +28,9 @@ const HomeMain = connect(
           data: {}
         }, ''))
       }
+    },
+    linkExternalAccount(serviceName) {
+
     }
   })
 )(HomeMainComponent)

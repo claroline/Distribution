@@ -4,6 +4,8 @@ import {API_REQUEST} from '#/main/app/api'
 import {actions as listActions} from '#/main/app/content/list/store/actions'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
 
+import {selectors} from '#/main/core/tools/parameters/store/selectors'
+
 export const actions = {}
 
 actions.create = () => ({
@@ -14,7 +16,7 @@ actions.create = () => ({
       body: JSON.stringify({})
     },
     success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('tokens.list'))
+      dispatch(listActions.invalidateData(selectors.STORE_NAME+'tokens.list'))
     }
   }
 })

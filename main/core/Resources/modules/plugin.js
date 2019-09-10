@@ -14,8 +14,8 @@ registry.add('ClarolineCoreBundle', {
   },
 
   integration: {
-    'api'     : () => { return import(/* webpackChunkName: "core-integration-api" */      '#/main/core/integration/api')}/*,
-    'external': () => { return import(/!* webpackChunkName: "core-integration-external" *!/ '#/main/core/integration/external')}*/
+    'api'     : () => { return import(/* webpackChunkName: "core-integration-api" */      '#/main/core/integration/api')},
+    'external': () => { return import(/* webpackChunkName: "core-integration-external" */ '#/main/core/integration/external')}
   },
 
   /**
@@ -148,6 +148,12 @@ registry.add('ClarolineCoreBundle', {
       'workspace_models'  : () => { return import(/* webpackChunkName: "core-data-source-workspaces" */  '#/main/core/data/sources/workspaces') },
       'admin_tools'       : () => { return import(/* webpackChunkName: "core-data-source-admin-tools" */ '#/main/core/data/sources/admin-tools') },
       'tools'             : () => { return import(/* webpackChunkName: "core-data-source-tools" */       '#/main/core/data/sources/tools') }
+    }
+  },
+  analytics: {
+
+    resource: {
+
     }
   }
 })
