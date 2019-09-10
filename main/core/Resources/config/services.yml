@@ -6,6 +6,7 @@ imports:
     - { resource: services/manager.yml }
     - { resource: services/transfer.yml }
     - { resource: services/finder.yml }
+    - { resource: services/validator.yml }
 
 services:
 

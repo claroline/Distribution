@@ -3,10 +3,8 @@ services:
         autowire: false
         autoconfigure: false
         public: true
-        tags: [claroline.transfer.action]
 
     _instanceof:
-
         Claroline\AppBundle\API\Finder\AbstractFinder:
             tags: [claroline.finder]
             calls:
