@@ -33,11 +33,11 @@ const DashboardMain = (props) =>
               path: '/dashboard/connections'
             }, {
               icon: 'fa fa-fw fa-users',
-              title: trans('users_tracking'),
+              title: trans('users_actions'),
               path: '/dashboard/log'
             }, {
               icon: 'fa fa-fw fa-user',
-              title: trans('user_tracking', {}, 'log'),
+              title: trans('user_actions'),
               path: '/dashboard/logs/users',
               exact: true
             }
