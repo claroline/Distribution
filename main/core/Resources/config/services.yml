@@ -7,7 +7,7 @@ imports:
     - { resource: services/transfer.yml }
     - { resource: services/finder.yml }
     - { resource: services/validator.yml }
-#    - { resource: services/crud.yml }
+    - { resource: services/crud.yml }
 
 services:
 
