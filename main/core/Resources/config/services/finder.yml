@@ -41,16 +41,16 @@ services:
         alias: Claroline\CoreBundle\API\Finder\Workspace\WorkspaceFinder
         public: true
 
-    Claroline\CoreBundle\API\Finder\PendingRegistrationFinder: ~
+    Claroline\CoreBundle\API\Finder\Workspace\PendingRegistrationFinder: ~
 
     claroline.api.finder.pending:
-        alias: Claroline\CoreBundle\API\Finder\PendingRegistrationFinder
+        alias: Claroline\CoreBundle\API\Finder\Workspace\PendingRegistrationFinder
         public: true
 
-    Claroline\CoreBundle\API\Finder\OrderedToolFinder: ~
+    Claroline\CoreBundle\API\Finder\Workspace\OrderedToolFinder: ~
 
     claroline.api.finder.ordered_tool:
-        alias: Claroline\CoreBundle\API\Finder\OrderedToolFinder
+        alias: Claroline\CoreBundle\API\Finder\Workspace\OrderedToolFinder
         public: true
 
     Claroline\CoreBundle\API\Finder\User\UserFinder:
