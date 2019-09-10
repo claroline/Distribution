@@ -5,6 +5,7 @@ imports:
     - { resource: services/serializer.yml }
     - { resource: services/manager.yml }
     - { resource: services/transfer.yml }
+    - { resource: services/finder.yml }
 
 services:
 

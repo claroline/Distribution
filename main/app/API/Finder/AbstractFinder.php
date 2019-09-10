@@ -56,6 +56,21 @@ abstract class AbstractFinder implements FinderInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->_em = $em;
+    }
+
+    public function setEventDispatcher(StrictDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * The queried object is already named "obj".
      *

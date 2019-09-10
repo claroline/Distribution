@@ -4,7 +4,6 @@ namespace Claroline\AnalyticsBundle\Serializer\Widget\Type;
 
 use Claroline\AnalyticsBundle\Entity\Widget\Type\ProgressionWidget;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use Claroline\CoreBundle\Entity\Widget\Type\ProgressionWidget;
 
 class ProgressionWidgetSerializer
 {
