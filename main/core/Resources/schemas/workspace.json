@@ -97,6 +97,28 @@
         }
       }
     },
+    "model": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "organizations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+              "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schemas/organization.json"
+          },
+          {
+              "type": "null"
+          }
+        ]
+      }
+    },
     "roles": {
       "type": "array",
       "uniqueItems": true,
@@ -107,17 +129,6 @@
           },
           {
               "type": "null"
-          }
-        ]
-      }
-    },
-    "managers": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "oneOf": [
-          {
-              "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schemas/user.json"
           }
         ]
       }
