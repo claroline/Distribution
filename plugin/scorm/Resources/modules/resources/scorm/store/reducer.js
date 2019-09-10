@@ -26,7 +26,11 @@ const reducer = combineReducers({
       return newState
     }
   }),
-  results: makeListReducer(selectors.STORE_NAME+'.results'),
+  results: makeListReducer(selectors.STORE_NAME+'.results', {}, {
+    invalidated: makeReducer(false, {
+      [makeInstanceAction(RESOURCE_LOAD, selectors.STORE_NAME)]: () => true
+    })
+  }),
   scormForm: makeFormReducer(selectors.STORE_NAME+'.scormForm')
 })
 
