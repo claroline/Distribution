@@ -1,5 +1,5 @@
-claro_security_login_check:
-    path: /login_check
+claro_security_login:
+    path: /login
     options: { expose: true }
 
 claro_security_logout:
@@ -9,21 +9,12 @@ claro_security_logout:
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
 
-claro_redirect:
-    resource: "@ClarolineCoreBundle/Controller/RedirectController.php"
-    type: annotation
-
 claro_authentication:
     resource: "@ClarolineCoreBundle/Controller/AuthenticationController.php"
     type: annotation
 
 claro_user_registration:
     resource: "@ClarolineCoreBundle/Controller/User/RegistrationController.php"
-    type: annotation
-    options: { expose: true }
-
-claro_user_tracking:
-    resource: "@ClarolineCoreBundle/Controller/User/TrackingController.php"
     type: annotation
     options: { expose: true }
 

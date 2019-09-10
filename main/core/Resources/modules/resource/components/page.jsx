@@ -5,6 +5,8 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
+import {Routes} from '#/main/app/router/components/routes'
+import {Route as RouteTypes} from '#/main/app/router/prop-types'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {ContentLoader} from '#/main/app/content/components/loader'
@@ -23,6 +25,9 @@ import {ResourceIcon} from '#/main/core/resource/components/icon'
 import {ResourceRestrictions} from '#/main/core/resource/components/restrictions'
 import {ServerErrors} from '#/main/core/resource/components/errors'
 import {UserProgression} from '#/main/core/resource/components/user-progression'
+
+// FIXME
+import {DashboardMain} from '#/plugin/analytics/resource/dashboard/containers/main'
 
 class ResourcePage extends Component {
   constructor(props) {
@@ -68,6 +73,13 @@ class ResourcePage extends Component {
     } else {
       ancestors = this.props.resourceNode.path.slice(0)
     }
+
+    const routes = [
+      {
+        path: '/dashboard',
+        component: DashboardMain
+      }
+    ].concat(this.props.routes)
 
     return (
       <ToolPage
@@ -152,6 +164,14 @@ class ResourcePage extends Component {
           <ServerErrors errors={this.props.serverErrors}/>
         }
 
+        {isEmpty(this.props.accessErrors) && isEmpty(this.props.serverErrors) && !isEmpty(routes) &&
+          <Routes
+            path={`${this.props.basePath}/${this.props.resourceNode.slug}`}
+            routes={routes}
+            redirect={this.props.redirect}
+          />
+        }
+
         {isEmpty(this.props.accessErrors) && isEmpty(this.props.serverErrors) &&
           this.props.children
         }
@@ -207,11 +227,23 @@ ResourcePage.propTypes = {
     ActionTypes.propTypes
   )),
   styles: T.arrayOf(T.string),
-  children: T.node.isRequired
+
+  // resource content
+  routes: T.arrayOf(
+    T.shape(RouteTypes.propTypes).isRequired
+  ),
+  redirect: T.arrayOf(T.shape({
+    disabled: T.bool,
+    from: T.string.isRequired,
+    to: T.string.isRequired,
+    exact: T.bool
+  })),
+  children: T.node
 }
 
 ResourcePage.defaultProps = {
-  path: []
+  path: [],
+  routes: []
 }
 
 export {

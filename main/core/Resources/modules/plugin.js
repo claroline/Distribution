@@ -10,12 +10,12 @@ registry.add('ClarolineCoreBundle', {
    * Provides menu which can be used in the main header menu.
    */
   header: {
-    'search'    : () => { return import(/* webpackChunkName: "core-header-search" */   '#/main/core/header/search') }
+    'search': () => { return import(/* webpackChunkName: "core-header-search" */   '#/main/core/header/search') }
   },
 
   integration: {
-    'api' : () => { return import(/* webpackChunkName: "core-integration-api" */ '#/main/core/administration/integration/documentation')},
-    'api_tokens' : () => { return import(/* webpackChunkName: "core-integration-api_tokens" */ '#/main/core/administration/integration/apitoken')}
+    'api'     : () => { return import(/* webpackChunkName: "core-integration-api" */      '#/main/core/integration/api')}/*,
+    'external': () => { return import(/!* webpackChunkName: "core-integration-external" *!/ '#/main/core/integration/external')}*/
   },
 
   /**
@@ -30,7 +30,6 @@ registry.add('ClarolineCoreBundle', {
       'delete'   : () => { return import(/* webpackChunkName: "core-action-resource-delete" */    '#/main/core/resource/actions/delete') },
       'edit'     : () => { return import(/* webpackChunkName: "core-action-resource-edit" */      '#/main/core/resource/actions/edit') },
       'export'   : () => { return import(/* webpackChunkName: "core-action-resource-export" */    '#/main/core/resource/actions/export') },
-      'logs'     : () => { return import(/* webpackChunkName: "core-action-resource-logs" */      '#/main/core/resource/actions/logs') },
       'move'     : () => { return import(/* webpackChunkName: "core-action-resource-move" */      '#/main/core/resource/actions/move') },
       'open'     : () => { return import(/* webpackChunkName: "core-action-resource-open" */      '#/main/core/resource/actions/open') },
       // 'notes'    : () => { return import(/* webpackChunkName: "core-action-resource-notes" */     '#/main/core/resource/actions/notes') },
@@ -71,7 +70,6 @@ registry.add('ClarolineCoreBundle', {
       'password-reset' : () => { return import(/* webpackChunkName: "core-action-user-password-reset" */  '#/main/core/user/actions/password-reset') },
       'show-as'        : () => { return import(/* webpackChunkName: "core-action-user-show-as" */         '#/main/core/user/actions/show-as') },
       'show-profile'   : () => { return import(/* webpackChunkName: "core-action-user-show-profile" */    '#/main/core/user/actions/show-profile') },
-      'show-tracking'  : () => { return import(/* webpackChunkName: "core-action-user-show-tracking" */   '#/main/core/user/actions/show-tracking') },
       'ws-disable'     : () => { return import(/* webpackChunkName: "core-action-user-ws-disable" */      '#/main/core/user/actions/ws-disable') },
       'ws-enable'      : () => { return import(/* webpackChunkName: "core-action-user-ws-enable" */       '#/main/core/user/actions/ws-enable') },
       'merge'          : () => { return import(/* webpackChunkName: "core-action-user-merge" */           '#/main/core/user/actions/merge') },
@@ -92,7 +90,6 @@ registry.add('ClarolineCoreBundle', {
    * Provides Desktop and/or Workspace tools.
    */
   tools: {
-    'dashboard'      : () => { return import(/* webpackChunkName: "core-tool-dashboard" */  '#/main/core/tools/dashboard') },
     'home'           : () => { return import(/* webpackChunkName: "core-tool-home" */       '#/main/core/tools/home') },
     'workspaces'     : () => { return import(/* webpackChunkName: "core-tool-workspaces" */ '#/main/core/tools/workspaces') },
     'resources'      : () => { return import(/* webpackChunkName: "core-tool-resources" */  '#/main/core/tools/resources') },
@@ -112,7 +109,6 @@ registry.add('ClarolineCoreBundle', {
     'appearance_settings'  : () => { return import(/* webpackChunkName: "core-admin-appearance" */     '#/main/core/administration/parameters/appearance') },
     'templates_management' : () => { return import(/* webpackChunkName: "core-admin-template" */       '#/main/core/administration/template') },
     'tasks_scheduling'     : () => { return import(/* webpackChunkName: "core-admin-scheduled-task" */ '#/main/core/administration/scheduled-task') },
-    'dashboard'            : () => { return import(/* webpackChunkName: "core-admin-dashboard" */      '#/main/core/administration/dashboard') },
     'integration'          : () => { return import(/* webpackChunkName: "core-admin-integration" */    '#/main/core/administration/integration') },
     'transfer'             : () => { return import(/* webpackChunkName: "core-tool-transfer" */        '#/main/core/tools/transfer') },
     'home'                 : () => { return import(/* webpackChunkName: "core-tool-home" */            '#/main/core/tools/home') }
@@ -122,8 +118,7 @@ registry.add('ClarolineCoreBundle', {
     'list'       : () => { return import(/* webpackChunkName: "core-widget-list" */        '#/main/core/widget/types/list') },
     'simple'     : () => { return import(/* webpackChunkName: "core-widget-simple" */      '#/main/core/widget/types/simple') },
     'resource'   : () => { return import(/* webpackChunkName: "core-widget-resource" */    '#/main/core/widget/types/resource') },
-    'profile'    : () => { return import(/* webpackChunkName: "core-widget-profile" */     '#/main/core/widget/types/profile') },
-    'progression': () => { return import(/* webpackChunkName: "core-widget-progression" */ '#/main/core/widget/types/progression') }
+    'profile'    : () => { return import(/* webpackChunkName: "core-widget-profile" */     '#/main/core/widget/types/profile') }
   },
 
   data: {
@@ -154,10 +149,5 @@ registry.add('ClarolineCoreBundle', {
       'admin_tools'       : () => { return import(/* webpackChunkName: "core-data-source-admin-tools" */ '#/main/core/data/sources/admin-tools') },
       'tools'             : () => { return import(/* webpackChunkName: "core-data-source-tools" */       '#/main/core/data/sources/tools') }
     }
-  },
-
-  notifications: {
-    'resource-create': () => { return import(/* webpackChunkName: "core-notification-resource-create" */ '#/main/core/notifications/resource/create') },
-    'resource-publish': () => { return import(/* webpackChunkName: "core-notification-resource-publish" */ '#/main/core/notifications/resource/publish') }
   }
 })
