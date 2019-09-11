@@ -11,23 +11,11 @@ use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service()
- * @DI\Tag("claroline.transfer.action")
- */
 class Create extends AbstractAction
 {
     /**
      * Action constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
-     *     "crud"             = @DI\Inject("claroline.api.crud"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "serializer"       = @DI\Inject("claroline.serializer.workspace")
-     * })
      *
      * @param Crud $crud
      */
