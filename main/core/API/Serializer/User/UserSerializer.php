@@ -467,8 +467,10 @@ class UserSerializer extends GenericSerializer
 
         if (isset($data['mainOrganization'])) {
             $organization = $this->om->getObject($data['mainOrganization'], Organization::class);
-            $user->addOrganization($organization);
-            $user->setMainOrganization($organization);
+            if ($organization) {
+                $user->addOrganization($organization);
+                $user->setMainOrganization($organization);
+            }
         }
 
         //only add role here. If we want to remove them, use the crud remove method instead
