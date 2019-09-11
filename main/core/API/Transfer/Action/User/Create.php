@@ -37,7 +37,7 @@ class Create extends AbstractAction
         }
 
         if (isset($data['mainOrganization'])) {
-            $organization = $this->om->getObject($data['mainOrganization'], Organization::class);
+            $organization = $this->om->getObject($data['mainOrganization'], Organization::class, array_keys($data['mainOrganization']));
 
             if (!$organization) {
                 throw new \Exception('Organization '.implode(',', $data['mainOrganization']).' does not exists');
@@ -46,7 +46,7 @@ class Create extends AbstractAction
 
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $group) {
-                $object = $this->om->getObject($group, Group::class);
+                $object = $this->om->getObject($group, Group::class, array_keys($group));
 
                 if (!$object) {
                     throw new \Exception('Group '.implode(',', $group).' does not exists');
