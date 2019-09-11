@@ -49,9 +49,12 @@ class Create extends AbstractAction
 
         if (isset($data['model'])) {
             $model = $this->om->getRepository(Workspace::class)->findOneBy($data['model']);
-            $workspace = $this->workspaceManager->copy($model, $workspace, false);
-            $workspace = $this->serializer->deserialize($data, $workspace);
+        } else {
+            $model = $this->workspaceManager->getDefaultModel();
         }
+
+        $workspace = $this->workspaceManager->copy($model, $workspace, false);
+        $workspace = $this->serializer->deserialize($data, $workspace);
 
         //add organizations here
         if (isset($data['organizations'])) {
@@ -62,16 +65,14 @@ class Create extends AbstractAction
             }
         }
 
-        $this->om->flush();
-
         if (isset($data['managers'])) {
             foreach ($data['managers'] as $manager) {
                 $user = $this->om->getRepository(User::class)->findOneBy($manager);
                 $role = $workspace->getManagerRole();
-
                 if ($role) {
-                    $user->addRole($role);
-                    $this->om->persist($user);
+                    $this->crud->patch($user, 'role', 'add', [$role]);
+                } else {
+                    throw new \Exception('Could not find role manager');
                 }
             }
         }
