@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Twig;
 
+use Symfony\Component\Security\Core\Role\SwitchUserRole;
+
 class HasRoleExtension extends \Twig_Extension
 {
     private $securityContext;
@@ -48,7 +50,7 @@ class HasRoleExtension extends \Twig_Extension
     {
         if ($token = $this->tokenStorage->getToken()) {
             foreach ($token->getRoles() as $role) {
-                if ($role instanceof \Symfony\Component\Security\Core\Role\SwitchUserRole) {
+                if ($role instanceof SwitchUserRole) {
                     return true;
                 }
             }
