@@ -8,6 +8,7 @@ use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
@@ -56,7 +57,7 @@ class Create extends AbstractAction
         if (isset($data['managers'])) {
             foreach ($data['managers'] as $manager) {
                 $user = $this->om->getRepository(User::class)->findOneBy($manager);
-                $role = $workspace->getManagerRole();
+                $role = $this->om->getRepository(Role::class)->findOneBy(['workspace' => $workspace, 'translationKey' => 'manager']);
                 if ($role) {
                     $this->crud->patch($user, 'role', 'add', [$role]);
                 } else {
