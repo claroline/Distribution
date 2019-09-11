@@ -9,6 +9,7 @@ imports:
     - { resource: services/validator.yml }
     - { resource: services/crud.yml }
     - { resource: services/twig.yml }
+    - { resource: services/voter.yml }
 
 services:
 
