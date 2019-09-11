@@ -11,12 +11,7 @@ use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainer;
 use Claroline\CoreBundle\Entity\Widget\WidgetContainerConfig;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.serializer.widget_container")
- * @DI\Tag("claroline.serializer")
- */
 class WidgetContainerSerializer
 {
     use SerializerTrait;
@@ -32,13 +27,6 @@ class WidgetContainerSerializer
 
     /**
      * WidgetContainerSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"                       = @DI\Inject("claroline.persistence.object_manager"),
-     *     "widgetInstanceFinder"     = @DI\Inject("claroline.api.finder.widget_instance"),
-     *     "widgetInstanceSerializer" = @DI\Inject("claroline.serializer.widget_instance"),
-     *     "publicFileSerializer"     = @DI\Inject("claroline.serializer.public_file")
-     * })
      *
      * @param ObjectManager            $om
      * @param WidgetInstanceSerializer $widgetInstanceSerializer
@@ -139,12 +127,12 @@ class WidgetContainerSerializer
         $this->sipe('display.borderColor', 'setBorderColor', $data, $widgetContainerConfig);
         $this->sipe('display.backgroundType', 'setBackgroundType', $data, $widgetContainerConfig);
 
-        $display = $data['display'];
-
-        if (isset($display['background']) && isset($display['background']['url'])) {
-            $this->sipe('display.background.url', 'setBackground', $data, $widgetContainerConfig);
-        } else {
-            $this->sipe('display.background', 'setBackground', $data, $widgetContainerConfig);
+        if (isset($data['display'])) {
+            if (isset($data['display']['background']) && isset($data['display']['background']['url'])) {
+                $this->sipe('display.background.url', 'setBackground', $data, $widgetContainerConfig);
+            } else {
+                $this->sipe('display.background', 'setBackground', $data, $widgetContainerConfig);
+            }
         }
 
         $instanceIds = [];
