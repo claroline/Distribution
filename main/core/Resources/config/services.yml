@@ -8,6 +8,7 @@ imports:
     - { resource: services/finder.yml }
     - { resource: services/validator.yml }
     - { resource: services/crud.yml }
+    - { resource: services/twig.yml }
 
 services:
 

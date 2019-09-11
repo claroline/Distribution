@@ -11,21 +11,10 @@
 
 namespace Claroline\CoreBundle\Twig;
 
-use JMS\DiExtraBundle\Annotation as DI;
-
-/**
- * @DI\Service
- * @DI\Tag("twig.extension")
- */
 class HasRoleExtension extends \Twig_Extension
 {
     private $securityContext;
 
-    /**
-     * @DI\InjectParams({
-     *     "tokenStorage"    = @DI\Inject("security.token_storage")
-     * })
-     */
     public function __construct($tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;

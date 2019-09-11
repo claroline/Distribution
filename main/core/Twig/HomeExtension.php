@@ -11,21 +11,10 @@
 
 namespace Claroline\CoreBundle\Twig;
 
-use JMS\DiExtraBundle\Annotation as DI;
-
-/**
- * @DI\Service("claroline.twig.home_extension")
- * @DI\Tag("twig.extension")
- */
 class HomeExtension extends \Twig_Extension
 {
     protected $container;
 
-    /**
-     * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
-     * })
-     */
     public function __construct($container)
     {
         $this->container = $container;
