@@ -26,7 +26,7 @@ class Office365ResourceOwner extends GenericOAuth2ResourceOwner
      */
     protected $paths = [
         'identifier' => 'id',
-        'email' => 'email',
+        'email' => 'mail',
         'realname' => 'displayName',
         'nickname' => 'userPrincipalName',
         'firstname' => 'givenName',

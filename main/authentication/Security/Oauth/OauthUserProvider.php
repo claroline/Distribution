@@ -116,10 +116,6 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
             $user['username'] = $this->createUsername($response->getNickname());
             $user['email'] = $response->getEmail();
 
-            echo '<pre>';
-            var_dump($response);
-            die();
-
             // Check if an account with the same email already exists
             try {
                 $this->loadUserByUsername($user['email']);
