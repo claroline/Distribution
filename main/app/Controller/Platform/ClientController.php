@@ -108,7 +108,7 @@ class ClientController
             'meta' => [],
             'maintenance' => [
                 'enabled' => MaintenanceHandler::isMaintenanceEnabled(),
-                'message' => $this->configHandler->getParameter('maintenance.message'),
+                'message' => $this->configHandler->getParameter('maintenance.message') ?? 'MAINTENANCE',
             ],
             'impersonated' => $this->isImpersonated(),
 
