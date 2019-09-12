@@ -10,7 +10,6 @@ import {ContentLoader} from '#/main/app/content/components/loader'
 import {getAnalytics} from '#/main/core/analytics/resource/utils'
 import {LogDetails} from '#/main/core/layout/logs'
 
-import {Connections} from '#/plugin/analytics/resource/dashboard/containers/connections'
 import {Logs} from '#/plugin/analytics/resource/dashboard/containers/logs'
 import {UserLogs} from '#/plugin/analytics/resource/dashboard/containers/logs-user'
 
@@ -38,7 +37,8 @@ const DashboardMain = (props) =>
                   title: app.label,
                   path: `/dashboard/${app.path}`,
                   exact: true
-                })).concat([{
+                })).concat([
+                  {
                     icon: 'fa fa-fw fa-users',
                     title: trans('users_actions'),
                     path: '/dashboard/log'
@@ -61,7 +61,8 @@ const DashboardMain = (props) =>
                   path: `/dashboard/${app.path}`,
                   component: app.component,
                   exact: true
-                })).concat([{
+                })).concat([
+                  {
                     path: '/dashboard/log',
                     component: Logs,
                     exact: true
