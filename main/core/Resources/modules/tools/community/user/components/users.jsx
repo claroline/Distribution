@@ -24,7 +24,7 @@ const UsersList = props =>
     }}
     primaryAction={(row) => ({
       type: LINK_BUTTON,
-      target: route(row, props.path)
+      target: route(row)
     })}
     actions={(rows) => !isEmpty(props.workspace) ? [{
       name: 'unregister',
