@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action'
 import {MODAL_BUTTON} from '#/main/app/buttons'
@@ -11,7 +12,7 @@ import {MODAL_LOGIN} from '#/main/app/modals/login'
 import {MODAL_REGISTRATION} from '#/main/app/modals/registration'
 import {getSso} from '#/main/authentication/sso'
 
-class HomeExternalAccount extends Component {
+class HomeExternalAccountComponent extends Component {
   constructor(props) {
     super(props)
 
@@ -61,6 +62,7 @@ class HomeExternalAccount extends Component {
                     onLogin: (response) => this.props.linkExternalAccount(this.props.serviceName, response.user.username).then(() => {
                       // TODO : redirect
                       // TODO : connection message
+                      this.props.history.push('/desktop')
                     })
                   }]}
                   primary={true}
@@ -73,7 +75,11 @@ class HomeExternalAccount extends Component {
                   type={MODAL_BUTTON}
                   label={trans('self-register', {}, 'actions')}
                   modal={[MODAL_REGISTRATION, {
-                    onRegister: () => true
+                    onRegister: (user) => this.props.linkExternalAccount(this.props.serviceName, user.username).then(() => {
+                      // TODO : redirect
+                      // TODO : connection message
+                      this.props.history.push('/desktop')
+                    })
                   }]}
                 />
               }
@@ -86,7 +92,10 @@ class HomeExternalAccount extends Component {
 }
 
 
-HomeExternalAccount.propTypes = {
+HomeExternalAccountComponent.propTypes = {
+  history: T.shape({
+    push: T.func.isRequired
+  }),
   selfRegistration: T.bool.isRequired,
   isAuthenticated: T.bool.isRequired,
 
@@ -94,6 +103,8 @@ HomeExternalAccount.propTypes = {
   serviceUserId: T.string.isRequired,
   linkExternalAccount: T.func.isRequired
 }
+
+const HomeExternalAccount = withRouter(HomeExternalAccountComponent)
 
 export {
   HomeExternalAccount

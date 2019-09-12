@@ -14,8 +14,8 @@ registry.add('ClarolineCoreBundle', {
   },
 
   integration: {
-    'api'     : () => { return import(/* webpackChunkName: "core-integration-api" */      '#/main/core/integration/api')},
-    'external': () => { return import(/* webpackChunkName: "core-integration-external" */ '#/main/core/integration/external')}
+    'api'     : () => { return import(/* webpackChunkName: "core-integration-api" */      '#/main/core/integration/api')}/*,
+    'external': () => { return import(/!* webpackChunkName: "core-integration-external" *!/ '#/main/core/integration/external')}*/
   },
 
   /**

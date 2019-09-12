@@ -28,7 +28,8 @@ const ParametersMenu = (props) =>
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-globe',
           label: trans('external', {}, 'integration'),
-          target: props.path + '/external'
+          target: props.path + '/external',
+          displayed: false
         }, {
           name: 'tokens',
           type: LINK_BUTTON,

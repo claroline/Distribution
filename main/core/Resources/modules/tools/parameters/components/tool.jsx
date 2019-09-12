@@ -21,7 +21,8 @@ const ParametersTool = (props) =>
       }, {
         path: '/external',
         exact: true,
-        component: ExternalTool
+        component: ExternalTool,
+        disabled: true
       }, {
         path: '/tokens',
         exact: true,
