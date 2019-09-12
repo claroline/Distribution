@@ -5,13 +5,13 @@ import {trans} from '#/main/app/intl/translation'
 import {MODAL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
-import {selectors} from '#/plugin/analytics/resource/dashboard/store'
+import {selectors} from '#/plugin/path/resources/path/store'
 import {Path as PathType} from '#/plugin/path/resources/path/prop-types'
 import {MODAL_USER_PROGRESSION} from '#/plugin/path/resources/path/modals/user-progression'
 
 const Progression = (props) =>
   <ListData
-    name={selectors.STORE_NAME+'.evaluations'}
+    name={selectors.STORE_NAME+'.analytics.evaluations'}
     fetch={{
       url: ['innova_path_progressions_fetch', {id: props.path.id}],
       autoload: true

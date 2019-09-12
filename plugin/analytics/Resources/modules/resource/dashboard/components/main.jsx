@@ -10,7 +10,6 @@ import {ContentLoader} from '#/main/app/content/components/loader'
 import {getAnalytics} from '#/main/core/analytics/resource/utils'
 import {LogDetails} from '#/main/core/layout/logs'
 
-//import {Progression} from '#/plugin/analytics/resource/dashboard/containers/progression'
 import {Connections} from '#/plugin/analytics/resource/dashboard/containers/connections'
 import {Logs} from '#/plugin/analytics/resource/dashboard/containers/logs'
 import {UserLogs} from '#/plugin/analytics/resource/dashboard/containers/logs-user'

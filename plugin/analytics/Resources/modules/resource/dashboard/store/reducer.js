@@ -6,7 +6,7 @@ import {makeLogReducer} from '#/main/core/layout/logs/reducer'
 import {selectors} from '#/plugin/analytics/resource/dashboard/store/selectors'
 
 const reducer = combineReducers(makeLogReducer({}, {
-  evaluations: makeListReducer(selectors.STORE_NAME + '.evaluations'),
+  // evaluations: makeListReducer(selectors.STORE_NAME + '.evaluations'),
   connections: makeListReducer(selectors.STORE_NAME + '.connections', {
     sortBy: {property: 'connectionDate', direction: -1}
   })
