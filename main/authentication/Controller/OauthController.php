@@ -70,7 +70,6 @@ class OauthController extends AbstractCrudController
 
     /**
      * @EXT\Route("/check_connection", name="claro_oauth_check_connexion")
-     * @EXT\Template("ClarolineAuthenticationBundle:oauth:connect\check_connexion.html.twig")
      *
      * @param Request $request
      *
