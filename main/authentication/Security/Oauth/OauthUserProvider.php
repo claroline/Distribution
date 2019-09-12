@@ -116,6 +116,7 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
             $user['username'] = $this->createUsername($response->getNickname());
             $user['email'] = $response->getEmail();
 
+            echo '<pre>';
             var_dump($response);
             die();
 
