@@ -137,6 +137,7 @@
     }
 
     .external-authentication-column {
+        background-color: @panel-footer-bg;
         &::before {
             position: absolute;
             content: " ";
@@ -148,16 +149,6 @@
             width: floor(@auth-or-size / 2);
             border: 1px solid @panel-default-border;
             border-radius: 0 floor(@auth-or-size / 2) floor(@auth-or-size / 2) 0;
-        }
-
-        background-color: @panel-footer-bg;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: center;
-
-        .external_authentication {
-            flex: 1;
         }
     }
 }

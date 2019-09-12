@@ -108,6 +108,7 @@ class LoginForm extends Component {
 
               {otherSso.map(sso => this.state.sso[sso.service] ?
                 createElement(this.state.sso[sso.service].components.button, {
+                  key: sso.service,
                   service: sso.service,
                   label: sso.label || trans('login_with_third_party_btn', {name: trans(sso.service, {}, 'oauth')})
                 }) : null
