@@ -33,14 +33,13 @@ const HomeMain = (props) =>
         disabled: !props.selfRegistration ||props.isAuthenticated,
         component: HomeRegistration
       }, { // TODO : disable if no sso
-        path: '/external/:app/:id',
+        path: '/external/:app',
         render: (routeProps) => {
           const LinkAccount = (
             <HomeExternalAccount
               isAuthenticated={props.isAuthenticated}
               selfRegistration={props.selfRegistration}
               serviceName={routeProps.match.params.app}
-              serviceUserId={routeProps.match.params.id}
               linkExternalAccount={props.linkExternalAccount}
             />
           )

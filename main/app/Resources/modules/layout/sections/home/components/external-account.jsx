@@ -58,7 +58,10 @@ class HomeExternalAccount extends Component {
                   type={MODAL_BUTTON}
                   label={trans('login', {}, 'actions')}
                   modal={[MODAL_LOGIN, {
-                    onLogin: () => true
+                    onLogin: (response) => this.props.linkExternalAccount(this.props.serviceName, response.user.username).then(() => {
+                      // TODO : redirect
+                      // TODO : connection message
+                    })
                   }]}
                   primary={true}
                 />
@@ -88,7 +91,8 @@ HomeExternalAccount.propTypes = {
   isAuthenticated: T.bool.isRequired,
 
   serviceName: T.string.isRequired,
-  serviceUserId: T.string.isRequired
+  serviceUserId: T.string.isRequired,
+  linkExternalAccount: T.func.isRequired
 }
 
 export {

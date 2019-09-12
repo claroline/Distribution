@@ -93,20 +93,25 @@ class OauthController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route("/link_account", name="claro_oauth_link_account")
+     * @EXT\Route("/link_account/{service}/{username}", name="claro_oauth_link_account")
      * @EXT\Method("POST")
      * @EXT\Template("ClarolineAuthenticationBundle:oauth:connect\link_account.html.twig")
      *
      * @param Request $request
+     * @param string  $username
      *
      * @return array
      */
-    public function linkAccountAction(Request $request)
+    public function linkAccountAction(Request $request, $username)
     {
         $session = $request->getSession();
         $service = $session->get('claroline.oauth.resource_owner');
 
-        return $this->oauthManager->linkAccount($request, $service);
+        if ($this->oauthManager->linkAccount($request, $service)) {
+
+        }
+
+        return $this->oauthManager->linkAccount($request, $service, $username);
     }
 
     /**

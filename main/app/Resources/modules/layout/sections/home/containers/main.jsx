@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 
 import {selectors as configSelectors} from '#/main/app/config/store'
-import {selectors as securitySelectors} from '#/main/app/security/store'
+import {actions as securityActions, selectors as securitySelectors} from '#/main/app/security/store'
 import {selectors as layoutSelectors} from '#/main/app/layout/store'
 
 import {actions as toolActions} from '#/main/core/tool/store'
@@ -29,8 +29,8 @@ const HomeMain = connect(
         }, ''))
       }
     },
-    linkExternalAccount(serviceName) {
-
+    linkExternalAccount(service, username, onSuccess) {
+      return dispatch(securityActions.linkExternalAccount(service, username, onSuccess))
     }
   })
 )(HomeMainComponent)
