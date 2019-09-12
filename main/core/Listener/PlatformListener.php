@@ -50,6 +50,10 @@ class PlatformListener
     const PUBLIC_ROUTES = [
         'claro_index',
         'claro_security_login',
+        //debug tool bar for dev
+        '_wdt',
+        //js routing
+        'fos_js_routing_js',
     ];
 
     /**
@@ -112,7 +116,7 @@ class PlatformListener
      */
     public function checkAvailability(GetResponseEvent $event)
     {
-        if ('prod' === $this->kernel->getEnvironment() && $event->isMasterRequest()) {
+        if ($event->isMasterRequest()) {
             $isAdmin = false;
 
             $token = $this->tokenStorage->getToken();

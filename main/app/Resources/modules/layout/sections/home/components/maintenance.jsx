@@ -5,9 +5,17 @@ import {PropTypes as T} from 'prop-types'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {selectors} from '#/main/app/layout/store'
 
+const MaintenanceMessage = () =>
+  <div>Maintenance</div>
+
 const HomeMaintenance = props =>
   <PageSimple>
-    <div dangerouslySetInnerHTML={{__html: props.maintenanceMessage }}/>
+    {props.maintenanceMessage &&
+      <div dangerouslySetInnerHTML={{__html: props.maintenanceMessage }}/>
+    }
+    {!props.maintenanceMessage &&
+      <MaintenanceMessage/>
+    }
   </PageSimple>
 
 HomeMaintenance.propTypes = {
