@@ -45,6 +45,7 @@ const ToolsTool = (props) =>
   </ToolPage>
 
 ToolsTool.propTypes = {
+  path: T.string.isRequired,
   tools: T.array,
   toolsConfig: T.object,
   saveEnabled: T.bool,

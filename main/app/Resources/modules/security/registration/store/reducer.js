@@ -3,7 +3,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 import {makeListReducer} from '#/main/app/content/list/store'
-import {url} from '#/main/app/api'
 import {LIST_TOGGLE_SELECT, LIST_TOGGLE_SELECT_ALL} from '#/main/app/content/list/store/actions'
 
 import {selectors} from '#/main/app/security/registration/store/selectors'

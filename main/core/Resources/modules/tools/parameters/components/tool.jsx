@@ -1,9 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router'
-import {ToolPage} from '#/main/core/tool/containers/page'
 
 import {ToolsTool} from '#/main/core/tools/parameters/tools/containers/tool'
 // TODO : make it dynamic
@@ -20,12 +18,10 @@ const ParametersTool = (props) =>
         component: ToolsTool
       }, {
         path: '/external',
-        exact: true,
         component: ExternalTool,
         disabled: true
       }, {
         path: '/tokens',
-        exact: true,
         component: TokensTool
       }
     ]}

@@ -5,14 +5,12 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {ToolPage} from '#/main/core/tool/containers/page'
 
-import {selectors} from '#/main/core/tools/parameters/store'
-
 const ExternalTool = (props) =>
   <ToolPage
     path={[{
       type: LINK_BUTTON,
       label: trans('external', {}, 'integration'),
-      target: `${props.path}/`
+      target: `${props.path}/external`
     }]}
     subtitle={trans('external', {}, 'integration')}
   >
@@ -20,7 +18,7 @@ const ExternalTool = (props) =>
   </ToolPage>
 
 ExternalTool.propTypes = {
-
+  path: T.string.isRequired
 }
 
 export {

@@ -8,10 +8,13 @@ import {actions, reducer, selectors} from '#/main/core/tools/parameters/external
 const ExternalTool = withReducer(selectors.STORE_NAME, reducer)(
   connect(
     (state) => ({
-
+      loaded: selectors.loaded(state),
+      accounts: selectors.accounts(state)
     }),
     (dispatch) => ({
-
+      loadAccounts() {
+        dispatch(actions.fetchAccounts())
+      }
     })
   )(ExternalToolComponent)
 )
