@@ -27,7 +27,7 @@
       "minLength": 1
     },
     "administrativeCode": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "The user administrativeCode",
       "minLength": 1
     },
@@ -44,7 +44,7 @@
           "description": "If the user has a personal workspace"
         },
         "description": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "The user description"
         }
       }

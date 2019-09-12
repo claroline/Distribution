@@ -42,8 +42,6 @@ abstract class AbstractCreateOrUpdateAction extends AbstractAction
         //search the object. It'll look for the 1st identifier it finds so be carreful
         $class = $this->getClass();
         $object = $this->om->getObject($data, $class, $this->schema->getIdentifiers($class)) ?? new $class();
-        //$object = $this->serializer->deserialize($data, $object);
-        var_dump($object->getId());
         $serializedclass = $this->getAction()[0];
         $action = !$object->getId() ? self::MODE_CREATE : self::MODE_UPDATE;
         $action = $serializedclass.'_'.$action;
