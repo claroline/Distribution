@@ -17,6 +17,7 @@ use Claroline\AuthenticationBundle\Manager\OauthManager;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -94,21 +95,16 @@ class OauthController extends AbstractCrudController
     /**
      * @EXT\Route("/link_account/{service}/{username}", name="claro_oauth_link_account")
      * @EXT\Method("POST")
-     * @EXT\Template("ClarolineAuthenticationBundle:oauth:connect\link_account.html.twig")
      *
      * @param Request $request
      * @param string  $username
      *
-     * @return array
+     * @return JsonResponse
      */
     public function linkAccountAction(Request $request, $username)
     {
         $session = $request->getSession();
         $service = $session->get('claroline.oauth.resource_owner');
-
-        if ($this->oauthManager->linkAccount($request, $service)) {
-
-        }
 
         return $this->oauthManager->linkAccount($request, $service, $username);
     }
@@ -116,11 +112,10 @@ class OauthController extends AbstractCrudController
     /**
      * @EXT\Route("/link_account_mail", name="claro_oauth_link_account_mail")
      * @EXT\Method("GET")
-     * @EXT\Template("ClarolineAuthenticationBundle:oauth:connect\link_account.html.twig")
      *
      * @param Request $request
      *
-     * @return array
+     * @return JsonResponse
      */
     public function linkAccountByMailAction(Request $request)
     {

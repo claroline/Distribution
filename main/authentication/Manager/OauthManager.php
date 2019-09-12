@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Manager\RegistrationManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -227,7 +228,7 @@ class OauthManager
 
             return $this->registrationManager->loginUser($user, $request);
         } else {
-            return ['error' => 'login_error'];
+            return new JsonResponse(['error' => 'login_error'], 400);
         }
     }
 
