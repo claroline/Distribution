@@ -5,6 +5,7 @@ import {FacebookButton} from '#/main/authentication/sso/facebook/components/butt
 import {FacebookParameters} from '#/main/authentication/sso/facebook/components/parameters'
 
 export default {
+  name: constants.SERVICE_NAME,
   icon: constants.SERVICE_ICON,
   alt: constants.SERVICE_ICON_ALT,
   label: trans('facebook', {}, 'oauth'),

@@ -43,14 +43,6 @@
     // vertically center the login form in the page
     // if there is lots of space
     justify-content: center;
-    //margin: 0 auto;
-    
-    // makes logo, title, info text the same width as login form
-    //max-width: floor(@login-max-width / 2);
-
-    /*&.login-with-sso {
-        max-width: @login-max-width;
-    }*/
 
     .login-logo {
         align-self: center; // avoid image to be stretched
@@ -223,10 +215,6 @@
     color: @sso-btn-color !important;
     font-size: @sso-btn-font-size;
 
-    + .btn-third-party-login {
-        margin-top: @sso-btn-spacer-v;
-    }
-
     &:hover,
     &:focus {
         color: @sso-btn-color !important;
@@ -257,11 +245,7 @@
 }
 
 .external-app {
-    //padding: @panel-body-padding;
-    //border: 1px solid @panel-default-border;
-    //background: @panel-bg;
     margin-bottom: floor(@component-margin-bottom / 2);
-    //.box-shadow(@panel-box-shadow);
 
     &:last-child {
         margin-bottom: @component-margin-bottom;
@@ -300,15 +284,6 @@
             min-width: 60px;
             font-family: @font-family-base;
         }
-    }
-
-
-    /*&.enabled {
-        border-color: @brand-primary;
-    }*/
-
-    &.disabled {
-
     }
 
     &.dropbox      { .external-app-variant(@sso-dropbox-primary,    @sso-dropbox-primary); }

@@ -4,9 +4,9 @@ import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {SSO_BUTTON} from '#/main/authentication/buttons/sso'
 
-import {constants} from '#/main/authentication/sso/github/constants'
+import {constants} from '#/main/authentication/sso/linkedin/constants'
 
-const GitHubButton = props =>
+const LinkedinButton = props =>
   <Button
     {...props}
     type={SSO_BUTTON}
@@ -15,5 +15,5 @@ const GitHubButton = props =>
   />
 
 export {
-  GitHubButton
+  LinkedinButton
 }
