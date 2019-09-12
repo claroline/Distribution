@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Listener;
 
 use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Claroline\CoreBundle\Manager\LocaleManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -141,7 +142,7 @@ class PlatformListener
 
             if (!$isAdmin &&
                 !in_array($event->getRequest()->get('_route'), static::PUBLIC_ROUTES) &&
-                ($minDate->getTimeStamp() > $now || $now > $expirationDate->getTimeStamp() || $this->config->getParameter('maintenance.enable'))
+                ($minDate->getTimeStamp() > $now || $now > $expirationDate->getTimeStamp() || MaintenanceHandler::isMaintenanceEnabled())
             ) {
                 throw new HttpException(503, 'Platform is not available.');
             }
