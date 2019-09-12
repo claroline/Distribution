@@ -32,58 +32,50 @@ const DashboardMain = (props) =>
                 marginTop: '20px'
               }}
               basePath={props.path}
-              tabs={[
-                {
-                  icon: 'fa fa-fw fa-clock',
-                  title: trans('connection_time'),
-                  path: '/dashboard/connections'
-                }, {
-                  icon: 'fa fa-fw fa-users',
-                  title: trans('users_actions'),
-                  path: '/dashboard/log'
-                }, {
-                  icon: 'fa fa-fw fa-user',
-                  title: trans('user_actions'),
-                  path: '/dashboard/logs/users',
-                  exact: true
-                }
-              ].concat(
+              tabs={
                 apps.map(app => ({
                   icon: app.icon,
                   title: app.label,
-                  path: `/dashboard/${app.path}`
-                }))
-              )}
+                  path: `/dashboard/${app.path}`,
+                  exact: true
+                })).concat([{
+                    icon: 'fa fa-fw fa-users',
+                    title: trans('users_actions'),
+                    path: '/dashboard/log'
+                  }, {
+                    icon: 'fa fa-fw fa-user',
+                    title: trans('user_actions'),
+                    path: '/dashboard/logs/users',
+                    exact: true
+                  }
+                ])
+              }
             />
           </div>
 
           <div className="dashboard-content col-md-9">
             <Routes
               path={props.path}
-              routes={[
-                {
-                  path: '/dashboard/connections',
-                  component: Connections,
-                  exact: true
-                }, {
-                  path: '/dashboard/log',
-                  component: Logs,
-                  exact: true
-                }, {
-                  path: '/dashboard/log/:id',
-                  component: LogDetails,
-                  onEnter: (params) => props.openLog(params.id)
-                }, {
-                  path: '/dashboard/logs/users',
-                  component: UserLogs,
-                  exact: true
-                }
-              ].concat(
+              routes={
                 apps.map(app => ({
                   path: `/dashboard/${app.path}`,
-                  component: app.component
-                }))
-              )}
+                  component: app.component,
+                  exact: true
+                })).concat([{
+                    path: '/dashboard/log',
+                    component: Logs,
+                    exact: true
+                  }, {
+                    path: '/dashboard/log/:id',
+                    component: LogDetails,
+                    onEnter: (params) => props.openLog(params.id)
+                  }, {
+                    path: '/dashboard/logs/users',
+                    component: UserLogs,
+                    exact: true
+                  }
+                ])
+              }
             />
           </div>
         </div>
