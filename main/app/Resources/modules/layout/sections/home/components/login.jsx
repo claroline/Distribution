@@ -7,10 +7,10 @@ import {withRouter} from '#/main/app/router'
 import {PageSimple} from '#/main/app/page/components/simple'
 import {connect} from 'react-redux'
 import {selectors} from '#/main/app/layout/store'
-import {selectors as securitySelectors} from '#/main/app/security/store'
 
 import {constants} from '#/main/app/security/login/constants'
 import {LoginForm} from '#/main/app/security/login/containers/form'
+import {isAdmin as userIsAdmin} from '#/main/app/security/permissions'
 
 import {route as workspaceRoute} from '#/main/core/workspace/routing'
 
@@ -20,7 +20,7 @@ const LoginPage = (props) =>
   >
     <LoginForm
       onLogin={(response) => {
-        if (!props.isAdmin && props.maintenance) {
+        if (!userIsAdmin(response.user) && props.maintenance) {
           props.history.push('/maintenance')
         } else {
           if (response.redirect) {
@@ -47,7 +47,6 @@ const LoginPage = (props) =>
 
 LoginPage.propTypes = {
   maintenance: T.bool,
-  isAdmin: T.bool,
   history: T.shape({
     push: T.func.isRequired,
     goBack: T.func.isRequired
@@ -57,8 +56,7 @@ LoginPage.propTypes = {
 const HomeLogin = withRouter(
   connect(
     (state) => ({
-      maintenance: selectors.maintenance(state),
-      isAdmin: securitySelectors.isAdmin(state)
+      maintenance: selectors.maintenance(state)
     })
   )(LoginPage))
 
