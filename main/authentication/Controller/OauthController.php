@@ -82,7 +82,7 @@ class OauthController extends AbstractCrudController
         $user = $session->get('claroline.oauth.user');
 
         if (null !== $service && null !== $user) {
-            return new RedirectResponse($this->router->generate('claro_index').'/#/external/'.$service['name']);
+            return new RedirectResponse($this->router->generate('claro_index').'#/external/'.$service['name']);
         }
 
         $session->remove('claroline.oauth.resource_owner');
