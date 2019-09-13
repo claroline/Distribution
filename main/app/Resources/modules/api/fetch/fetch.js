@@ -101,25 +101,26 @@ function handleResponseError(dispatch, responseError, originalRequest, error) {
       throw responseError
     }
 
-    if (401 === responseError.status) {
-      // authentication needed
-      return new Promise(function (resolve, reject) {
-        dispatch(modalActions.showModal(MODAL_LOGIN, {
-          onLogin: () => resolve(apiFetch(originalRequest, dispatch)), // re-execute original request
-          onAbort: () => {
-            error('Authentication required', responseError.status, dispatch)
+    switch(responseError.status) {
+      case 401:
+        // authentication needed
+        return new Promise(function (resolve, reject) {
+          dispatch(modalActions.showModal(MODAL_LOGIN, {
+            onLogin: () => resolve(apiFetch(originalRequest, dispatch)), // re-execute original request
+            onAbort: () => {
+              error('Authentication required', responseError.status, dispatch)
 
-            return reject('Authentication required')
-          }
-        }))
-      })
-    } else {
-      return getResponseData(responseError) // get error data if any
-        .then(errorData => {
-          error(errorData, responseError.status, dispatch)
-
-          return Promise.reject(errorData)
+              return reject('Authentication required')
+            }
+          }))
         })
+      default:
+        return getResponseData(responseError) // get error data if any
+          .then(errorData => {
+            error(errorData, responseError.status, dispatch)
+
+            return Promise.reject(errorData)
+          })
     }
   }
 }
