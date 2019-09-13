@@ -83,7 +83,7 @@ class UserCrud
         $user->addRole($roleUser);
 
         //create default desktop tools
-        $toolsRolesConfig = $this->toolManager->getDesktopToolsConfiguration([$roleUser]);
+        $toolsRolesConfig = $this->toolManager->getUserDesktopToolsConfiguration($user);
         $this->toolManager->computeUserOrderedTools($user, $toolsRolesConfig);
 
         $this->roleManager->createUserRole($user);

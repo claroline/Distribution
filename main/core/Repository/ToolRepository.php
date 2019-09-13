@@ -133,42 +133,6 @@ class ToolRepository extends ServiceEntityRepository
     }
 
     /**
-     * Returns the visible tools in a user's desktop.
-     *
-     * @param User $user
-     *
-     * @return array[Tool]
-     */
-    public function findDesktopDisplayedToolsWithExclusionByUser(
-        User $user,
-        array $excludedTools,
-        $orderedToolType = 0
-    ) {
-        $dql = "
-            SELECT tool
-            FROM Claroline\CoreBundle\Entity\Tool\Tool tool
-            JOIN tool.orderedTools ot
-            JOIN ot.user user
-            LEFT JOIN tool.plugin p
-            WHERE user.id = {$user->getId()}
-            AND ot.type = :type
-            AND ot.isVisibleInDesktop = true
-            AND tool NOT IN (:excludedTools)
-            AND (
-                CONCAT(p.vendorName, p.bundleName) IN (:bundles)
-                OR tool.plugin is NULL
-            )
-            ORDER BY ot.order
-        ";
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('type', $orderedToolType);
-        $query->setParameter('excludedTools', $excludedTools);
-        $query->setParameter('bundles', $this->bundles);
-
-        return $query->getResult();
-    }
-
-    /**
      * Returns the non-visible tools in a user's desktop.
      *
      * @param User $user
