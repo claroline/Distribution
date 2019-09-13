@@ -2,6 +2,7 @@
 
 namespace Claroline\AppBundle\API;
 
+use Claroline\AppBundle\Event\Crud\CrudEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AppBundle\Security\ObjectCollection;
@@ -38,6 +39,9 @@ class Crud
     /** @var ValidatorProvider */
     private $validator;
 
+    /** @var SchemaProvider */
+    private $schema;
+
     /**
      * Crud constructor.
      *
@@ -45,24 +49,28 @@ class Crud
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "dispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "validator"  = @DI\Inject("claroline.api.validator")
+     *     "validator"  = @DI\Inject("claroline.api.validator"),
+     *     "schema"     = @DI\Inject("claroline.api.schema")
      * })
      *
      * @param ObjectManager      $om
      * @param StrictDispatcher   $dispatcher
      * @param SerializerProvider $serializer
      * @param ValidatorProvider  $validator
+     * @param SchemaProvider     $schema
      */
     public function __construct(
       ObjectManager $om,
       StrictDispatcher $dispatcher,
       SerializerProvider $serializer,
-      ValidatorProvider $validator
+      ValidatorProvider $validator,
+      SchemaProvider $schema
     ) {
         $this->om = $om;
         $this->dispatcher = $dispatcher;
         $this->serializer = $serializer;
         $this->validator = $validator;
+        $this->schema = $schema;
     }
 
     /**
@@ -122,7 +130,7 @@ class Crud
             }
         }
 
-        $oldObject = $this->om->getObject($data, $class) ?? new $class();
+        $oldObject = $this->om->getObject($data, $class, $this->schema->getIdentifiers($class)) ?? new $class();
         $this->checkPermission('EDIT', $oldObject, [], true);
         $oldData = $this->serializer->serialize($oldObject);
 
@@ -329,9 +337,12 @@ class Crud
     {
         $name = 'crud_'.$when.'_'.$action.'_object';
         $eventClass = ucfirst($action);
+        /** @var CrudEvent $generic */
         $generic = $this->dispatcher->dispatch($name, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
+
         $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($args[0]))->getName();
         $serializedName = $name.'_'.strtolower(str_replace('\\', '_', $className));
+        /** @var CrudEvent $specific */
         $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
 
         return $generic->isAllowed() && $specific->isAllowed();
