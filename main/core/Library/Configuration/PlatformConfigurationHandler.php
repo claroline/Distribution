@@ -158,11 +158,15 @@ class PlatformConfigurationHandler
     public function arrayMerge(array $array1, array $array2)
     {
         foreach ($array2 as $key => $value) {
-            if (!array_key_exists($key, $array1)) {
+            if (!array_key_exists($key, $array1) && !in_array($value, $array1)) {
                 $array1[$key] = $value;
             } else {
                 if (is_array($value)) {
-                    $array1[$key] = $this->arrayMerge($array1[$key], $array2[$key]);
+                    if (array_key_exists($key, $array1)) {
+                        $array1[$key] = $this->arrayMerge($array1[$key], $array2[$key]);
+                    } else {
+                        $array1[$key] = $value;
+                    }
                 }
             }
         }
