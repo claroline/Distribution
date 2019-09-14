@@ -31,6 +31,7 @@ class UserCrud
         $this->dispatcher = $container->get('claroline.event.event_dispatcher');
         $this->config = $container->get('claroline.config.platform_config_handler');
         $this->cryptoManager = $container->get('claroline.manager.cryptography_manager');
+        $this->encoderFactory = $container->get('security.encoder_factory');
     }
 
     /**
@@ -63,6 +64,10 @@ class UserCrud
             $user->setPublicUrl($publicUrl);
         } else {
             $user->setPublicUrl($this->userManager->generatePublicUrl($user));
+        }
+
+        if (!empty($user->getPlainPassword())) {
+            $this->encodePassword($user);
         }
 
         $this->toolManager->addRequiredToolsToUser($user, 0);
@@ -208,7 +213,29 @@ class UserCrud
                 $this->roleManager->renameUserRole($userRole, $user->getUsername());
                 // TODO : rename personal WS if user is renamed
             }
-            //TODO: create if not exist
+            // TODO: create if not exist
         }
+
+        if (!empty($user->getPlainPassword()) && (empty($oldData['plainPassword']) || $oldData['plainPassword'] !== $user->getPlainPassword())) {
+            $this->encodePassword($user);
+        }
+    }
+
+    /**
+     * Encodes the user password and returns it.
+     *
+     * @param User $user
+     *
+     * @return string - the encoded password
+     */
+    private function encodePassword(User $user)
+    {
+        $password = $this->encoderFactory
+            ->getEncoder($user)
+            ->encodePassword($user->getPlainPassword(), $user->getSalt());
+
+        $user->setPassword($password);
+
+        return $password;
     }
 }

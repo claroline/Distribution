@@ -20,6 +20,9 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class ToolRepository extends ServiceEntityRepository
 {
+    /** @var array */
+    private $bundles;
+
     public function __construct(RegistryInterface $registry, PluginManager $manager)
     {
         $this->bundles = $manager->getEnabled(true);
@@ -105,18 +108,19 @@ class ToolRepository extends ServiceEntityRepository
      * Returns the visible tools in a user's desktop.
      *
      * @param User $user
+     * @param int  $orderedToolType
      *
-     * @return array[Tool]
+     * @return Tool[]
      */
     public function findDesktopDisplayedToolsByUser(User $user, $orderedToolType = 0)
     {
-        $dql = "
+        $query = $this->_em->createQuery('
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
             JOIN tool.orderedTools ot
             JOIN ot.user user
             LEFT JOIN tool.plugin p
-            WHERE user.id = {$user->getId()}
+            WHERE user.id = :userId
             AND ot.type = :type
             AND tool.isDisplayableInDesktop = true
             AND (
@@ -124,9 +128,9 @@ class ToolRepository extends ServiceEntityRepository
                 OR tool.plugin is NULL
             )
             ORDER BY ot.order
-        ";
-        $query = $this->_em->createQuery($dql);
+        ');
         $query->setParameter('type', $orderedToolType);
+        $query->setParameter('userId', $user->getId());
         $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
@@ -142,7 +146,7 @@ class ToolRepository extends ServiceEntityRepository
      */
     public function findDesktopUndisplayedToolsByUser(User $user, $orderedToolType = 0)
     {
-        $dql = "
+        $query = $this->_em->createQuery('
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
             LEFT JOIN tool.plugin p
@@ -151,7 +155,7 @@ class ToolRepository extends ServiceEntityRepository
                 FROM Claroline\CoreBundle\Entity\Tool\Tool tool_2
                 JOIN tool_2.orderedTools ot_2
                 JOIN ot_2.user user_2
-                WHERE user_2.id = {$user->getId()}
+                WHERE user_2.id = :userId
                 AND ot_2.type = :type
             )
             AND (
@@ -159,9 +163,9 @@ class ToolRepository extends ServiceEntityRepository
                 OR tool.plugin is NULL
             )
             AND tool.isDisplayableInDesktop = true
-        ";
-        $query = $this->_em->createQuery($dql);
+        ');
         $query->setParameter('type', $orderedToolType);
+        $query->setParameter('userId', $user->getId());
         $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
@@ -170,11 +174,13 @@ class ToolRepository extends ServiceEntityRepository
     /**
      * Returns the non-visible tools in a user's desktop in admin configuration.
      *
+     * @param int  $orderedToolType
+     *
      * @return Tool[]
      */
     public function findDesktopUndisplayedToolsByTypeForAdmin($orderedToolType = 0)
     {
-        $dql = "
+        $query = $this->_em->createQuery('
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
             LEFT JOIN tool.plugin p
@@ -191,8 +197,7 @@ class ToolRepository extends ServiceEntityRepository
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
                 OR tool.plugin is NULL
             )
-        ";
-        $query = $this->_em->createQuery($dql);
+        ');
         $query->setParameter('type', $orderedToolType);
         $query->setParameter('bundles', $this->bundles);
 
@@ -211,7 +216,7 @@ class ToolRepository extends ServiceEntityRepository
         Workspace $workspace,
         $orderedToolType = 0
     ) {
-        $dql = "
+        $query = $this->_em->createQuery('
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
             LEFT JOIN tool.plugin p
@@ -220,7 +225,7 @@ class ToolRepository extends ServiceEntityRepository
                 SELECT tool_2 FROM Claroline\CoreBundle\Entity\Tool\Tool tool_2
                 JOIN tool_2.orderedTools ot
                 JOIN ot.workspace ws
-                WHERE ws.id = {$workspace->getId()}
+                WHERE ws.id = :workspaceId
                 AND tool.isDisplayableInWorkspace = true
                 AND ot.type = :type
             )
@@ -228,9 +233,10 @@ class ToolRepository extends ServiceEntityRepository
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
                 OR tool.plugin is NULL
             )
-        ";
-        $query = $this->_em->createQuery($dql);
+        ');
+
         $query->setParameter('type', $orderedToolType);
+        $query->setParameter('workspaceId', $workspace->getId());
         $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();
@@ -240,14 +246,15 @@ class ToolRepository extends ServiceEntityRepository
      * Returns the visible tools in a workspace.
      *
      * @param Workspace $workspace
+     * @param int       $orderedToolType
      *
-     * @return array[Tool]
+     * @return Tool[]
      */
     public function findDisplayedToolsByWorkspace(
         Workspace $workspace,
         $orderedToolType = 0
     ) {
-        $dql = '
+        $query = $this->_em->createQuery('
             SELECT tool
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
             LEFT JOIN tool.plugin p
@@ -259,8 +266,8 @@ class ToolRepository extends ServiceEntityRepository
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
                 OR tool.plugin is NULL
             )
-        ';
-        $query = $this->_em->createQuery($dql);
+        ');
+
         $query->setParameter('workspace', $workspace);
         $query->setParameter('type', $orderedToolType);
         $query->setParameter('bundles', $this->bundles);
@@ -272,6 +279,7 @@ class ToolRepository extends ServiceEntityRepository
      * Returns the number of tools visible in a workspace.
      *
      * @param Workspace $workspace
+     * @param int       $orderedToolType
      *
      * @return int
      */
@@ -279,21 +287,22 @@ class ToolRepository extends ServiceEntityRepository
         Workspace $workspace,
         $orderedToolType = 0
     ) {
-        $dql = "
+        $query = $this->_em->createQuery('
             SELECT count(tool)
             FROM Claroline\CoreBundle\Entity\Tool\Tool tool
             JOIN tool.orderedTools ot
             JOIN ot.workspace ws
             LEFT JOIN tool.plugin p
-            WHERE ws.id = {$workspace->getId()}
+            WHERE ws.id = :workspaceId
             AND ot.type = :type
             AND (
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
                 OR tool.plugin is NULL
             )
-        ";
-        $query = $this->_em->createQuery($dql);
+        ');
+
         $query->setParameter('type', $orderedToolType);
+        $query->setParameter('workspaceId', $workspace->getId());
         $query->setParameter('bundles', $this->bundles);
 
         return $query->getSingleScalarResult();
@@ -301,7 +310,7 @@ class ToolRepository extends ServiceEntityRepository
 
     public function findToolsDispayableInWorkspace()
     {
-        $dql = '
+        $query = $this->_em->createQuery('
             SELECT t
             FROM Claroline\CoreBundle\Entity\Tool\Tool t
             LEFT JOIN t.plugin p
@@ -310,9 +319,7 @@ class ToolRepository extends ServiceEntityRepository
                 CONCAT(p.vendorName, p.bundleName) IN (:bundles)
                 OR t.plugin is NULL
             )
-        ';
-
-        $query = $this->_em->createQuery($dql);
+        ');
         $query->setParameter('bundles', $this->bundles);
 
         return $query->getResult();

@@ -14,7 +14,7 @@ namespace Claroline\ClacoFormBundle\Command;
 use Claroline\AppBundle\Command\BaseCommandTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
+use Claroline\AppBundle\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

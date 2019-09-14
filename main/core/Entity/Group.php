@@ -148,15 +148,7 @@ class Group extends AbstractRoleSubject
         return $userIds;
     }
 
-    /**
-     * alias for getPlateformeRole.
-     */
     public function getPlatformRoles()
-    {
-        return $this->getPlatformRole();
-    }
-
-    public function getPlatformRole()
     {
         $roles = $this->getEntityRoles();
         $return = [];

@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Command\Logs;
 
 use Claroline\CoreBundle\Entity\Log\Log;
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
+use Claroline\AppBundle\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
