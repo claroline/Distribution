@@ -216,7 +216,7 @@ services:
         arguments:
             - '@ujm_exo.serializer.resource_content'
 
-    ujm_exo.serializer.resource_content:
+    ujm_exo.serializer.content:
          alias: UJM\ExoBundle\Serializer\Content\ContentSerializer
          public: true
 
