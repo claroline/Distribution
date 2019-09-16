@@ -25,3 +25,10 @@ services:
     claroline.serializer.reservation.resource:
          alias: FormaLibre\ReservationBundle\Serializer\ResourceSerializer
          public: true
+
+    FormaLibre\ReservationBundle\Serializer\ResourceTypeSerializer:
+        tags: [claroline.serializer]
+
+    claroline.serializer.reservation.resource_type:
+         alias: FormaLibre\ReservationBundle\Serializer\ResourceTypeSerializer
+         public: true

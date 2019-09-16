@@ -24,6 +24,6 @@ services:
         arguments:
            - '@claroline.persistence.object_manager'
 
-    claroline.serializer.team:
+    claroline.serializer.team.parameters:
          alias: Claroline\TeamBundle\Serializer\WorkspaceTeamParametersSerializer
          public: true
