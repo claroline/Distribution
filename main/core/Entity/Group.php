@@ -122,9 +122,9 @@ class Group extends AbstractRoleSubject
 
     public function addUser(User $user)
     {
-	if (!$user->getGroups()->contains($this)) {
+        if (!$user->getGroups()->contains($this)) {
             $user->getGroups()->add($this);
-	}
+        }
     }
 
     public function removeUser(User $user)

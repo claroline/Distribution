@@ -457,34 +457,6 @@ class ToolManager
         );
     }
 
-    private function addMissingDesktopTools(
-        User $user,
-        array $missingTools,
-        $startPosition,
-        $type = 0
-    ) {
-        foreach ($missingTools as $tool) {
-            $wot = $this->orderedToolRepo->findOneBy(
-                ['user' => $user, 'tool' => $tool, 'type' => $type]
-            );
-
-            if (!$wot) {
-                $orderedTool = new OrderedTool();
-                $orderedTool->setUser($user);
-                $orderedTool->setName($tool->getName());
-                $orderedTool->setOrder($startPosition);
-                $orderedTool->setTool($tool);
-                $orderedTool->setVisibleInDesktop(false);
-                $orderedTool->setType($type);
-                $this->om->persist($orderedTool);
-            }
-
-            ++$startPosition;
-        }
-
-        $this->om->flush();
-    }
-
     public function getPersonalWorkspaceToolConfigs()
     {
         return $this->pwsToolConfigRepo->findAll();

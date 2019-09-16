@@ -23,7 +23,6 @@ class ClaroUtilities
 {
     private $container;
     private $hasIntl;
-    private $formatter;
 
     /**
      * @DI\InjectParams({
@@ -158,7 +157,7 @@ class ClaroUtilities
     {
         // If encoding not UTF-8 then convert it to UTF-8
         $encoding = $this->detectEncoding($string);
-        if ($encoding && $encoding !== 'UTF-8') {
+        if ($encoding && 'UTF-8' !== $encoding) {
             $string = iconv($encoding, 'UTF-8', $string);
         }
 

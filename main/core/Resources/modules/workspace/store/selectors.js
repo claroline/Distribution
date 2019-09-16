@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 import isEmpty from 'lodash/isEmpty'
-import uniqWith from 'lodash/uniq'
+import uniqWith from 'lodash/uniqWith'
 
 import {selectors as securitySelectors} from '#/main/app/security/store/selectors'
 import {hasRole} from '#/main/app/security/permissions'

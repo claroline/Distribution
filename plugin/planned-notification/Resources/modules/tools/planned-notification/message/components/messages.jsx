@@ -43,7 +43,7 @@ const MessagesList = props =>
     actions={(rows) => [
       {
         name: 'send',
-        type: CALLBACK_BUTTON,
+        type: MODAL_BUTTON,
         icon: 'fa fa-fw fa-envelope-o',
         label: trans('send'),
         modal: [MODAL_USERS, {

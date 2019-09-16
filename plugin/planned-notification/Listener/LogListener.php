@@ -34,8 +34,8 @@ class LogListener
      *     "tokenStorage"  = @DI\Inject("security.token_storage")
      * })
      *
-     * @param PlannedNotificationManager    $manager
-     * @param TokenStorageInterface         $tokenStorage
+     * @param PlannedNotificationManager $manager
+     * @param TokenStorageInterface      $tokenStorage
      */
     public function __construct(
         PlannedNotificationManager $manager,

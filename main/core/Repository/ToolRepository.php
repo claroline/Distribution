@@ -174,7 +174,7 @@ class ToolRepository extends ServiceEntityRepository
     /**
      * Returns the non-visible tools in a user's desktop in admin configuration.
      *
-     * @param int  $orderedToolType
+     * @param int $orderedToolType
      *
      * @return Tool[]
      */

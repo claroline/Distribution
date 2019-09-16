@@ -14,7 +14,6 @@ namespace Claroline\AgendaBundle\Finder;
 use Claroline\AgendaBundle\Entity\Event;
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Doctrine\ORM\QueryBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
 
 class EventFinder extends AbstractFinder
 {

@@ -68,13 +68,10 @@ class DocumentController extends DropzoneBaseController
 
         if (null === $hiddenDropDirectory) {
             $hiddenDropDirectory = new Directory();
-            // slugify user name
-            //$slugify = new Slugify();
 
             $user = $drop->getUser();
             $username = $user->getUsername();
             $directoryName = $user->getLastName().' '.$user->getFirstName();
-            //$directoryName = $slugify->slugify($directoryName, ' ');
 
             // Add username to ensure directory name is unique even if some users share the same name
             $directoryName .= ' - '.$username;
