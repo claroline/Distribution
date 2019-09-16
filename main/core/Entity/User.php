@@ -41,6 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         @ORM\Index(name="enabled_idx", columns={"is_enabled"}),
  *         @ORM\Index(name="is_removed", columns={"is_removed"})
  * })
+ * @ORM\EntityListeners({"Claroline\CoreBundle\Listener\Entity\UserListener"})
  * @DoctrineAssert\UniqueEntity("username")
  * @DoctrineAssert\UniqueEntity("email")
  * @ClaroAssert\Username()
