@@ -82,7 +82,7 @@ class ClientController
                     'locale' => $this->configHandler->getParameter('footer.show_locale'),
                     'help' => $this->configHandler->getParameter('footer.show_help'),
                     'termsOfService' => $this->configHandler->getParameter('footer.show_terms_of_service'),
-                ]
+                ],
             ],
 
             'injectedJavascripts' => $this->injectJavascript(),
