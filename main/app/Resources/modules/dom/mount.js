@@ -62,8 +62,6 @@ function mount(container, rootComponent, reducers = {}, initialData = {}, embedd
     // rethrow errors (in some case they are swallowed)
     throw error
   }
-
-  return appRoot
 }
 
 function unmount(container) {
