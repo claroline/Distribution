@@ -14,12 +14,7 @@ namespace  Icap\NotificationBundle\Finder;
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Doctrine\ORM\QueryBuilder;
 use Icap\NotificationBundle\Entity\NotificationViewer;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.api.finder.notification")
- * @DI\Tag("claroline.finder")
- */
 class NotificationViewerFinder extends AbstractFinder
 {
     public function getClass()
@@ -37,7 +32,7 @@ class NotificationViewerFinder extends AbstractFinder
                     $qb->andWhere('obj.status = :filter');
                     $qb->setParameter('filter', $filterValue);
                     break;
-              case 'notification.meta.creator':
+              case 'user':
                 $qb->andWhere('obj.viewerId = :viewerId');
                 $qb->setParameter('viewerId', $filterValue);
                 break;
