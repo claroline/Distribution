@@ -70,7 +70,7 @@ class UserCrud
             $this->encodePassword($user);
         }
 
-        $this->toolManager->addRequiredToolsToUser($user, 0);
+        $addedTools = $this->toolManager->addRequiredToolsToUser($user, 0);
         $this->toolManager->addRequiredToolsToUser($user, 1);
         $roleUser = $this->roleManager->getRoleByName(PlatformRoles::USER);
         $groupUser = $this->om->getRepository(Group::class)->findOneByName(PlatformRoles::USER);
@@ -89,7 +89,7 @@ class UserCrud
 
         //create default desktop tools
         $toolsRolesConfig = $this->toolManager->getUserDesktopToolsConfiguration($user);
-        $this->toolManager->computeUserOrderedTools($user, $toolsRolesConfig);
+        $this->toolManager->computeUserOrderedTools($user, $toolsRolesConfig, $addedTools);
 
         $this->roleManager->createUserRole($user);
 

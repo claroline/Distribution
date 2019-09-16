@@ -333,6 +333,8 @@ class ToolManager
 
         $this->om->persist($user);
         $this->om->endFlushSuite();
+
+        return $requiredTools;
     }
 
     /**
@@ -523,42 +525,48 @@ class ToolManager
         return $config;
     }
 
-    public function computeUserOrderedTools(User $user, array $config)
+    public function computeUserOrderedTools(User $user, array $config, array $excludedTools = [])
     {
         $orderedTools = [];
         $desktopTools = $this->toolRepo->findBy(['isDisplayableInDesktop' => true]);
+        $excludedToolNames = array_map(function (Tool $tool) {
+            return $tool->getName();
+        }, $excludedTools);
 
         foreach ($desktopTools as $tool) {
             $toolName = $tool->getName();
-            $orderedTool = $this->orderedToolRepo->findOneBy(['user' => $user, 'tool' => $tool, 'type' => 0]);
 
-            if (empty($orderedTool)) {
-                $orderedTool = new OrderedTool();
-                $orderedTool->setTool($tool);
-                $orderedTool->setUser($user);
-                $orderedTool->setType(0);
-                $orderedTool->setOrder(1);
-                $orderedTool->setName($toolName);
-            }
+            if (!in_array($toolName, $excludedToolNames)) {
+                $orderedTool = $this->orderedToolRepo->findOneBy(['user' => $user, 'tool' => $tool, 'type' => 0]);
 
-            if (isset($config[$toolName])) {
-                switch ($config[$toolName]) {
-                    case ToolRole::FORCED:
-                        $orderedTool->setVisibleInDesktop(true);
-                        $orderedTool->setLocked(true);
-                        break;
-                    case ToolRole::HIDDEN:
-                        $orderedTool->setVisibleInDesktop(false);
-                        $orderedTool->setLocked(true);
-                        break;
-                    default:
-                        $orderedTool->setLocked(false);
+                if (empty($orderedTool)) {
+                    $orderedTool = new OrderedTool();
+                    $orderedTool->setTool($tool);
+                    $orderedTool->setUser($user);
+                    $orderedTool->setType(0);
+                    $orderedTool->setOrder(1);
+                    $orderedTool->setName($toolName);
                 }
-            } else {
-                $orderedTool->setLocked(false);
+
+                if (isset($config[$toolName])) {
+                    switch ($config[$toolName]) {
+                        case ToolRole::FORCED:
+                            $orderedTool->setVisibleInDesktop(true);
+                            $orderedTool->setLocked(true);
+                            break;
+                        case ToolRole::HIDDEN:
+                            $orderedTool->setVisibleInDesktop(false);
+                            $orderedTool->setLocked(true);
+                            break;
+                        default:
+                            $orderedTool->setLocked(false);
+                    }
+                } else {
+                    $orderedTool->setLocked(false);
+                }
+                $this->om->persist($orderedTool);
+                $orderedTools[] = $orderedTool;
             }
-            $this->om->persist($orderedTool);
-            $orderedTools[] = $orderedTool;
         }
         $this->om->flush();
 
