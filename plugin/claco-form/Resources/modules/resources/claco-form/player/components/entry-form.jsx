@@ -1,5 +1,4 @@
 import React, {Component, Fragment} from 'react'
-import ReactDOM from 'react-dom'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import parse from 'html-react-parser'
@@ -7,9 +6,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'
 
-import {mount, unmount} from '#/main/app/dom/mount'
 import {withRouter} from '#/main/app/router'
-import {toKey} from '#/main/core/scaffolding/text/utils'
 import {selectors as configSelectors} from '#/main/app/config/store'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
@@ -24,7 +21,6 @@ import {hasPermission} from '#/main/app/security'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
 
 import {selectors as resourceSelectors} from '#/main/core/resource/store'
-import {HtmlText} from '#/main/core/layout/components/html-text'
 
 import {selectors} from '#/plugin/claco-form/resources/claco-form/store'
 import {
@@ -36,7 +32,6 @@ import {actions} from '#/plugin/claco-form/resources/claco-form/player/store'
 import {EntryFormData} from '#/plugin/claco-form/resources/claco-form/player/components/entry-form-data'
 
 // TODO : split template form and standard form in 2 different components
-// TODO : unmount fields on componentWillUnmount
 
 class EntryFormComponent extends Component {
   constructor(props) {
