@@ -97,7 +97,9 @@ HeaderMain.propTypes = {
   title: T.string,
   subtitle: T.string,
   display: T.shape({
-    name: T.bool.isRequired
+    name: T.bool.isRequired,
+    about: T.bool.isRequired,
+    help: T.bool.isRequired
   }).isRequired,
 
   /**

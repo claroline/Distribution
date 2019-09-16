@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {asset} from '#/main/app/config/asset'
-import {param} from '#/main/app/config'
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
@@ -40,7 +39,7 @@ const FooterMain = (props) =>
         <Button
           className="app-footer-btn btn-link"
           type={URL_BUTTON}
-          icon="fa fa-fw fa-question visible-xs"
+          icon="fa fa-fw fa-question-circle-o visible-xs"
           label={<span key="label" className="hidden-xs">{trans('help')}</span>}
           target={props.helpUrl}
         />

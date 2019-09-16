@@ -141,7 +141,7 @@ class ClientSerializer
             'theme' => $this->serializeTheme(),
             'locale' => $this->serializeLocale(),
             'display' => [
-                'breadcrumb' => $this->config->getParameter('display.breadcrumb')
+                'breadcrumb' => $this->config->getParameter('display.breadcrumb'),
             ],
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
