@@ -1,12 +1,11 @@
 services:
     _defaults:
-        autoconfigure: false
-        public: true #because lazy
         autowire: false
+        autoconfigure: false
+        public: true
 
     _instanceof:
         Claroline\AppBundle\API\Finder\AbstractFinder:
-            autowire: false
             tags: [claroline.finder]
             calls:
                 - method: setObjectManager
