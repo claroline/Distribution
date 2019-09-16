@@ -33,7 +33,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  */
 class Evaluation extends AbstractEvaluation
 {
-    use Id;
     use Uuid;
 
     /**
