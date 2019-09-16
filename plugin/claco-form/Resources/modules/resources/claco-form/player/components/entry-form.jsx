@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react'
 import ReactDOM from 'react-dom'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import parse from 'html-react-parser'
 import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'
@@ -35,6 +36,7 @@ import {actions} from '#/plugin/claco-form/resources/claco-form/player/store'
 import {EntryFormData} from '#/plugin/claco-form/resources/claco-form/player/components/entry-form-data'
 
 // TODO : split template form and standard form in 2 different components
+// TODO : unmount fields on componentWillUnmount
 
 class EntryFormComponent extends Component {
   constructor(props) {
@@ -51,14 +53,7 @@ class EntryFormComponent extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.entry.id !== prevProps.entry.id ||
-      (this.props.entry.id === prevProps.entry.id && this.props.entry.values !== prevProps.entry.values)) {
-      console.log('update')
-      this.renderTemplateFields(true)
-    }
-  }
-
+  // for standard form
   getSections() {
     const isShared = this.props.entryUser && this.props.entryUser.id ? this.props.entryUser.shared : false
 
@@ -116,106 +111,79 @@ class EntryFormComponent extends Component {
     ]
   }
 
-  // TODO: unmount component
-  renderTemplateFields(update) {
-    if (this.props.useTemplate && this.props.template) {
-      const titleComponent =
-        <DataInput
-          id="field-title"
-          type="string"
-          label={trans('title')}
-          required={true}
-          hideLabel={true}
-          value={this.props.entry.title}
-          error={this.props.errors.title}
-          onChange={(value) => this.props.updateFormProp('title', value)}
-          setError={(errors) => {
-            const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
-            set(newErrors, 'title', errors)
-
-            this.props.setErrors(newErrors)
-          }}
-        />
-
-      const element = document.getElementById('clacoform-entry-title')
-      if (element) {
-        ReactDOM.render(titleComponent, element)
-      }
-
-      this.props.fields.forEach(f => {
-        const fieldEl = document.getElementById(`clacoform-field-${f.autoId}`)
-
-        if (fieldEl) {
-          if (update) {
-            unmount(fieldEl)
-          }
-
-          let options = f.options ? Object.assign({}, f.options) : {}
-
-          if (f.type === 'choice') {
-            const choices = f.options && f.options.choices ?
-              f.options.choices.reduce((acc, choice) => {
-                acc[choice.value] = choice.value
-
-                return acc
-              }, {}) :
-              {}
-            options = Object.assign({}, options, {choices: choices})
-          }
-
-          if (f.type === 'file') {
-            options['uploadUrl'] = ['apiv2_clacoformentry_file_upload', {clacoForm: this.props.clacoFormId}]
-          }
-
-          const fieldComponent = () =>
-            <DataInput
-              key={`field-${f.id}`}
-              id={`field-${f.id}`}
-              type={f.type}
-              label={f.name}
-              required={f.required}
-              disabled={!this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked))}
-              help={f.help}
-              hideLabel={true}
-              value={this.props.entry.values ? this.props.entry.values[f.id] : undefined}
-              error={this.props.errors[f.id]}
-              options={f.options ? options : {}}
-              onChange={(value) => this.props.updateFormProp(`values.${f.id}`, value)}
-              onError={(errors) => {
-                const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
-                set(newErrors, `values.${f.id}`, errors)
-
-                this.props.setErrors(newErrors)
-              }}
-            />
-
-          fieldComponent.displayName = `EntryField<${f.name ? toKey(f.name) : f.id}>`
-
-          setTimeout(() => {
-            mount(fieldEl, fieldComponent, {}, {
-              [securitySelectors.STORE_NAME]: {
-                currentUser: this.props.currentUser,
-                impersonated: this.props.impersonated
-              },
-              [configSelectors.STORE_NAME]: this.props.config
-            }, true)
-          }, 0)
-        }
-      })
-    }
-  }
-
   generateTemplate() {
     let template = this.props.template
-    template = template.replace('%clacoform_entry_title%', '<span id="clacoform-entry-title"></span>')
+    template = template.replace('%clacoform_entry_title%', '<span class="clacoform-field" id="clacoform-field-title"></span>')
     this.props.fields.forEach(f => {
-      template = template.replace(`%field_${f.autoId}%`, `<span id="clacoform-field-${f.autoId}"></span>`)
+      template = template.replace(`%field_${f.autoId}%`, `<span class="clacoform-field" id="clacoform-field-${f.id}"></span>`)
     })
 
-    this.setState({template: template}, () => this.renderTemplateFields())
+    this.setState({template: template})
+  }
+
+  // for template
+  getFields() {
+    // generate field list for template
+    return [
+      // title field
+      {
+        id: 'title',
+        type: 'string',
+        label: trans('title'),
+        required: true,
+        hideLabel: true,
+        value: this.props.entry.title,
+        error: this.props.errors.title,
+        onChange: (value) => this.props.updateFormProp('title', value),
+        onError: (errors) => {
+          const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
+          set(newErrors, 'title', errors)
+
+          this.props.setErrors(newErrors)
+        }
+      }
+    ].concat(this.props.fields.map(field => {
+      // remap some options to make it work with forms
+      let options = field.options ? Object.assign({}, field.options) : {}
+
+      if (field.type === 'choice') {
+        const choices = options.choices ?
+          options.choices.reduce((acc, choice) => Object.assign(acc, {
+            [choice.value]: choice.value
+          }), {}) : {}
+
+        options = Object.assign({}, options, {choices: choices})
+      }
+
+      if (field.type === 'file') {
+        options.uploadUrl = ['apiv2_clacoformentry_file_upload', {clacoForm: this.props.clacoFormId}]
+      }
+
+      return {
+        id: field.id,
+        type: field.type,
+        label: field.name,
+        required: field.required,
+        disabled: !this.props.isManager && ((this.props.isNew && field.restrictions.locked && !field.restrictions.lockedEditionOnly) || (!this.props.isNew && field.restrictions.locked)),
+        help: field.help,
+        hideLabel: true,
+        value: this.props.entry.values ? this.props.entry.values[field.id] : undefined,
+        error: this.props.errors[field.id],
+        options: options,
+        onChange: (value) => this.props.updateFormProp(`values.${field.id}`, value),
+        onError: (errors) => {
+          const newErrors = this.props.errors ? cloneDeep(this.props.errors) : {}
+          set(newErrors, `values.${field.id}`, errors)
+
+          this.props.setErrors(newErrors)
+        }
+      }
+    }))
   }
 
   render() {
+    const fields = this.getFields()
+
     return (
       <Fragment>
         {this.props.entry && (this.props.useTemplate && this.props.template) &&
@@ -234,9 +202,28 @@ class EntryFormComponent extends Component {
               exact: true
             }}
           >
-            <HtmlText className="panel-body">
-              {this.state.template}
-            </HtmlText>
+            <div className="panel-body">
+              {parse(this.state.template, {
+                replace: (element) => {
+                  if (element.attribs && element.attribs.class === 'clacoform-field' && element.attribs.id) {
+                    // this is a field, replace it with a form input
+                    // get the field ID and retrieve it
+                    const id = element.attribs.id.replace('clacoform-field-', '')
+                    const field = fields.find(f => f.id === id)
+                    if (field) {
+                      return (
+                        <DataInput
+                          id={`field-${field.id}`}
+                          {...field}
+                        />
+                      )
+                    }
+                  }
+
+                  return element
+                }
+              })}
+            </div>
           </Form>
         }
 
@@ -257,6 +244,7 @@ class EntryFormComponent extends Component {
             }}
           />
         }
+
         {(this.props.canEdit || this.props.isManager || this.props.isKeywordsEnabled) &&
           <FormSections level={3}>
             {(this.props.canEdit || this.props.isManager) &&
