@@ -158,6 +158,7 @@ class PlatformDefaults implements ParameterProviderInterface
                 'show_locale' => false,
             ],
             'mailer' => [
+              'enabled' => true,
               'transport' => 'sendmail',
               'host' => null,
               'port' => null,

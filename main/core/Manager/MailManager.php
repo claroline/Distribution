@@ -78,24 +78,7 @@ class MailManager
     {
         $parameters = $this->serializer->serialize([Options::SERIALIZE_MINIMAL]);
 
-        $data = [
-          'transport' => $parameters['mailer']['transport'],
-          'host' => $parameters['mailer']['host'],
-          'username' => $parameters['mailer']['username'],
-          'password' => $parameters['mailer']['password'],
-          'auth_mode' => $parameters['mailer']['auth_mode'],
-          'encryption' => $parameters['mailer']['encryption'],
-          'port' => $parameters['mailer']['port'],
-          'api_key' => $parameters['mailer']['api_key'],
-        ];
-
-        if (is_array($this->mailer->test($data))) {
-            $test = 0 === count($this->mailer->test($data)) ? true : false;
-        } else {
-            $test = is_null($test);
-        }
-
-        return $test;
+        return $parameters['mailer']['enabled'];
     }
 
     /**
