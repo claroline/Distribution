@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: false
+
+    Claroline\CoreBundle\Listener\Workspace\EvaluationListener:
+        arguments:
+            - '@claroline.manager.workspace.evaluation'
+        tags:
+            - { name: kernel.event_listener, event: resource_evaluation, method: onResourceEvaluation }
