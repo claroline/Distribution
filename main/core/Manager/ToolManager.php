@@ -214,45 +214,6 @@ class ToolManager
     }
 
     /**
-     * Returns the sorted list of OrderedTools for a user.
-     *
-     * @param User $user
-     * @param int  $type
-     *
-     * @return OrderedTool[]
-     */
-    public function getDesktopToolsConfigurationArray(User $user, $type = 0)
-    {
-        $orderedToolList = [];
-        $desktopTools = $this->orderedToolRepo->findDisplayableDesktopOrderedToolsByUser(
-            $user,
-            $type
-        );
-
-        foreach ($desktopTools as $desktopTool) {
-            //this field isn't mapped
-            $desktopTool->getTool()->setVisible($desktopTool->isVisibleInDesktop());
-            $orderedToolList[$desktopTool->getOrder()] = $desktopTool->getTool();
-        }
-
-        $undisplayedTools = $this->toolRepo->findDesktopUndisplayedToolsByUser($user, $type);
-
-        foreach ($undisplayedTools as $tool) {
-            //this field isn't mapped
-            $tool->setVisible(false);
-        }
-
-        $this->addMissingDesktopTools(
-            $user,
-            $undisplayedTools,
-            count($desktopTools) + 1,
-            $type
-        );
-
-        return $this->utilities->arrayFill($orderedToolList, $undisplayedTools);
-    }
-
-    /**
      * Adds the tools missing in the database for a workspace.
      * Returns an array formatted like this:.
      *
@@ -586,13 +547,17 @@ class ToolManager
         );
     }
 
-    private function addMissingDesktopTools(
+    public function addMissingDesktopTools(
         User $user,
-        array $missingTools,
-        $startPosition,
+        $startPosition = 0,
         $type = 0
     ) {
+        $missingTools = $this->toolRepo->findDesktopUndisplayedToolsByUser($user, $type);
+
         foreach ($missingTools as $tool) {
+            //this field isn't mapped
+            $tool->setVisible(false);
+
             $wot = $this->orderedToolRepo->findOneBy(
                 ['user' => $user, 'tool' => $tool, 'type' => $type]
             );
