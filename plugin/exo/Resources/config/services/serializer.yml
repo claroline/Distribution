@@ -212,7 +212,6 @@ services:
          public: true
 
     UJM\ExoBundle\Serializer\Content\ContentSerializer:
-        tags: [claroline.serializer]
         arguments:
             - '@ujm_exo.serializer.resource_content'
 
@@ -227,7 +226,7 @@ services:
             - '@ujm_exo.serializer.answer'
 
     ujm_exo.serializer.paper:
-         alias: UJM\ExoBundle\Serializer\Content\ContentSerializer
+         alias: UJM\ExoBundle\Serializer\Attempt\PaperSerializer
          public: true
 
     UJM\ExoBundle\Serializer\Attempt\AnswerSerializer:
