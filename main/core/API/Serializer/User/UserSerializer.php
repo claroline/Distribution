@@ -482,7 +482,7 @@ class UserSerializer extends GenericSerializer
         }
 
         if (isset($data['mainOrganization'])) {
-            $organization = $this->om->getObject($data['mainOrganization'], Organization::class);
+            $organization = $this->om->getObject($data['mainOrganization'], Organization::class, ['code']);
             $user->addOrganization($organization);
             $user->setMainOrganization($organization);
         }
@@ -530,7 +530,7 @@ class UserSerializer extends GenericSerializer
         //it's useful if we want to create a user with a list of roles
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $group) {
-                $group = $this->om->getObject($group, Group::class);
+                $group = $this->om->getObject($group, Group::class, ['name']);
 
                 if ($group && $group->getId()) {
                     $user->addGroup($group);
