@@ -93,6 +93,15 @@ services:
         alias: Claroline\CoreBundle\API\Serializer\Workspace\PendingRegistrationSerializer
         public: true
 
+    Claroline\CoreBundle\API\Serializer\Workspace\EvaluationSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@claroline.serializer.user'
+
+    claroline.serializer.workspace.evaluation:
+        alias: Claroline\CoreBundle\API\Serializer\Workspace\EvaluationSerializer
+        public: true
+
     Claroline\CoreBundle\API\Serializer\Widget\WidgetSerializer:
         tags: [claroline.serializer]
 
