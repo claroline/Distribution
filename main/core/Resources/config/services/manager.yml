@@ -460,6 +460,14 @@ services:
         alias: Claroline\CoreBundle\Manager\Workspace\TransferManager
         public: true
 
+    Claroline\CoreBundle\Manager\Workspace\EvaluationManager:
+        arguments:
+          - '@claroline.persistence.object_manager'
+
+    claroline.manager.workspace.evaluation:
+        alias: Claroline\CoreBundle\Manager\Workspace\EvaluationManager
+        public: true
+
     Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer:
         arguments:
           - '@claroline.serializer.tool'
