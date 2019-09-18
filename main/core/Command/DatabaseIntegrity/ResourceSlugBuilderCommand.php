@@ -26,8 +26,8 @@ class ResourceSlugBuilderCommand extends ContainerAwareCommand
         $tableManager = $this->getContainer()->get('claroline.persistence.table_manager');
         $conn = $this->getContainer()->get('doctrine.dbal.default_connection');
 
-        $query = "
-            CREATE TABLE claro_resource_node_temp
+        $query = '
+            CREATE TABLE claro_resource_node_temp_'.uniqud()."
             AS (SELECT * FROM claro_resource_node WHERE slug LIKE '%?%')
         ";
         try {
