@@ -39,7 +39,8 @@ class ShareActionController extends Controller
         $shareManager = $this->getShareActionManager();
         $sharesCount = $shareManager->countShares(null, array('resource' => $resourceNode->getId()));
         $socialShare = new SocialShare();
-        $resourceUrl = $this->generateUrl('claro_resource_open_short', array('node' => $resourceNode->getId()), true);
+        $resourceUrl = $this->generateUrl('claro_index', [], true).
+            '#/desktop/workspaces/open/'.$resourceNode->getWorkspace()->getSlug().'/resources/'.$resourceNode->getSlug();
 
         return array(
             'resourceNode' => $resourceNode,
