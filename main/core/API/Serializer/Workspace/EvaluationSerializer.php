@@ -44,7 +44,7 @@ class EvaluationSerializer
             'required' => $evaluation->isRequired(),
             'user' => $this->userSerializer->serialize($evaluation->getUser()),
             'userName' => $evaluation->getUserName(),
-            'workspaceSlug' => $evaluation->getWorkspaceSlug(),
+            'workspaceCode' => $evaluation->getWorkspaceCode(),
         ];
     }
 }

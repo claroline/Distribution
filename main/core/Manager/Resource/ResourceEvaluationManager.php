@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Manager\Resource;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\AbstractEvaluation;
+use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Resource\ResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;

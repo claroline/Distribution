@@ -53,9 +53,9 @@ class Evaluation extends AbstractEvaluation
     protected $userName;
 
     /**
-     * @ORM\Column(name="workspace_slug")
+     * @ORM\Column(name="workspace_code")
      */
-    protected $workspaceSlug;
+    protected $workspaceCode;
 
     public function __construct()
     {
@@ -113,16 +113,16 @@ class Evaluation extends AbstractEvaluation
     /**
      * @return string
      */
-    public function getWorkspaceSlug()
+    public function getWorkspaceCode()
     {
-        return $this->workspaceSlug;
+        return $this->workspaceCode;
     }
 
     /**
-     * @param string $workspaceSlug
+     * @param string $workspaceCode
      */
-    public function setWorkspaceSlug($workspaceSlug)
+    public function setWorkspaceCode($workspaceCode)
     {
-        $this->workspaceSlug = $workspaceSlug;
+        $this->workspaceCode = $workspaceCode;
     }
 }

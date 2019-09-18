@@ -57,7 +57,7 @@ class EvaluationManager
         if ($withCreation && empty($evaluation)) {
             $evaluation = new Evaluation();
             $evaluation->setWorkspace($workspace);
-            $evaluation->setWorkspaceSlug($workspace->getSlug());
+            $evaluation->setWorkspaceCode($workspace->getCode());
             $evaluation->setUser($user);
             $evaluation->setUserName($user->getLastName().' '.$user->getFirstName());
             $evaluation->setDate(new \DateTime());

@@ -12,8 +12,8 @@
 namespace Claroline\CoreBundle\Listener\Log;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\AbstractEvaluation;
+use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Event\Log\LogAdminToolReadEvent;
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
