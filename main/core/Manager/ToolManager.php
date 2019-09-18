@@ -627,4 +627,33 @@ class ToolManager
         }
         $this->om->flush();
     }
+
+    public function cleanOldTools()
+    {
+        $tools = [
+           'formalibre_reservation_agenda',
+           'formalibre_presence_tool',
+           'my-learning-objectives',
+           'my_portfolios',
+           'message',
+           'formalibre_bulletin_tool',
+           'innova_video_recorder_tool',
+           'innova_audio_recorder_tool',
+           'formalibre_pia_tool',
+           'badges',
+           'my_badges',
+           'all_my_badges',
+       ];
+
+        foreach ($tools as $tool) {
+            $tool = $this->om->getRepository(Tool::class)->findOneByName($tool);
+
+            if ($tool) {
+                $this->log('Removing tool '.$tool->getName());
+                $this->om->remove($tool);
+            }
+        }
+
+        $this->om->flush();
+    }
 }
