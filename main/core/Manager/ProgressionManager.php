@@ -79,7 +79,7 @@ class ProgressionManager
         }
         // Get all resource nodes available for current user in the workspace
         $visibleNodes = $this->finder->get(ResourceNode::class)->find($filters);
-        $filters['parent'] = $workspaceRoot;
+        $filters['parent'] = $workspaceRoot->getUuid();
         // Get all root resource nodes available for current user in the workspace
         $rootNodes = $this->finder->get(ResourceNode::class)->find($filters, $sortBy);
         $visibleNodesArray = [];
