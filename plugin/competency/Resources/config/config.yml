@@ -5,9 +5,6 @@ plugin:
         - name: competencies
           class: graduation-cap
 
-        - name: learning-objectives
-          class: arrow-up
-
     resource_actions:
         - name: manage_competencies
           group: management
