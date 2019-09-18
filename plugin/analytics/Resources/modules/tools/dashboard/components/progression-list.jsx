@@ -2,6 +2,10 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {LinkButton} from '#/main/app/buttons/link/components/button'
+
+import {route as resourceRoute} from '#/main/core/resource/routing'
+
 import {ProgressionItem as ProgressionItemType} from '#/plugin/analytics/tools/dashboard/prop-types'
 
 const Row = props =>
@@ -19,15 +23,12 @@ const Row = props =>
     )}
 
     <div className={classes('progression-row-content', {'root-content': 0 === props.item.level})}>
-      {props.item.openingUrl ?
-        <a
-          href={props.item.openingUrl}
-          className="progression-opening-url"
-        >
-          {props.item.name}
-        </a> :
-        props.item.name
-      }
+      <LinkButton
+        className="progression-opening-url"
+        target={resourceRoute(props.item)}
+      >
+        {props.item.name}
+      </LinkButton>
     </div>
   </li>
 

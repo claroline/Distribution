@@ -136,8 +136,6 @@ class ProgressionManager
                 null;
             $item = $this->serializer->serialize($node, [Options::SERIALIZE_MINIMAL, Options::IS_RECURSIVE]);
             $item['level'] = $level;
-            $item['openingUrl'] = $this->router->generate('claro_index', [], UrlGeneratorInterface::ABSOLUTE_PATH).
-                '#/desktop/workspaces/open/'.$node->getWorkspace()->getSlug().'/resources/'.$node->getSlug();
             $item['validated'] = !is_null($evaluation) && 0 < $evaluation->getNbOpenings();
             $items[] = $item;
 

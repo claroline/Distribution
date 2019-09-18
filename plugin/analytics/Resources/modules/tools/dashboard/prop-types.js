@@ -5,8 +5,7 @@ const ProgressionItem = {
     id: T.string.isRequired,
     name: T.string.isRequired,
     level: T.number.isRequired,
-    validated: T.bool,
-    openingUrl: T.string
+    validated: T.bool
   }
 }
 
