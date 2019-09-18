@@ -2,8 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {url} from '#/main/app/api'
-
 import {ProgressionItem as ProgressionItemType} from '#/plugin/analytics/tools/dashboard/prop-types'
 
 const Row = props =>

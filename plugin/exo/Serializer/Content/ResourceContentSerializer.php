@@ -86,7 +86,7 @@ class ResourceContentSerializer
                 $serialized['url'] = $this->fileDir.DIRECTORY_SEPARATOR.$resource->getHashName();
             } else {
                 // return the url to access the resource
-                $serialized['url'] = $this->router->generate('claro_index') .
+                $serialized['url'] = $this->router->generate('claro_index').
                     '#/desktop/workspaces/open/'.$node->getWorkspace()->getSlug().'/resources/'.$node->getSlug();
             }
         }
