@@ -160,16 +160,17 @@ class PlatformDefaults implements ParameterProviderInterface
                 'show_terms_of_service' => false,
             ],
             'mailer' => [
-                'transport' => 'sendmail',
-                'host' => null,
-                'port' => null,
-                'encryption' => null,
-                'username' => null,
-                'password' => null,
-                'auth_mode' => null,
-                'api_key' => null,
-                'tag' => null,
-                'from' => null,
+              'enabled' => true,
+              'transport' => 'sendmail',
+              'host' => null,
+              'port' => null,
+              'encryption' => null,
+              'username' => null,
+              'password' => null,
+              'auth_mode' => null,
+              'api_key' => null,
+              'tag' => null,
+              'from' => null,
             ],
             'ssl' => [
                 'enabled' => false,
@@ -217,7 +218,7 @@ class PlatformDefaults implements ParameterProviderInterface
                 'show_progression' => true,
             ],
             'show_about_button' => true,
-            'notifications_refresh_delay' => 20000, // in ms
+            'notifications_refresh_delay' => 0, // in ms
             'is_cron_configured' => false,
             'javascripts' => [],
         ];
