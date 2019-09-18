@@ -23,7 +23,7 @@ const Row = props =>
     <div className={classes('progression-row-content', {'root-content': 0 === props.item.level})}>
       {props.item.openingUrl ?
         <a
-          href={url(props.item.openingUrl)}
+          href={props.item.openingUrl}
           className="progression-opening-url"
         >
           {props.item.name}

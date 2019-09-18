@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ProgressionManager
 {
@@ -27,21 +28,27 @@ class ProgressionManager
     /** @var ResourceEvaluationManager */
     private $resourceEvalManager;
 
+    /** @var UrlGeneratorInterface */
+    private $router;
+
     /** @var SerializerProvider */
     private $serializer;
 
     /**
      * @param FinderProvider            $finder
      * @param ResourceEvaluationManager $resourceEvalManager
+     * @param UrlGeneratorInterface     $router
      * @param SerializerProvider        $serializer
      */
     public function __construct(
         FinderProvider $finder,
         ResourceEvaluationManager $resourceEvalManager,
+        UrlGeneratorInterface $router,
         SerializerProvider $serializer
     ) {
         $this->finder = $finder;
         $this->resourceEvalManager = $resourceEvalManager;
+        $this->router = $router;
         $this->serializer = $serializer;
     }
 
@@ -129,7 +136,8 @@ class ProgressionManager
                 null;
             $item = $this->serializer->serialize($node, [Options::SERIALIZE_MINIMAL, Options::IS_RECURSIVE]);
             $item['level'] = $level;
-            $item['openingUrl'] = ['claro_resource_show_short', ['id' => $item['id']]];
+            $item['openingUrl'] = $this->router->generate('claro_index', [], UrlGeneratorInterface::ABSOLUTE_PATH).
+                '#/desktop/workspaces/open/'.$node->getWorkspace()->getSlug().'/resources/'.$node->getSlug();
             $item['validated'] = !is_null($evaluation) && 0 < $evaluation->getNbOpenings();
             $items[] = $item;
 
