@@ -23,7 +23,6 @@ class ResourceSlugBuilderCommand extends ContainerAwareCommand
         $consoleLogger = ConsoleLogger::get($output);
         $this->setLogger($consoleLogger);
 
-        $tableManager = $this->getContainer()->get('claroline.persistence.table_manager');
         $conn = $this->getContainer()->get('doctrine.dbal.default_connection');
 
         $query = '
