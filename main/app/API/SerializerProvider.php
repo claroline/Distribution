@@ -4,11 +4,7 @@ namespace Claroline\AppBundle\API;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.api.serializer")
- */
 class SerializerProvider
 {
     use LoggableTrait;
@@ -21,27 +17,16 @@ class SerializerProvider
     private $serializers = [];
     /** @var ObjectManager */
     private $om;
-    /** @var string */
-    private $rootDir;
-    /** @var string */
-    private $baseUri;
 
     /**
      * Injects Serializer service.
      *
-     * @DI\InjectParams({
-     *      "om"      = @DI\Inject("claroline.persistence.object_manager"),
-     *      "rootDir" = @DI\Inject("%kernel.root_dir%")
-     * })
-     *
      * @param ObjectManager $om
      * @param string        $rootDir
      */
-    public function setObjectManager(ObjectManager $om, $rootDir)
+    public function setObjectManager(ObjectManager $om)
     {
         $this->om = $om;
-        $this->rootDir = $rootDir.'/..';
-        $this->baseUri = 'https://github.com/claroline/Distribution/tree/master';
     }
 
     /**
