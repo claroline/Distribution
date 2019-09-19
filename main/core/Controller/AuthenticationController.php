@@ -23,6 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
@@ -118,47 +119,27 @@ class AuthenticationController
      *     options={"expose"=true}
      * )
      * @EXT\Method("POST")
-     * @EXT\Template("ClarolineCoreBundle:authentication:forgot_password.html.twig")
      */
-    public function sendEmailAction()
+    public function sendEmailAction(Request $request)
     {
-        $form = $this->formFactory->create(EmailType::class);
-        $form->handleRequest($this->request);
+        $data = json_decode($request->getContent(), true);
+        $user = $this->om->getRepository(User::class)->findOneByEmail($data['email']);
 
-        if ($form->isValid()) {
-            $data = $form->getData();
-            $user = $this->om->getRepository('ClarolineCoreBundle:User')->findOneByEmail($data['email']);
+        if ($user) {
+            $user->setHashTime(time());
+            $password = sha1(rand(1000, 10000).$user->getUsername().$user->getSalt());
+            $user->setResetPasswordHash($password);
+            $this->om->persist($user);
+            $this->om->flush();
 
-            if (!empty($user)) {
-                $user->setHashTime(time());
-                $password = sha1(rand(1000, 10000).$user->getUsername().$user->getSalt());
-                $user->setResetPasswordHash($password);
-                $this->om->persist($user);
-                $this->om->flush();
-
-                if ($this->mailManager->sendForgotPassword($user)) {
-                    return [
-                        'user' => $user,
-                        'form' => $form->createView(),
-                    ];
-                }
-
-                return [
-                    'error' => $this->translator->trans('mail_config_problem', [], 'platform'),
-                    'form' => $form->createView(),
-                ];
+            if ($this->mailManager->sendForgotPassword($user)) {
+                return new JsonResponse('password_send', 200);
             }
 
-            return [
-                'error' => $this->translator->trans('mail_not_exist', [], 'platform'),
-                'form' => $form->createView(),
-            ];
+            return new JsonResponse('mail_config_issue', 500);
         }
 
-        return [
-            'error' => $this->translator->trans('wrong_captcha', [], 'platform'),
-            'form' => $form->createView(),
-        ];
+        return new JsonResponse('wrong_email', 500);
     }
 
     /**
