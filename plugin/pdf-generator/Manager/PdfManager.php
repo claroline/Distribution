@@ -67,6 +67,8 @@ class PdfManager
         @mkdir($this->pdfDir);
         @mkdir($this->pdfDir.$ds.$subFolder);
 
+        $html = preg_replace("/<img[^>]+\>/i", '(image) ', $html);
+
         $this->snappy->generateFromHtml($html, $this->pdfDir.$ds.$path);
         $this->om->persist($pdf);
         $this->om->flush();
