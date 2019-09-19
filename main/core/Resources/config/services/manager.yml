@@ -68,8 +68,8 @@ services:
         public: true
 
     Claroline\CoreBundle\Manager\ToolManager:
+        public: true
         arguments:
-          - '@claroline.utilities.misc'
           - '@claroline.persistence.object_manager'
           - '@claroline.manager.role_manager'
           - '@claroline.manager.tool_mask_decoder_manager'
@@ -151,6 +151,7 @@ services:
         arguments:
           - '@claroline.api.finder'
           - '@claroline.manager.resource_evaluation_manager'
+          - '@router'
           - '@claroline.api.serializer'
 
     claroline.manager.progression_manager:

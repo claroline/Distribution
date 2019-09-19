@@ -8,12 +8,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Doctrine\ORM\QueryBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service()
- * @DI\Tag("claroline.validator")
- */
 class WorkspaceValidator implements ValidatorInterface
 {
     /** @var ObjectManager */
@@ -23,10 +18,6 @@ class WorkspaceValidator implements ValidatorInterface
 
     /**
      * WorkspaceValidator constructor.
-     *
-     * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
-     * })
      *
      * @param ObjectManager $om
      */
@@ -57,10 +48,13 @@ class WorkspaceValidator implements ValidatorInterface
     }
 
     /**
+     * Check if a workspace exists with the given data.
+     *
      * @param string      $propName
      * @param string      $propValue
      * @param string|null $workspaceId
-     *                                 Check if a workspace exists with the given data
+     *
+     * @return bool
      */
     private function exists($propName, $propValue, $workspaceId = null)
     {

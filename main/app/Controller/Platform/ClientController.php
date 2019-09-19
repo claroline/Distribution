@@ -63,20 +63,27 @@ class ClientController
         return [
             'meta' => [],
             'maintenance' => [
-                'enabled' => MaintenanceHandler::isMaintenanceEnabled(),
+                'enabled' => MaintenanceHandler::isMaintenanceEnabled() || $this->configHandler->getParameter('maintenance.enable'),
                 'message' => $this->configHandler->getParameter('maintenance.message'),
             ],
             'impersonated' => $this->isImpersonated(),
 
             'header' => [
-                'menus' => $this->configHandler->getParameter('header'),
+                'menus' => array_values($this->configHandler->getParameter('header')),
                 'display' => [
                     'name' => $this->configHandler->getParameter('name_active'),
                     'about' => $this->configHandler->getParameter('show_about_button'),
                     'help' => $this->configHandler->getParameter('show_help_button'),
                 ],
             ],
-            'footer' => $this->configHandler->getParameter('footer'),
+            'footer' => [
+                'content' => $this->configHandler->getParameter('footer.content'),
+                'display' => [
+                    'locale' => $this->configHandler->getParameter('footer.show_locale'),
+                    'help' => $this->configHandler->getParameter('footer.show_help'),
+                    'termsOfService' => $this->configHandler->getParameter('footer.show_terms_of_service'),
+                ],
+            ],
 
             'injectedJavascripts' => $this->injectJavascript(),
             'injectedStylesheets' => $this->injectStylesheet(),

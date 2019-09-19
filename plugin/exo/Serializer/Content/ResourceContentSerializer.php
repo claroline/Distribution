@@ -8,14 +8,10 @@ use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Serializer for resource content.
- *
- * @DI\Service("ujm_exo.serializer.resource_content")
- * @DI\Tag("claroline.serializer")
  */
 class ResourceContentSerializer
 {
@@ -43,13 +39,6 @@ class ResourceContentSerializer
 
     /**
      * ResourceContentSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "fileDir"         = @DI\Inject("%claroline.param.files_directory%"),
-     *     "router"          = @DI\Inject("router"),
-     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager")
-     * })
      *
      * @param ObjectManager   $om
      * @param string          $fileDir
@@ -97,10 +86,8 @@ class ResourceContentSerializer
                 $serialized['url'] = $this->fileDir.DIRECTORY_SEPARATOR.$resource->getHashName();
             } else {
                 // return the url to access the resource
-                $serialized['url'] = $this->router->generate(
-                    'claro_resource_open',
-                    ['resourceType' => $resourceType, 'node' => $node->getId()]
-                );
+                $serialized['url'] = $this->router->generate('claro_index').
+                    '#/desktop/workspaces/open/'.$node->getWorkspace()->getSlug().'/resources/'.$node->getSlug();
             }
         }
 

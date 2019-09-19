@@ -36,40 +36,42 @@
     .app-footer-brand {
         min-height: @footer-height;
         padding: 0 floor(@grid-gutter-width / 2);
+        margin-right: auto;
         display: flex;
         flex-direction: row;
         align-items: center;
-        flex: 1;
+        white-space: nowrap;
+        font-weight: bold;
 
         img {
             max-height: 18px;
             margin-right: 10px;
         }
 
-        a {
-            white-space: nowrap;
-            font-weight: bold;
+        span {
+            margin-right: 5px;
         }
 
         small {
-            margin-left: 5px;
+            font-weight: normal;
         }
     }
 
-    .app-current-locale {
-        margin-left: auto;
-        padding: @padding-base-vertical floor(@grid-gutter-width / 2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        .locale-icon {
+    .app-footer-btn {
+        .action-icon {
             margin: 0;
         }
 
         span {
             margin-left: @icon-text-spacer;
         }
+    }
+
+    .app-current-locale {
+        padding: @padding-base-vertical floor(@grid-gutter-width / 2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .app-footer-content {
