@@ -28,10 +28,13 @@ class Updater120503 extends Updater
     {
         $this->logger = $logger;
         $this->container = $container;
+        $this->conn = $container->get('doctrine.dbal.default_connection');
+        $this->om = $this->container->get('claroline.persistence.object_manager');
     }
 
     public function postUpdate()
     {
+        $this->removeTool('parameters');
         $this->removeOldTools();
         $this->updateNotificationsRefreshDelay();
     }
@@ -51,5 +54,22 @@ class Updater120503 extends Updater
         $configHandler->setParameter('notifications_refresh_delay', 0);
 
         $this->log('Notifications refresh delay updated.');
+    }
+
+    private function removeTool($toolName)
+    {
+        $this->log(sprintf('Removing `%s` tool...', $toolName));
+
+        $tool = $this->om->getRepository('ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $toolName]);
+        if (!empty($tool)) {
+            $this->om->remove($tool);
+            $this->om->flush();
+        }
+
+        $sql = "DELETE FROM claro_ordered_tool WHERE name = '${toolName}'";
+
+        $this->log($sql);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 }
