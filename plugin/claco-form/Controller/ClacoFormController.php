@@ -1078,6 +1078,11 @@ class ClacoFormController extends Controller
                     $value = '';
                 }
                 $name = 'field_'.$field->getId();
+
+                if (is_array($value)) {
+                    $value = implode(', ', $value);
+                }
+
                 $template = str_replace("%$name%", $value, $template);
             }
         }
