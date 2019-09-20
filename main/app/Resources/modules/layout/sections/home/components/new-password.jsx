@@ -4,9 +4,9 @@ import React from 'react'
 
 import {PageSimple} from '#/main/app/page/components/simple'
 
-import {ResetPasswordForm} from '#/main/app/security/password/containers/form'
+import {ResetPasswordForm} from '#/main/app/security/password/reset/containers/reset'
 
-const ResetPassword = () =>
+const NewPassword = () =>
   <PageSimple
     className="authentication-page reset-password"
   >
@@ -14,5 +14,5 @@ const ResetPassword = () =>
   </PageSimple>
 
 export {
-  ResetPassword
+  NewPassword
 }

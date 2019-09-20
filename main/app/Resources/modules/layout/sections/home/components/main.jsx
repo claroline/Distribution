@@ -6,7 +6,8 @@ import {Routes} from '#/main/app/router/components/routes'
 import {HomeContent} from '#/main/app/layout/sections/home/components/content'
 import {HomeMaintenance} from '#/main/app/layout/sections/home/components/maintenance'
 import {HomeLogin} from '#/main/app/layout/sections/home/components/login'
-import {ResetPassword} from '#/main/app/layout/sections/home/components/reset-password'
+import {SendPassword} from '#/main/app/layout/sections/home/components/send-password'
+import {NewPassword} from '#/main/app/layout/sections/home/components/new-password'
 import {HomeRegistration} from '#/main/app/layout/sections/home/components/registration'
 import {HomeExternalAccount} from '#/main/app/layout/sections/home/components/external-account'
 
@@ -28,7 +29,12 @@ const HomeMain = (props) =>
       }, {
         path: '/reset_password',
         disabled: false,
-        component: ResetPassword
+        component: SendPassword
+      },
+      {
+        path: '/newpassword/:hash',
+        disabled: false,
+        component: NewPassword
       }, {
         path: '/login',
         disabled: props.isAuthenticated,

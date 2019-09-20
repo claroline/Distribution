@@ -133,82 +133,46 @@ class AuthenticationController
             $this->om->flush();
 
             if ($this->mailManager->sendForgotPassword($user)) {
-                return new JsonResponse('password_send', 200);
+                return new JsonResponse($this->translator->trans('password_send'), 200);
             }
 
-            return new JsonResponse('mail_config_issue', 500);
+            return new JsonResponse($this->translator->trans('mail_config_issue'), 500);
         }
 
-        return new JsonResponse('wrong_email', 500);
+        return new JsonResponse($this->translator->trans('wrong_email'), 500);
     }
 
     /**
      * @EXT\Route(
-     *     "/newpassword/{hash}/",
-     *     name="claro_security_reset_password",
-     *     options={"expose"=true}
-     * )
-     *
-     * @EXT\Template("ClarolineCoreBundle:authentication:reset_password.html.twig")
-     */
-    public function resetPasswordAction($hash)
-    {
-        $user = $this->userManager->getByResetPasswordHash($hash);
-
-        if (empty($user)) {
-            return [
-                'error' => $this->translator->trans('url_invalid', [], 'platform'),
-            ];
-        }
-
-        $form = $this->formFactory->create(ResetPasswordType::class, $user);
-        $currentTime = time();
-
-        // the link is valid for 24h
-        if ($currentTime - (3600 * 24) < $user->getHashTime()) {
-            return [
-                'hash' => $hash,
-                'form' => $form->createView(),
-            ];
-        }
-
-        return ['error' => $this->translator->trans('link_outdated', [], 'platform')];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/validatepassword/{hash}",
+     *     "/validatepassword",
      *     name="claro_security_new_password",
      *     options={"expose"=true}
      * )
      * @EXT\Method("POST")
-     *
-     * @EXT\Template("ClarolineCoreBundle:authentication:reset_password.html.twig")
      */
-    public function newPasswordAction($hash)
+    public function newPasswordAction(Request $request)
     {
-        $user = $this->userManager->getByResetPasswordHash($hash);
-        $form = $this->formFactory->create(ResetPasswordType::class, $user);
-        $form->handleRequest($this->request);
+        $data = json_decode($request->getContent(), true);
+        $user = $this->userManager->getByResetPasswordHash($data['hash']);
 
-        if ($form->isValid()) {
-            $data = $form->getData();
-            $plainPassword = $data->getPlainPassword();
-            $user->setPlainPassword($plainPassword);
-            $this->userManager->activateUser($user);
-            $this->om->persist($user);
-            $this->om->flush();
-            $this->request->getSession()
-                ->getFlashBag()
-                ->add('warning', $this->translator->trans('password_ok', [], 'platform'));
-
-            return new RedirectResponse($this->router->generate('claro_security_login'));
+        if (!$user) {
+            return new JsonResponse($this->translator->trans('user_not_found'), 500);
         }
 
-        return [
-            'hash' => $hash,
-            'form' => $form->createView(),
-        ];
+        if (null === $data['password'] && '' === trim($data['password'])) {
+            return new JsonResponse($this->translator->trans('password_invalid'), 500);
+        }
+
+        if ($data['password'] !== $data['confirm']) {
+            return new JsonResponse($this->translator->trans('password_value_missmatch'), 500);
+        }
+
+        $user->setPlainPassword($data['password']);
+        $this->userManager->activateUser($user);
+        $this->om->persist($user);
+        $this->om->flush();
+
+        return new JsonResponse($this->translator->trans('password_changed'));
     }
 
     /**

@@ -3,11 +3,11 @@ import React, {Fragment} from 'react'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
-import {selectors} from '#/main/app/security/password/store/selectors'
+import {selectors} from '#/main/app/security/password/send/store/selectors'
 import {Button} from '#/main/app/action/components/button'
 import {PropTypes as T} from 'prop-types'
 
-const ResetPasswordForm = (props) => {
+const SendPasswordForm = (props) => {
   return (
     <Fragment>
       <FormData
@@ -43,11 +43,11 @@ const ResetPasswordForm = (props) => {
 
 
 
-ResetPasswordForm.propTypes = {
+SendPasswordForm.propTypes = {
   reset: T.func.isRequired,
   form: T.object
 }
 
 export {
-  ResetPasswordForm
+  SendPasswordForm
 }
