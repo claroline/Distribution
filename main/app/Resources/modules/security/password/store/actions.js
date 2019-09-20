@@ -14,13 +14,9 @@ actions.reset = (email) => ({
         email: email
       })
     },
-    success: (response, dispatch) => {
-      console.log(response)
-      alert('success')
+    success: () => {
     },
-    error: (error) => {
-      console.log(error)
-      alert('error')
+    error: () => {
     }
   }
 })
