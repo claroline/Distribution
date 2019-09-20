@@ -33,7 +33,9 @@ const SendPasswordForm = (props) => {
           className="btn btn-block btn-emphasis"
           type={CALLBACK_BUTTON}
           label={trans('send_password')}
-          callback={() => props.reset(props.form.data.email)}
+          callback={() => props.reset(props.form.data.email, () => {
+            props.history.push('/')
+          })}
           primary={true}
         />
       </FormData>
@@ -45,7 +47,8 @@ const SendPasswordForm = (props) => {
 
 SendPasswordForm.propTypes = {
   reset: T.func.isRequired,
-  form: T.object
+  form: T.object,
+  history: T.object
 }
 
 export {

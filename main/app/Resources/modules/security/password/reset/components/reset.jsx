@@ -43,6 +43,8 @@ const ResetPasswordForm = (props) => {
           label={trans('reset_password')}
           callback={() => props.reset({
             password: props.form.data.password, confirm: props.form.data.confirm, hash: props.match.params.hash
+          }, () => {
+            props.history.push('/login')
           })}
           primary={true}
         />
@@ -56,6 +58,7 @@ const ResetPasswordForm = (props) => {
 ResetPasswordForm.propTypes = {
   reset: T.func.isRequired,
   form: T.object,
+  history: T.object,
   match: T.object
 }
 

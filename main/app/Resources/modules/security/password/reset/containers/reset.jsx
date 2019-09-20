@@ -12,8 +12,8 @@ const ResetPasswordForm = withRouter(withReducer(selectors.FORM_NAME, reducer)(
       form: formSelectors.form(state, selectors.FORM_NAME)
     }),
     (dispatch) => ({
-      reset(email) {
-        dispatch(actions.reset(email))
+      reset(email, callback) {
+        dispatch(actions.reset(email, callback))
       }
     })
   )(ResetPasswordFormComponent)

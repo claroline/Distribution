@@ -91,29 +91,6 @@ class AuthenticationController
 
     /**
      * @EXT\Route(
-     *     "/reset",
-     *     name="claro_security_forgot_password",
-     *     options={"expose"=true}
-     * )
-     * @EXT\Template("ClarolineCoreBundle:authentication:forgot_password.html.twig")
-     */
-    public function forgotPasswordAction()
-    {
-        if ($this->mailManager->isMailerAvailable()) {
-            $form = $this->formFactory->create(EmailType::class);
-
-            return ['form' => $form->createView()];
-        }
-
-        return [
-            'error' => $this->translator->trans('mail_not_available', [], 'platform')
-                .' '
-                .$this->translator->trans('mail_config_problem', [], 'platform'),
-        ];
-    }
-
-    /**
-     * @EXT\Route(
      *     "/sendmail",
      *     name="claro_security_send_token",
      *     options={"expose"=true}
@@ -133,13 +110,17 @@ class AuthenticationController
             $this->om->flush();
 
             if ($this->mailManager->sendForgotPassword($user)) {
-                return new JsonResponse($this->translator->trans('password_send'), 200);
+                return new JsonResponse($this->translator->trans('password_reset_send', [], 'platform'), 200);
             }
 
-            return new JsonResponse($this->translator->trans('mail_config_issue'), 500);
+            return new JsonResponse($this->translator->trans('mail_config_issue', [], 'platform'), 500);
         }
 
-        return new JsonResponse($this->translator->trans('wrong_email'), 500);
+        $error = [
+          'error' => ['email' => $this->translator->trans('email_not_exist', [], 'platform')],
+        ];
+
+        return new JsonResponse($error, 500);
     }
 
     /**
@@ -156,15 +137,23 @@ class AuthenticationController
         $user = $this->userManager->getByResetPasswordHash($data['hash']);
 
         if (!$user) {
-            return new JsonResponse($this->translator->trans('user_not_found'), 500);
+            return new JsonResponse($this->translator->trans('hash_invalid', [], 'platform'), 500);
         }
 
         if (null === $data['password'] && '' === trim($data['password'])) {
-            return new JsonResponse($this->translator->trans('password_invalid'), 500);
+            $error = [
+              'error' => ['password' => $this->translator->trans('password_invalid', [], 'platform')],
+            ];
+
+            return new JsonResponse($error, 500);
         }
 
         if ($data['password'] !== $data['confirm']) {
-            return new JsonResponse($this->translator->trans('password_value_missmatch'), 500);
+            $error = [
+              'error' => ['password' => $this->translator->trans('password_value_missmatch', [], 'platform')],
+            ];
+
+            return new JsonResponse($error, 500);
         }
 
         $user->setPlainPassword($data['password']);
@@ -172,7 +161,7 @@ class AuthenticationController
         $this->om->persist($user);
         $this->om->flush();
 
-        return new JsonResponse($this->translator->trans('password_changed'));
+        return new JsonResponse($this->translator->trans('password_changed', [], 'platform'));
     }
 
     /**
