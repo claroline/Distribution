@@ -8,6 +8,7 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ToolPage} from '#/main/core/tool/containers/page'
 
+import {route} from '#/main/core/workspace/routing'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {selectors} from '#/main/core/tools/community/parameters/store'
 
@@ -32,7 +33,6 @@ const ParametersTab = props => {
         name={selectors.FORM_NAME}
         buttons={true}
         target={['apiv2_workspace_update', {id: props.workspace.id}]}
-        // TODO: Fix Cancel button. It empties the form store if no change has been saved.
         cancel={{
           type: LINK_BUTTON,
           target: props.path,
@@ -48,7 +48,7 @@ const ParametersTab = props => {
                 name: 'registration.url',
                 type: 'url',
                 label: trans('registration_url'),
-                calculated: () => url(['claro_workspace_subscription_url_generate', {slug: props.workspace.meta.slug}, true]),
+                calculated: () => `${url(['claro_index', {}, true])}#${route(props.workspace)}`,
                 required: true,
                 disabled: true
               }, {
