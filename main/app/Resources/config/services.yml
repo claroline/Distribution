@@ -54,7 +54,7 @@ services:
             - '@claroline.api.serializer'
             - '@claroline.api.schema'
             - '%claroline.param.import_log_dir%'
-            - 'translator'
+            - '@translator'
 
     claroline.api.transfer:
         alias: Claroline\AppBundle\API\TransferProvider
