@@ -25,7 +25,7 @@ class SchemaProvider
     /**
      * @param string $rootDir
      */
-    public function setRootDir($rootDir)
+    public function __construct($rootDir)
     {
         $this->rootDir = $rootDir.'/..';
         $this->baseUri = 'https://github.com/claroline/Distribution/tree/master';

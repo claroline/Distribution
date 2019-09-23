@@ -28,7 +28,7 @@ class SerializerProvider
      * @param ObjectManager $om
      * @param string        $rootDir
      */
-    public function setObjectManager(ObjectManager $om, $rootDir)
+    public function __construct(ObjectManager $om, $rootDir)
     {
         $this->om = $om;
         $this->rootDir = $rootDir.'/..';

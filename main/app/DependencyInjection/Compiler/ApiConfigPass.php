@@ -26,10 +26,10 @@ class ApiConfigPass implements CompilerPassInterface
     {
         $this->register($container, FinderProvider::class, 'claroline.finder');
         $this->register($container, SerializerProvider::class, 'claroline.serializer');
+        $this->register($container, SchemaProvider::class, 'claroline.serializer');
         $this->register($container, ValidatorProvider::class, 'claroline.validator');
         $this->register($container, TransferProvider::class, 'claroline.transfer.adapter');
         $this->register($container, TransferProvider::class, 'claroline.transfer.action');
-        $this->register($container, SchemaProvider::class, 'claroline.serializer');
     }
 
     private function register(ContainerBuilder $container, $provider, $registerTag)
