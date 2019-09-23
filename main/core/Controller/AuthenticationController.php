@@ -110,14 +110,14 @@ class AuthenticationController
             $this->om->flush();
 
             if ($this->mailManager->sendForgotPassword($user)) {
-                return new JsonResponse($this->translator->trans('password_reset_send', [], 'platform'), 200);
+                return new JsonResponse('password_reset_send', 200);
             }
 
-            return new JsonResponse($this->translator->trans('mail_config_issue', [], 'platform'), 500);
+            return new JsonResponse('mail_config_issue', 500);
         }
 
         $error = [
-          'error' => ['email' => $this->translator->trans('email_not_exist', [], 'platform')],
+          'error' => ['email' => 'email_not_exist'],
         ];
 
         return new JsonResponse($error, 500);
@@ -137,23 +137,23 @@ class AuthenticationController
         $user = $this->userManager->getByResetPasswordHash($data['hash']);
 
         if (!$user) {
-            return new JsonResponse($this->translator->trans('hash_invalid', [], 'platform'), 500);
+            return new JsonResponse('hash_invalid', 500);
         }
 
         if (null === $data['password'] && '' === trim($data['password'])) {
             $error = [
-              'error' => ['password' => $this->translator->trans('password_invalid', [], 'platform')],
+              'error' => ['password' => 'password_invalid'],
             ];
 
-            return new JsonResponse($error, 500);
+            return new JsonResponse($error, 400);
         }
 
         if ($data['password'] !== $data['confirm']) {
             $error = [
-              'error' => ['password' => $this->translator->trans('password_value_missmatch', [], 'platform')],
+              'error' => ['password' => 'password_value_missmatch'],
             ];
 
-            return new JsonResponse($error, 500);
+            return new JsonResponse($error, 400);
         }
 
         $user->setPlainPassword($data['password']);
@@ -161,7 +161,7 @@ class AuthenticationController
         $this->om->persist($user);
         $this->om->flush();
 
-        return new JsonResponse($this->translator->trans('password_changed', [], 'platform'));
+        return new JsonResponse(null, 201);
     }
 
     /**

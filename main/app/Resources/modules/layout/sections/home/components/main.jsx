@@ -28,12 +28,10 @@ const HomeMain = (props) =>
         component: HomeMaintenance
       }, {
         path: '/reset_password',
-        disabled: false,
         component: SendPassword
       },
       {
         path: '/newpassword/:hash',
-        disabled: false,
         component: NewPassword
       }, {
         path: '/login',

@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 
 import {FormData} from '#/main/app/content/form/containers/data'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
@@ -9,37 +9,38 @@ import {PropTypes as T} from 'prop-types'
 
 const SendPasswordForm = (props) => {
   return (
-    <Fragment>
-      <FormData
-        name={selectors.FORM_NAME}
-        sections={[
-          {
-            title: trans('general'),
-            primary: true,
-            fields: [
-              {
-                name: 'email',
-                label: trans('email'),
-                placeholder: trans('email'),
-                hideLabel: true,
-                type: 'email',
-                required: true
-              }
-            ]
-          }
-        ]}
-      >
-        <Button
-          className="btn btn-block btn-emphasis"
-          type={CALLBACK_BUTTON}
-          label={trans('send_password')}
-          callback={() => props.reset(props.form.data.email, () => {
-            props.history.push('/')
-          })}
-          primary={true}
-        />
-      </FormData>
-    </Fragment>
+    <div className="login-container">
+      <div className="authentication-column account-authentication-column">
+        <FormData
+          name={selectors.FORM_NAME}
+          sections={[
+            {
+              title: trans('general'),
+              primary: true,
+              fields: [
+                {
+                  name: 'email',
+                  label: trans('email'),
+                  placeholder: trans('email'),
+                  type: 'email',
+                  required: true
+                }
+              ]
+            }
+          ]}
+        >
+          <Button
+            className="btn btn-block btn-emphasis"
+            type={CALLBACK_BUTTON}
+            label={trans('send_password')}
+            callback={() => props.reset(props.form.data.email, () => {
+              props.history.push('/')
+            })}
+            primary={true}
+          />
+        </FormData>
+      </div>
+    </div>
   )
 }
 

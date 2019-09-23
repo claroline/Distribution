@@ -3,6 +3,7 @@ import {actions as formActions} from '#/main/app/content/form/store'
 import {selectors} from '#/main/app/security/password/reset/store/selectors'
 import {actions as alertActions} from '#/main/app/overlays/alert/store'
 import {constants as alertConstants} from '#/main/app/overlays/alert/constants'
+import {trans} from '#/main/app/intl/translation'
 
 // action creators
 export const actions = {}
@@ -23,17 +24,17 @@ actions.reset = (data, callback = () => {}) => ({
         // status
         alertConstants.ALERT_STATUS_SUCCESS,
         // action
-        alertActions.ALERT_ADD,
+        alertActions.ACTION_SEND,
         // title
         null,
         // message
-        response
-      )),
+        trans('password_changed')
+      ))
       callback()
     },
     error: (response, status, dispatch) => {
       if (response.error) {
-        dispatch(formActions.setErrors(selectors.FORM_NAME, response.error))
+        dispatch(formActions.setErrors(selectors.FORM_NAME, trans(response.error)))
       } else {
         dispatch(alertActions.addAlert(
           // id
@@ -41,11 +42,11 @@ actions.reset = (data, callback = () => {}) => ({
           // status
           alertConstants.ALERT_STATUS_ERROR,
           // action
-          alertActions.ALERT_ADD,
+          alertActions.ACTION_SEND,
           // title
           null,
           // message
-          response
+          trans(response)
         ))
       }
     }

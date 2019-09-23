@@ -8,7 +8,7 @@ import {SendPasswordForm} from '#/main/app/security/password/send/containers/sen
 
 const SendPassword = () =>
   <PageSimple
-    className="authentication-page reset-password"
+    className="page authentication-page login-page main"
   >
     <SendPasswordForm/>
   </PageSimple>

@@ -3,6 +3,8 @@ import {actions as formActions} from '#/main/app/content/form/store'
 import {selectors} from '#/main/app/security/password/send/store/selectors'
 import {actions as alertActions} from '#/main/app/overlays/alert/store'
 import {constants as alertConstants} from '#/main/app/overlays/alert/constants'
+import {trans} from '#/main/app/intl/translation'
+
 // action creators
 export const actions = {}
 /**
@@ -28,13 +30,13 @@ actions.reset = (email, callback = () => {}) => ({
         // title
         null,
         // message
-        response
-      )),
+        trans(response)
+      ))
       callback()
     },
     error: (response, status, dispatch) => {
       if (response.error) {
-        dispatch(formActions.setErrors(selectors.FORM_NAME, response.error))
+        dispatch(formActions.setErrors(selectors.FORM_NAME, trans(response.error)))
       } else {
         dispatch(alertActions.addAlert(
           // id
@@ -46,7 +48,7 @@ actions.reset = (email, callback = () => {}) => ({
           // title
           null,
           // message
-          response
+          trans(response)
         ))
       }
     }
