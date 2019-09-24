@@ -124,7 +124,7 @@ class LessonListener
     }
 
     /**
-     * @DI\Observe("copy_icap_lesson")
+     * @DI\Observe("resource.icap_lesson.copy")
      *
      * @param CopyResourceEvent $event
      */
