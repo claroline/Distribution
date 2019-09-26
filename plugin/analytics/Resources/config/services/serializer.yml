@@ -6,7 +6,4 @@ services:
 
     Claroline\AnalyticsBundle\Serializer\Widget\Type\ProgressionWidgetSerializer:
         tags: [claroline.serializer]
-
-    claroline.serializer.widget_progression:
-        alias: Claroline\AnalyticsBundle\Serializer\Widget\Type\ProgressionWidgetSerializer
-        public: true
+        public: false

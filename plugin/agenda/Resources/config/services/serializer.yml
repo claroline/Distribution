@@ -6,13 +6,10 @@ services:
 
     Claroline\AgendaBundle\Serializer\EventSerializer:
         tags: [claroline.serializer]
+        public: false
         arguments:
             - '@security.authorization_checker'
             - '@claroline.persistence.object_manager'
             - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
             - '@Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
-
-    claroline.serializer.event:
-         alias: Claroline\AgendaBundle\Serializer\EventSerializer
-         public: true

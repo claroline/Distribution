@@ -6,6 +6,7 @@ services:
 
     Claroline\AnnouncementBundle\Serializer\AnnouncementSerializer:
         tags: [claroline.serializer]
+        public: false
         arguments:
             - '@security.token_storage'
             - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
@@ -15,15 +16,8 @@ services:
             - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
             - '@claroline.utilities.file'
 
-    claroline.serializer.announcement:
-         alias: Claroline\AnnouncementBundle\Serializer\AnnouncementSerializer
-         public: true
-
     Claroline\AnnouncementBundle\Serializer\AnnouncementAggregateSerializer:
         tags: [claroline.serializer]
+        public: false
         arguments:
-            - '@claroline.serializer.announcement'
-
-    claroline.serializer.announcement_aggregate:
-         alias: Claroline\AnnouncementBundle\Serializer\AnnouncementAggregateSerializer
-         public: true
+            - '@Claroline\AnnouncementBundle\Serializer\AnnouncementSerializer'
