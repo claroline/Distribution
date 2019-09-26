@@ -68,7 +68,7 @@ services:
             - '@claroline.serializer.dropzone.correction'
             - '@claroline.serializer.dropzone.document'
             - '@claroline.serializer.dropzone.drop.comment'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@claroline.persistence.object_manager'
 
     Claroline\DropZoneBundle\Serializer\DropCommentSerializer:
@@ -86,8 +86,8 @@ services:
         arguments:
             - '@claroline.serializer.dropzone.tool.document'
             - '@claroline.serializer.dropzone.revision'
-            - '@claroline.serializer.resource_node'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@security.token_storage'
             - '@claroline.persistence.object_manager'
 
@@ -108,7 +108,7 @@ services:
         tags: [claroline.serializer]
         arguments:
             - '@claroline.serializer.dropzone.grade'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@claroline.persistence.object_manager'
 
     claroline.serializer.dropzone.correction:

@@ -43,7 +43,7 @@ class ProfileController extends AbstractApiController
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "crud"       = @DI\Inject("claroline.api.crud"),
-     *     "serializer" = @DI\Inject("claroline.serializer.profile")
+     *     "serializer" = @DI\Inject("Claroline\CoreBundle\API\Serializer\User\ProfileSerializer")
      * })
      *
      * @param ObjectManager     $om

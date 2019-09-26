@@ -16,7 +16,7 @@ services:
          arguments:
             - '@claroline.persistence.object_manager'
             - '@claroline.serializer.wiki.section.contribution'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
     claroline.serializer.wiki.section:
          alias: Icap\WikiBundle\Serializer\SectionSerializer
@@ -26,7 +26,7 @@ services:
          tags: [claroline.serializer]
          arguments:
             - '@claroline.persistence.object_manager'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
     claroline.serializer.wiki.section.contribution:
          alias: Icap\WikiBundle\Serializer\ContributionSerializer

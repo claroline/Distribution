@@ -33,7 +33,7 @@ class ParametersController
      * @DI\InjectParams({
      *     "ch"               = @DI\Inject("claroline.config.platform_config_handler"),
      *     "analyticsManager" = @DI\Inject("claroline.manager.analytics_manager"),
-     *     "serializer"       = @DI\Inject("claroline.serializer.parameters")
+     *     "serializer"       = @DI\Inject("Claroline\CoreBundle\API\Serializer\ParametersSerializer")
      * })
      *
      * @param PlatformConfigurationHandler $ch

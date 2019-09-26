@@ -60,7 +60,7 @@ class HomeController extends AbstractApiController
      *     "finder"        = @DI\Inject("claroline.api.finder"),
      *     "lockManager"   = @DI\Inject("claroline.manager.lock_manager"),
      *     "crud"          = @DI\Inject("claroline.api.crud"),
-     *     "serializer"    = @DI\Inject("claroline.serializer.home_tab")
+     *     "serializer"    = @DI\Inject("Claroline\CoreBundle\API\Serializer\Widget\HomeTabSerializer")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization

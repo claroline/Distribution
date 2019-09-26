@@ -31,7 +31,7 @@ class SwaggerController
      *     "routerFinder"   = @DI\Inject("claroline.api.routing.finder"),
      *     "documentator"   = @DI\Inject("claroline.api.routing.documentator"),
      *     "schemaProvider" = @DI\Inject("claroline.api.schema"),
-     *     "configuration"  = @DI\Inject("claroline.serializer.platform_client"),
+     *     "configuration"  = @DI\Inject("Claroline\CoreBundle\API\Serializer\Platform\ClientSerializer"),
      *      "rootDir" = @DI\Inject("%kernel.root_dir%")
      * })
      */

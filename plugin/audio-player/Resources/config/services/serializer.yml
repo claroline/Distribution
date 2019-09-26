@@ -18,7 +18,7 @@ services:
         arguments:
             - '@claroline.persistence.object_manager'
             - '@claroline.serializer.audio.resource_section'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
     claroline.serializer.audio.resource_section_comment:
          alias: Claroline\AudioPlayerBundle\Serializer\Resource\SectionCommentSerializer

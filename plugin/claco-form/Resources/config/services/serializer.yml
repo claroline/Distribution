@@ -17,7 +17,7 @@ services:
         tags: [claroline.serializer]
         arguments:
             - '@claroline.serializer.clacoform.field'
-            - '@claroline.serializer.field_facet_value'
+            - '@Claroline\CoreBundle\API\Serializer\Facet\FieldFacetValueSerializer'
 
     claroline.serializer.clacoform.field_value:
          alias: Claroline\ClacoFormBundle\Serializer\FieldValueSerializer
@@ -26,8 +26,8 @@ services:
     Claroline\ClacoFormBundle\Serializer\FieldSerializer:
         tags: [claroline.serializer]
         arguments:
-            - '@claroline.serializer.field_facet'
-            - '@claroline.serializer.field_facet_choice'
+            - '@Claroline\CoreBundle\API\Serializer\Facet\FieldFacetSerializer'
+            - '@Claroline\CoreBundle\API\Serializer\Facet\FieldFacetChoiceSerializer'
             - '@claroline.manager.facet_manager'
             - '@claroline.persistence.object_manager'
 
@@ -60,7 +60,7 @@ services:
             - '@claroline.serializer.clacoform.comment'
             - '@claroline.serializer.clacoform.field_value'
             - '@claroline.serializer.clacoform.keyword'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@claroline.persistence.object_manager'
 
     claroline.serializer.clacoform.entry:
@@ -70,7 +70,7 @@ services:
     Claroline\ClacoFormBundle\Serializer\CommentSerializer:
         tags: [claroline.serializer]
         arguments:
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
     claroline.serializer.clacoform.comment:
          alias: Claroline\ClacoFormBundle\Serializer\CommentSerializer
@@ -92,7 +92,7 @@ services:
         tags: [claroline.serializer]
         arguments:
             - '@claroline.serializer.clacoform.field_choice_category'
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@claroline.persistence.object_manager'
 
     claroline.serializer.clacoform.category:
