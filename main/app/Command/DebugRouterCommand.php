@@ -37,7 +37,7 @@ class DebugRouterCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $class = $input->getArgument('class');
-        $describeCollection = $this->getContainer()->get('claroline.api.routing.finder')->find($class);
+        $describeCollection = $this->getContainer()->get('Claroline\AppBundle\Routing\Finder')->find($class);
         $io = new SymfonyStyle($input, $output);
         $helper = new DescriptorHelper();
         $helper->describe($io, $describeCollection, []);
