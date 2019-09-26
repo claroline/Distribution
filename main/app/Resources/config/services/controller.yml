@@ -26,3 +26,6 @@ services:
                 arguments:
                   - '@claroline.api.routing.documentator'
               - method: mergeOptions
+              - method: setContainer
+                arguments:
+                  - '@service_container'
