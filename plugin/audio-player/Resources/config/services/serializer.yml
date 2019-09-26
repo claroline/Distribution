@@ -6,13 +6,11 @@ services:
 
     Claroline\AudioPlayerBundle\Serializer\Resource\SectionSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@claroline.persistence.object_manager'
 
     Claroline\AudioPlayerBundle\Serializer\Resource\SectionCommentSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@claroline.persistence.object_manager'
             - '@Claroline\AudioPlayerBundle\Serializer\Resource\SectionSerializer'
@@ -20,8 +18,6 @@ services:
 
     Claroline\AudioPlayerBundle\Serializer\Resource\AudioParamsSerializer:
         tags: [claroline.serializer]
-        public: false
 
     Claroline\AudioPlayerBundle\Serializer\Quiz\WaveformQuestionSerializer:
         tags: [claroline.serializer]
-        public: false

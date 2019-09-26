@@ -6,4 +6,3 @@ services:
 
     Claroline\AnalyticsBundle\Serializer\Widget\Type\ProgressionWidgetSerializer:
         tags: [claroline.serializer]
-        public: false

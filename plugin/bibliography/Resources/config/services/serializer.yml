@@ -6,8 +6,6 @@ services:
 
     Icap\BibliographyBundle\Serializer\BookReferenceConfigurationSerializer:
         tags: [claroline.serializer]
-        public: false
-        
+
     Icap\BibliographyBundle\Serializer\BookReferenceSerializer:
         tags: [claroline.serializer]
-        public: false

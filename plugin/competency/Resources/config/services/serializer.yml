@@ -6,17 +6,14 @@ services:
 
     HeVinci\CompetencyBundle\Serializer\ScaleSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@claroline.persistence.object_manager'
 
     HeVinci\CompetencyBundle\Serializer\LevelSerializer:
         tags: [claroline.serializer]
-        public: false
 
     HeVinci\CompetencyBundle\Serializer\CompetencySerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@claroline.persistence.object_manager'
             - '@HeVinci\CompetencyBundle\Serializer\CompetencyAbilitySerializer'
@@ -24,7 +21,6 @@ services:
 
     HeVinci\CompetencyBundle\Serializer\CompetencyAbilitySerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@claroline.persistence.object_manager'
             - '@HeVinci\CompetencyBundle\Serializer\AbilitySerializer'
@@ -32,4 +28,3 @@ services:
 
     HeVinci\CompetencyBundle\Serializer\AbilitySerializer:
         tags: [claroline.serializer]
-        public: false

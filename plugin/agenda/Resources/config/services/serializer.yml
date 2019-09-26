@@ -6,7 +6,6 @@ services:
 
     Claroline\AgendaBundle\Serializer\EventSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@security.authorization_checker'
             - '@claroline.persistence.object_manager'

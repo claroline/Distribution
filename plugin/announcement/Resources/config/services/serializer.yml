@@ -6,7 +6,6 @@ services:
 
     Claroline\AnnouncementBundle\Serializer\AnnouncementSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@security.token_storage'
             - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
@@ -18,6 +17,5 @@ services:
 
     Claroline\AnnouncementBundle\Serializer\AnnouncementAggregateSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@Claroline\AnnouncementBundle\Serializer\AnnouncementSerializer'

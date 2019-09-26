@@ -6,7 +6,6 @@ services:
 
     Icap\BlogBundle\Serializer\PostSerializer:
         tags: [claroline.serializer]
-        public: true
         arguments:
             - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@Icap\BlogBundle\Serializer\CommentSerializer'
@@ -23,12 +22,10 @@ services:
 
     Icap\BlogBundle\Serializer\BlogSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@Icap\BlogBundle\Serializer\BlogOptionsSerializer'
 
     Icap\BlogBundle\Serializer\BlogOptionsSerializer:
         tags: [claroline.serializer]
-        public: false
         arguments:
             - '@icap_blog.manager.blog'
