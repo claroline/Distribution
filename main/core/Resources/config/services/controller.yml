@@ -56,8 +56,8 @@ services:
 
     Claroline\CoreBundle\Controller\APINew\Resource\ResourceNodeController:
         arguments:
-          - '@claroline.manager.resource_manager'
           - '@claroline.manager.resource_action'
+          - '@claroline.manager.resource_manager'
           - '@claroline.manager.rights_manager'
 
     Claroline\CoreBundle\Controller\APINew\Template\TemplateController:
@@ -120,15 +120,15 @@ services:
           - '@security.token_storage'
           - '@security.authorization_checker'
           - '@claroline.manager.resource_manager'
+          - '@translator'
           - '@claroline.manager.role_manager'
           - '@claroline.manager.tool_manager'
-          - '@translator'
           - '@claroline.manager.workspace_manager'
           - '@claroline.security.utilities'
           - '@claroline.utilities.file'
           - '@claroline.manager.workspace.transfer'
-          - '%claroline.param.workspace_log_dir%'
           - '@claroline.manager.temp_file'
+          - '%claroline.param.workspace_log_dir%'
 
     Claroline\CoreBundle\Controller\APINew\ConnectionMessageController:
         arguments:
