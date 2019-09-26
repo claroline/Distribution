@@ -115,7 +115,7 @@ services:
           - '@claroline.manager.workspace_manager'
           - '@claroline.manager.workspace_user_queue_manager'
 
-    Claroline\CoreBundle\Controller\APINew\Workspace\RegistrationController:
+    Claroline\CoreBundle\Controller\APINew\Workspace\WorkspaceController:
         arguments:
           - '@security.token_storage'
           - '@security.authorization_checker'
@@ -150,13 +150,13 @@ services:
         arguments:
           - '%claroline.param.log_dir%'
 
-    Claroline\CoreBundle\Controller\APINew\DataSourceController:
+    Claroline\CoreBundle\Controller\APINew\ObjectLockController:
         arguments:
           - '@claroline.persistence.object_manager'
           - '@claroline.api.serializer'
           - '@claroline.manager.lock_manager'
 
-    Claroline\CoreBundle\Controller\APINew\DataSourceController:
+    Claroline\CoreBundle\Controller\APINew\ParametersController:
         arguments:
           - '@claroline.config.platform_config_handler'
           - '@claroline.manager.analytics_manager'
