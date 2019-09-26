@@ -9,14 +9,12 @@ use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Icap\LessonBundle\Entity\Chapter;
 use Icap\LessonBundle\Entity\Lesson;
 use Icap\LessonBundle\Manager\ChapterManager;
 use Icap\LessonBundle\Repository\ChapterRepository;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 class LessonListener
 {
@@ -83,27 +81,6 @@ class LessonListener
             'root' => $root ? $this->serializer->serialize($root) : null,
         ]);
 
-        $event->stopPropagation();
-    }
-
-    /**
-     * @param OpenResourceEvent $event
-     */
-    public function onOpen(OpenResourceEvent $event)
-    {
-        /** @var Lesson $lesson */
-        $lesson = $event->getResource();
-
-        $content = $this->templating->render(
-            'IcapLessonBundle:lesson:open.html.twig', [
-                '_resource' => $lesson,
-                'chapter' => $this->chapterRepository->getFirstChapter($lesson),
-                'tree' => $this->chapterManager->serializeChapterTree($lesson),
-                'root' => $lesson->getRoot(),
-            ]
-        );
-
-        $event->setResponse(new Response($content));
         $event->stopPropagation();
     }
 

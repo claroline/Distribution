@@ -31,7 +31,7 @@ class SectionController
     /**
      * @DI\InjectParams({
      *     "finder"                 = @DI\Inject("claroline.api.finder"),
-     *     "sectionManager"         = @DI\Inject("icap.wiki.section_manager")
+     *     "sectionManager"         = @DI\Inject("Icap\WikiBundle\Manager\SectionManager")
      * })
      *
      * SectionController constructor.
