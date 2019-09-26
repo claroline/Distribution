@@ -6,7 +6,7 @@ use Claroline\AppBundle\API\Options as APIOptions;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
-use claroline.serializer.group;
+use Claroline\CoreBundle\API\Serializer\User\GroupSerializer;
 use Claroline\CoreBundle\API\Serializer\User\OrganizationSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;

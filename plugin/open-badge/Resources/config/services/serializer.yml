@@ -28,7 +28,7 @@ services:
             - '@event_dispatcher'
             - '@Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
-            - '@claroline.serializer.group'
+            - '@Claroline\CoreBundle\API\Serializer\User\GroupSerializer'
             - '@Claroline\OpenBadgeBundle\Serializer\ImageSerializer'
             - '@security.token_storage'
             - '@Claroline\CoreBundle\API\Serializer\User\OrganizationSerializer'
