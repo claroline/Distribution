@@ -5,52 +5,34 @@ import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 import {toKey} from '#/main/core/scaffolding/text'
-import {actions as formActions, selectors as formSelectors} from '#/main/app/content/form/store'
-
-import {selectors as resourceSelectors} from '#/main/core/resource/store'
+import {selectors as formSelectors} from '#/main/app/content/form/store'
 
 import {refreshIdentifiers} from '#/plugin/exo/resources/quiz/utils'
-import {EditorMain as EditorMainComponent} from '#/plugin/exo/resources/quiz/editor/components/main'
+import {selectors as resourceSelectors} from '#/main/core/resource/store'
+import {EditorMenu as EditorMenuComponent} from '#/plugin/exo/resources/quiz/editor/components/menu'
 import {actions, selectors} from '#/plugin/exo/resources/quiz/editor/store'
 import {getStepSlug} from '#/plugin/exo/resources/quiz/editor/utils'
 
-const EditorMain = withRouter(
+const EditorMenu = withRouter(
   connect(
     (state) => ({
       path: resourceSelectors.path(state),
-      formName: selectors.FORM_NAME,
+      steps: selectors.steps(state),
       validating: formSelectors.validating(formSelectors.form(state, selectors.FORM_NAME)),
-      pendingChanges: formSelectors.pendingChanges(formSelectors.form(state, selectors.FORM_NAME)),
-      errors: formSelectors.errors(formSelectors.form(state, selectors.FORM_NAME)),
-
-      quizId: selectors.quizId(state),
-      quizType: selectors.quizType(state),
-      workspace: resourceSelectors.workspace(state),
-      numberingType: selectors.numberingType(state),
-      hasExpectedAnswers: selectors.hasExpectedAnswers(state),
-      score: selectors.score(state),
-      tags: selectors.tags(state),
-      randomPick: selectors.randomPick(state),
-      steps: selectors.steps(state)
+      errors: formSelectors.errors(formSelectors.form(state, selectors.FORM_NAME))
     }),
     (dispatch) => ({
-      /**
-       * Push the updated quiz data to the server.
-       *
-       * @param {string} quizId - the id of the quiz to save
-       */
-      save(quizId) {
-        dispatch(actions.save(quizId))
-      },
+      addStep(steps = []) {
+        // generate slug now to be able to redirect
+        const title = trans('step', {number: steps.length + 1}, 'quiz')
+        const slug = getStepSlug(steps, toKey(title))
 
-      /**
-       * Change a quiz data value.
-       *
-       * @param {string} prop  - the path of the prop to update
-       * @param {*}      value - the new value to set
-       */
-      update(prop, value) {
-        dispatch(formActions.updateProp(selectors.FORM_NAME, prop, value))
+        dispatch(actions.addStep({
+          slug: slug
+        }))
+
+        // return slug for redirection
+        return slug
       },
 
       /**
@@ -102,31 +84,11 @@ const EditorMain = withRouter(
        */
       moveStep(stepId, position) {
         dispatch(actions.moveStep(stepId, position))
-      },
-
-      /**
-       * Create a copy of a item and push it at the requested position.
-       *
-       * @param {string} itemId   - the id of the item to copy
-       * @param {object} position - the position to push the created item
-       */
-      copyItem(itemId, position) {
-        dispatch(actions.copyItem(itemId, position))
-      },
-
-      /**
-       * Move an existing item to another position.
-       *
-       * @param {string} itemId   - the id of the item to move
-       * @param {object} position - the new position of the item
-       */
-      moveItem(itemId, position) {
-        dispatch(actions.moveItem(itemId, position))
       }
     })
-  )(EditorMainComponent)
+  )(EditorMenuComponent)
 )
 
 export {
-  EditorMain
+  EditorMenu
 }
