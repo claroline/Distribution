@@ -99,8 +99,6 @@ class ResourceLifecycleManager
 
     public function copy($originalResource, $copiedResource)
     {
-        var_dump(static::eventName('copy', $copiedResource->getResourceNode()));
-
         /** @var CopyResourceEvent $event */
         $event = $this->dispatcher->dispatch(
             static::eventName('copy', $copiedResource->getResourceNode()),

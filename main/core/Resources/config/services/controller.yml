@@ -1,0 +1,58 @@
+services:
+    _defaults:
+        autowire: false #change to true
+        autoconfigure: false
+        public: true #because controller
+
+    _instanceof:
+        Claroline\AppBundle\Controller\AbstractCrudController:
+            calls:
+              - method: setFinder
+                arguments:
+                  - '@claroline.api.finder'
+              - method: setSerializer
+                arguments:
+                  - '@claroline.api.serializer'
+              - method: setCrud
+                arguments:
+                  - '@claroline.api.crud'
+              - method: setObjectManager
+                arguments:
+                  - '@claroline.persistence.object_manager'
+              - method: setRouterFinder
+                arguments:
+                  - '@claroline.api.routing.finder'
+              - method: setRouterDocumentator
+                arguments:
+                  - '@claroline.api.routing.documentator'
+              - method: mergeOptions
+
+    Claroline\CoreBundle\Controller\APINew\Cryptography\ApiTokenController:
+        arguments:
+          - '@security.token_storage'
+
+    Claroline\CoreBundle\Controller\APINew\Log\LogConnectController:
+        arguments:
+          - '@security.authorization_checker'
+          - '@claroline.api.finder'
+          - '@claroline.manager.log_connect'
+          - '@claroline.manager.tool_manager'
+
+    Claroline\CoreBundle\Controller\APINew\Platform\PluginController:
+        tags: [security.secure_service]
+        arguments:
+          - '@claroline.manager.plugin_manager'
+
+    Claroline\CoreBundle\Controller\APINew\Resource\Types\DirectoryController: ~
+
+    Claroline\CoreBundle\Controller\APINew\Resource\Types\FileController: ~
+
+    Claroline\CoreBundle\Controller\APINew\Resource\Types\TextController: ~
+
+    Claroline\CoreBundle\Controller\APINew\Resource\ResourceCommentController: ~
+
+    Claroline\CoreBundle\Controller\APINew\Resource\ResourceNodeController:
+        arguments:
+          - '@claroline.manager.resource_manager'
+          - '@claroline.manager.resource_action'
+          - '@claroline.manager.rights_manager'
