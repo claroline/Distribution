@@ -2,7 +2,7 @@ services:
     _defaults:
         autowire: false
         autoconfigure: true
-        public: false
+        public: true
 
     _instanceof:
         Claroline\AppBundle\API\Serializer\GenericSerializer:
