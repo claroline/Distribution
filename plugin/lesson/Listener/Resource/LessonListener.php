@@ -112,7 +112,6 @@ class LessonListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        throw new \Exception('oncopy');
         /** @var Lesson $lesson */
         $lesson = $event->getResource();
 

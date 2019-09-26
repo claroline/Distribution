@@ -7,10 +7,6 @@ services:
     Icap\LessonBundle\Manager\ChapterManager:
         arguments:
            - '@doctrine.orm.entity_manager'
-           - '@icap.serializer.lesson.chapter'
+           - '@Icap\LessonBundle\Serializer\ChapterSerializer'
            - '@claroline.persistence.object_manager'
            - '@event_dispatcher'
-
-    icap.lesson.manager.chapter:
-         alias: Icap\LessonBundle\Manager\ChapterManager
-         public: true
