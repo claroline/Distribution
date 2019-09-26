@@ -76,9 +76,7 @@ class MailManager
      */
     public function isMailerAvailable()
     {
-        $parameters = $this->serializer->serialize([Options::SERIALIZE_MINIMAL]);
-
-        return $parameters['mailer']['enabled'];
+        return $this->container->get('claroline.config.platform_config_handler')->getParameter('mailer.enabled');
     }
 
     /**
@@ -91,10 +89,10 @@ class MailManager
         $this->container->get('claroline.manager.user_manager')->initializePassword($user);
         $hash = $user->getResetPasswordHash();
         $link = $this->router->generate(
-            'claro_security_reset_password',
-            ['hash' => $hash],
+            'claro_index',
+            [],
             UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        )."#/newpassword/{$hash}";
         $placeholders = [
             'first_name' => $user->getFirstName(),
             'last_name' => $user->getLastName(),

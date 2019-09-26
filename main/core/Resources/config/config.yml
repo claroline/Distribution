@@ -109,7 +109,7 @@ plugin:
               - name: change_file
                 decoder: edit
                 group: management
-                api: [POST]
+                api: [PUT]
 
         - name: directory
           class: Claroline\CoreBundle\Entity\Resource\Directory
@@ -245,18 +245,6 @@ plugin:
           is_exportable: true
           is_locked_for_admin: false
           is_anonymous_excluded: false
-
-        - name: parameters
-          class: cog
-          is_displayable_in_workspace: false
-          is_displayable_in_desktop: true
-          is_configurable_in_workspace: false
-          is_configurable_in_desktop: false
-          is_desktop_required: true
-          is_workspace_required: false
-          is_exportable: false
-          is_locked_for_admin: false
-          is_anonymous_excluded: true
 
         - name: home
           class: home

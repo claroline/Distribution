@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {LocaleFlag} from '#/main/app/intl/locale/components/flag'
 import {trans} from '#/main/app/intl/translation'
-import {toKey} from '#/main/core/scaffolding/text/utils'
+import {toKey} from '#/main/core/scaffolding/text'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON, MENU_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
@@ -97,15 +97,6 @@ const UserMenu = props =>
           icon="fa fa-fw fa-user"
           label={trans('user_profile')}
           target={route(props.currentUser)}
-          onClick={props.closeMenu}
-        />
-
-        <Button
-          type={LINK_BUTTON}
-          className="list-group-item"
-          icon="fa fa-fw fa-cog"
-          label={trans('parameters', {}, 'tools')}
-          target="/desktop/parameters"
           onClick={props.closeMenu}
         />
 
