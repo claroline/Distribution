@@ -21,6 +21,7 @@ use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\OptimizedRightsManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Claroline\LinkBundle\Entity\Resource\Shortcut;
 
 class ResourceNodeSerializer
 {
@@ -242,6 +243,13 @@ class ResourceNodeSerializer
             'views' => $resourceNode->getViewsCount(),
             'commentsActivated' => $resourceNode->isCommentsActivated(),
         ];
+
+        if (Shortcut::class === $resourceNode->getResourceType()->getClass()) {
+            //required for opening the proper player in case of shortcut
+            $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
+            $target = $resource->getTarget();
+            $meta['type'] = $target->getResourceType()->getName();
+        }
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $meta = array_merge($meta, [
