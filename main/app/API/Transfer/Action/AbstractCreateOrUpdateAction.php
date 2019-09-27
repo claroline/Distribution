@@ -3,6 +3,7 @@
 namespace Claroline\AppBundle\API\Transfer\Action;
 
 use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\SchemaProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
