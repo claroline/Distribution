@@ -19,23 +19,26 @@ abstract class AbstractCreateOrUpdateAction extends AbstractAction
      *     "crud" = @DI\Inject("claroline.api.crud"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
      *     "transfer" = @DI\Inject("claroline.api.transfer"),
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     *     "om" = @DI\Inject("claroline.persistence.object_manager"),
+     *     "schema" = @DI\Inject("claroline.api.schema")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud, SerializerProvider $serializer, TransferProvider $transfer, ObjectManager $om)
+    public function __construct(Crud $crud, SerializerProvider $serializer, TransferProvider $transfer, ObjectManager $om, SchemaProvider $schema)
     {
         $this->crud = $crud;
         $this->serializer = $serializer;
         $this->transfer = $transfer;
         $this->om = $om;
+        $this->schema = $schema;
     }
 
     public function execute(array $data, &$successData = [])
     {
         //search the object. It'll look for the 1st identifier it finds so be carreful
-        $object = $this->om->getObject($data, $this->getClass()) ?? new $this->getClass();
+        $class = $this->getClass();
+        $object = $this->om->getObject($data, $class, $this->schema->getIdentifiers($class)) ?? new $class();
         $object = $this->serializer->deserialize($data, $object);
         $serializedclass = $this->getAction()[0];
         $action = !$object->getId() ? self::MODE_CREATE : self::MODE_UPDATE;
