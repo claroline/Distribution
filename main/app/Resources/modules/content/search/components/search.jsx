@@ -14,9 +14,11 @@ const Search = props => {
   const filters = props.available.filter(filter => {
     if (isTypeEnabled(filter.type)) {
       // grab filter value
-      const filterValue = props.current.find(value => value.property === filter.name || value.property === filter.alias)
-      if (filterValue) {
-        values.push(filterValue)
+      if (typeof props.current.find === 'function') {
+        const filterValue = props.current.find(value => value.property === filter.name || value.property === filter.alias)
+        if (filterValue) {
+          values.push(filterValue)
+        }
       }
 
       return true
