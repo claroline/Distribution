@@ -99,7 +99,7 @@ const EditorStep = props => {
                     icon: 'fa fa-fw fa-lock',
                     label: trans('lock', {}, 'actions'),
                     callback: () => true,
-                    disabled: true,
+                    disabled: true, // TODO : restore
                     group: trans('management')
                   }, {
                     name: 'copy',
@@ -128,7 +128,6 @@ const EditorStep = props => {
                         label: trans('copy', {}, 'actions'),
                         callback: () => {
                           refreshIdentifiers(item).then(item => {
-
                             props.copyItem(item, position)
                           })
                         }
