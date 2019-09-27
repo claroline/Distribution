@@ -245,7 +245,10 @@ class ResourceNodeSerializer
         ];
 
         if (Shortcut::class === $resourceNode->getResourceType()->getClass()) {
-            //required for opening the proper player in case of shortcut
+            //required for opening the proper player in case of shortcut. This is not pretty but the players
+            //need the meta['type'] to be the target one to open the proper player/editor (they dont know what to do otherwise)
+            //unless we implement a "link" player wich will then the target and dispatch again.
+            //This is the easy way
             $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
             $target = $resource->getTarget();
             $meta['type'] = $target->getResourceType()->getName();
