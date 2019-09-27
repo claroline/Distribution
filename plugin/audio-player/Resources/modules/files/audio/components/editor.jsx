@@ -289,7 +289,7 @@ const Audio = props =>
         fields: [
           {
             name: 'description',
-            label: trans('introduction', {}, 'audio'),
+            label: trans('description'),
             type: 'html'
           }, {
             name: 'sectionsType',
