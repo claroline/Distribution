@@ -111,6 +111,7 @@ services:
             - { name: kernel.event_listener, event: data_source.users.load, method: getData }
 
     Claroline\CoreBundle\Listener\Log\LogListener:
+        public: true
         arguments:
             - '@claroline.persistence.object_manager'
             - '@security.token_storage'
