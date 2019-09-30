@@ -4,23 +4,13 @@ namespace Claroline\AgendaBundle\Listener;
 
 use Claroline\AgendaBundle\Manager\AgendaManager;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * Class ApiListener.
- *
- * @DI\Service
- */
 class MergeUserListener
 {
     /** @var AgendaManager */
     private $manager;
 
     /**
-     * @DI\InjectParams({
-     *     "manager" = @DI\Inject("claroline.manager.agenda_manager")
-     * })
-     *
      * @param AgendaManager $manager
      */
     public function __construct(AgendaManager $manager)
@@ -29,8 +19,6 @@ class MergeUserListener
     }
 
     /**
-     * @DI\Observe("merge_users")
-     *
      * @param MergeUsersEvent $event
      */
     public function onMerge(MergeUsersEvent $event)
