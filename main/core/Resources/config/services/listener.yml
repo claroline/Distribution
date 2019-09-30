@@ -21,6 +21,7 @@ services:
             - '@claroline.manager.user_manager'
         tags:
             - { name: kernel.event_listener, event: administration_tool_community, method: onDisplayTool }
+            - { name: kernel.event_listener, event: merge_users, method: onMergeUsers }
 
     Claroline\CoreBundle\Listener\Administration\HomeListener:
         arguments:

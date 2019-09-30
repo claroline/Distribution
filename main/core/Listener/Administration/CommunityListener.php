@@ -7,6 +7,7 @@ use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
+use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\UserManager;
 
@@ -70,5 +71,20 @@ class CommunityListener
             ]),
         ]);
         $event->stopPropagation();
+    }
+
+    /**
+     * @param MergeUsersEvent $event
+     */
+    public function onMergeUsers(MergeUsersEvent $event)
+    {
+        // Replace creator of resource nodes
+        $resourcesCount = $this->resourceManager->replaceCreator($event->getRemoved(), $event->getKept());
+        $event->addMessage("[CoreBundle] updated resources count: $resourcesCount");
+        // Merge all roles onto user to keep
+        $rolesCount = $this->userManager->transferRoles($event->getRemoved(), $event->getKept());
+        $event->addMessage("[CoreBundle] transferred roles count: $rolesCount");
+        // Change personal workspace into regular
+        $event->getRemoved()->getPersonalWorkspace()->setPersonal(false);
     }
 }
