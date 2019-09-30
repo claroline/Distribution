@@ -15,6 +15,54 @@ services:
     Claroline\CoreBundle\Listener\Administration\CommunityListener:
         arguments:
             - '@claroline.api.finder'
-            - '@claroline.manager.icon_set_manager'
+            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
+            - '@Claroline\CoreBundle\API\Serializer\User\ProfileSerializer'
+            - '@claroline.manager.resource_manager'
+            - '@claroline.manager.user_manager'
         tags:
-            - { name: kernel.event_listener, event: administration_tool_appearance_settings, method: onDisplayTool }
+            - { name: kernel.event_listener, event: administration_tool_community, method: onDisplayTool }
+
+    Claroline\CoreBundle\Listener\Administration\HomeListener:
+        arguments:
+            - '@claroline.api.finder'
+        tags:
+            - { name: kernel.event_listener, event: administration_tool_home, method: onDisplayTool }
+
+    Claroline\CoreBundle\Listener\Administration\IntegrationListener:
+        tags:
+            - { name: kernel.event_listener, event: administration_tool_integration, method: onDisplayTool }
+
+    Claroline\CoreBundle\Listener\Administration\ParametersListener:
+        arguments:
+            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
+            - '@claroline.manager.locale_manager'
+        tags:
+            - { name: kernel.event_listener, event: administration_tool_main_settings, method: onDisplayTool }
+
+    Claroline\CoreBundle\Listener\Administration\ScheduledTaskListener:
+        arguments:
+            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
+        tags:
+            - { name: kernel.event_listener, event: administration_tool_tasks_scheduling, method: onDisplayTool }
+
+    Claroline\CoreBundle\Listener\Administration\TechnicalListener:
+        arguments:
+            - '@claroline.persistence.object_manager'
+            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
+        tags:
+            - { name: kernel.event_listener, event: administration_tool_technical_settings, method: onDisplayTool }
+
+    Claroline\CoreBundle\Listener\Administration\TemplateListener:
+        arguments:
+            - '@security.authorization_checker'
+            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
+            - '@templating'
+            - '@claroline.manager.tool_manager'
+        tags:
+            - { name: kernel.event_listener, event: administration_tool_templates_management, method: onAdministrationToolOpen }
+
+    Claroline\CoreBundle\Listener\Administration\TransferListener:
+        arguments:
+            - '@claroline.api.transfer'
+        tags:
+            - { name: kernel.event_listener, event: administration_tool_transfer, method: onDisplayTool }
