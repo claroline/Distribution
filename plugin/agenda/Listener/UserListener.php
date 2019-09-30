@@ -16,7 +16,7 @@ class UserListener
 
     /**
      * @DI\InjectParams({
-     *     "manager" = @DI\Inject("claroline.manager.agenda_manager")
+     *     "manager" = @DI\Inject("Claroline\AgendaBundle\Manager\AgendaManager")
      * })
      *
      * @param AgendaManager $manager
