@@ -58,7 +58,7 @@ services:
 
     Icap\WikiBundle\Listener\UserListener:
        arguments:
-          - '@icap.wiki.section_manager'
-          - '@icap.wiki.contribution_manager'
+          - '@Icap\WikiBundle\Manager\SectionManager'
+          - '@Icap\WikiBundle\Manager\ContributionManager'
        tags:
           - { name: kernel.event_listener, event: merge_users, method: onMerge }
