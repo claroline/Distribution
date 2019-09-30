@@ -102,6 +102,8 @@ class CommunityListener
         $event->addMessage("[CoreBundle] transferred roles count: $rolesCount");
 
         // Change personal workspace into regular
-        $event->getRemoved()->getPersonalWorkspace()->setPersonal(false);
+        if ($event->getRemoved()->getPersonalWorkspace()) {
+            $event->getRemoved()->getPersonalWorkspace()->setPersonal(false);
+        }
     }
 }
