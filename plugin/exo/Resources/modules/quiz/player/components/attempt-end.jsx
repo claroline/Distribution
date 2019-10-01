@@ -54,7 +54,7 @@ const AttemptEndComponent = props =>
                 type: LINK_BUTTON,
                 icon: 'fa fa-fw fa-flask',
                 label: trans('test', {}, 'actions'),
-                target: '/test',
+                target: `${props.path}/test`,
                 exact: true,
                 primary: true,
                 displayed: props.testMode
@@ -63,7 +63,7 @@ const AttemptEndComponent = props =>
                 type: LINK_BUTTON,
                 icon: 'fa fa-fw fa-redo',
                 label: trans('exercise_restart', {}, 'quiz'),
-                target: '/play',
+                target: `${props.path}/play`,
                 exact: true,
                 primary: true,
                 displayed: props.hasMoreAttempts
@@ -72,7 +72,7 @@ const AttemptEndComponent = props =>
                 type: LINK_BUTTON,
                 icon: 'fa fa-fw fa-check-double',
                 label: trans('view_paper', {}, 'quiz'),
-                target: `/papers/${props.paper.id}`,
+                target: `${props.path}/papers/${props.paper.id}`,
                 displayed: props.showAttemptCorrection,
                 primary: true
               }, {
@@ -80,7 +80,7 @@ const AttemptEndComponent = props =>
                 type: LINK_BUTTON,
                 icon: 'fa fa-fw fa-bar-chart',
                 label: trans('statistics', {}, 'quiz'),
-                target: '/statistics',
+                target: `${props.path}/statistics`,
                 displayed: props.showStatistics
               }, {
                 name: 'home',
@@ -98,6 +98,7 @@ const AttemptEndComponent = props =>
   </div>
 
 AttemptEndComponent.propTypes = {
+  path: T.string.isRequired,
   workspace: T.object,
   paper: T.shape({ // TODO : paper prop types
     id: T.string.isRequired,
@@ -119,6 +120,7 @@ const AttemptEnd = connect(
     const paper = playerSelect.paper(state)
 
     return {
+      path: resourceSelect.path(state),
       workspace: resourceSelect.workspace(state),
       paper: paper,
       testMode: playerSelect.testMode(state),
