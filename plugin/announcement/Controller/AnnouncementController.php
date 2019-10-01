@@ -75,7 +75,7 @@ class AnnouncementController
         $this->crud = $crud;
         $this->om = $om;
         $this->finder = $finder;
-        $authorization = $authorization;
+        $this->authorization = $authorization;
 
         $this->roleRepo = $om->getRepository(Role::class);
     }
