@@ -36,6 +36,26 @@ const AttemptEndComponent = props =>
       }
 
       <div className={props.showAttemptScore ? 'col-md-9':'col-md-12'}>
+        {props.showAttemptScore &&
+        get(props.paper, 'total') &&
+        get(props.paper, 'structure.parameters.successScore') &&
+        get(props.paper, 'structure.parameters.successMessage') &&
+        (props.paper.score / props.paper.total) * 100 >= get(props.paper, 'structure.parameters.successScore') &&
+          <div className="alert alert-info">
+            <HtmlText>{get(props.paper, 'structure.parameters.successMessage')}</HtmlText>
+          </div>
+        }
+
+        {props.showAttemptScore &&
+        get(props.paper, 'total') &&
+        get(props.paper, 'structure.parameters.successScore') &&
+        get(props.paper, 'structure.parameters.failureMessage') &&
+        (props.paper.score / props.paper.total) * 100 < get(props.paper, 'structure.parameters.successScore') &&
+          <div className="alert alert-danger">
+            <HtmlText>{get(props.paper, 'structure.parameters.failureMessage')}</HtmlText>
+          </div>
+        }
+
         {props.endMessage ?
           <HtmlText>{props.endMessage}</HtmlText> :
           <div>
