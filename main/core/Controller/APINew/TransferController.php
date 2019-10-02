@@ -22,7 +22,6 @@ use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Import\File;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -52,18 +51,6 @@ class TransferController extends AbstractCrudController
     private $schemaDir;
 
     /**
-     * @DI\InjectParams({
-     *    "provider"   = @DI\Inject("claroline.api.transfer"),
-     *    "serializer" = @DI\Inject("claroline.api.serializer"),
-     *    "router"     = @DI\Inject("router"),
-     *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
-     *    "fileUt"     = @DI\Inject("claroline.utilities.file"),
-     *    "crud"       = @DI\Inject("claroline.api.crud"),
-     *    "manager"    = @DI\Inject("claroline.manager.api_manager"),
-     *    "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *    "async"      = @DI\Inject("claroline.async.command")
-     * })
-     *
      * @param TransferProvider $provider
      * @param FileUtilities    $fileUt
      * @param string           $schemaDir
@@ -71,11 +58,11 @@ class TransferController extends AbstractCrudController
     public function __construct(
         TransferProvider $provider,
         SerializerProvider $serializer,
-        FileUtilities $fileUt,
         RouterInterface $router,
-        ObjectManager $om,
-        Crud $crud,
         $schemaDir,
+        FileUtilities $fileUt,
+        Crud $crud,
+        ObjectManager $om,
         $async
     ) {
         $this->provider = $provider;

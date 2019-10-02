@@ -15,6 +15,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -33,9 +34,9 @@ class CommentController
      * postController constructor.
      *
      * @DI\InjectParams({
-     *     "commentSerializer" = @DI\Inject("claroline.serializer.blog.comment"),
-     *     "commentManager"    = @DI\Inject("icap.blog.manager.comment"),
-     *     "trackingManager"   = @DI\Inject("icap.blog.manager.tracking")
+     *     "commentSerializer" = @DI\Inject("Icap\BlogBundle\Serializer\CommentSerializer"),
+     *     "commentManager"    = @DI\Inject("Icap\BlogBundle\Manager\CommentManager"),
+     *     "trackingManager"   = @DI\Inject("Icap\BlogBundle\Manager\BlogTrackingManager")
      * })
      *
      * @param commentSerializer   $commentSerializer
@@ -45,11 +46,13 @@ class CommentController
     public function __construct(
         CommentSerializer $commentSerializer,
         CommentManager $commentManager,
-        BlogTrackingManager $trackingManager)
+        BlogTrackingManager $trackingManager,
+        AuthorizationCheckerInterface $authorization)
     {
         $this->commentSerializer = $commentSerializer;
         $this->commentManager = $commentManager;
         $this->trackingManager = $trackingManager;
+        $this->authorization = $authorization;
     }
 
     /**

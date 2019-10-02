@@ -8,6 +8,7 @@ import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {Summary} from '#/main/app/content/components/summary'
 
+import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {MODAL_STEP_POSITION} from '#/plugin/path/resources/path/editor/modals/position'
 
 const EditorMenu = props => {
@@ -16,8 +17,8 @@ const EditorMenu = props => {
       type: LINK_BUTTON,
       icon: classes('step-progression fa fa-fw fa-circle', get(step, 'userProgression.status')),
       label: step.title,
-      target: `${props.path}/edit/${step.slug}`,
-      active: !!matchPath(props.location.pathname, {path: `${props.path}/edit/${step.slug}`}),
+      target: `${props.basePath}/edit/${step.slug}`,
+      active: !!matchPath(props.location.pathname, {path: `${props.basePath}/edit/${step.slug}`}),
       additional: [
         {
           name: 'add',
@@ -25,8 +26,8 @@ const EditorMenu = props => {
           icon: 'fa fa-fw fa-plus',
           label: trans('step_add_child', {}, 'path'),
           callback: () => {
-            const newSlug = props.addStep(props.steps, step)
-            props.history.push(`${props.path}/edit/${newSlug}`)
+            const newSlug = props.addStep(props.path.steps, step)
+            props.history.push(`${props.basePath}/edit/${newSlug}`)
           },
           group: trans('management')
         }, {
@@ -70,8 +71,8 @@ const EditorMenu = props => {
           label: trans('delete', {}, 'actions'),
           callback: () => {
             props.removeStep(step.id)
-            if (`${props.path}/edit/${step.slug}` === props.location.pathname) {
-              props.history.push(`${props.path}/edit`)
+            if (`${props.basePath}/edit/${step.slug}` === props.location.pathname) {
+              props.history.push(`${props.basePath}/edit`)
             }
           },
           confirm: {
@@ -93,14 +94,14 @@ const EditorMenu = props => {
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-cog',
         label: trans('parameters'),
-        target: `${props.path}/edit/parameters`
-      }].concat(props.steps.map(getStepSummary), [{
+        target: `${props.basePath}/edit/parameters`
+      }].concat(props.path.steps.map(getStepSummary), [{
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-plus',
         label: trans('step_add', {}, 'path'),
         callback: () => {
-          const newSlug = props.addStep(props.steps)
-          props.history.push(`${props.path}/edit/${newSlug}`)
+          const newSlug = props.addStep(props.path.steps)
+          props.history.push(`${props.basePath}/edit/${newSlug}`)
         }
       }])}
     />
@@ -114,10 +115,13 @@ EditorMenu.propTypes = {
   location: T.shape({
     pathname: T.string.isRequired
   }).isRequired,
-  path: T.string.isRequired,
-  steps: T.arrayOf(T.shape({
-    // TODO : step types
-  })),
+  basePath: T.string.isRequired,
+  path: T.shape(
+    PathTypes.propTypes
+  ),
+  steps: T.arrayOf(T.shape(
+    StepTypes.propTypes
+  )),
   addStep: T.func.isRequired,
   copyStep: T.func.isRequired,
   moveStep: T.func.isRequired,

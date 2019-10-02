@@ -10,10 +10,6 @@
       "type": "string",
       "description": "The badge description"
     },
-    "criteria": {
-      "type": "string",
-      "description": "The badge criteria"
-    },
     "image": {
       "type": "object",
       "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schemas/publicFile.json"
@@ -27,11 +23,14 @@
       "description": "The number of days the badge is valid"
     },
     "tags": {
-      "type": ["string", "null"],
-      "description": "A tag list (coma separated)"
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
     }
   },
-  "required": ["description", "criteria", "image"],
+  "required": ["image"],
   "claroline": {
     "requiredAtCreation": [],
     "ids": ["id"]

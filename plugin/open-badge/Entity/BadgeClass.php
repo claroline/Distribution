@@ -13,26 +13,36 @@ namespace Claroline\OpenBadgeBundle\Entity;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\AppBundle\Entity\Meta\Color;
+use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\OpenBadgeBundle\Entity\Rules\Rule;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
+ * Represents an obtainable badge.
+ *
  * @ORM\Entity
  * @ORM\Table(name="claro__open_badge_badge_class")
  */
 class BadgeClass
 {
-    use Uuid;
-    use Id;
-
     const ISSUING_MODE_ORGANIZATION = 'organization';
     const ISSUING_MODE_USER = 'user';
     const ISSUING_MODE_GROUP = 'group';
     const ISSUING_MODE_PEER = 'peer';
     const ISSUING_MODE_WORKSPACE = 'workspace';
+
+    // identifiers
+    use Id;
+    use Uuid;
+
+    // meta
+    use Color;
 
     /**
      * @ORM\Column()
@@ -42,7 +52,7 @@ class BadgeClass
     private $name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      *
      * @var string
      */
@@ -56,7 +66,7 @@ class BadgeClass
     private $image;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      *
      * @var string
      */
@@ -64,6 +74,8 @@ class BadgeClass
 
     /**
      * @ORM\OneToMany(targetEntity="Claroline\OpenBadgeBundle\Entity\Rules\Rule", mappedBy="badge")
+     *
+     * @var Rule[]|ArrayCollection
      */
     private $rules;
 
@@ -76,6 +88,8 @@ class BadgeClass
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
+     *
+     * @var Workspace
      */
     private $workspace;
 
@@ -95,43 +109,54 @@ class BadgeClass
 
     /**
      * @ORM\OneToMany(targetEntity="Claroline\OpenBadgeBundle\Entity\Assertion", mappedBy="badge")
+     *
+     * @var Assertion[]|ArrayCollection
      */
     private $assertions;
 
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
+     *
+     * @var \DateTime
      */
     protected $created;
 
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
+     *
+     * @var \DateTime
      */
     protected $updated;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
+     *
+     * @var User[]|ArrayCollection
      */
     private $allowedIssuers;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Group")
+     *
+     * @var Group[]|ArrayCollection
      */
     private $allowedIssuersGroups;
 
     /**
      * @ORM\Column(type="json_array")
      *
-     * @var string
+     * @var array
      */
     private $issuingMode = [self::ISSUING_MODE_ORGANIZATION];
 
     public function __construct()
     {
         $this->refreshUuid();
-        $this->allowedIssuers = new ArrayCollection();
+
         $this->rules = new ArrayCollection();
+        $this->allowedIssuers = new ArrayCollection();
         $this->allowedIssuersGroups = new ArrayCollection();
     }
 
@@ -148,7 +173,7 @@ class BadgeClass
     /**
      * Set the value of Name.
      *
-     * @param string name
+     * @param string $name
      *
      * @return self
      */
@@ -172,7 +197,7 @@ class BadgeClass
     /**
      * Set the value of Description.
      *
-     * @param string description
+     * @param string $description
      *
      * @return self
      */
@@ -220,7 +245,7 @@ class BadgeClass
     /**
      * Set the value of Criteria.
      *
-     * @param string criteria
+     * @param string $criteria
      *
      * @return self
      */
@@ -244,7 +269,7 @@ class BadgeClass
     /**
      * Set the value of Issuer.
      *
-     * @param Organization issuer
+     * @param Organization $issuer
      *
      * @return self
      */
@@ -275,6 +300,9 @@ class BadgeClass
         $this->workspace = $workspace;
     }
 
+    /**
+     * @return Workspace
+     */
     public function getWorkspace()
     {
         return $this->workspace;
@@ -312,6 +340,11 @@ class BadgeClass
         $this->allowedIssuersGroups = $groups;
     }
 
+    /**
+     * @param bool $includeGroups
+     *
+     * @return User[]|ArrayCollection
+     */
     public function getAllowedIssuers($includeGroups = false)
     {
         if ($includeGroups) {
@@ -333,23 +366,63 @@ class BadgeClass
         return $this->allowedIssuers;
     }
 
+    /**
+     * @return Group[]|ArrayCollection
+     */
     public function getAllowedIssuersGroups()
     {
         return $this->allowedIssuersGroups;
     }
 
+    /**
+     * @param array $issuingMode
+     */
     public function setIssuingMode(array $issuingMode)
     {
         $this->issuingMode = $issuingMode;
     }
 
+    /**
+     * @return array
+     */
     public function getIssuingMode()
     {
         return $this->issuingMode;
     }
 
+    /**
+     * @return Rule[]|ArrayCollection
+     */
     public function getRules()
     {
         return $this->rules;
+    }
+
+    /**
+     * @return Assertion[]|ArrayCollection
+     */
+    public function getAssertions()
+    {
+        return $this->assertions;
+    }
+
+    /**
+     * @param Assertion $assertion
+     */
+    public function addAssertion(Assertion $assertion)
+    {
+        if (!$this->assertions->contains($assertion)) {
+            $this->assertions->add($assertion);
+        }
+    }
+
+    /**
+     * @param Assertion $assertion
+     */
+    public function removeAssertion(Assertion $assertion)
+    {
+        if ($this->assertions->contains($assertion)) {
+            $this->assertions->removeElement($assertion);
+        }
     }
 }

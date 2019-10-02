@@ -21,8 +21,19 @@ services:
                   - '@claroline.persistence.object_manager'
               - method: setRouterFinder
                 arguments:
-                  - '@claroline.api.routing.finder'
+                  - '@Claroline\AppBundle\Routing\Finder'
               - method: setRouterDocumentator
                 arguments:
-                  - '@claroline.api.routing.documentator'
+                  - '@Claroline\AppBundle\Routing\Documentator'
               - method: mergeOptions
+              - method: setContainer
+                arguments:
+                  - '@service_container'
+
+    Claroline\AppBundle\Controller\Platform\ClientController:
+        arguments:
+          - '@security.token_storage'
+          - '@claroline.event.event_dispatcher'
+          - '@claroline.config.platform_config_handler'
+          - '@claroline.api.serializer'
+          - '@Claroline\CoreBundle\API\Serializer\Platform\ClientSerializer'
