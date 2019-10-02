@@ -40,7 +40,7 @@ const AttemptEndComponent = props =>
         get(props.paper, 'total') &&
         get(props.paper, 'structure.parameters.successScore') &&
         get(props.paper, 'structure.parameters.successMessage') &&
-        (props.paper.score / props.paper.total) * 100 >= get(props.paper, 'structure.parameters.successScore') &&
+        (get(props.paper, 'score') / get(props.paper, 'total')) * 100 >= get(props.paper, 'structure.parameters.successScore') &&
           <div className="alert alert-info">
             <HtmlText>{get(props.paper, 'structure.parameters.successMessage')}</HtmlText>
           </div>
@@ -50,7 +50,7 @@ const AttemptEndComponent = props =>
         get(props.paper, 'total') &&
         get(props.paper, 'structure.parameters.successScore') &&
         get(props.paper, 'structure.parameters.failureMessage') &&
-        (props.paper.score / props.paper.total) * 100 < get(props.paper, 'structure.parameters.successScore') &&
+        (get(props.paper, 'score') / get(props.paper, 'total')) * 100 < get(props.paper, 'structure.parameters.successScore') &&
           <div className="alert alert-danger">
             <HtmlText>{get(props.paper, 'structure.parameters.failureMessage')}</HtmlText>
           </div>
