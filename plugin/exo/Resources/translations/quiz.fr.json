@@ -297,6 +297,7 @@
     "remove_step_confirm_message": "Êtes-vous sûr de vouloir supprimer cette étape ?",
     "reset": "Réinitialiser",
     "resize_zone": "Pour redimensionner une image, placez votre souris sur son coin inférieur droit et, tout en maintenant le clic gauche, faites-la glisser.",
+    "resource_file_type_only": "Seules les ressources de type [Fichier] sont autorisées.",
     "response": "Réponse",
     "result": "Résultats",
     "results": "Résultats",
