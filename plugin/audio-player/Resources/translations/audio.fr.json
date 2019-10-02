@@ -19,6 +19,8 @@
     "show_help": "Afficher l'aide",
     "show_section_audio": "Afficher le fichier audio associé à la section",
     "show_transcript": "Afficher la transcription",
+    "slow_down_audio": "Ralentir l'audio",
+    "speed_up_audio": "Accélérer l'audio",
     "start": "Début",
     "start_tolerance": "Tolérance de début",
     "transcript": "Transcription"
