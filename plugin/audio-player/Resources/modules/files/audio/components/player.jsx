@@ -139,6 +139,11 @@ const Section = props =>
       )}
       {props.options.showAudioUrl && props.section.audioUrl &&
         <div>
+          {props.section.audioDescription &&
+            <div className="well well-sm">
+              {props.section.audioDescription}
+            </div>
+          }
           <audio
             controls
           >

@@ -145,6 +145,15 @@ const SectionConfiguration = (props) =>
       onChange={checked => props.onUpdate('showAudio', checked)}
     />
     {props.section.showAudio &&
+      <TextGroup
+        key={`section-${props.section.id}-audio-description`}
+        id={`section-${props.section.id}-audio-description`}
+        label={trans('description')}
+        value={props.section.audioDescription}
+        onChange={value => props.onUpdate('audioDescription', value)}
+      />
+    }
+    {props.section.showAudio &&
       <FileInput
         id={`section-${props.section.id}-audio-url`}
         types={['audio/*']}
