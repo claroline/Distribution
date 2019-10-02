@@ -24,11 +24,7 @@ use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\Task\ScheduledTaskManager;
 use Claroline\CoreBundle\Repository\RoleRepository;
 use Claroline\CoreBundle\Repository\UserRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.manager.announcement_manager")
- */
 class AnnouncementManager
 {
     /** @var ObjectManager */
@@ -57,15 +53,6 @@ class AnnouncementManager
 
     /**
      * AnnouncementManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "serializer"      = @DI\Inject("Claroline\AnnouncementBundle\Serializer\AnnouncementSerializer"),
-     *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager"),
-     *     "taskManager"     = @DI\Inject("claroline.manager.scheduled_task_manager"),
-     *     "finder"          = @DI\Inject("claroline.api.finder")
-     * })
      *
      * @param ObjectManager          $om
      * @param StrictDispatcher       $eventDispatcher
