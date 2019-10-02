@@ -10,6 +10,16 @@ import {selectors as resourceSelect} from '#/main/core/resource/store'
 
 import {ItemEditor as ItemEditorTypes} from '#/plugin/exo/items/prop-types'
 
+const authorizedTypes = [
+  'claro_slideshow',
+  'claroline_scorm',
+  'file',
+  'icap_blog',
+  'icap_lesson',
+  'icap_wiki',
+  'text'
+]
+
 const ResourceEditorComponent = props =>
   <FormData
     className="resource-item resource-editor"
@@ -26,16 +36,15 @@ const ResourceEditorComponent = props =>
             label: trans('resource'),
             type: 'resource',
             required: true,
-            help: trans('resource_file_type_only', {}, 'quiz'),
+            help: trans('allowed_resource_types_info', {}, 'quiz'),
             options: {
               picker: {
                 current: props.resourceNode && props.resourceNode.parent ? props.resourceNode.parent : null,
-                root: null,
-                filters: [{property: 'resourceType', value: 'file', locked: false}]
+                root: null
               }
             },
             onChange: (resource) => {
-              if ('file' !== get(resource, 'meta.type')) {
+              if (-1 === authorizedTypes.indexOf(get(resource, 'meta.type'))) {
                 props.update('resource', null)
               }
             }
