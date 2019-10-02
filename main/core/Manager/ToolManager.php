@@ -301,6 +301,23 @@ class ToolManager
         }
     }
 
+    public function getUserDisplayedTools(User $user)
+    {
+        $ots = $this->getDisplayedDesktopOrderedTools($user);
+        $configs = $this->getUserDesktopToolsConfiguration($user);
+        $data = [];
+
+        foreach ($configs as $name => $display) {
+            foreach ($ots as $ot) {
+                if (ToolRole::FORCED === $display && $ot->getName() === $name) {
+                    $data[] = ['name' => $name, 'icon' => $ot->getClass()];
+                }
+            }
+        }
+
+        return $data;
+    }
+
     /**
      * Adds the mandatory tools at the user creation.
      *

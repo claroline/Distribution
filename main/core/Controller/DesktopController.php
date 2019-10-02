@@ -101,7 +101,7 @@ class DesktopController
         //on our prod environments
         $this->toolManager->addMissingDesktopTools($currentUser);
 
-        $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
+        $tools = $this->toolManager->getUserDisplayedTools($currentUser);
 
         if (0 === count($tools)) {
             throw new AccessDeniedException('no tools');
@@ -111,12 +111,7 @@ class DesktopController
 
         return new JsonResponse([
             'userProgression' => null,
-            'tools' => array_values(array_map(function (Tool $orderedTool) {
-                return [
-                    'icon' => $orderedTool->getClass(),
-                    'name' => $orderedTool->getName(),
-                ];
-            }, $tools)),
+            'tools' => $tools,
             'shortcuts' => isset($parameters['desktop_shortcuts']) ? $parameters['desktop_shortcuts'] : [],
         ]);
     }
