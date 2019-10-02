@@ -13,24 +13,13 @@ namespace Claroline\CoreBundle\Listener\Resource\Types;
 
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Resource\Text;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @DI\Service
- */
 class TextListener
 {
     /** @var ObjectManager */
     private $om;
-
-    /** @var TwigEngine */
-    private $templating;
 
     /** @var SerializerProvider */
     private $serializer;
@@ -38,30 +27,19 @@ class TextListener
     /**
      * TextListener constructor.
      *
-     * @DI\InjectParams({
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *     "templating" = @DI\Inject("templating"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
-     * })
-     *
      * @param ObjectManager      $om
-     * @param TwigEngine         $templating
      * @param SerializerProvider $serializer
      */
     public function __construct(
         ObjectManager $om,
-        TwigEngine $templating,
         SerializerProvider $serializer)
     {
         $this->om = $om;
-        $this->templating = $templating;
         $this->serializer = $serializer;
     }
 
     /**
      * Loads a Text resource.
-     *
-     * @DI\Observe("resource.text.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -75,28 +53,6 @@ class TextListener
     }
 
     /**
-     * @DI\Observe("open_text")
-     *
-     * @param OpenResourceEvent $event
-     */
-    public function open(OpenResourceEvent $event)
-    {
-        $text = $event->getResource();
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:text:index.html.twig',
-            [
-                'text' => $text,
-                '_resource' => $text,
-            ]
-        );
-
-        $event->setResponse(new Response($content));
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("resource.text.delete")
-     *
      * @param DeleteResourceEvent $event
      */
     public function delete(DeleteResourceEvent $event)

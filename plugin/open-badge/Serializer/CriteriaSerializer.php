@@ -9,7 +9,7 @@ use Symfony\Component\Routing\RouterInterface;
 class CriteriaSerializer
 {
     /**
-     * @param Router $router
+     * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
     {
