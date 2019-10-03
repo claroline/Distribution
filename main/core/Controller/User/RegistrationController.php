@@ -55,9 +55,9 @@ class RegistrationController extends Controller
      *     "tokenStorage"         = @DI\Inject("security.token_storage"),
      *     "session"              = @DI\Inject("session"),
      *     "translator"           = @DI\Inject("translator"),
-     *     "profileSerializer"    = @DI\Inject("claroline.serializer.profile"),
+     *     "profileSerializer"    = @DI\Inject("Claroline\CoreBundle\API\Serializer\User\ProfileSerializer"),
      *     "userManager"          = @DI\Inject("claroline.manager.user_manager"),
-     *     "parametersSerializer" = @DI\Inject("claroline.serializer.parameters")
+     *     "parametersSerializer" = @DI\Inject("Claroline\CoreBundle\API\Serializer\ParametersSerializer")
      * })
      *
      * @param TokenStorageInterface $tokenStorage
@@ -144,8 +144,6 @@ class RegistrationController extends Controller
                 'autoLog' => $this->parameters['registration']['auto_logging'],
                 'localeLanguage' => $this->parameters['locales']['default'],
                 'defaultRole' => $this->parameters['registration']['default_role'],
-                'redirectAfterLoginOption' => $this->parameters['authentication']['redirect_after_login_option'],
-                'redirectAfterLoginUrl' => $this->parameters['authentication']['redirect_after_login_url'],
                 'userNameRegex' => $this->parameters['registration']['username_regex'],
                 'forceOrganizationCreation' => $this->parameters['registration']['force_organization_creation'],
                 'allowWorkspace' => $this->parameters['registration']['allow_workspace'],

@@ -17,12 +17,8 @@ use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Manager\EventManager;
 use Claroline\CoreBundle\Manager\ProgressionManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service
- */
 class DashboardListener
 {
     /** @var EventManager */
@@ -38,13 +34,6 @@ class DashboardListener
 
     /**
      * DashboardListener constructor.
-     *
-     * @DI\InjectParams({
-     *     "eventManager"       = @DI\Inject("claroline.event.manager"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
-     *     "progressionManager" = @DI\Inject("claroline.manager.progression_manager"),
-     *     "tokenStorage"       = @DI\Inject("security.token_storage")
-     * })
      *
      * @param EventManager          $eventManager
      * @param ObjectManager         $om
@@ -67,8 +56,6 @@ class DashboardListener
     /**
      * Displays dashboard on Workspace.
      *
-     * @DI\Observe("open_tool_workspace_dashboard")
-     *
      * @param DisplayToolEvent $event
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
@@ -79,7 +66,6 @@ class DashboardListener
         $user = 'anon.' !== $authenticatedUser ? $authenticatedUser : null;
         $items = $this->progressionManager->fetchItems($workspace, $user, $levelMax);
         $workspaceConnections = $this->logConnectWSRepo->findBy(['workspace' => $workspace]);
-
         $event->setData([
             'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_WORKSPACE),
             'items' => $items,

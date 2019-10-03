@@ -2,9 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 import omit from 'lodash/omit'
-import trim from 'lodash/trim'
 
-import {param} from '#/main/app/config/parameters'
+import {url} from '#/main/app/api'
 import {trans} from '#/main/app/intl/translation'
 import {Modal} from '#/main/app/overlays/modal/components/modal'
 import {DetailsData} from '#/main/app/content/details/components/data'
@@ -20,6 +19,7 @@ const AboutModal = props =>
     icon="fa fa-fw fa-info"
     title={trans('about')}
     subtitle={props.workspace.name}
+    poster={props.workspace.poster ? props.workspace.poster.url : undefined}
   >
     <ContentMeta
       creator={get(props.workspace, 'meta.creator')}
@@ -47,7 +47,7 @@ const AboutModal = props =>
               name: 'url',
               type: 'url',
               label: trans('url', {}, 'data'),
-              calculated: (workspace) => `${param('server.protocol')}://${param('server.host')}/${trim(param('server.path'), '/')}#${route(workspace)}`
+              calculated: (workspace) => `${url(['claro_index', {}, true])}#${route(workspace)}`
             }, {
               name: 'meta.description',
               label: trans('description'),

@@ -19,7 +19,7 @@ const ResourcesButton = props =>
     type={MODAL_BUTTON}
     className="btn"
     icon="fa fa-fw fa-folder"
-    label={trans('add_resources')}
+    label={trans('add_resources', {}, 'resource')}
     primary={true}
     modal={[MODAL_RESOURCES, {
       title: props.title,
@@ -38,8 +38,14 @@ const ResourcesButton = props =>
 
 ResourcesButton.propTypes = {
   title: T.string,
-  current: T.shape(ResourceNodeTypes.propTypes),
-  root: T.shape(ResourceNodeTypes.propTypes),
+  root: T.shape({
+    slug: T.string.isRequired,
+    name: T.string.isRequired
+  }),
+  current: T.shape({
+    slug: T.string.isRequired,
+    name: T.string.isRequired
+  }),
   onChange: T.func.isRequired
 }
 
@@ -96,7 +102,7 @@ const ResourcesInput = props => {
       id={props.id}
       size="lg"
       icon="fa fa-folder"
-      title={trans('no_resource')}
+      title={trans('no_resource', {}, 'resource')}
     >
       <ResourcesButton
         {...props.picker}
@@ -113,8 +119,14 @@ implementPropTypes(ResourcesInput, FormFieldTypes, {
   )),
   picker: T.shape({
     title: T.string,
-    current: T.shape(ResourceNodeTypes.propTypes),
-    root: T.shape(ResourceNodeTypes.propTypes),
+    root: T.shape({
+      slug: T.string.isRequired,
+      name: T.string.isRequired
+    }),
+    current: T.shape({
+      slug: T.string.isRequired,
+      name: T.string.isRequired
+    }),
     filters: T.object
   })
 }, {

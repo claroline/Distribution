@@ -704,7 +704,7 @@
 
 @panel-bg:                    #fff;
 @panel-body-padding:          15px;
-@panel-heading-padding:       10px 15px;
+@panel-heading-padding:       @panel-heading-padding-v @panel-heading-padding-h;
 @panel-footer-padding:        @panel-heading-padding;
 @panel-border-radius:         0;
 
@@ -742,11 +742,11 @@
 //##
 
 //** Padding around the thumbnail image
-@thumbnail-padding:           4px;
+@thumbnail-padding:           0;
 //** Thumbnail background color
-@thumbnail-bg:                @body-bg;
+@thumbnail-bg:                transparent;
 //** Thumbnail border color
-@thumbnail-border:            #ddd;
+@thumbnail-border:            transparent;
 //** Thumbnail border radius
 @thumbnail-border-radius:     @border-radius-base;
 

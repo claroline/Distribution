@@ -55,7 +55,7 @@ class DesktopController
      * @DI\InjectParams({
      *     "authorization"         = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
-     *     "parametersSerializer"  = @DI\Inject("claroline.serializer.parameters"),
+     *     "parametersSerializer"  = @DI\Inject("Claroline\CoreBundle\API\Serializer\ParametersSerializer"),
      *     "serializer"            = @DI\Inject("claroline.api.serializer"),
      *     "toolManager"           = @DI\Inject("claroline.manager.tool_manager")
      * })
@@ -97,11 +97,16 @@ class DesktopController
             throw new AccessDeniedException();
         }
 
+        //this will need to change, I hope it's only temporary but there are a lot of users with missing Tools
+        //on our prod environments
+        $this->toolManager->addMissingDesktopTools($currentUser);
+
         $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
 
         if (0 === count($tools)) {
             throw new AccessDeniedException('no tools');
         }
+
         $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
 
         return new JsonResponse([
@@ -143,5 +148,27 @@ class DesktopController
         $this->eventDispatcher->dispatch('log', new LogDesktopToolReadEvent($toolName));
 
         return new JsonResponse($event->getData());
+    }
+
+    /**
+     * Lists desktop tools accessible by the current user.
+     *
+     * @EXT\Route("/tools", name="claro_desktop_tools")
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
+     *
+     * @param User|null $currentUser
+     *
+     * @return JsonResponse
+     */
+    public function listToolsAction(User $currentUser = null)
+    {
+        $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
+
+        return new JsonResponse(array_values(array_map(function (Tool $orderedTool) {
+            return [
+                'icon' => $orderedTool->getClass(),
+                'name' => $orderedTool->getName(),
+            ];
+        }, $tools)));
     }
 }

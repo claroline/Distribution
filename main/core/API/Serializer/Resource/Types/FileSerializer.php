@@ -7,14 +7,10 @@ use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Resource\File\LoadFileEvent;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * @DI\Service("claroline.serializer.resource_file")
- * @DI\Tag("claroline.serializer")
- */
 class FileSerializer
 {
     use SerializerTrait;
@@ -29,12 +25,6 @@ class FileSerializer
 
     /**
      * ResourceNodeManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "router"          = @DI\Inject("router"),
-     *     "filesDir"        = @DI\Inject("%claroline.param.files_directory%"),
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
-     * })
      *
      * @param RouterInterface          $router
      * @param string                   $filesDir
@@ -72,7 +62,7 @@ class FileSerializer
             // NB : This will no longer be required when the stream API will use UUIDs
             'url' => $this->router->generate('claro_file_get_media', [
                 'node' => $file->getResourceNode()->getId(),
-            ]),
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
         ];
 
         $additionalFileData = [];

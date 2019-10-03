@@ -11,27 +11,24 @@
 
 namespace Claroline\AnnouncementBundle\Listener\Resource;
 
+use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
-use Claroline\AnnouncementBundle\Serializer\AnnouncementAggregateSerializer;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Event\ExportObjectEvent;
+use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @DI\Service()
- */
 class AnnouncementListener
 {
     use PermissionCheckerTrait;
@@ -50,14 +47,6 @@ class AnnouncementListener
     /**
      * AnnouncementListener constructor.
      *
-     * @DI\InjectParams({
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *     "templating" = @DI\Inject("templating"),
-     *     "manager"    = @DI\Inject("claroline.manager.announcement_manager"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "crud"       = @DI\Inject("claroline.api.crud")
-     * })
-     *
      * @param ObjectManager       $om
      * @param TwigEngine          $templating
      * @param AnnouncementManager $manager
@@ -69,19 +58,19 @@ class AnnouncementListener
         TwigEngine $templating,
         AnnouncementManager $manager,
         SerializerProvider $serializer,
-        Crud $crud
+        Crud $crud,
+        AuthorizationCheckerInterface $authorization
     ) {
         $this->om = $om;
         $this->templating = $templating;
         $this->manager = $manager;
         $this->serializer = $serializer;
         $this->crud = $crud;
+        $this->authorization = $authorization;
     }
 
     /**
      * Loads an Announcement resource.
-     *
-     * @DI\Observe("resource.claroline_announcement_aggregate.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -101,38 +90,6 @@ class AnnouncementListener
     }
 
     /**
-     * @DI\Observe("open_claroline_announcement_aggregate")
-     *
-     * @param OpenResourceEvent $event
-     */
-    public function open(OpenResourceEvent $event)
-    {
-        $resource = $event->getResource();
-        $workspace = $resource->getResourceNode()->getWorkspace();
-
-        $options = [];
-        if (!$this->checkPermission('EDIT', $resource->getResourceNode())) {
-            // filter returned posts
-            $options[] = AnnouncementAggregateSerializer::VISIBLE_POSTS_ONLY;
-        }
-
-        $content = $this->templating->render(
-            'ClarolineAnnouncementBundle:announcement:open.html.twig', [
-                '_resource' => $resource,
-                'announcement' => $this->serializer->serialize($resource, $options),
-                'roles' => array_map(function (Role $role) {
-                    return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
-                }, $workspace->getRoles()->toArray()),
-            ]
-        );
-
-        $event->setResponse(new Response($content));
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("resource.claroline_announcement_aggregate.copy")
-     *
      * @param CopyResourceEvent $event
      */
     public function copy(CopyResourceEvent $event)
@@ -159,9 +116,35 @@ class AnnouncementListener
         $event->stopPropagation();
     }
 
+    public function onExport(ExportObjectEvent $exportEvent)
+    {
+        $announcements = $exportEvent->getObject();
+        $announcePosts = $announcements->getAnnouncements()->toArray();
+
+        $data = [
+          'posts' => array_map(function (Announcement $announcement) {
+              return $this->serializer->serialize($announcement);
+          }, $announcePosts),
+        ];
+
+        $exportEvent->overwrite('_data', $data);
+    }
+
+    public function onImport(ImportObjectEvent $event)
+    {
+        $data = $event->getData();
+        $announcement = $event->getObject();
+
+        foreach ($data['posts'] as $post) {
+            $announce = $this->serializer->deserialize($post, new Announcement(), [Options::REFRESH_UUID]);
+            $this->om->persist($announce);
+            $announce->setAggregate($announcement);
+        }
+
+        $this->om->persist($announcement);
+    }
+
     /**
-     * @DI\Observe("delete_claroline_announcement_aggregate")
-     *
      * @param DeleteResourceEvent $event
      */
     public function delete(DeleteResourceEvent $event)

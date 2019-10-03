@@ -5,12 +5,9 @@ namespace Icap\WikiBundle\Listener;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use Icap\WikiBundle\Manager\ContributionManager;
 use Icap\WikiBundle\Manager\SectionManager;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * UserListener.
- *
- * @DI\Service
  */
 class UserListener
 {
@@ -21,11 +18,6 @@ class UserListener
     private $contributionManager;
 
     /**
-     * @DI\InjectParams({
-     *     "sectionManager"      = @DI\Inject("icap.wiki.section_manager"),
-     *     "contributionManager" = @DI\Inject("icap.wiki.contribution_manager")
-     * })
-     *
      * @param SectionManager      $sectionManager
      * @param ContributionManager $contributionManager
      */
@@ -36,8 +28,6 @@ class UserListener
     }
 
     /**
-     * @DI\Observe("merge_users")
-     *
      * @param MergeUsersEvent $event
      */
     public function onMerge(MergeUsersEvent $event)

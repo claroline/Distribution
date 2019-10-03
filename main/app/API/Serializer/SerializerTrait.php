@@ -13,8 +13,6 @@ namespace Claroline\AppBundle\API\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Utils\ArrayUtils;
-use Claroline\AppBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation as DI;
 
 trait SerializerTrait
 {
@@ -51,18 +49,6 @@ trait SerializerTrait
     }
 
     /**
-     * @DI\InjectParams({
-     *      "om" = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     *
-     * @param ObjectManager $om
-     */
-    public function setObjectManager(ObjectManager $om)
-    {
-        $this->_om = $om;
-    }
-
-    /**
      * alias method.
      */
     public function findInCollection($object, $method, $id, $class = null)
@@ -74,7 +60,7 @@ trait SerializerTrait
         }
 
         if ($class) {
-            return $this->_om->getObject(['id' => $id], $class);
+            return $this->om->getObject(['id' => $id], $class);
         }
     }
 }

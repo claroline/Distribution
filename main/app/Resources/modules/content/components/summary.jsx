@@ -4,7 +4,7 @@ import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
-import {toKey} from '#/main/core/scaffolding/text/utils'
+import {toKey} from '#/main/core/scaffolding/text'
 
 import {PropTypes as T, implementPropTypes} from '#/main/app/prop-types'
 import {Button} from '#/main/app/action/components/button'
@@ -75,12 +75,15 @@ class SummaryLink extends Component {
 
         {!this.state.collapsed && this.props.children.length > 0 &&
           <ul className="step-children">
-            {this.props.children.map((child, index) =>
-              <SummaryLink
-                {...child}
-                key={toKey(child.label) + index}
-              />
-            )}
+            {this.props.children
+              .filter(child => undefined === child.displayed || child.displayed)
+              .map((child, index) =>
+                <SummaryLink
+                  {...child}
+                  key={toKey(child.label) + index}
+                />
+              )
+            }
           </ul>
         }
       </li>
@@ -111,12 +114,15 @@ const Summary = props => {
   if (0 !== props.links.length ) {
     return (
       <ul className="summary">
-        {props.links.map((link, index) =>
-          <SummaryLink
-            {...link}
-            key={toKey(link.label) + index}
-          />
-        )}
+        {props.links
+          .filter(link => undefined === link.displayed || link.displayed)
+          .map((link, index) =>
+            <SummaryLink
+              {...link}
+              key={toKey(link.label) + index}
+            />
+          )
+        }
       </ul>
     )
   }

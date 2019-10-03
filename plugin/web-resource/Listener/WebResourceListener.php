@@ -56,7 +56,7 @@ class WebResourceListener
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "uploadDir"          = @DI\Inject("%claroline.param.uploads_directory%"),
      *     "serializer"         = @DI\Inject("claroline.api.serializer"),
-     *     "webResourceManager" = @DI\Inject("claroline.manager.web_resource_manager"),
+     *     "webResourceManager" = @DI\Inject("Claroline\WebResourceBundle\Manager\WebResourceManager"),
      *     "resourceManager"    = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
@@ -161,7 +161,7 @@ class WebResourceListener
     }
 
     /**
-     * @DI\Observe("delete_claroline_web_resource")
+     * @DI\Observe("resource.claroline_web_resource.delete")
      *
      * @param DeleteResourceEvent $event
      */

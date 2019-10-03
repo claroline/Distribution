@@ -23,16 +23,12 @@ use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Repository\Organization\OrganizationRepository;
 use Claroline\CoreBundle\Repository\RoleRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Role\Role as BaseRole;
 
 /**
- * @DI\Service("claroline.serializer.user")
- * @DI\Tag("claroline.serializer")
- *
  * @todo remove parent class
  */
 class UserSerializer extends GenericSerializer
@@ -70,19 +66,6 @@ class UserSerializer extends GenericSerializer
 
     /**
      * UserManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "tokenStorage"              = @DI\Inject("security.token_storage"),
-     *     "authChecker"               = @DI\Inject("security.authorization_checker"),
-     *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
-     *     "config"                    = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "facetManager"              = @DI\Inject("claroline.manager.facet_manager"),
-     *     "fileSerializer"            = @DI\Inject("claroline.serializer.public_file"),
-     *     "organizationSerializer"    = @DI\Inject("claroline.serializer.organization"),
-     *     "container"                 = @DI\Inject("service_container"),
-     *     "eventDispatcher"           = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "fieldFacetValueSerializer" = @DI\Inject("claroline.serializer.field_facet_value")
-     * })
      *
      * @param TokenStorageInterface         $tokenStorage
      * @param AuthorizationCheckerInterface $authChecker
@@ -483,9 +466,12 @@ class UserSerializer extends GenericSerializer
         }
 
         if (isset($data['mainOrganization'])) {
-            $organization = $this->om->getObject($data['mainOrganization'], Organization::class);
-            $user->addOrganization($organization);
-            $user->setMainOrganization($organization);
+            $organization = $this->om->getObject($data['mainOrganization'], Organization::class, ['code']);
+
+            if ($organization) {
+                $user->addOrganization($organization);
+                $user->setMainOrganization($organization);
+            }
         }
 
         //only add role here. If we want to remove them, use the crud remove method instead
@@ -531,7 +517,7 @@ class UserSerializer extends GenericSerializer
         //it's useful if we want to create a user with a list of roles
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $group) {
-                $group = $this->om->getObject($group, Group::class);
+                $group = $this->om->getObject($group, Group::class, ['name']);
 
                 if ($group && $group->getId()) {
                     $user->addGroup($group);

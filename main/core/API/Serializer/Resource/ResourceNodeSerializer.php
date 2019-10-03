@@ -21,12 +21,8 @@ use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\OptimizedRightsManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
-use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\LinkBundle\Entity\Resource\Shortcut;
 
-/**
- * @DI\Service("claroline.serializer.resource_node")
- * @DI\Tag("claroline.serializer")
- */
 class ResourceNodeSerializer
 {
     use SerializerTrait;
@@ -57,17 +53,6 @@ class ResourceNodeSerializer
 
     /**
      * ResourceNodeManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
-     *     "eventDispatcher"  = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "fileSerializer"   = @DI\Inject("claroline.serializer.public_file"),
-     *     "userSerializer"   = @DI\Inject("claroline.serializer.user"),
-     *     "maskManager"      = @DI\Inject("claroline.manager.mask_manager"),
-     *     "newRightsManager" = @DI\Inject("claroline.manager.optimized_rights_manager"),
-     *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager"),
-     *     "serializer"       = @DI\Inject("claroline.api.serializer")
-     * })
      *
      * @param ObjectManager          $om
      * @param StrictDispatcher       $eventDispatcher
@@ -110,7 +95,6 @@ class ResourceNodeSerializer
     {
         $serializedNode = [
             //also used for the export. It's not pretty.
-
             'autoId' => $resourceNode->getId(),
             'id' => $resourceNode->getUuid(),
             'slug' => $resourceNode->getSlug(),
@@ -132,22 +116,13 @@ class ResourceNodeSerializer
             $serializedNode['workspace'] = [ // TODO : use workspace serializer with minimal option
                 'id' => $resourceNode->getWorkspace()->getUuid(),
                 'slug' => $resourceNode->getWorkspace()->getSlug(),
-                'autoId' => $resourceNode->getWorkspace()->getId(), // because open url does not work with uuid
+                'autoId' => $resourceNode->getWorkspace()->getId(), // TODO : remove me
                 'name' => $resourceNode->getWorkspace()->getName(),
                 'code' => $resourceNode->getWorkspace()->getCode(),
             ];
         }
 
-        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
-            $serializedNode = array_merge($serializedNode, [
-                'display' => $this->serializeDisplay($resourceNode),
-                'restrictions' => $this->serializeRestrictions($resourceNode),
-            ]);
-        }
-
-        //maybe don't remove me, it's used by the export system
         $parent = $resourceNode->getParent();
-
         if (!empty($parent)) {
             $serializedNode['parent'] = [
                 'id' => $parent->getUuid(),
@@ -158,14 +133,16 @@ class ResourceNodeSerializer
         }
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
-            $serializedNode['comments'] = array_map(function (ResourceComment $comment) {
-                return $this->serializer->serialize($comment);
-            }, $resourceNode->getComments()->toArray());
+            $serializedNode = array_merge($serializedNode, [
+                'display' => $this->serializeDisplay($resourceNode),
+                'restrictions' => $this->serializeRestrictions($resourceNode),
+                'comments' => array_map(function (ResourceComment $comment) {
+                    return $this->serializer->serialize($comment);
+                }, $resourceNode->getComments()->toArray()),
+            ]);
         }
 
-        $serializedNode = $this->decorate($resourceNode, $serializedNode, $options);
-
-        return $serializedNode;
+        return $this->decorate($resourceNode, $serializedNode, $options);
     }
 
     /**
@@ -266,6 +243,16 @@ class ResourceNodeSerializer
             'views' => $resourceNode->getViewsCount(),
             'commentsActivated' => $resourceNode->isCommentsActivated(),
         ];
+
+        if (Shortcut::class === $resourceNode->getResourceType()->getClass()) {
+            //required for opening the proper player in case of shortcut. This is not pretty but the players
+            //need the meta['type'] to be the target one to open the proper player/editor (they dont know what to do otherwise)
+            //unless we implement a "link" player wich will then the target and dispatch again.
+            //This is the easy way
+            $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
+            $target = $resource->getTarget();
+            $meta['type'] = $target->getResourceType()->getName();
+        }
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $meta = array_merge($meta, [

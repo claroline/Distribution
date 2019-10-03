@@ -8,6 +8,7 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
@@ -16,13 +17,8 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Repository\RoleRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service("claroline.serializer.announcement")
- * @DI\Tag("claroline.serializer")
- */
 class AnnouncementSerializer
 {
     use SerializerTrait;
@@ -49,30 +45,26 @@ class AnnouncementSerializer
     /** @var WorkspaceSerializer */
     private $wsSerializer;
 
+    /** @var ResourceNodeSerializer */
+    private $nodeSerializer;
+
     /**
      * AnnouncementSerializer constructor.
      *
-     * @DI\InjectParams({
-     *     "tokenStorage"         = @DI\Inject("security.token_storage"),
-     *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
-     *     "publicFileSerializer" = @DI\Inject("claroline.serializer.public_file"),
-     *     "fileUt"               = @DI\Inject("claroline.utilities.file"),
-     *     "wsSerializer"         = @DI\Inject("claroline.serializer.workspace")
-     * })
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param UserSerializer        $userSerializer
-     * @param ObjectManager         $om
-     * @param WorkspaceSerializer   $wsSerializer
-     * @param PublicFileSerializer  $publicFileSerializer
-     * @param FileUtilities         $fileUt
+     * @param TokenStorageInterface  $tokenStorage
+     * @param UserSerializer         $userSerializer
+     * @param ObjectManager          $om
+     * @param WorkspaceSerializer    $wsSerializer
+     * @param ResourceNodeSerializer $nodeSerializer
+     * @param PublicFileSerializer   $publicFileSerializer
+     * @param FileUtilities          $fileUt
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         UserSerializer $userSerializer,
         ObjectManager $om,
         WorkspaceSerializer $wsSerializer,
+        ResourceNodeSerializer $nodeSerializer,
         PublicFileSerializer $publicFileSerializer,
         FileUtilities $fileUt
     ) {
@@ -81,6 +73,7 @@ class AnnouncementSerializer
         $this->om = $om;
         $this->fileUt = $fileUt;
         $this->wsSerializer = $wsSerializer;
+        $this->nodeSerializer = $nodeSerializer;
         $this->publicFileSerializer = $publicFileSerializer;
 
         $this->aggregateRepo = $om->getRepository('ClarolineAnnouncementBundle:AnnouncementAggregate');
@@ -94,6 +87,14 @@ class AnnouncementSerializer
      */
     public function serialize(Announcement $announce)
     {
+        $poster = null;
+        if ($announce->getPoster()) {
+            /** @var PublicFile $poster */
+            $poster = $this->om->getRepository(PublicFile::class)->findOneBy([
+                'url' => $announce->getPoster(),
+            ]);
+        }
+
         return [
             'id' => $announce->getUuid(),
             'title' => $announce->getTitle(),
@@ -102,9 +103,8 @@ class AnnouncementSerializer
                 $this->wsSerializer->serialize($announce->getAggregate()->getResourceNode()->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
                 null, // TODO : remove me, can be retrieved from the node
             'meta' => [
-                'resource' => [
-                    'id' => $announce->getAggregate()->getResourceNode()->getUuid(), // TODO : remove me, can be retrieved from the node
-                ],
+                // required to be able to open the announce from the data source
+                'resource' => $this->nodeSerializer->serialize($announce->getAggregate()->getResourceNode(), [Options::SERIALIZE_MINIMAL]),
                 'created' => $announce->getCreationDate()->format('Y-m-d\TH:i:s'),
                 'creator' => $announce->getCreator() ? $this->userSerializer->serialize($announce->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
                 'publishedAt' => $announce->getPublicationDate() ? $announce->getPublicationDate()->format('Y-m-d\TH:i:s') : null,
@@ -122,13 +122,7 @@ class AnnouncementSerializer
             'roles' => array_map(function (Role $role) {
                 return $role->getUuid();
             }, $announce->getRoles()),
-            'poster' => $announce->getPoster() && $this->om->getRepository(PublicFile::class)->findOneBy([
-                  'url' => $announce->getPoster(),
-              ]) ? $this->publicFileSerializer->serialize(
-                $this->om->getRepository(PublicFile::class)->findOneBy([
-                    'url' => $announce->getPoster(),
-              ])
-            ) : null,
+            'poster' => $poster ? $this->publicFileSerializer->serialize($poster) : null,
         ];
     }
 

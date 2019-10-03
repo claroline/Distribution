@@ -2,8 +2,6 @@
 
 namespace Claroline\AppBundle\API;
 
-use Claroline\AppBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use JVal\Context;
 use JVal\Registry;
 use JVal\Resolver;
@@ -11,9 +9,6 @@ use JVal\Uri;
 use JVal\Utils;
 use JVal\Walker;
 
-/**
- * @DI\Service("claroline.api.schema")
- */
 class SchemaProvider
 {
     /**
@@ -22,39 +17,19 @@ class SchemaProvider
      * @var array
      */
     private $serializers = [];
-    /** @var ObjectManager */
+    /** @var string */
     private $rootDir;
     /** @var string */
     private $baseUri;
 
     /**
-     * Injects Serializer service.
-     *
-     * @DI\InjectParams({
-     *      "rootDir" = @DI\Inject("%kernel.root_dir%")
-     * })
-     *
-     * @param ObjectManager $om
-     * @param string        $rootDir
+     * @param string $rootDir
      */
-    public function setRootDir($rootDir)
+    public function __construct($rootDir, SerializerProvider $serializer)
     {
         $this->rootDir = $rootDir.'/..';
         $this->baseUri = 'https://github.com/claroline/Distribution/tree/master';
-    }
-
-    /**
-     * Registers a new serializer.
-     *
-     * @param mixed $serializer
-     *
-     * @throws \Exception
-     */
-    public function add($serializer)
-    {
-        if (method_exists($serializer, 'getSchema')) {
-            $this->serializers[] = $serializer;
-        }
+        $this->serializer = $serializer;
     }
 
     /**
@@ -62,7 +37,7 @@ class SchemaProvider
      *
      * @param mixed $serializer
      *
-     * @return $string
+     * @return string
      */
     public function getSchemaHandledClass($serializer)
     {
@@ -83,7 +58,7 @@ class SchemaProvider
     /**
      * Gets a registered serializer instance.
      *
-     * @param mixed $object
+     * @param string $class
      *
      * @return mixed
      *
@@ -91,21 +66,22 @@ class SchemaProvider
      */
     public function get($class)
     {
-        foreach ($this->serializers as $serializer) {
+        foreach ($this->serializer->all() as $serializer) {
             if ($class === $this->getSchemaHandledClass($serializer)) {
                 return $serializer;
             }
         }
 
         //no exception to not break everything atm
+        return null;
     }
 
     /**
      * Check if serializer instance exists.
      *
-     * @param mixed $object
+     * @param string $class
      *
-     * @return mixed
+     * @return bool
      *
      * @throws \Exception
      */
@@ -118,11 +94,15 @@ class SchemaProvider
             }
         }
 
-        false;
+        return false;
     }
 
     /**
      * Get the identifier list from the json schema.
+     *
+     * @param string $class
+     *
+     * @return array
      */
     public function getIdentifiers($class)
     {
@@ -131,12 +111,15 @@ class SchemaProvider
         if (isset($schema->claroline)) {
             return $schema->claroline->ids;
         }
+
+        return [];
     }
 
     /**
      * Gets the json schema of a class.
      *
      * @param string $class
+     * @param array  $options
      *
      * @return \stdClass
      */
@@ -166,14 +149,17 @@ class SchemaProvider
 
             return $schema;
         }
+
+        return null;
     }
 
     /**
      * Gets the json schema examples.
      *
      * @param string $class
+     * @param array  $options
      *
-     * @return \stdClass
+     * @return array
      */
     public function getSamples($class, array $options = [])
     {
@@ -235,6 +221,8 @@ class SchemaProvider
             return $this->rootDir.'/vendor/claroline/distribution/'
               .$path[1].'/'.$path[2].'/Resources/samples/'.$path[3];
         }
+
+        return null;
     }
 
     /**

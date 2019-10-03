@@ -4,11 +4,7 @@ namespace Claroline\AppBundle\API;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.api.serializer")
- */
 class SerializerProvider
 {
     use LoggableTrait;
@@ -29,15 +25,10 @@ class SerializerProvider
     /**
      * Injects Serializer service.
      *
-     * @DI\InjectParams({
-     *      "om"      = @DI\Inject("claroline.persistence.object_manager"),
-     *      "rootDir" = @DI\Inject("%kernel.root_dir%")
-     * })
-     *
      * @param ObjectManager $om
      * @param string        $rootDir
      */
-    public function setObjectManager(ObjectManager $om, $rootDir)
+    public function __construct(ObjectManager $om, $rootDir)
     {
         $this->om = $om;
         $this->rootDir = $rootDir.'/..';
@@ -78,6 +69,10 @@ class SerializerProvider
             //    this is not always possible, because some serializers can not use type hint (mostly because of an Interface),
             //    so for this case the `getClass` method is required
             $p = new \ReflectionParameter([get_class($serializer), 'serialize'], 0);
+
+            if (!$p->getClass()) {
+                throw new \Exception(get_class($serializer).' is missing type hinting or getClass method');
+            }
 
             return $p->getClass()->getName();
         }

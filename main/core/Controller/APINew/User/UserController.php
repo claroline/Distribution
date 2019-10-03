@@ -24,7 +24,6 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -56,13 +55,6 @@ class UserController extends AbstractCrudController
 
     /**
      * UserController constructor.
-     *
-     * @DI\InjectParams({
-     *     "authChecker"     = @DI\Inject("security.authorization_checker"),
-     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "manager"         = @DI\Inject("claroline.manager.user_manager"),
-     *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager")
-     * })
      *
      * @param AuthorizationCheckerInterface $authChecker
      * @param StrictDispatcher              $eventDispatcher
@@ -308,7 +300,7 @@ class UserController extends AbstractCrudController
         }
 
         if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
-            $this->manager->logUser($user, $request);
+            $this->manager->logUser($user);
         }
 
         return new JsonResponse(
@@ -614,36 +606,6 @@ class UserController extends AbstractCrudController
         return new JsonResponse(array_map(function (User $user) {
             return $this->serializer->serialize($user);
         }, $users));
-    }
-
-    /**
-     * @ApiDoc(
-     *     description="This is the route used by the user picker.",
-     * )
-     * @Route(
-     *    "/picker",
-     *    name="apiv2_users_picker_list"
-     * )
-     * @Method("GET")
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function usersPickerListAction(Request $request)
-    {
-        return new JsonResponse($this->finder->search(
-            User::class,
-            array_merge(
-                $request->query->all(),
-                ['hiddenFilters' => [
-                    'isEnabled' => true,
-                    'isRemoved' => false,
-                    'contactable' => true,
-                ]]
-            ),
-            [Options::SERIALIZE_MINIMAL]
-        ));
     }
 
     /**

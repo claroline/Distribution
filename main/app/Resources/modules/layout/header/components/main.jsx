@@ -37,7 +37,7 @@ const HeaderMain = props =>
         <Await
           key={menu}
           for={getMenu(menu)}
-          then={(menuApp) => createElement(menuApp.default, {
+          then={(menuApp) => createElement(menuApp.default.component, {
             authenticated: props.authenticated,
             user: props.currentUser
           })}
@@ -51,20 +51,20 @@ const HeaderMain = props =>
         impersonated={props.impersonated}
         isAdmin={props.isAdmin}
         registration={props.registration}
-        tools={props.tools}
         locale={props.locale}
         actions={[
           {
             type: CALLBACK_BUTTON,
             icon: 'fa fa-fw fa-street-view',
             label: trans('walkthroughs'),
-            callback: () => props.startWalkthrough(getWalkthrough(props.tools, props.authenticated, props.display))
+            callback: () => props.startWalkthrough(getWalkthrough([], props.authenticated, props.display)),
+            displayed: false
           }, {
             type: URL_BUTTON,
             icon: 'fa fa-fw fa-question',
             label: trans('help'),
             target: props.helpUrl,
-            displayed: !!props.helpUrl
+            displayed: props.display.help && !!props.helpUrl
           }, {
             type: URL_BUTTON,
             icon: 'fa fa-fw fa-power-off',
@@ -97,7 +97,9 @@ HeaderMain.propTypes = {
   title: T.string,
   subtitle: T.string,
   display: T.shape({
-    name: T.bool.isRequired
+    name: T.bool.isRequired,
+    about: T.bool.isRequired,
+    help: T.bool.isRequired
   }).isRequired,
 
   /**
@@ -116,7 +118,6 @@ HeaderMain.propTypes = {
   impersonated: T.bool.isRequired,
   authenticated: T.bool.isRequired,
   isAdmin: T.bool.isRequired,
-  tools: T.array,
   helpUrl: T.string,
   registration: T.bool,
   startWalkthrough: T.func.isRequired,
@@ -128,7 +129,6 @@ HeaderMain.defaultProps = {
   impersonated: true,
   isAdmin: false,
   currentUser: null,
-  tools: [],
   notificationTools: [],
   registration: false
 }

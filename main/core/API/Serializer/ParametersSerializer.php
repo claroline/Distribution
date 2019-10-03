@@ -10,12 +10,9 @@ use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\IconSetManager;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Serializes platform parameters.
- *
- * @DI\Service("claroline.serializer.parameters")
  */
 class ParametersSerializer
 {
@@ -36,16 +33,6 @@ class ParametersSerializer
 
     /**
      * ParametersSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "serializer"    = @DI\Inject("claroline.api.serializer"),
-     *     "finder"        = @DI\Inject("claroline.api.finder"),
-     *     "filePath"      = @DI\Inject("%claroline.param.platform_options%"),
-     *     "configHandler" = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "ism"           = @DI\Inject("claroline.manager.icon_set_manager"),
-     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "archivePath"   = @DI\Inject("%claroline.param.archive_directory%")
-     * })
      *
      * @param SerializerProvider           $serializer
      * @param FinderProvider               $finder
@@ -100,6 +87,7 @@ class ParametersSerializer
         $this->deserializeTos($data);
         $data = $this->getJavascriptsData($data);
         $data = $this->getLogoData($data);
+        $data['mailer'] = $this->deserializeMailer($data['mailer']);
         unset($data['tos']['text']);
         //maybe move this somewhere else
         unset($data['archives']);
@@ -111,6 +99,18 @@ class ParametersSerializer
         file_put_contents($this->filePath, $data);
 
         return $original;
+    }
+
+    public function deserializeMailer($data)
+    {
+        if ('gmail' === $data['transport']) {
+            $data['host'] = 'smtp.gmail.com';
+            $data['auth_mode'] = 'login';
+            $data['encryption'] = 'ssl';
+            $data['port'] = '465';
+        }
+
+        return $data;
     }
 
     public function serializeTos()

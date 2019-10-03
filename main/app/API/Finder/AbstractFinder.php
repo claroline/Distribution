@@ -22,7 +22,6 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
 
 abstract class AbstractFinder implements FinderInterface
 {
@@ -36,23 +35,32 @@ abstract class AbstractFinder implements FinderInterface
     /**
      * AbstractFinder constructor.
      *
-     * @DI\InjectParams({
-     *      "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *      "em"              = @DI\Inject("doctrine.orm.entity_manager"),
-     *      "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher")
-     * })
-     *
      * @param ObjectManager    $om
      * @param EntityManager    $em
      * @param StrictDispatcher $eventDispatcher
      */
-    public function setObjectManager(
+    public function setDependencies(
         ObjectManager $om,
         EntityManager $em,
         StrictDispatcher $eventDispatcher
     ) {
         $this->om = $om;
         $this->_em = $em;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->_em = $em;
+    }
+
+    public function setEventDispatcher(StrictDispatcher $eventDispatcher)
+    {
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -68,6 +76,8 @@ abstract class AbstractFinder implements FinderInterface
 
     /**
      * Might not be fully functional with the unions.
+     *
+     * @param array $filters
      */
     public function delete(array $filters = [])
     {
@@ -210,7 +220,7 @@ abstract class AbstractFinder implements FinderInterface
         $firstQb->select('DISTINCT obj', ...$extraSelect)->from($this->getClass(), 'obj');
         /** @var SearchObjectsEvent $event */
         $build = $this->configureQueryBuilder($firstQb, $firstSearch);
-        $event = $this->eventDispatcher->dispatch('objects.search', SearchObjectsEvent::class, [
+        $this->eventDispatcher->dispatch('objects.search', SearchObjectsEvent::class, [
             'queryBuilder' => $firstQb,
             'objectClass' => $this->getClass(),
             'filters' => $firstSearch,
@@ -229,7 +239,7 @@ abstract class AbstractFinder implements FinderInterface
 
         $build = $this->configureQueryBuilder($secQb, $secondSearch);
 
-        $event = $this->eventDispatcher->dispatch('objects.search', SearchObjectsEvent::class, [
+        $this->eventDispatcher->dispatch('objects.search', SearchObjectsEvent::class, [
             'queryBuilder' => $secQb,
             'objectClass' => $this->getClass(),
             'filters' => $secondSearch,

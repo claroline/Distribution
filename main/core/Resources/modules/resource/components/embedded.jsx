@@ -1,14 +1,18 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {mount, unmount} from '#/main/app/dom/mount'
+import {withReducer} from '#/main/app/store/components/withReducer'
+import {Routes} from '#/main/app/router'
 
 import {selectors as configSelectors} from '#/main/app/config/store'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 
 import {ResourceMain} from '#/main/core/resource/containers/main'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
+import {actions, reducer, selectors} from '#/main/core/resource/store'
 
 // the class is because of the use of references and lifecycle
 class ResourceEmbedded extends Component {
@@ -40,27 +44,58 @@ class ResourceEmbedded extends Component {
   }
 
   mountResource() {
-    mount(this.mountNode, ResourceMain, {}, {
+    // I'm not sure this is the best way to do it
+    // but I need to be able to open a directory directly in the widget
+    const RoutedResource = props =>
+      <Routes
+        path="/desktop/resources"
+        routes={[
+          {
+            path: '/:slug',
+            onEnter: (params = {}) => props.openResource(params.slug),
+            component: ResourceMain
+          }
+        ]}
+      />
+
+    const ConnectedResource = withReducer(selectors.STORE_NAME, reducer)(
+      connect(
+        null,
+        (dispatch) => ({
+          openResource(slug) {
+            dispatch(actions.openResource(slug))
+          }
+        })
+      )(RoutedResource)
+    )
+
+    ConnectedResource.displayName = `EmbeddedResourceApp(${this.props.resourceNode.meta.type})`
+
+    mount(this.mountNode, ConnectedResource, {}, {
       [securitySelectors.STORE_NAME]: {
         currentUser: this.props.currentUser,
         impersonated: this.props.impersonated
       },
       [configSelectors.STORE_NAME]: this.props.config,
+      // mount the resource tool in the store
       tool: {
         loaded: true,
         name: 'resources',
-        basePath: '',
+        basePath: '/desktop',
         currentContext: {
           type: 'desktop'
         }
       },
+      resources: { // TODO : retrieve tool store name from var
+        root: this.props.resourceNode
+      },
+      // mount the resource in the store
       resource: {
-        slug: this.props.resourceNode.slug,
         embedded: true,
         showHeader: this.props.showHeader,
         lifecycle: this.props.lifecycle
       }
-    }, true, `/resources/${this.props.resourceNode.slug}`)
+    }, true, `/desktop/resources/${this.props.resourceNode.slug}`)
   }
 
   render() {

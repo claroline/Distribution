@@ -1,0 +1,25 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: true
+        tags: [twig.extension]
+
+    Claroline\CoreBundle\Twig\ContentExtension:
+       arguments:
+          - '@claroline.manager.content_manager'
+
+    Claroline\CoreBundle\Twig\PcreExtension: ~
+
+    Claroline\CoreBundle\Twig\ThemeExtension:
+       arguments:
+           - '@twig.extension.assets'
+           - '@claroline.manager.theme_manager'
+           - '@claroline.config.platform_config_handler'
+           - '%kernel.root_dir%'
+
+    Claroline\CoreBundle\Twig\WebpackExtension:
+       arguments:
+           - '@twig.extension.assets'
+           - '%kernel.environment%'
+           - '%kernel.root_dir%'

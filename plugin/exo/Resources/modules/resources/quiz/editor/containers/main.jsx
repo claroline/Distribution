@@ -1,13 +1,18 @@
 import {connect} from 'react-redux'
+import cloneDeep from 'lodash/cloneDeep'
 
 import {withRouter} from '#/main/app/router'
+import {trans} from '#/main/app/intl/translation'
+import {makeId} from '#/main/core/scaffolding/id'
+import {toKey} from '#/main/core/scaffolding/text'
 import {actions as formActions, selectors as formSelectors} from '#/main/app/content/form/store'
 
-import {makeId} from '#/main/core/scaffolding/id'
 import {selectors as resourceSelectors} from '#/main/core/resource/store'
 
+import {refreshIdentifiers} from '#/plugin/exo/resources/quiz/utils'
 import {EditorMain as EditorMainComponent} from '#/plugin/exo/resources/quiz/editor/components/main'
 import {actions, selectors} from '#/plugin/exo/resources/quiz/editor/store'
+import {getStepSlug} from '#/plugin/exo/resources/quiz/editor/utils'
 
 const EditorMain = withRouter(
   connect(
@@ -28,7 +33,7 @@ const EditorMain = withRouter(
       randomPick: selectors.randomPick(state),
       steps: selectors.steps(state)
     }),
-    (dispatch, ownProps) => ({
+    (dispatch) => ({
       /**
        * Push the updated quiz data to the server.
        *
@@ -39,7 +44,7 @@ const EditorMain = withRouter(
       },
 
       /**
-       * Change quiz a quiz data value.
+       * Change a quiz data value.
        *
        * @param {string} prop  - the path of the prop to update
        * @param {*}      value - the new value to set
@@ -49,41 +54,44 @@ const EditorMain = withRouter(
       },
 
       /**
-       * Create a new step in the quiz.
-       *
-       * @param {string} path
-       */
-      addStep(path) {
-        // generate id now to be able to redirect to new step
-        const stepId = makeId()
-
-        dispatch(actions.addStep({id: stepId}))
-
-        ownProps.history.push(`${path}/edit/${stepId}`)
-      },
-
-      /**
        * Remove a step from the quiz.
        *
        * @param {string} stepId - the id of the step to delete
-       * @param {string} path
        */
-      removeStep(stepId, path) {
+      removeStep(stepId) {
         dispatch(actions.removeStep(stepId))
-
-        if (`${path}/edit/${stepId}` === ownProps.history.location.pathname) {
-          ownProps.history.push(`${path}/edit`)
-        }
       },
 
       /**
        * Create a copy of a step and push it at the requested position.
        *
-       * @param {string} stepId   - the id of the step to copy
+       * @param {object} stepId   - the id of the step to copy
+       * @param {Array}  steps    - the list of existing steps
        * @param {object} position - the position to push the created step
        */
-      copyStep(stepId, position) {
-        dispatch(actions.copyStep(stepId, position))
+      copyStep(stepId, steps, position) {
+        // create a copy of the step
+        const pos = steps.findIndex(step => step.id === stepId)
+        if (-1 !== pos) {
+          const copy = cloneDeep(steps[pos])
+          copy.id = makeId()
+
+          // recalculate slug
+          const title = copy.title || trans('step', {number: pos + 1}, 'quiz')
+          copy.slug = getStepSlug(steps, toKey(title))
+
+          // recalculate item ids
+          if (copy.items) {
+            Promise.all(
+              copy.items.map(refreshIdentifiers)
+            ).then(items => {
+              copy.items = items
+              dispatch(actions.copyStep(copy, position))
+            })
+          } else {
+            dispatch(actions.copyStep(copy, position))
+          }
+        }
       },
 
       /**

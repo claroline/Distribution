@@ -32,6 +32,7 @@ const ResourceInput = props => {
               title: props.picker.title,
               current: props.picker.current,
               root: props.picker.root,
+              filters: props.picker.filters,
               selectAction: (selected) => ({
                 type: CALLBACK_BUTTON,
                 label: trans('select', {}, 'actions'),
@@ -85,7 +86,7 @@ const ResourceInput = props => {
         id={props.id}
         size="lg"
         icon="fa fa-folder"
-        title={trans('no_resource')}
+        title={trans('no_resource', {}, 'resource')}
       >
         <ModalButton
           className="btn"
@@ -106,13 +107,12 @@ const ResourceInput = props => {
           }}
         >
           <span className="fa fa-fw fa-hand-pointer-o icon-with-text-right" />
-          {trans('add_resource')}
+          {trans('add_resource', {}, 'resource')}
         </ModalButton>
       </EmptyPlaceholder>
     )
   }
 }
-
 
 implementPropTypes(ResourceInput, FormFieldTypes, {
   value: T.shape(
@@ -121,16 +121,22 @@ implementPropTypes(ResourceInput, FormFieldTypes, {
   embedded: T.bool,
   picker: T.shape({
     title: T.string,
-    current: T.shape(ResourceNodeTypes.propTypes),
-    root: T.shape(ResourceNodeTypes.propTypes),
-    filters: T.object
+    root: T.shape({
+      slug: T.string.isRequired,
+      name: T.string.isRequired
+    }),
+    current: T.shape({
+      slug: T.string.isRequired,
+      name: T.string.isRequired
+    }),
+    filters: T.array
   }),
   onEmbeddedResourceClose: T.func
 }, {
   value: null,
   picker: {
     current: null,
-    filters: {},
+    filters: [],
     root: null
   }
 })

@@ -68,8 +68,8 @@ services:
         public: true
 
     Claroline\CoreBundle\Manager\ToolManager:
+        public: true
         arguments:
-          - '@claroline.utilities.misc'
           - '@claroline.persistence.object_manager'
           - '@claroline.manager.role_manager'
           - '@claroline.manager.tool_mask_decoder_manager'
@@ -101,6 +101,7 @@ services:
         public: true
 
     Claroline\CoreBundle\Manager\RoleManager:
+        public: true
         arguments:
           - '@claroline.persistence.object_manager'
           - '@claroline.event.event_dispatcher'
@@ -151,6 +152,7 @@ services:
         arguments:
           - '@claroline.api.finder'
           - '@claroline.manager.resource_evaluation_manager'
+          - '@router'
           - '@claroline.api.serializer'
 
     claroline.manager.progression_manager:
@@ -172,7 +174,7 @@ services:
           - '@claroline.manager.cache_manager'
           - '@service_container'
           - '@claroline.library.mailing.mailer'
-          - '@claroline.serializer.parameters'
+          - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
           - '@router'
           - '@claroline.manager.template_manager'
           - '@templating'
@@ -463,8 +465,8 @@ services:
 
     Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer:
         arguments:
-          - '@claroline.serializer.tool'
-          - '@claroline.serializer.role'
+          - '@Claroline\CoreBundle\API\Serializer\Tool\ToolSerializer'
+          - '@Claroline\CoreBundle\API\Serializer\User\RoleSerializer'
           - '@service_container'
 
     claroline.transfer.ordered_tool:
@@ -481,6 +483,10 @@ services:
           - '@claroline.manager.resource_manager'
           - '@claroline.persistence.object_manager'
           - '@claroline.event.event_dispatcher'
+
+        tags:
+            - { name: kernel.event_listener, event: export_tool_resources, method: onExport }
+            - { name: kernel.event_listener, event: import_tool_resources, method: onImport }
 
     claroline.transfer.resources:
         alias: Claroline\CoreBundle\Manager\Workspace\Transfer\Tools\ResourceManager
@@ -502,7 +508,7 @@ services:
           - '@security.authorization_checker'
           - '@claroline.config.platform_config_handler'
           - '%kernel.root_dir%'
-          - '@claroline.serializer.theme'
+          - '@Claroline\CoreBundle\API\Serializer\Platform\ThemeSerializer'
           - '@claroline.manager.plugin_manager'
 
     claroline.manager.theme_manager:
@@ -522,7 +528,7 @@ services:
     Claroline\CoreBundle\Manager\Template\TemplateManager:
         arguments:
           - '@claroline.persistence.object_manager'
-          - '@claroline.serializer.parameters'
+          - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
 
     claroline.manager.template_manager:
         alias: Claroline\CoreBundle\Manager\Template\TemplateManager
@@ -532,7 +538,7 @@ services:
         arguments:
           - '@claroline.persistence.object_manager'
           - '@claroline.config.platform_config_handler'
-          - '@claroline.serializer.scheduled_task'
+          - '@Claroline\CoreBundle\API\Serializer\Task\ScheduledTaskSerializer'
 
     claroline.manager.scheduled_task_manager:
         alias: Claroline\CoreBundle\Manager\Task\ScheduledTaskManager

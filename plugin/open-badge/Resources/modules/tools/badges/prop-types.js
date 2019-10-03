@@ -1,13 +1,26 @@
 import {PropTypes as T} from 'prop-types'
 
-import {ISSUING_MODE_ORGANIZATION} from '#/plugin/open-badge/tools/badges/badge/constants'
+import {constants} from '#/plugin/open-badge/tools/badges/badge/constants'
 
 const Badge = {
   propTypes: {
-    id: T.string
+    id: T.string,
+    name: T.string,
+    image: T.shape({
+      url: T.string.isRequired
+    }),
+    criteria: T.string,
+    description: T.string,
+    issuingMode: T.arrayOf(T.string),
+    meta: T.shape({
+      enabled: T.bool
+    })
   },
   defaultProps: {
-    issuingMode: [ISSUING_MODE_ORGANIZATION]
+    issuingMode: [constants.ISSUING_MODE_ORGANIZATION],
+    meta: {
+      enabled: true
+    }
   }
 }
 

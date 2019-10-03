@@ -1,0 +1,21 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: true
+
+    Icap\NotificationBundle\Serializer\NotificationSerializer:
+        tags: [claroline.serializer]
+        arguments:
+           - '@claroline.persistence.object_manager'
+           - '@event_dispatcher'
+           - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
+
+    Icap\NotificationBundle\Serializer\NotificationViewerSerializer:
+        tags: [claroline.serializer]
+        arguments:
+           - '@Icap\NotificationBundle\Serializer\NotificationSerializer'
+           - '@event_dispatcher'
+           - '@claroline.config.platform_config_handler'
+           - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
+           - '@claroline.persistence.object_manager'

@@ -11,19 +11,15 @@
 
 namespace Claroline\AgendaBundle\Finder;
 
+use Claroline\AgendaBundle\Entity\Event;
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Doctrine\ORM\QueryBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.api.finder.agenda")
- * @DI\Tag("claroline.finder")
- */
 class EventFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return 'Claroline\AgendaBundle\Entity\Event';
+        return Event::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
@@ -32,26 +28,18 @@ class EventFinder extends AbstractFinder
             switch ($filterName) {
                 case 'workspaces':
                     $qb->leftJoin('obj.workspace', 'w');
-
-                    //if $filterValue = 0, it means desktop
-                    if (in_array(0, $filterValue)) {
-                        $qb->andWhere($qb->expr()->orX(
-                            $qb->expr()->in('w.uuid', ':'.$filterName),
-                            $qb->expr()->isNull('w')
-                        ));
-
-                        $qb->setParameter($filterName, $filterValue);
-                    } else {
-                        $qb->andWhere('w.uuid IN (:'.$filterName.')');
-                        $qb->setParameter($filterName, $filterValue);
-                    }
+                    $qb->andWhere('w.uuid IN (:'.$filterName.')');
+                    $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'types':
-                    if ($filterValue === ['task']) {
-                        $qb->andWhere('obj.isTask = true');
-                    } elseif ($filterValue === ['event']) {
-                        $qb->andWhere('obj.isTask = false');
+                    if (1 === count($filterValue)) {
+                        if ('task' === $filterValue[0]) {
+                            $qb->andWhere('obj.isTask = true');
+                        } elseif ('event' === $filterValue[0]) {
+                            $qb->andWhere('obj.isTask = false');
+                        }
                     }
+
                     break;
                 case 'createdBefore':
                     $qb->andWhere("obj.start <= :{$filterName}");

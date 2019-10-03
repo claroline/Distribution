@@ -66,8 +66,6 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
             'FOS\JsRoutingBundle\FOSJsRoutingBundle',
             'JMS\AopBundle\JMSAopBundle',
             'Claroline\MigrationBundle\ClarolineMigrationBundle',
-            'Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle',
-            'Http\HttplugBundle\HttplugBundle',
         ];
         // simple container configuration, same for every environment
         $simpleConfigs = [

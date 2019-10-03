@@ -20,9 +20,6 @@ use Claroline\CoreBundle\Event\Log\LogWorkspaceRoleChangeRightEvent;
 use Icap\NotificationBundle\Event\Notification\NotificationCreateDelegateViewEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-/**
- * @DI\Service()
- */
 class NotificationListener
 {
     use ContainerAwareTrait;
@@ -77,7 +74,7 @@ class NotificationListener
                 'notification'
               );
             }
-            $this->setText($text);
+            $event->setText($text);
 
             break;
           case LogRoleSubscribeEvent::ACTION_WORKSPACE_GROUP:
@@ -96,7 +93,7 @@ class NotificationListener
               'notification'
             );
 
-            $this->setText($text);
+            $event->setText($text);
             break;
           case LogRoleSubscribeEvent::ACTION_GROUP:
             $text = $translator->trans(
@@ -218,7 +215,7 @@ class NotificationListener
               'notification'
             );
 
-            $this->setText($text);
+            $event->setText($text);
             break;
       }
 

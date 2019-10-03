@@ -1,0 +1,46 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: true
+
+    Claroline\ForumBundle\Serializer\ForumSerializer:
+        tags: [claroline.serializer]
+        arguments:
+           - '@claroline.api.finder'
+           - '@security.token_storage'
+           - '@event_dispatcher'
+           - '@claroline.manager.forum_manager'
+           - '@security.authorization_checker'
+
+    claroline.serializer.forum:
+         alias: Claroline\ForumBundle\Serializer\ForumSerializer
+         public: true
+
+    Claroline\ForumBundle\Serializer\MessageSerializer:
+        tags: [claroline.serializer]
+        arguments:
+           - '@Claroline\CoreBundle\API\Serializer\MessageSerializer'
+           - '@claroline.persistence.object_manager'
+           - '@claroline.serializer.forum_subject'
+           - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
+           - '@Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer'
+
+    claroline.serializer.forum_message:
+         alias: Claroline\ForumBundle\Serializer\MessageSerializer
+         public: true
+
+    Claroline\ForumBundle\Serializer\SubjectSerializer:
+        tags: [claroline.serializer]
+        arguments:
+           - '@claroline.api.finder'
+           - '@claroline.utilities.file'
+           - '@event_dispatcher'
+           - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
+           - '@claroline.persistence.object_manager'
+           - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
+           - '@claroline.manager.forum_manager'
+
+    claroline.serializer.forum_subject:
+         alias: Claroline\ForumBundle\Serializer\SubjectSerializer
+         public: true

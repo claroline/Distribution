@@ -2,24 +2,18 @@
 
 namespace Claroline\ForumBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\MessageSerializer as AbstractMessageSerializer;
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.serializer.forum_message")
- * @DI\Tag("claroline.serializer")
- */
 class MessageSerializer
 {
     use SerializerTrait;
-
-    /** @var SerializerProvider */
-    private $serializer;
 
     /** @var AbstractMessageSerializer */
     private $messageSerializer;
@@ -33,31 +27,30 @@ class MessageSerializer
     /** @var PublicFileSerializer */
     private $fileSerializer;
 
+    /** @var ResourceNodeSerializer */
+    private $nodeSerializer;
+
     /**
      * MessageSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "messageSerializer" = @DI\Inject("claroline.serializer.message"),
-     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
-     *     "subjectSerializer" = @DI\Inject("claroline.serializer.forum_subject"),
-     *     "fileSerializer"    = @DI\Inject("claroline.serializer.public_file")
-     * })
      *
      * @param AbstractMessageSerializer $messageSerializer
      * @param ObjectManager             $om
      * @param SubjectSerializer         $subjectSerializer
      * @param PublicFileSerializer      $fileSerializer
+     * @param ResourceNodeSerializer    $nodeSerializer
      */
     public function __construct(
         AbstractMessageSerializer $messageSerializer,
         ObjectManager $om,
         SubjectSerializer $subjectSerializer,
-        PublicFileSerializer $fileSerializer
+        PublicFileSerializer $fileSerializer,
+        ResourceNodeSerializer $nodeSerializer
     ) {
         $this->messageSerializer = $messageSerializer;
         $this->om = $om;
         $this->subjectSerializer = $subjectSerializer;
         $this->fileSerializer = $fileSerializer;
+        $this->nodeSerializer = $nodeSerializer;
     }
 
     public function getClass()
@@ -99,10 +92,10 @@ class MessageSerializer
                 'id' => $subject->getUuid(),
                 'title' => $subject->getTitle(),
             ];
+
             if ($subject->getForum() && $subject->getForum()->getResourceNode()) {
-                $data['meta']['resource'] = [
-                    'id' => $subject->getForum()->getResourceNode()->getId(),
-                ];
+                // required by the data source
+                $data['meta']['resource'] = $this->nodeSerializer->serialize($subject->getForum()->getResourceNode(), [Options::SERIALIZE_MINIMAL]);
             }
 
             $data['meta']['poster'] = $subject->getPoster() ?

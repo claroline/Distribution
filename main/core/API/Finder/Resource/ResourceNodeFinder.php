@@ -14,16 +14,10 @@ namespace Claroline\CoreBundle\API\Finder\Resource;
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @DI\Service("claroline.api.finder.resource_node")
- * @DI\Tag("claroline.finder")
- */
 class ResourceNodeFinder extends AbstractFinder
 {
     /** @var AuthorizationCheckerInterface */
@@ -37,24 +31,15 @@ class ResourceNodeFinder extends AbstractFinder
     /**
      * ResourceNodeFinder constructor.
      *
-     * @DI\InjectParams({
-     *     "authChecker"  = @DI\Inject("security.authorization_checker"),
-     *     "em"           = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "tokenStorage" = @DI\Inject("security.token_storage")
-     * })
-     *
      * @param AuthorizationCheckerInterface $authChecker
      * @param TokenStorageInterface         $tokenStorage
-     * @param EntityManager                 $em
      */
     public function __construct(
         AuthorizationCheckerInterface $authChecker,
-        TokenStorageInterface $tokenStorage,
-        EntityManager $em
+        TokenStorageInterface $tokenStorage
     ) {
         $this->authChecker = $authChecker;
         $this->tokenStorage = $tokenStorage;
-        $this->_em = $em;
     }
 
     public function getClass()

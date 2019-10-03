@@ -1,0 +1,6 @@
+# This file contains only services that cannot be defined using annotations.
+
+imports:
+    - { resource: services/serializer.yml }
+    - { resource: services/listener.yml }
+    - { resource: services/controller.yml }

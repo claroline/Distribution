@@ -59,7 +59,7 @@ actions.fetchNode = (slug) => (dispatch, getState) => {
 actions.fetchResource = (resourceNode, embedded = false) => ({
   [API_REQUEST]: {
     silent: true,
-    url: ['claro_resource_load_embedded', {type: resourceNode.meta.type, id: resourceNode.id, embedded: embedded ? 1 : 0}],
+    url: ['claro_resource_load_embedded', {id: resourceNode.id, embedded: embedded ? 1 : 0}],
     success: (response, dispatch) => {
       dispatch(actions.loadResource(response))
       // load resource data inside the store
@@ -76,6 +76,7 @@ actions.fetchResource = (resourceNode, embedded = false) => ({
         case 401: dispatch(actions.setRestrictionsError(response)); break
         default: dispatch(actions.setServerErrors(response))
       }
+      dispatch(actions.setResourceLoaded(true))
     }
   }
 })

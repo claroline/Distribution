@@ -5,13 +5,8 @@ namespace Claroline\AudioPlayerBundle\Serializer\Quiz;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AudioPlayerBundle\Entity\Quiz\ItemType\WaveformQuestion;
 use Claroline\AudioPlayerBundle\Entity\Quiz\Misc\Section;
-use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Transfer;
 
-/**
- * @DI\Service("claroline.serializer.audio.question_waveform")
- * @DI\Tag("claroline.serializer")
- */
 class WaveformQuestionSerializer
 {
     use SerializerTrait;
@@ -27,7 +22,7 @@ class WaveformQuestionSerializer
     public function serialize(WaveformQuestion $waveformQuestion, array $options = [])
     {
         $serialized = [
-            'url' => $waveformQuestion->getUrl(),
+            'file' => $waveformQuestion->getUrl(),
             'tolerance' => $waveformQuestion->getTolerance(),
             'penalty' => $waveformQuestion->getPenalty(),
             'answersLimit' => $waveformQuestion->getAnswersLimit(),
@@ -54,7 +49,7 @@ class WaveformQuestionSerializer
         if (empty($waveformQuestion)) {
             $waveformQuestion = new WaveformQuestion();
         }
-        $this->sipe('url', 'setUrl', $data, $waveformQuestion);
+        $this->sipe('file', 'setUrl', $data, $waveformQuestion);
         $this->sipe('tolerance', 'setTolerance', $data, $waveformQuestion);
         $this->sipe('penalty', 'setPenalty', $data, $waveformQuestion);
         $this->sipe('answersLimit', 'setAnswersLimit', $data, $waveformQuestion);

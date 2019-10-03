@@ -5,16 +5,15 @@ namespace Claroline\CoreBundle\API\Serializer\Platform;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AuthenticationBundle\Manager\OauthManager;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceTypeSerializer;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Icon\ResourceIconItemFilename;
-use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\IconSetManager;
 use Claroline\CoreBundle\Manager\PluginManager;
 use Claroline\CoreBundle\Manager\VersionManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,8 +22,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 /**
  * Serializes platform parameters used for client rendering.
- *
- * @DI\Service("claroline.serializer.platform_client")
  */
 class ClientSerializer
 {
@@ -49,9 +46,6 @@ class ClientSerializer
     /** @var PlatformConfigurationHandler */
     private $config;
 
-    /** @var FileUtilities */
-    private $fileUtilities;
-
     /** @var VersionManager */
     private $versionManager;
 
@@ -70,52 +64,34 @@ class ClientSerializer
     /**
      * ClientSerializer constructor.
      *
-     * @DI\InjectParams({
-     *     "env"                    = @DI\Inject("%kernel.environment%"),
-     *     "assets"                 = @DI\Inject("assets.packages"),
-     *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
-     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
-     *     "requestStack"           = @DI\Inject("request_stack"),
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "router"                 = @DI\Inject("router"),
-     *     "config"                 = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "fileUtilities"          = @DI\Inject("claroline.utilities.file"),
-     *     "versionManager"         = @DI\Inject("claroline.manager.version_manager"),
-     *     "pluginManager"          = @DI\Inject("claroline.manager.plugin_manager"),
-     *     "iconManager"            = @DI\Inject("claroline.manager.icon_set_manager"),
-     *     "resourceTypeSerializer" = @DI\Inject("claroline.serializer.resource_type"),
-     *     "oauthManager"           = @DI\Inject("claroline.oauth.manager"),
-     * })
-     *
      * @param string                       $env
      * @param Packages                     $assets
+     * @param EventDispatcherInterface     $eventDispatcher
      * @param TokenStorageInterface        $tokenStorage
      * @param RequestStack                 $requestStack
      * @param ObjectManager                $om
      * @param RouterInterface              $router
      * @param PlatformConfigurationHandler $config
-     * @param FileUtilities                $fileUtilities
      * @param VersionManager               $versionManager
      * @param PluginManager                $pluginManager
      * @param IconSetManager               $iconManager
      * @param ResourceTypeSerializer       $resourceTypeSerializer
-     * @param EventDispatcherInterface     $eventDispatcher
      * @param OauthManager                 $oauthManager
      */
     public function __construct(
         $env,
         Packages $assets,
+
+        EventDispatcherInterface $eventDispatcher,
         TokenStorageInterface $tokenStorage,
         RequestStack $requestStack,
         ObjectManager $om,
         RouterInterface $router,
         PlatformConfigurationHandler $config,
-        FileUtilities $fileUtilities,
         VersionManager $versionManager,
         PluginManager $pluginManager,
         IconSetManager $iconManager,
         ResourceTypeSerializer $resourceTypeSerializer,
-        EventDispatcherInterface $eventDispatcher,
         OauthManager $oauthManager
     ) {
         $this->env = $env;
@@ -125,7 +101,6 @@ class ClientSerializer
         $this->om = $om;
         $this->router = $router;
         $this->config = $config;
-        $this->fileUtilities = $fileUtilities;
         $this->versionManager = $versionManager;
         $this->pluginManager = $pluginManager;
         $this->iconManager = $iconManager;
@@ -141,9 +116,12 @@ class ClientSerializer
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        $logo = $this->fileUtilities->getOneBy([
-            'url' => $this->config->getParameter('logo'),
-        ]);
+        $logo = null;
+        if ($this->config->getParameter('logo')) {
+            $logo = $this->om->getRepository(PublicFile::class)->findOneBy([
+                'url' => $this->config->getParameter('logo'),
+            ]);
+        }
 
         $data = [
             'logo' => $logo ? $logo->getUrl() : null,
@@ -153,7 +131,7 @@ class ClientSerializer
             'version' => $this->versionManager->getDistributionVersion(),
             'environment' => $this->env,
             'helpUrl' => $this->config->getParameter('help_url'),
-            'selfRegistration' => $this->config->getParameter('allow_self_registration'),
+            'selfRegistration' => $this->config->getParameter('registration.self'),
             'asset' => $this->assets->getUrl(''),
             'server' => [
                 'protocol' => $request->isSecure() || $this->config->getParameter('ssl_enabled') ? 'https' : 'http',
@@ -162,6 +140,9 @@ class ClientSerializer
             ],
             'theme' => $this->serializeTheme(),
             'locale' => $this->serializeLocale(),
+            'display' => [
+                'breadcrumb' => $this->config->getParameter('display.breadcrumb'),
+            ],
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
             ],
@@ -182,7 +163,13 @@ class ClientSerializer
             'admin' => [ // TODO : find a better way to store and expose this
                 'defaultTool' => $this->config->getParameter('admin.default_tool'),
             ],
-            'sso' => $this->oauthManager->getActiveServices(),
+            'sso' => array_map(function (array $sso) { // TODO : do it elsewhere
+                return [
+                    'service' => $sso['service'],
+                    'label' => isset($sso['display_name']) ? $sso['display_name'] : null,
+                    'primary' => isset($sso['client_primary']) ? $sso['client_primary'] : false,
+                ];
+            }, $this->oauthManager->getActiveServices()),
             'plugins' => $this->pluginManager->getEnabled(true),
             'javascripts' => $this->config->getParameter('javascripts'),
             'stylesheets' => $this->config->getParameter('stylesheets'),
