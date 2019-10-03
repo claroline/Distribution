@@ -35,7 +35,7 @@ class ContributionListener
             count($userPicker->getUserIds()) > 0 &&
             null !== $wiki->getResourceNode()
         ) {
-            $details = array(
+            $details = [
                 'contribution' => array(
                     'wiki' => $wiki->getId(),
                     'section' => $section->getId(),
@@ -46,12 +46,12 @@ class ContributionListener
                         ' '.
                         $contribution->getContributor()->getLastName(),
                 ),
-                'resource' => array(
+                'resource' => [
                     'id' => $wiki->getId(),
                     'name' => $wiki->getResourceNode()->getName(),
                     'type' => $wiki->getResourceNode()->getResourceType()->getName(),
-                ),
-            );
+                ],
+            ];
             $notification = $this->notificationManager->createNotification(
                 'resource-icap_wiki-user_tagged',
                 'wiki',
