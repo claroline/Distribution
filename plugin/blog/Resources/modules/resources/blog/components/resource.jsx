@@ -33,7 +33,7 @@ const BlogResource = props =>
       {
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-file-pdf-o',
-        label: trans('pdf_export2', {}, 'platform'),
+        label: trans('pdf_export', {}, 'platform'),
         displayed: props.canExport,
         callback: () => props.downloadEntryPdf(props.blogId).then(pdfContent => {
           html2pdf()
