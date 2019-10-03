@@ -36,7 +36,7 @@ services:
 
     Claroline\ClacoFormBundle\Controller\API\ClacoFormController: ~
 
-    Claroline\ClacoFormBundle\Controller\API\CategoryController:
+    Claroline\ClacoFormBundle\Controller\API\EntryController:
         arguments:
           - '@claroline.api.finder'
           - '@Claroline\ClacoFormBundle\Manager\ClacoFormManager'
