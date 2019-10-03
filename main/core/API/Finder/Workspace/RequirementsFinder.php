@@ -46,6 +46,14 @@ class RequirementsFinder extends AbstractFinder
                     $qb->andWhere("r.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
+                case 'role.translationKey':
+                    if (!$roleJoin) {
+                        $qb->join('obj.role', 'r');
+                        $roleJoin = true;
+                    }
+                    $qb->andWhere('UPPER(r.translationKey) LIKE :translationKey');
+                    $qb->setParameter('translationKey', '%'.strtoupper($filterValue).'%');
+                    break;
                 case 'user':
                     if (!$userJoin) {
                         $qb->join('obj.user', 'u');
@@ -53,6 +61,23 @@ class RequirementsFinder extends AbstractFinder
                     }
                     $qb->andWhere("u.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'userName':
+                    if (!$userJoin) {
+                        $qb->join('obj.user', 'u');
+                        $userJoin = true;
+                    }
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->like(
+                            "CONCAT(CONCAT(UPPER(u.firstName), ' '), UPPER(u.lastName))",
+                            ':userName'
+                        ),
+                        $qb->expr()->like(
+                            "CONCAT(CONCAT(UPPER(u.lastName), ' '), UPPER(u.firstName))",
+                            ':userName'
+                        )
+                    ));
+                    $qb->setParameter('userName', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'withRole':
                     if (!$roleJoin) {
@@ -68,6 +93,26 @@ class RequirementsFinder extends AbstractFinder
                     break;
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);
+            }
+        }
+
+        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
+            $sortByProperty = $sortBy['property'];
+            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
+
+            switch ($sortByProperty) {
+                case 'role.translationKey':
+                    if (!$roleJoin) {
+                        $qb->join('obj.role', 'r');
+                    }
+                    $qb->orderBy('r.translationKey', $sortByDirection);
+                    break;
+                case 'userName':
+                    if (!$userJoin) {
+                        $qb->join('obj.user', 'u');
+                    }
+                    $qb->orderBy('u.lastName', $sortByDirection);
+                    break;
             }
         }
 

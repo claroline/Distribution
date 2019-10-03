@@ -37,6 +37,8 @@ services:
         alias: Claroline\CoreBundle\API\Finder\Workspace\OrderedToolFinder
         public: true
 
+    Claroline\CoreBundle\API\Finder\Workspace\EvaluationFinder: ~
+
     Claroline\CoreBundle\API\Finder\User\UserFinder:
         arguments:
           - '@security.authorization_checker'

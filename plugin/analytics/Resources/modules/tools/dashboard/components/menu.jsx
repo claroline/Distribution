@@ -54,9 +54,15 @@ const DashboardMenu = (props) =>
           label: trans('paths_tracking'),
           target: `${props.path}/paths`
         }, {
-          name: 'requirements',
+          name: 'evaluations',
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-graduation-cap',
+          label: trans('evaluations', {}, 'analytics'),
+          target: `${props.path}/evaluations`
+        }, {
+          name: 'requirements',
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-clipboard-list',
           label: trans('evaluation_requirements', {}, 'analytics'),
           target: `${props.path}/requirements`
         }

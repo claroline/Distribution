@@ -186,4 +186,67 @@ class EvaluationManager
 
         return $evaluation;
     }
+
+    /**
+     * @param Workspace $workspace
+     * @param array     $roles
+     *
+     * @return array
+     */
+    public function createRolesRequirements(Workspace $workspace, array $roles)
+    {
+        $createdRequirements = [];
+
+        foreach ($roles as $role) {
+            $requirements = $this->requirementsRepo->findOneBy(['workspace' => $workspace, 'role' => $role]);
+
+            if (!$requirements) {
+                $requirements = new Requirements();
+                $requirements->setWorkspace($workspace);
+                $requirements->setRole($role);
+                $this->om->persist($requirements);
+                $createdRequirements[] = $requirements;
+            }
+        }
+        $this->om->flush();
+
+        return $createdRequirements;
+    }
+
+    /**
+     * @param Workspace $workspace
+     * @param array     $users
+     *
+     * @return array
+     */
+    public function createUsersRequirements(Workspace $workspace, array $users)
+    {
+        $createdRequirements = [];
+
+        foreach ($users as $user) {
+            $requirements = $this->requirementsRepo->findOneBy(['workspace' => $workspace, 'user' => $user]);
+
+            if (!$requirements) {
+                $requirements = new Requirements();
+                $requirements->setWorkspace($workspace);
+                $requirements->setUser($user);
+                $this->om->persist($requirements);
+                $createdRequirements[] = $requirements;
+            }
+        }
+        $this->om->flush();
+
+        return $createdRequirements;
+    }
+
+    /**
+     * @param array $multipleRequirements
+     */
+    public function deleteMultipleRequirements(array $multipleRequirements)
+    {
+        foreach ($multipleRequirements as $requirements) {
+            $this->om->remove($requirements);
+        }
+        $this->om->flush();
+    }
 }

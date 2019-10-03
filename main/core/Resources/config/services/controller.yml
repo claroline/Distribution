@@ -105,6 +105,12 @@ services:
 
     Claroline\CoreBundle\Controller\APINew\User\UserTrackingController: ~
 
+    Claroline\CoreBundle\Controller\APINew\Workspace\EvaluationController:
+        arguments:
+          - '@security.authorization_checker'
+          - '@claroline.api.finder'
+          - '@claroline.api.serializer'
+
     Claroline\CoreBundle\Controller\APINew\Workspace\RegistrationController:
         arguments:
           - '@security.authorization_checker'
@@ -117,7 +123,10 @@ services:
 
     Claroline\CoreBundle\Controller\APINew\Workspace\RequirementsController:
         arguments:
+          - '@security.authorization_checker'
+          - '@claroline.manager.workspace.evaluation'
           - '@claroline.api.finder'
+          - '@claroline.persistence.object_manager'
           - '@claroline.api.serializer'
 
     Claroline\CoreBundle\Controller\APINew\Workspace\WorkspaceController:
