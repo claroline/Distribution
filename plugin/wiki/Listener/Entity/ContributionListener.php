@@ -36,7 +36,7 @@ class ContributionListener
             null !== $wiki->getResourceNode()
         ) {
             $details = [
-                'contribution' => array(
+                'contribution' => [
                     'wiki' => $wiki->getId(),
                     'section' => $section->getId(),
                     'id' => $contribution->getId(),
@@ -45,7 +45,7 @@ class ContributionListener
                     'contributor' => $contribution->getContributor()->getFirstName().
                         ' '.
                         $contribution->getContributor()->getLastName(),
-                ),
+                ],
                 'resource' => [
                     'id' => $wiki->getId(),
                     'name' => $wiki->getResourceNode()->getName(),
