@@ -46,3 +46,20 @@ services:
     Claroline\ClacoFormBundle\Controller\API\CategoryController:
         arguments:
           - '@claroline.api.finder'
+
+    Claroline\ClacoFormBundle\Controller\ClacoFormController:
+        arguments:
+          - '%claroline.param.platform_generated_archive_path%'
+          - '@Claroline\ClacoFormBundle\Manager\ClacoFormManager'
+          - '@claroline.config.platform_config_handler'
+          - '%claroline.param.files_directory%'
+          - '@claroline.manager.organization.location_manager'
+          - '@request_stack'
+          - '@templating'
+          - '@translator'
+          - '@claroline.api.serializer'
+          - '@security.token_storage'
+          - '@claroline.manager.user_manager'
+          - '@Claroline\ClacoFormBundle\Serializer\EntrySerializer'
+          - '@Claroline\ClacoFormBundle\Serializer\CommentSerializer'
+          - '@Claroline\ClacoFormBundle\Serializer\EntryUserSerializer'
