@@ -18,7 +18,7 @@ const ExportersComponent = props =>
         <span className="fa fa-rss" /> {trans('rss_label', {}, 'icap_blog')}
       </a>
       <a target="_blank" rel="noopener noreferrer"
-        onClick={() => props.downloadEntryPdf(props.blogId).then(pdfContent => {
+        onClick={() => props.downloadBlogPdf(props.blogId).then(pdfContent => {
           html2pdf()
             .set({
               filename: pdfContent.name,
@@ -36,7 +36,7 @@ const ExportersComponent = props =>
 
 ExportersComponent.propTypes = {
   blogId: T.string.isRequired,
-  downloadEntryPdf: T.func.isRequired
+  downloadBlogPdf: T.func.isRequired
 }
 
 const Exporters = connect(
@@ -44,8 +44,8 @@ const Exporters = connect(
     blogId: selectors.blog(state).data.id
   }),
   (dispatch) => ({
-    downloadEntryPdf(blogId) {
-      return dispatch(actions.downloadEntryPdf(blogId))
+    downloadBlogPdf(blogId) {
+      return dispatch(actions.downloadBlogPdf(blogId))
     }
   })
 )(ExportersComponent)

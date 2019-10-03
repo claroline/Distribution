@@ -35,7 +35,7 @@ const BlogResource = props =>
         icon: 'fa fa-fw fa-file-pdf-o',
         label: trans('pdf_export', {}, 'platform'),
         displayed: props.canExport,
-        callback: () => props.downloadEntryPdf(props.blogId).then(pdfContent => {
+        callback: () => props.downloadBlogPdf(props.blogId).then(pdfContent => {
           html2pdf()
             .set({
               filename: pdfContent.name,
@@ -67,7 +67,7 @@ const BlogResource = props =>
 BlogResource.propTypes = {
   path: T.string.isRequired,
   blogId: T.string.isRequired,
-  downloadEntryPdf: T.func.isRequired,
+  downloadBlogPdf: T.func.isRequired,
   saveEnabled: T.bool.isRequired,
   canEdit: T.bool,
   canPost: T.bool,

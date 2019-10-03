@@ -7,7 +7,7 @@ export const actions = {}
 
 actions.switchMode = makeActionCreator(SWITCH_MODE, 'mode')
 
-actions.downloadEntryPdf = (blogId) => ({
+actions.downloadBlogPdf = (blogId) => ({
   [API_REQUEST]: {
     url: ['icap_blog_pdf', {blogId: blogId}],
     request: {

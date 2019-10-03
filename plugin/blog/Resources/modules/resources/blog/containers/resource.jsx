@@ -21,8 +21,8 @@ const BlogResource = withRouter(
         canModerate: hasPermission('moderate', resourceSelect.resourceNode(state))
       }),
       (dispatch) => ({
-        downloadEntryPdf(blogId) {
-          return dispatch(actions.downloadEntryPdf(blogId))
+        downloadBlogPdf(blogId) {
+          return dispatch(actions.downloadBlogPdf(blogId))
         }
       })
     )(BlogResourceComponent)
