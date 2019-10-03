@@ -35,18 +35,18 @@ class ChapterListener
             count($userPicker->getUserIds()) > 0 &&
             null !== $lesson->getResourceNode()
         ) {
-            $details = array(
-                'chapter' => array(
+            $details = [
+                'chapter' => [
                     'lesson' => $lesson->getId(),
                     'chapter' => $chapter->getId(),
                     'title' => $chapter->getTitle(),
-                ),
-                'resource' => array(
+                ],
+                'resource' => [
                     'id' => $lesson->getId(),
                     'name' => $lesson->getResourceNode()->getName(),
                     'type' => $lesson->getResourceNode()->getResourceType()->getName(),
-                ),
-            );
+                ],
+            ];
             $notification = $this->notificationManager->createNotification(
                 'resource-icap_lesson-user_tagged',
                 'lesson',
@@ -59,7 +59,7 @@ class ChapterListener
 
     public function prePersist(Chapter $chapter, LifecycleEventArgs $event)
     {
-        if (null != $chapter->getText()) {
+        if (null !== $chapter->getText()) {
             $userPicker = new UserPickerContent($chapter->getText());
             $chapter->setUserPicker($userPicker);
             $chapter->setText($userPicker->getFinalText());
