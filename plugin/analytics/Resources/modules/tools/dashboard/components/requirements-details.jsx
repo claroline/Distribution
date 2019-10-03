@@ -15,7 +15,7 @@ import {
 const ResourceRow = props =>
   <div className="tool-rights-row list-group-item">
     <div>
-      {props.label}
+      {`${props.name} [${trans(props.type, {}, 'resource')}]`}
     </div>
     <div>
       <Button
@@ -31,7 +31,8 @@ const ResourceRow = props =>
   </div>
 
 ResourceRow.propTypes = {
-  label: T.string.isRequired,
+  name: T.string.isRequired,
+  type: T.string.isRequired,
   removeResource: T.func.isRequired
 }
 
@@ -77,7 +78,8 @@ const RequirementsDetails = (props) => props.requirements ?
           {props.requirements.resources.map(resource =>
             <ResourceRow
               key={`resource-row-${resource.id}`}
-              label={resource.name}
+              name={resource.name}
+              type={resource.meta.type}
               removeResource={() => props.removeResources(props.requirements, [resource])}
             />
           )}

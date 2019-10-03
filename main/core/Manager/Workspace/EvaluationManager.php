@@ -258,10 +258,16 @@ class EvaluationManager
      */
     public function addResourcesToRequirements(Requirements $requirements, array $resourceNodes)
     {
+        $this->om->startFlushSuite();
+
         foreach ($resourceNodes as $resourceNode) {
-            $requirements->addResource($resourceNode);
+            if ('directory' === $resourceNode->getResourceType()->getName()) {
+                $this->addResourcesToRequirements($requirements, $resourceNode->getChildren()->toArray());
+            } else {
+                $requirements->addResource($resourceNode);
+            }
         }
-        $this->om->flush();
+        $this->om->endFlushSuite();
 
         return $requirements;
     }
