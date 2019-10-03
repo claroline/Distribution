@@ -63,6 +63,7 @@ services:
     Claroline\CoreBundle\API\Serializer\Workspace\RequirementsSerializer:
         tags: [claroline.serializer]
         arguments:
+            - '@Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\RoleSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 

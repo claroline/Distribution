@@ -12,8 +12,10 @@
 namespace Claroline\CoreBundle\Controller\APINew\Workspace;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Requirements;
@@ -90,7 +92,8 @@ class RequirementsController
             array_merge($request->query->all(), ['hiddenFilters' => [
                 'workspace' => $workspace->getUuid(),
                 'withRole' => true
-            ]])
+            ]]),
+            [Options::SERIALIZE_MINIMAL]
         ));
     }
 
@@ -118,7 +121,8 @@ class RequirementsController
             array_merge($request->query->all(), ['hiddenFilters' => [
                 'workspace' => $workspace->getUuid(),
                 'withUser' => true
-            ]])
+            ]]),
+            [Options::SERIALIZE_MINIMAL]
         ));
     }
 
@@ -169,6 +173,7 @@ class RequirementsController
 
         return new JsonResponse();
     }
+
     /**
      * @Route(
      *     "/{workspace}/requirements/delete",
@@ -191,6 +196,75 @@ class RequirementsController
         $this->evaluationManager->deleteMultipleRequirements($requirementsToDelete);
 
         return new JsonResponse();
+    }
+
+    /**
+     * @Route(
+     *    "/requirements/{requirements}/fetch",
+     *    name="apiv2_workspace_requirements_fetch"
+     * )
+     * @Method("GET")
+     * @ParamConverter("requirements", options={"mapping": {"requirements": "uuid"}})
+     *
+     * @param Requirements $requirements
+     *
+     * @return JsonResponse
+     */
+    public function requirementsFetchAction(Requirements $requirements)
+    {
+        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $requirements->getWorkspace())) {
+            throw new AccessDeniedException();
+        }
+
+        return new JsonResponse($this->serializer->serialize($requirements));
+    }
+
+    /**
+     * @Route(
+     *    "/requirements/{requirements}/resources/add",
+     *    name="apiv2_workspace_requirements_resources_add"
+     * )
+     * @Method("PUT")
+     * @ParamConverter("requirements", options={"mapping": {"requirements": "uuid"}})
+     *
+     * @param Requirements $requirements
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function resourcesRequirementsAddAction(Requirements $requirements, Request $request)
+    {
+        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $requirements->getWorkspace())) {
+            throw new AccessDeniedException();
+        }
+        $resourceNodes = $this->decodeIdsString($request, ResourceNode::class);
+        $updatedRequirements = $this->evaluationManager->addResourcesToRequirements($requirements, $resourceNodes);
+
+        return new JsonResponse($this->serializer->serialize($updatedRequirements));
+    }
+
+    /**
+     * @Route(
+     *    "/requirements/{requirements}/resources/remove",
+     *    name="apiv2_workspace_requirements_resources_remove"
+     * )
+     * @Method("DELETE")
+     * @ParamConverter("requirements", options={"mapping": {"requirements": "uuid"}})
+     *
+     * @param Requirements $requirements
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function resourcesRequirementsRemoveAction(Requirements $requirements, Request $request)
+    {
+        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $requirements->getWorkspace())) {
+            throw new AccessDeniedException();
+        }
+        $resourceNodes = $this->decodeIdsString($request, ResourceNode::class);
+        $updatedRequirements = $this->evaluationManager->removeResourcesFromRequirements($requirements, $resourceNodes);
+
+        return new JsonResponse($this->serializer->serialize($updatedRequirements));
     }
 
     /**

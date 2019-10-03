@@ -249,4 +249,36 @@ class EvaluationManager
         }
         $this->om->flush();
     }
+
+    /**
+     * @param Requirements $requirements
+     * @param array        $resourceNodes
+     *
+     * @return Requirements
+     */
+    public function addResourcesToRequirements(Requirements $requirements, array $resourceNodes)
+    {
+        foreach ($resourceNodes as $resourceNode) {
+            $requirements->addResource($resourceNode);
+        }
+        $this->om->flush();
+
+        return $requirements;
+    }
+
+    /**
+     * @param Requirements $requirements
+     * @param array        $resourceNodes
+     *
+     * @return Requirements
+     */
+    public function removeResourcesFromRequirements(Requirements $requirements, array $resourceNodes)
+    {
+        foreach ($resourceNodes as $resourceNode) {
+            $requirements->removeResource($resourceNode);
+        }
+        $this->om->flush();
+
+        return $requirements;
+    }
 }

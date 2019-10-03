@@ -15,7 +15,8 @@ import {LogDetails} from '#/main/core/layout/logs'
 import {Progression} from '#/plugin/analytics/tools/dashboard/components/progression'
 import {Paths} from '#/plugin/analytics/tools/dashboard/path/containers/paths'
 import {Evaluations} from '#/plugin/analytics/tools/dashboard/components/evaluations'
-import {Requirements} from '#/plugin/analytics/tools/dashboard/components/requirements'
+import {Requirements} from '#/plugin/analytics/tools/dashboard/containers/requirements'
+import {RequirementsDetails} from '#/plugin/analytics/tools/dashboard/containers/requirements-details'
 
 const DashboardTool = (props) =>
   <ToolPage
@@ -115,7 +116,13 @@ const DashboardTool = (props) =>
           component: Evaluations
         }, {
           path: '/requirements',
-          component: Requirements
+          component: Requirements,
+          exact: true
+        }, {
+          path: '/requirements/:id',
+          component: RequirementsDetails,
+          onEnter: (params) => props.openRequirements(params.id),
+          onLeave: () => props.resetRequirements()
         }
       ]}
     />
@@ -128,7 +135,9 @@ DashboardTool.propTypes = {
   connectionsQuery: T.string,
   logsQuery: T.string,
   usersQuery: T.string,
-  openLog: T.func.isRequired
+  openLog: T.func.isRequired,
+  openRequirements: T.func.isRequired,
+  resetRequirements: T.func.isRequired
 }
 
 export {
