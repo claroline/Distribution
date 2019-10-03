@@ -105,7 +105,7 @@ class DropzoneManager
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "resourceEvalManager"    = @DI\Inject("claroline.manager.resource_evaluation_manager"),
      *     "archiveDir"             = @DI\Inject("%claroline.param.platform_generated_archive_path%"),
-     *     "configHandler"          = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "configHandler"          = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
      *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
      *     "roleManager"            = @DI\Inject("claroline.manager.role_manager")
      * })

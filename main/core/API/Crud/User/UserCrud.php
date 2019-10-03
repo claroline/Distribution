@@ -29,7 +29,7 @@ class UserCrud
         $this->mailManager = $container->get('claroline.manager.mail_manager');
         $this->userManager = $container->get('claroline.manager.user_manager');
         $this->dispatcher = $container->get('claroline.event.event_dispatcher');
-        $this->config = $container->get('claroline.config.platform_config_handler');
+        $this->config = $container->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $this->cryptoManager = $container->get('claroline.manager.cryptography_manager');
     }
 

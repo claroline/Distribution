@@ -79,7 +79,7 @@ abstract class TransactionalTestCase extends WebTestCase
 
     public function setPlatformOption($parameter, $value)
     {
-        $ch = $this->client->getContainer()->get('claroline.config.platform_config_handler');
+        $ch = $this->client->getContainer()->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $ch->setParameter($parameter, $value);
     }
 }

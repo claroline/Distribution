@@ -27,7 +27,7 @@ services:
 
   Claroline\CoreBundle\Validator\Constraints\UsernameValidator:
       arguments:
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.persistence.object_manager'
           - '@translator'
 
@@ -37,7 +37,7 @@ services:
 
   Claroline\CoreBundle\Validator\Constraints\UserAdministrativeCodeValidator:
       arguments:
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.persistence.object_manager'
           - '@translator'
 

@@ -73,7 +73,7 @@ class ClacoFormController extends Controller
      * @DI\InjectParams({
      *     "archiveDir"            = @DI\Inject("%claroline.param.platform_generated_archive_path%"),
      *     "clacoFormManager"      = @DI\Inject("claroline.manager.claco_form_manager"),
-     *     "configHandler"         = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "configHandler"         = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
      *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
      *     "finder"                = @DI\Inject("claroline.api.finder"),
      *     "locationManager"       = @DI\Inject("claroline.manager.organization.location_manager"),

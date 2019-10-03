@@ -32,7 +32,7 @@ class Updater120000 extends Updater
 
         $this->om = $container->get('claroline.persistence.object_manager');
         $this->conn = $container->get('doctrine.dbal.default_connection');
-        $this->config = $container->get('claroline.config.platform_config_handler');
+        $this->config = $container->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $this->container = $container;
     }
 

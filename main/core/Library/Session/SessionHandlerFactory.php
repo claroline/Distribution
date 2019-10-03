@@ -30,7 +30,7 @@ class SessionHandlerFactory
 
     /**
      * @DI\InjectParams({
-     *     "configHandler"  = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "configHandler"  = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
      *     "sessionPath"    = @DI\Inject("%session.save_path%"),
      *     "dbUsername"     = @DI\Inject("%database_user%"),
      *     "dbPassword"     = @DI\Inject("%database_password%"),

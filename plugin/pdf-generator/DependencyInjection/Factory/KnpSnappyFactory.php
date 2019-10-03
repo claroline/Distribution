@@ -23,7 +23,7 @@ class KnpSnappyFactory
     private $configHandler;
     /**
      * @DI\InjectParams({
-     *     "configHandler" = @DI\Inject("claroline.config.platform_config_handler")
+     *     "configHandler" = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler")
      * })
      */
     public function __construct(PlatformConfigurationHandler $configHandler)

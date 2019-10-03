@@ -27,7 +27,7 @@ class Updater060500 extends Updater
     public function postUpdate()
     {
         $this->log('Updating the email validation parameter');
-        $ch = $this->container->get('claroline.config.platform_config_handler');
+        $ch = $this->container->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $emailConfirm = $ch->getParameter('registration_mail_validation');
         $ch->setParameter(
             'registration_mail_validation',

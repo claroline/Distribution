@@ -50,7 +50,7 @@ class Updater120503 extends Updater
     {
         $this->log('Updating notifications refresh delay...');
 
-        $configHandler = $this->container->get('claroline.config.platform_config_handler');
+        $configHandler = $this->container->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $configHandler->setParameter('notifications_refresh_delay', 0);
 
         $this->log('Notifications refresh delay updated.');

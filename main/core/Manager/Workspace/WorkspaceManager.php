@@ -145,7 +145,7 @@ class WorkspaceManager
             }
         }
 
-        $ch = $this->container->get('claroline.config.platform_config_handler');
+        $ch = $this->container->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $workspace->setMaxUploadResources($ch->getParameter('max_upload_resources'));
         $workspace->setMaxStorageSize($ch->getParameter('max_storage_size'));
         $workspace->setMaxUsers($ch->getParameter('max_workspace_users'));

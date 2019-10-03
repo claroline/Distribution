@@ -59,7 +59,7 @@ class AuthenticationController
      *     "authenticator"  = @DI\Inject("claroline.authenticator"),
      *     "mailManager"    = @DI\Inject("claroline.manager.mail_manager"),
      *     "router"         = @DI\Inject("router"),
-     *     "ch"             = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "ch"             = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
      *     "dispatcher"     = @DI\Inject("claroline.event.event_dispatcher")
      * })
      */

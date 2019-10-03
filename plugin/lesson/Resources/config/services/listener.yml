@@ -8,7 +8,7 @@ services:
         arguments:
            - '@templating'
            - '@claroline.persistence.object_manager'
-           - '@claroline.config.platform_config_handler'
+           - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
            - '@claroline.api.serializer'
            - '@Icap\LessonBundle\Manager\ChapterManager'
         tags:

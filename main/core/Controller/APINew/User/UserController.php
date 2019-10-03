@@ -246,7 +246,7 @@ class UserController extends AbstractCrudController
         //but keep it easy for now because an other route could be relevant
         $selfLog = true;
         $autoOrganization = $this->container
-            ->get('claroline.config.platform_config_handler')
+            ->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler')
             ->getParameter('force_organization_creation');
 
         $organizationRepository = $this->container->get('claroline.persistence.object_manager')

@@ -20,7 +20,7 @@ services:
           - '@claroline.api.finder'
           - '@claroline.manager.icon_set_manager'
           - '@claroline.persistence.object_manager'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '%claroline.param.platform_options%'
           - '%claroline.param.archive_directory%'
 
@@ -110,7 +110,7 @@ services:
             - '@security.token_storage'
             - '@security.authorization_checker'
             - '@claroline.persistence.object_manager'
-            - '@claroline.config.platform_config_handler'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@claroline.manager.facet_manager'
             - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
             - '@service_container'
@@ -232,7 +232,7 @@ services:
     Claroline\CoreBundle\API\Serializer\Platform\ThemeSerializer:
         tags: [claroline.serializer]
         arguments:
-            - '@claroline.config.platform_config_handler'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
     Claroline\CoreBundle\API\Serializer\Platform\PluginSerializer:
@@ -247,7 +247,7 @@ services:
             - '@request_stack'
             - '@claroline.persistence.object_manager'
             - '@router'
-            - '@claroline.config.platform_config_handler'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@claroline.manager.version_manager'
             - '@claroline.manager.plugin_manager'
             - '@claroline.manager.icon_set_manager'

@@ -118,7 +118,7 @@ services:
             - '@security.token_storage'
             - '@service_container'
             - '@claroline.manager.role_manager'
-            - '@claroline.config.platform_config_handler'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@claroline.manager.resource_manager'
             - '@claroline.manager.resource_evaluation_manager'
             - '@claroline.manager.log_connect'

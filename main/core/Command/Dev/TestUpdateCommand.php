@@ -52,7 +52,7 @@ class TestUpdateCommand extends ContainerAwareCommand
         $bundleName = $input->getArgument('bundle');
         $bundle = $container->get('kernel')->getBundle($bundleName);
         $installerType = $bundle instanceof DistributionPluginBundle ?
-            'claroline.plugin.installer' :
+            'Claroline\CoreBundle\Library\Installation\Plugin\Installer' :
             'claroline.installation.manager';
 
         $verbosityLevelMap = [

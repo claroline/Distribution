@@ -50,7 +50,7 @@ class ClacoFormListener
      * @DI\InjectParams({
      *     "clacoFormManager"      = @DI\Inject("claroline.manager.claco_form_manager"),
      *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
-     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "platformConfigHandler" = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
      *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
      *     "serializer"            = @DI\Inject("claroline.api.serializer"),
      *     "tokenStorage"          = @DI\Inject("security.token_storage"),

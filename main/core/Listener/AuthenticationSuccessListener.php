@@ -56,7 +56,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
      *
      * @DI\InjectParams({
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
-     *     "config"          = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "config"          = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
      *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
      *     "serializer"      = @DI\Inject("claroline.api.serializer"),
      *     "userManager"     = @DI\Inject("claroline.manager.user_manager"),

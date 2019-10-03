@@ -38,7 +38,7 @@ services:
           - '@claroline.manager.mail_manager'
           - '@claroline.persistence.object_manager'
           - '@claroline.manager.organization.organization_manager'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.manager.role_manager'
           - '@claroline.event.event_dispatcher'
           - '@security.token_storage'
@@ -82,7 +82,7 @@ services:
 
     Claroline\CoreBundle\Manager\TermsOfServiceManager:
         arguments:
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@service_container'
           - '@claroline.manager.content_manager'
           - '@claroline.manager.user_manager'
@@ -107,7 +107,7 @@ services:
           - '@claroline.event.event_dispatcher'
           - '@service_container'
           - '@translator'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.manager.template_manager'
 
     claroline.manager.role_manager:
@@ -124,7 +124,7 @@ services:
           - '@claroline.utilities.misc'
           - '@claroline.security.utilities'
           - '@translator'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.api.serializer'
           - '@claroline.manager.resource_lifecycle'
 
@@ -135,7 +135,7 @@ services:
     Claroline\CoreBundle\Manager\RegistrationManager:
         arguments:
           - '@claroline.persistence.object_manager'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.manager.locale_manager'
           - '@claroline.common.terms_of_service_manager'
           - '@claroline.manager.facet_manager'
@@ -173,7 +173,7 @@ services:
         arguments:
           - '@claroline.manager.cache_manager'
           - '@service_container'
-          - '@claroline.library.mailing.mailer'
+          - '@Claroline\CoreBundle\Library\Mailing\Mailer'
           - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
           - '@router'
           - '@claroline.manager.template_manager'
@@ -217,7 +217,7 @@ services:
 
     Claroline\CoreBundle\Manager\LocaleManager:
         arguments:
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.manager.user_manager'
           - '@security.token_storage'
 
@@ -255,7 +255,7 @@ services:
           - '%claroline.param.icon_sets_directory%'
           - '@claroline.persistence.object_manager'
           - '@claroline.utilities.thumbnail_creator'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
 
     claroline.manager.icon_set_manager:
         alias: Claroline\CoreBundle\Manager\IconSetManager
@@ -506,7 +506,7 @@ services:
         arguments:
           - '@claroline.persistence.object_manager'
           - '@security.authorization_checker'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '%kernel.root_dir%'
           - '@Claroline\CoreBundle\API\Serializer\Platform\ThemeSerializer'
           - '@claroline.manager.plugin_manager'
@@ -537,7 +537,7 @@ services:
     Claroline\CoreBundle\Manager\Task\ScheduledTaskManager:
         arguments:
           - '@claroline.persistence.object_manager'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@Claroline\CoreBundle\API\Serializer\Task\ScheduledTaskSerializer'
 
     claroline.manager.scheduled_task_manager:
@@ -624,7 +624,7 @@ services:
     Claroline\CoreBundle\Manager\Organization\LocationManager:
         arguments:
           - '@claroline.persistence.object_manager'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.manager.curl_manager'
 
     claroline.manager.organization.location_manager:

@@ -296,7 +296,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             }
         }
 
-        $this->container->get('claroline.installation.refresher')->installAssets();
+        $this->container->get('Claroline\CoreBundle\Library\Installation\Refresher')->installAssets();
         $this->log('Updating resource icons...');
 
         try {
@@ -325,7 +325,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
 
     private function setLocale()
     {
-        $ch = $this->container->get('claroline.config.platform_config_handler');
+        $ch = $this->container->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $locale = $ch->getParameter('locale_language');
         $translator = $this->container->get('translator');
         $translator->setLocale($locale);

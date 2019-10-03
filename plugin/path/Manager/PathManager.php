@@ -28,7 +28,7 @@ class PathManager
      *
      * @DI\InjectParams({
      *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *     "platformConfig" = @DI\Inject("claroline.config.platform_config_handler")
+     *     "platformConfig" = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler")
      * })
      *
      * @param ObjectManager                $om

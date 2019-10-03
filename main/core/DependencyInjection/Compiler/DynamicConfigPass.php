@@ -33,7 +33,7 @@ class DynamicConfigPass implements CompilerPassInterface
         $transport = new Definition();
         $transport->setClass('Swift_Transport');
         $transport->setFactory([
-            new Reference('claroline.mailing.transport_factory'),
+            new Reference('Claroline\CoreBundle\Library\Mailing\TransportFactory'),
             'getTransport', ]
         );
         $container->removeDefinition('swiftmailer.mailer.default.transport');

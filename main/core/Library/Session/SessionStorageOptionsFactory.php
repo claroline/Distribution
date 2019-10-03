@@ -24,7 +24,7 @@ class SessionStorageOptionsFactory
 
     /**
      * @DI\InjectParams({
-     *     "configHandler"  = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "configHandler"  = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
      *     "defaultOptions" = @DI\Inject("%session.storage.options%")
      * })
      */

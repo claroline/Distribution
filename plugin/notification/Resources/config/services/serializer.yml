@@ -16,6 +16,6 @@ services:
         arguments:
            - '@Icap\NotificationBundle\Serializer\NotificationSerializer'
            - '@event_dispatcher'
-           - '@claroline.config.platform_config_handler'
+           - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
            - '@claroline.persistence.object_manager'

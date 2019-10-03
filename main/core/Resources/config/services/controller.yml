@@ -158,7 +158,7 @@ services:
 
     Claroline\CoreBundle\Controller\APINew\ParametersController:
         arguments:
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.manager.analytics_manager'
           - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
 

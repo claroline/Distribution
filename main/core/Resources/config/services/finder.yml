@@ -74,7 +74,7 @@ services:
     Claroline\CoreBundle\API\Finder\Tool\AdminToolFinder:
         arguments:
           - '@claroline.manager.plugin_manager'
-          - '@claroline.config.platform_config_handler'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
 
     Claroline\CoreBundle\API\Finder\Template\TemplateFinder: ~
 

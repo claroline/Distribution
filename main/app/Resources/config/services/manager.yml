@@ -34,7 +34,7 @@ services:
 
     Claroline\AppBundle\Manager\File\TempFileManager:
         arguments:
-            - '@claroline.config.platform_config_handler'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
 
     claroline.manager.temp_file:
         alias: Claroline\AppBundle\Manager\File\TempFileManager
