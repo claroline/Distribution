@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Workspace;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Workspace\Evaluation;
 
@@ -29,7 +30,7 @@ class EvaluationSerializer
     public function serialize(Evaluation $evaluation)
     {
         return [
-            'id' => $evaluation->getId(),
+            'id' => $evaluation->getUuid(),
             'date' => $evaluation->getDate() ? $evaluation->getDate()->format('Y-m-d H:i') : null,
             'status' => $evaluation->getStatus(),
             'duration' => $evaluation->getDuration(),
@@ -42,7 +43,7 @@ class EvaluationSerializer
             'nbAttempts' => $evaluation->getNbAttempts(),
             'nbOpenings' => $evaluation->getNbOpenings(),
             'required' => $evaluation->isRequired(),
-            'user' => $this->userSerializer->serialize($evaluation->getUser()),
+            'user' => $this->userSerializer->serialize($evaluation->getUser(), [Options::SERIALIZE_MINIMAL]),
             'userName' => $evaluation->getUserName(),
             'workspaceCode' => $evaluation->getWorkspaceCode(),
         ];

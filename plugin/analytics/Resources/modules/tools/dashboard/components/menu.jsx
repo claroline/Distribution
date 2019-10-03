@@ -53,6 +53,12 @@ const DashboardMenu = (props) =>
           icon: 'fa fa-fw fa-wave-square',
           label: trans('paths_tracking'),
           target: `${props.path}/paths`
+        }, {
+          name: 'requirements',
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-graduation-cap',
+          label: trans('evaluation_requirements', {}, 'analytics'),
+          target: `${props.path}/requirements`
         }
       ]}
     />

@@ -60,6 +60,12 @@ services:
         arguments:
             - '@Claroline\CoreBundle\API\Serializer\User\RoleSerializer'
 
+    Claroline\CoreBundle\API\Serializer\Workspace\RequirementsSerializer:
+        tags: [claroline.serializer]
+        arguments:
+            - '@Claroline\CoreBundle\API\Serializer\User\RoleSerializer'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
+
     Claroline\CoreBundle\API\Serializer\Workspace\PendingRegistrationSerializer:
         tags: [claroline.serializer]
         arguments:
@@ -68,7 +74,7 @@ services:
     Claroline\CoreBundle\API\Serializer\Workspace\EvaluationSerializer:
         tags: [claroline.serializer]
         arguments:
-            - '@claroline.serializer.user'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
     claroline.serializer.workspace.evaluation:
         alias: Claroline\CoreBundle\API\Serializer\Workspace\EvaluationSerializer

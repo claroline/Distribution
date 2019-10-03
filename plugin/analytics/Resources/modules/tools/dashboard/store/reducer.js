@@ -67,7 +67,19 @@ const reducer = combineReducers({
   nbConnections: makeReducer(null, {
     [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => action.toolData.nbConnections
   }),
-  path: pathReducer
+  path: pathReducer,
+  requirements: combineReducers({
+    roles: makeListReducer(selectors.STORE_NAME + '.requirements.roles', {}, {
+      invalidated: makeReducer(false, {
+        [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: () => true
+      })
+    }),
+    users: makeListReducer(selectors.STORE_NAME + '.requirements.users', {}, {
+      invalidated: makeReducer(false, {
+        [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: () => true
+      })
+    })
+  })
 })
 
 export {

@@ -14,6 +14,7 @@ import {UserLogs} from '#/plugin/analytics/tools/dashboard/components/logs-user'
 import {LogDetails} from '#/main/core/layout/logs'
 import {Progression} from '#/plugin/analytics/tools/dashboard/components/progression'
 import {Paths} from '#/plugin/analytics/tools/dashboard/path/containers/paths'
+import {Requirements} from '#/plugin/analytics/tools/dashboard/components/requirements'
 
 const DashboardTool = (props) =>
   <ToolPage
@@ -70,6 +71,9 @@ const DashboardTool = (props) =>
           }, {
             path: '/paths',
             render: () => trans('paths_tracking')
+          }, {
+            path: '/requirements',
+            render: () => trans('evaluation_requirements', {}, 'analytics')
           }
         ]}
       />
@@ -102,6 +106,9 @@ const DashboardTool = (props) =>
         }, {
           path: '/paths',
           component: Paths
+        }, {
+          path: '/requirements',
+          component: Requirements
         }
       ]}
     />

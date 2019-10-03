@@ -115,6 +115,11 @@ services:
           - '@claroline.manager.workspace_manager'
           - '@claroline.manager.workspace_user_queue_manager'
 
+    Claroline\CoreBundle\Controller\APINew\Workspace\RequirementsController:
+        arguments:
+          - '@claroline.api.finder'
+          - '@claroline.api.serializer'
+
     Claroline\CoreBundle\Controller\APINew\Workspace\WorkspaceController:
         arguments:
           - '@security.token_storage'
