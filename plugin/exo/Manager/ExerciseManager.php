@@ -63,7 +63,7 @@ class ExerciseManager
      *
      * @DI\InjectParams({
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "validator"       = @DI\Inject("ujm_exo.validator.exercise"),
+     *     "validator"       = @DI\Inject("UJM\ExoBundle\Validator\JsonSchema\ExerciseValidator"),
      *     "serializer"      = @DI\Inject("ujm_exo.serializer.exercise"),
      *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
      *     "itemManager"     = @DI\Inject("ujm_exo.manager.item"),

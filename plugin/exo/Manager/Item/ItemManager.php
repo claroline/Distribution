@@ -73,7 +73,7 @@ class ItemManager
      * @DI\InjectParams({
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
      *     "scoreManager"    = @DI\Inject("ujm_exo.manager.score"),
-     *     "validator"       = @DI\Inject("ujm_exo.validator.item"),
+     *     "validator"       = @DI\Inject("UJM\ExoBundle\Validator\JsonSchema\Item\ItemValidator"),
      *     "serializer"      = @DI\Inject("ujm_exo.serializer.item"),
      *     "itemDefinitions" = @DI\Inject("ujm_exo.collection.item_definitions"),
      *     "hintSerializer"  = @DI\Inject("ujm_exo.serializer.hint")

@@ -7,9 +7,6 @@ use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator;
 
-/**
- * @DI\Service("ujm_exo.validator.question_grid")
- */
 class GridQuestionValidator extends JsonSchemaValidator
 {
     /**
@@ -23,7 +20,7 @@ class GridQuestionValidator extends JsonSchemaValidator
      * @param KeywordValidator $keywordValidator
      *
      * @DI\InjectParams({
-     *     "keywordValidator" = @DI\Inject("ujm_exo.validator.keyword")
+     *     "keywordValidator" = @DI\Inject("UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator")
      * })
      */
     public function __construct(KeywordValidator $keywordValidator)

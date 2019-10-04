@@ -38,7 +38,7 @@ class AnswerManager
      *
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *     "validator"  = @DI\Inject("ujm_exo.validator.answer"),
+     *     "validator"  = @DI\Inject("UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerValidator"),
      *     "serializer" = @DI\Inject("ujm_exo.serializer.answer")
      * })
      *

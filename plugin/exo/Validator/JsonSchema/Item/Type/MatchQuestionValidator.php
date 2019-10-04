@@ -7,7 +7,7 @@ use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\JsonSchemaValidator;
 
 /**
- * @DI\Service("ujm_exo.validator.question_match")
+ * @DI\Service()
  */
 class MatchQuestionValidator extends JsonSchemaValidator
 {
