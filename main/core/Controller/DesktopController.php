@@ -19,7 +19,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,14 +50,6 @@ class DesktopController
 
     /**
      * DesktopController constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization"         = @DI\Inject("security.authorization_checker"),
-     *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
-     *     "parametersSerializer"  = @DI\Inject("Claroline\CoreBundle\API\Serializer\ParametersSerializer"),
-     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
-     *     "toolManager"           = @DI\Inject("claroline.manager.tool_manager")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param EventDispatcherInterface      $eventDispatcher
@@ -111,10 +102,10 @@ class DesktopController
 
         return new JsonResponse([
             'userProgression' => null,
-            'tools' => array_values(array_map(function (Tool $orderedTool) {
+            'tools' => array_values(array_map(function (Tool $tool) {
                 return [
-                    'icon' => $orderedTool->getClass(),
-                    'name' => $orderedTool->getName(),
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
                 ];
             }, $tools)),
             'shortcuts' => isset($parameters['desktop_shortcuts']) ? $parameters['desktop_shortcuts'] : [],
@@ -164,10 +155,10 @@ class DesktopController
     {
         $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
 
-        return new JsonResponse(array_values(array_map(function (Tool $orderedTool) {
+        return new JsonResponse(array_values(array_map(function (Tool $tool) {
             return [
-                'icon' => $orderedTool->getClass(),
-                'name' => $orderedTool->getName(),
+                'icon' => $tool->getClass(),
+                'name' => $tool->getName(),
             ];
         }, $tools)));
     }

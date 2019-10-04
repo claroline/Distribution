@@ -1763,5 +1763,6 @@
     "enabled": "Enabled",
     "disabled": "Disabled",
     "default": "Default",
-    "standard": "Standard"
+    "standard": "Standard",
+    "history": "History"
 }
