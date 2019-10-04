@@ -14,7 +14,10 @@ import {selectors}   from '#/plugin/analytics/resource/dashboard/store/selectors
 
 const Requirements = (props) =>
   <div style={{marginTop: 20}}>
-    <FormSections level={3}>
+    <FormSections
+      level={3}
+      defaultOpened="roles-section"
+    >
       <FormSection
         id="roles-section"
         key="roles-section"
