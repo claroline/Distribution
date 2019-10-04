@@ -91,6 +91,11 @@ class RequirementsFinder extends AbstractFinder
                         $userJoin = true;
                     }
                     break;
+                case 'resource':
+                    $qb->join('obj.resources', 'res');
+                    $qb->andWhere("res.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);
             }

@@ -70,106 +70,65 @@ class RequirementsController
 
     /**
      * @Route(
-     *    "/{workspace}/requirements/roles/list",
-     *    name="apiv2_workspace_requirements_roles_list"
+     *    "/{workspace}/requirements/{type}/list",
+     *    name="apiv2_workspace_requirements_list"
      * )
      * @Method("GET")
      * @ParamConverter("workspace", options={"mapping": {"workspace": "uuid"}})
      *
      * @param Workspace $workspace
+     * @param string    $type
      * @param Request   $request
      *
      * @return JsonResponse
      */
-    public function rolesListAction(Workspace $workspace, Request $request)
+    public function requirementsListAction(Workspace $workspace, $type, Request $request)
     {
         if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $workspace)) {
             throw new AccessDeniedException();
         }
+        $params = $request->query->all();
 
-        return new JsonResponse($this->finder->search(
-            Requirements::class,
-            array_merge($request->query->all(), ['hiddenFilters' => [
-                'workspace' => $workspace->getUuid(),
-                'withRole' => true
-            ]]),
-            [Options::SERIALIZE_MINIMAL]
-        ));
-    }
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['workspace'] = $workspace->getUuid();
 
-    /**
-     * @Route(
-     *    "/{workspace}/requirements/users/list",
-     *    name="apiv2_workspace_requirements_users_list"
-     * )
-     * @Method("GET")
-     * @ParamConverter("workspace", options={"mapping": {"workspace": "uuid"}})
-     *
-     * @param Workspace $workspace
-     * @param Request   $request
-     *
-     * @return JsonResponse
-     */
-    public function usersListAction(Workspace $workspace, Request $request)
-    {
-        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $workspace)) {
-            throw new AccessDeniedException();
+        if ('role' === $type) {
+            $params['hiddenFilters']['withRole'] = true;
+        } elseif ('user' === $type) {
+            $params['hiddenFilters']['withUser'] = true;
         }
 
-        return new JsonResponse($this->finder->search(
-            Requirements::class,
-            array_merge($request->query->all(), ['hiddenFilters' => [
-                'workspace' => $workspace->getUuid(),
-                'withUser' => true
-            ]]),
-            [Options::SERIALIZE_MINIMAL]
-        ));
+        return new JsonResponse($this->finder->search(Requirements::class, $params, [Options::SERIALIZE_MINIMAL]));
     }
 
     /**
      * @Route(
-     *    "/{workspace}/requirements/roles/create",
-     *    name="apiv2_workspace_requirements_roles_create"
+     *    "/{workspace}/requirements/{type}/create",
+     *    name="apiv2_workspace_requirements_create"
      * )
      * @Method("PUT")
      * @ParamConverter("workspace", options={"mapping": {"workspace": "uuid"}})
      *
      * @param Workspace $workspace
+     * @param string    $type
      * @param Request   $request
      *
      * @return JsonResponse
      */
-    public function rolesRequirementsCreateAction(Workspace $workspace, Request $request)
+    public function requirementsCreateAction(Workspace $workspace, $type, Request $request)
     {
         if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $workspace)) {
             throw new AccessDeniedException();
         }
-        $roles = $this->decodeIdsString($request, Role::class);
-        $this->evaluationManager->createRolesRequirements($workspace, $roles);
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route(
-     *    "/{workspace}/requirements/users/create",
-     *    name="apiv2_workspace_requirements_users_create"
-     * )
-     * @Method("PUT")
-     * @ParamConverter("workspace", options={"mapping": {"workspace": "uuid"}})
-     *
-     * @param Workspace $workspace
-     * @param Request   $request
-     *
-     * @return JsonResponse
-     */
-    public function usersRequirementsCreateAction(Workspace $workspace, Request $request)
-    {
-        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $workspace)) {
-            throw new AccessDeniedException();
+        if ('role' === $type) {
+            $roles = $this->decodeIdsString($request, Role::class);
+            $this->evaluationManager->createRolesRequirements($workspace, $roles);
+        } elseif ('user' === $type) {
+            $users = $this->decodeIdsString($request, User::class);
+            $this->evaluationManager->createUsersRequirements($workspace, $users);
         }
-        $users = $this->decodeIdsString($request, User::class);
-        $this->evaluationManager->createUsersRequirements($workspace, $users);
 
         return new JsonResponse();
     }
@@ -221,6 +180,44 @@ class RequirementsController
 
     /**
      * @Route(
+     *    "/requirements/resource/{resourceNode}/{type}/list",
+     *    name="apiv2_workspace_requirements_resource_list"
+     * )
+     * @Method("GET")
+     * @ParamConverter("resourceNode", options={"mapping": {"resourceNode": "uuid"}})
+     *
+     * @param ResourceNode $resourceNode
+     * @param string       $type
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function resourceListAction(ResourceNode $resourceNode, $type, Request $request)
+    {
+        $workspace = $resourceNode->getWorkspace();
+
+        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $workspace)) {
+            throw new AccessDeniedException();
+        }
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['workspace'] = $workspace->getUuid();
+        $params['hiddenFilters']['resource'] = $resourceNode->getUuid();
+
+        if ('role' === $type) {
+            $params['hiddenFilters']['withRole'] = true;
+        } elseif ('user' === $type) {
+            $params['hiddenFilters']['withUser'] = true;
+        }
+
+        return new JsonResponse($this->finder->search(Requirements::class, $params, [Options::SERIALIZE_MINIMAL]));
+    }
+
+    /**
+     * @Route(
      *    "/requirements/{requirements}/resources/add",
      *    name="apiv2_workspace_requirements_resources_add"
      * )
@@ -265,6 +262,67 @@ class RequirementsController
         $updatedRequirements = $this->evaluationManager->removeResourcesFromRequirements($requirements, $resourceNodes);
 
         return new JsonResponse($this->serializer->serialize($updatedRequirements));
+    }
+
+    /**
+     * @Route(
+     *    "/requirements/resource/{resourceNode}/remove",
+     *    name="apiv2_workspace_requirements_resource_remove"
+     * )
+     * @Method("DELETE")
+     * @ParamConverter("resourceNode", options={"mapping": {"resourceNode": "uuid"}})
+     *
+     * @param ResourceNode $resourceNode
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function resourceRequirementsRemoveAction(ResourceNode $resourceNode, Request $request)
+    {
+        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $resourceNode->getWorkspace())) {
+            throw new AccessDeniedException();
+        }
+        $selectedRequirements = $this->decodeIdsString($request, Requirements::class);
+
+        foreach ($selectedRequirements as $requirements) {
+            $this->evaluationManager->removeResourcesFromRequirements($requirements, [$resourceNode]);
+        }
+
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route(
+     *    "/requirements/resource/{resourceNode}/{type}/update",
+     *    name="apiv2_workspace_requirements_resource_update"
+     * )
+     * @Method("PUT")
+     * @ParamConverter("resourceNode", options={"mapping": {"resourceNode": "uuid"}})
+     *
+     * @param ResourceNode $resourceNode
+     * @param string       $type
+     * @param Request      $request
+     *
+     * @return JsonResponse
+     */
+    public function resourceRequirementsUpdateAction(ResourceNode $resourceNode, $type, Request $request)
+    {
+        $workspace = $resourceNode->getWorkspace();
+
+        if (!$this->authorization->isGranted(['dashboard', 'OPEN'], $workspace)) {
+            throw new AccessDeniedException();
+        }
+        $workspace = $resourceNode->getWorkspace();
+
+        if ('role' === $type) {
+            $roles = $this->decodeIdsString($request, Role::class);
+            $this->evaluationManager->createRolesRequirements($workspace, $roles, [$resourceNode]);
+        } elseif ('user' === $type) {
+            $users = $this->decodeIdsString($request, User::class);
+            $this->evaluationManager->createUsersRequirements($workspace, $users, [$resourceNode]);
+        }
+
+        return new JsonResponse();
     }
 
     /**

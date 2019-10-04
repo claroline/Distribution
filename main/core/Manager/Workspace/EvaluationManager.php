@@ -190,10 +190,11 @@ class EvaluationManager
     /**
      * @param Workspace $workspace
      * @param array     $roles
+     * @param array     $resources
      *
      * @return array
      */
-    public function createRolesRequirements(Workspace $workspace, array $roles)
+    public function createRolesRequirements(Workspace $workspace, array $roles, array $resources = [])
     {
         $createdRequirements = [];
 
@@ -207,6 +208,9 @@ class EvaluationManager
                 $this->om->persist($requirements);
                 $createdRequirements[] = $requirements;
             }
+            foreach ($resources as $resource) {
+                $requirements->addResource($resource);
+            }
         }
         $this->om->flush();
 
@@ -216,10 +220,11 @@ class EvaluationManager
     /**
      * @param Workspace $workspace
      * @param array     $users
+     * @param array     $resources
      *
      * @return array
      */
-    public function createUsersRequirements(Workspace $workspace, array $users)
+    public function createUsersRequirements(Workspace $workspace, array $users, array $resources = [])
     {
         $createdRequirements = [];
 
@@ -232,6 +237,9 @@ class EvaluationManager
                 $requirements->setUser($user);
                 $this->om->persist($requirements);
                 $createdRequirements[] = $requirements;
+            }
+            foreach ($resources as $resource) {
+                $requirements->addResource($resource);
             }
         }
         $this->om->flush();

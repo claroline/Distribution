@@ -14,7 +14,6 @@ namespace Claroline\CoreBundle\Controller\APINew\Workspace;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Workspace\Evaluation;
-use Claroline\CoreBundle\Entity\Workspace\Requirements;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -75,7 +74,7 @@ class EvaluationController
         return new JsonResponse($this->finder->search(
             Evaluation::class,
             array_merge($request->query->all(), ['hiddenFilters' => [
-                'workspace' => $workspace->getUuid()
+                'workspace' => $workspace->getUuid(),
             ]])
         ));
     }

@@ -10,7 +10,7 @@ import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 import {MODAL_USERS} from '#/main/core/modals/users'
 import {MODAL_ROLES} from '#/main/core/modals/roles'
 
-import {selectors} from '#/plugin/analytics/tools/dashboard/store'
+import {selectors}   from '#/plugin/analytics/resource/dashboard/store/selectors'
 
 const Requirements = (props) =>
   <div style={{marginTop: 20}}>
@@ -31,7 +31,7 @@ const Requirements = (props) =>
               selectAction: (selectedRoles) => ({
                 type: CALLBACK_BUTTON,
                 label: trans('create', {}, 'actions'),
-                callback: () => props.addRoles(props.workspace, selectedRoles)
+                callback: () => props.createRequirements(props.resourceId, selectedRoles, 'role')
               })
             }]
           }
@@ -40,16 +40,11 @@ const Requirements = (props) =>
         <ListData
           name={selectors.STORE_NAME + '.requirements.roles'}
           fetch={{
-            url: ['apiv2_workspace_requirements_list', {workspace: props.workspace.uuid, type: 'role'}],
+            url: ['apiv2_workspace_requirements_resource_list', {resourceNode: props.resourceId, type: 'role'}],
             autoload: true
           }}
-          primaryAction={(row) => ({
-            type: LINK_BUTTON,
-            target: `${props.path}/requirements/${row.id}`,
-            label: trans('open', {}, 'actions')
-          })}
           delete={{
-            url: ['apiv2_workspace_requirements_delete', {workspace: props.workspace.uuid}]
+            url: ['apiv2_workspace_requirements_resource_remove', {resourceNode: props.resourceId}]
           }}
           definition={[
             {
@@ -79,7 +74,7 @@ const Requirements = (props) =>
               selectAction: (selectedUsers) => ({
                 type: CALLBACK_BUTTON,
                 label: trans('create', {}, 'actions'),
-                callback: () => props.addUsers(props.workspace, selectedUsers)
+                callback: () => props.createRequirements(props.resourceId, selectedUsers, 'user')
               })
             }]
           }
@@ -88,16 +83,11 @@ const Requirements = (props) =>
         <ListData
           name={selectors.STORE_NAME + '.requirements.users'}
           fetch={{
-            url: ['apiv2_workspace_requirements_list', {workspace: props.workspace.uuid, type: 'user'}],
+            url: ['apiv2_workspace_requirements_resource_list', {resourceNode: props.resourceId, type: 'user'}],
             autoload: true
           }}
-          primaryAction={(row) => ({
-            type: LINK_BUTTON,
-            target: `${props.path}/requirements/${row.id}`,
-            label: trans('open', {}, 'actions')
-          })}
           delete={{
-            url: ['apiv2_workspace_requirements_delete', {workspace: props.workspace.uuid}]
+            url: ['apiv2_workspace_requirements_resource_remove', {resourceNode: props.resourceId}]
           }}
           definition={[
             {
@@ -116,9 +106,9 @@ const Requirements = (props) =>
 
 Requirements.propTypes = {
   path: T.string.isRequired,
+  resourceId: T.string.isRequired,
   workspace: T.shape(WorkspaceType.propTypes).isRequired,
-  addRoles: T.func.isRequired,
-  addUsers: T.func.isRequired
+  createRequirements: T.func.isRequired
 }
 
 export {

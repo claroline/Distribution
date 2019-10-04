@@ -60,7 +60,7 @@ actions.openRequirements = (id) => (dispatch) => {
 actions.createRequirementsForRoles = (workspace, roles) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: url(['apiv2_workspace_requirements_roles_create', {workspace: workspace.uuid}], {ids: roles.map(r => r.id)}),
+      url: url(['apiv2_workspace_requirements_create', {workspace: workspace.uuid, type: 'role'}], {ids: roles.map(r => r.id)}),
       request: {
         method: 'PUT'
       },
@@ -72,7 +72,7 @@ actions.createRequirementsForRoles = (workspace, roles) => (dispatch) => {
 actions.createRequirementsForUsers = (workspace, users) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: url(['apiv2_workspace_requirements_users_create', {workspace: workspace.uuid}], {ids: users.map(u => u.id)}),
+      url: url(['apiv2_workspace_requirements_create', {workspace: workspace.uuid, type: 'user'}], {ids: users.map(u => u.id)}),
       request: {
         method: 'PUT'
       },
