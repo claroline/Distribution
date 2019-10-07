@@ -155,3 +155,13 @@ services:
     ujm_exo.definition.question_boolean:
          alias: UJM\ExoBundle\Library\Item\Definition\BooleanDefinition
          public: true
+
+    UJM\ExoBundle\Library\Item\ItemDefinitionsCollection: ~
+
+    ujm_exo.collection.item_definitions:
+         alias: UJM\ExoBundle\Library\Item\ItemDefinitionsCollection
+         public: true
+
+    UJM\ExoBundle\Library\Json\JsonSchema:
+        arguments:
+           - '%kernel.root_dir%'

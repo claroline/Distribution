@@ -29,7 +29,12 @@ services:
             - '@UJM\ExoBundle\Validator\JsonSchema\Item\ItemValidator'
             - '@ujm_exo.serializer.item'
             - '@ujm_exo.collection.item_definitions'
-            - '@ujm_exo.serializer.hint'
+            - '@UJM\ExoBundle\Serializer\Item\HintSerializer'
+
+    UJM\ExoBundle\Manager\Item\ShareManager:
+        arguments:
+            - '@claroline.persistence.object_manager'
+            - '@UJM\ExoBundle\Manager\Item\ItemManager'
 
     UJM\ExoBundle\Manager\AttemptManager:
         arguments:

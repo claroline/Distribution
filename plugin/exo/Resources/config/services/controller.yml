@@ -40,7 +40,7 @@ services:
         arguments:
           - '@claroline.persistence.object_manager'
           - '@ujm_exo.serializer.user'
-          - '@ujm_exo.manager.share'
+          - '@UJM\ExoBundle\Manager\Item\ShareManager'
 
     UJM\ExoBundle\Controller\AttemptController:
         arguments:

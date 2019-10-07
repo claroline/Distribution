@@ -38,7 +38,7 @@ services:
     UJM\ExoBundle\Listener\ApiListener:
         arguments:
             - '@UJM\ExoBundle\Manager\Item\ItemManager'
-            - '@ujm_exo.manager.share'
+            - '@UJM\ExoBundle\Manager\Item\ShareManager'
             - '@UJM\ExoBundle\Manager\Attempt\PaperManager'
         tags:
             - { name: kernel.event_listener, event: merge_users, method: onMerge }
