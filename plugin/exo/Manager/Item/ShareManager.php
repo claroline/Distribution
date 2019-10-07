@@ -30,7 +30,7 @@ class ShareManager
      *
      * @DI\InjectParams({
      *     "om" = @DI\Inject("claroline.persistence.object_manager"),
-     *     "itemManager" = @DI\Inject("ujm_exo.manager.item")
+     *     "itemManager" = @DI\Inject("UJM\ExoBundle\Manager\Item\ItemManager")
      * })
      *
      * @param ObjectManager $om

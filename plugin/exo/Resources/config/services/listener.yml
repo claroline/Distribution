@@ -18,9 +18,9 @@ services:
     UJM\ExoBundle\Listener\Resource\ExerciseListener:
         arguments:
             - '@security.authorization_checker'
-            - '@ujm_exo.manager.exercise'
-            - '@ujm_exo.manager.paper'
-            - '@ujm_exo.manager.docimology'
+            - '@UJM\ExoBundle\Manager\ExerciseManager'
+            - '@UJM\ExoBundle\Manager\Attempt\PaperManager'
+            - '@UJM\ExoBundle\Manager\DocimologyManager'
             - '@claroline.persistence.object_manager'
             - '@claroline.manager.resource_evaluation_manager'
             - '@templating'
@@ -37,8 +37,8 @@ services:
 
     UJM\ExoBundle\Listener\Resource\QuestionBankListener:
         arguments:
-            - '@ujm_exo.manager.item'
+            - '@UJM\ExoBundle\Manager\Item\ItemManager'
             - '@ujm_exo.manager.share'
-            - '@ujm_exo.manager.paper'
+            - '@UJM\ExoBundle\Manager\Attempt\PaperManager'
         tags:
             - { name: kernel.event_listener, event: merge_users, method: onMerge }

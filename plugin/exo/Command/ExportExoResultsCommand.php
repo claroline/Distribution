@@ -50,7 +50,7 @@ class ExportExoResultsCommand extends ContainerAwareCommand
         $user = $this->getContainer()->get('claroline.manager.user_manager')->getUserByUsername($username);
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->getContainer()->get('security.context')->setToken($token);
-        $exoManager = $this->getContainer()->get('ujm_exo.manager.exercise');
+        $exoManager = $this->getContainer()->get('UJM\ExoBundle\Manager\ExerciseManager');
 
         $exoRepo = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('UJMExoBundle:Exercise');
         $exercises = [];
