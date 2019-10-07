@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use UJM\ExoBundle\Entity\Exercise;
 
 class ExportExoResultsCommand extends ContainerAwareCommand
 {
