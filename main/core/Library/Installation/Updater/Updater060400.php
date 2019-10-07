@@ -27,11 +27,11 @@ class Updater060400 extends Updater
 
     public function postUpdate()
     {
-        $classes = array(
+        $classes = [
             'Claroline\CoreBundle\Entity\User',
             'Claroline\CoreBundle\Entity\Group',
             'Claroline\CoreBundle\Entity\Resource\ResourceNode',
-        );
+        ];
 
         foreach ($classes as $class) {
             $this->setGuidForClass($class);
@@ -52,7 +52,7 @@ class Updater060400 extends Updater
             }
             ++$i;
 
-            if ($i % 300 === 0) {
+            if (0 === $i % 300) {
                 $this->log("Flushing [{$i}/{$totalObjects}]");
                 $this->om->flush();
             }

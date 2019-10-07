@@ -40,7 +40,7 @@ class Updater500002 extends Updater
 
     private function updateExtension($type, $name, Plugin $plugin)
     {
-        $class = $type === 'tool' ?
+        $class = 'tool' === $type ?
             'Claroline\CoreBundle\Entity\Tool\Tool' :
             'Claroline\CoreBundle\Entity\Widget\Widget';
 

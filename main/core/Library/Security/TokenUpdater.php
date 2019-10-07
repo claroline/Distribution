@@ -46,12 +46,12 @@ class TokenUpdater
         $roles = $token->getRoles();
 
         foreach ($roles as $role) {
-            if ($role->getRole() === 'ROLE_PREVIOUS_ADMIN') {
+            if ('ROLE_PREVIOUS_ADMIN' === $role->getRole()) {
                 return;
             }
 
             //May be better to check the class of the token.
-            if ($role->getRole() === 'ROLE_USURPATE_WORKSPACE_ROLE') {
+            if ('ROLE_USURPATE_WORKSPACE_ROLE' === $role->getRole()) {
                 $usurpator = true;
             }
         }

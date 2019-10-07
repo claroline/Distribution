@@ -40,7 +40,7 @@ class Updater060300 extends Updater
         $this->log('Creating Widgets management admin tool...');
         $widgetsTools = $this->adminToolRepo->findByName('widgets_management');
 
-        if (count($widgetsTools) === 0) {
+        if (0 === count($widgetsTools)) {
             $widgetsTool = new AdminTool();
             $widgetsTool->setName('widgets_management');
             $widgetsTool->setClass('list-alt');

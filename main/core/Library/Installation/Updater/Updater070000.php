@@ -28,7 +28,7 @@ class Updater070000 extends Updater
     public function postUpdate()
     {
         $pluginRepo = $this->om->getRepository('ClarolineCoreBundle:Plugin');
-        $plugin = $pluginRepo->findOneBy(array('vendorName' => 'Claroline', 'bundleName' => 'VideoJsBundle'));
+        $plugin = $pluginRepo->findOneBy(['vendorName' => 'Claroline', 'bundleName' => 'VideoJsBundle']);
 
         if ($plugin) {
             $this->log('Removing VideoJsBundle plugin from database...');

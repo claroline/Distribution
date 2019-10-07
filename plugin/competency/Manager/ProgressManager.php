@@ -102,7 +102,7 @@ class ProgressManager
      *
      * @param User|Group $subject
      *
-     * @return null|int
+     * @return int|null
      */
     public function recomputeUserProgress($subject)
     {

@@ -371,7 +371,7 @@ class ResultManager
                 $details['result'] = $newValue;
                 $log->setDetails($details);
                 $this->om->persist($log);
-                $updatedCnt += 1;
+                ++$updatedCnt;
             }
         }
         if ($updatedCnt > 0) {
