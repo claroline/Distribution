@@ -55,16 +55,16 @@ class SessionHandlerFactory
     {
         $type = $this->configHandler->getParameter('session_storage_type');
 
-        if ($type === 'native') {
+        if ('native' === $type) {
             return new NativeFileSessionHandler($this->sessionPath);
         }
 
-        if ($type === 'native_php') {
+        if ('native_php' === $type) {
             return new NativeSessionHandler();
         }
 
-        if ($type === 'claro_pdo' || $type === 'pdo') {
-            if ($type === 'pdo') {
+        if ('claro_pdo' === $type || 'pdo' === $type) {
+            if ('pdo' === $type) {
                 $dsn = $this->configHandler->getParameter('session_db_dsn');
                 $username = $this->configHandler->getParameter('session_db_user');
                 $password = $this->configHandler->getParameter('session_db_password');

@@ -31,7 +31,7 @@ class Updater060500 extends Updater
         $emailConfirm = $ch->getParameter('registration_mail_validation');
         $ch->setParameter(
             'registration_mail_validation',
-            $emailConfirm === true ? 2 : 1
+            true === $emailConfirm ? 2 : 1
         );
 
         $entities = $this->om->getRepository('ClarolineCoreBundle:User')->findAll();
@@ -46,7 +46,7 @@ class Updater060500 extends Updater
             }
             ++$i;
 
-            if ($i % 300 === 0) {
+            if (0 === $i % 300) {
                 $this->log("Flushing [{$i}/{$totalObjects}]");
                 $this->om->flush();
             }

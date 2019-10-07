@@ -21,6 +21,7 @@ use Knp\Snappy\Pdf;
 class KnpSnappyFactory
 {
     private $configHandler;
+
     /**
      * @DI\InjectParams({
      *     "configHandler" = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler")
