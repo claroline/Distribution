@@ -43,10 +43,6 @@ services:
 
     Claroline\ClacoFormBundle\Controller\API\EntryUserController: ~
 
-    Claroline\ClacoFormBundle\Controller\API\CategoryController:
-        arguments:
-          - '@claroline.api.finder'
-
     Claroline\ClacoFormBundle\Controller\ClacoFormController:
         arguments:
           - '%claroline.param.platform_generated_archive_path%'
