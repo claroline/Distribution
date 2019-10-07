@@ -31,11 +31,11 @@ services:
             - { name: kernel.event_listener, event: resource.ujm_exercise.delete, method: onDelete }
             - { name: kernel.event_listener, event: docimology_ujm_exercise, method: onDocimology }
 
-    UJM\ExoBundle\Listener\Resource\QuestionBankListener:
+    UJM\ExoBundle\Listener\Tool\QuestionBankListener:
         tags:
             - { name: kernel.event_listener, event: open_tool_desktop_ujm_questions, method: onDisplayDesktop }
 
-    UJM\ExoBundle\Listener\Resource\QuestionBankListener:
+    UJM\ExoBundle\Listener\ApiListener:
         arguments:
             - '@UJM\ExoBundle\Manager\Item\ItemManager'
             - '@ujm_exo.manager.share'

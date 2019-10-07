@@ -4,6 +4,13 @@ services:
         autoconfigure: false
         public: true #because controller
 
+    _instanceof:
+        UJM\ExoBundle\Library\Validator\JsonSchemaValidator:
+            calls:
+              - method: setJsonSchema
+                arguments:
+                  - '@ujm_exo.library.json_schema'
+
     UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\BooleanAnswerValidator: ~
 
     UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\ChoiceAnswerValidator: ~
@@ -39,13 +46,17 @@ services:
 
     UJM\ExoBundle\Validator\JsonSchema\Item\Type\ChoiceQuestionValidator: ~
 
-    UJM\ExoBundle\Validator\JsonSchema\Item\Type\ClozeQuestionValidator: ~
+    UJM\ExoBundle\Validator\JsonSchema\Item\Type\ClozeQuestionValidator:
+        arguments:
+            - '@UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator'
 
     UJM\ExoBundle\Validator\JsonSchema\Item\Type\ContentItemValidator: ~
 
     UJM\ExoBundle\Validator\JsonSchema\Item\Type\GraphicQuestionValidator: ~
 
-    UJM\ExoBundle\Validator\JsonSchema\Item\Type\GridQuestionValidator: ~
+    UJM\ExoBundle\Validator\JsonSchema\Item\Type\GridQuestionValidator:
+        arguments:
+            - '@UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator'
 
     UJM\ExoBundle\Validator\JsonSchema\Item\Type\MatchQuestionValidator: ~
 
