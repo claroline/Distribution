@@ -44,7 +44,7 @@ class ResultManager
 
     /**
      * @DI\InjectParams({
-     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
+     *     "om"             = @DI\Inject("Claroline\AppBundle\Persistence\ObjectManager"),
      *     "templating"     = @DI\Inject("templating"),
      *     "utils"          = @DI\Inject("claroline.utilities.misc"),
      *     "dispatcher"    = @DI\Inject("event_dispatcher")

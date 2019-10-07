@@ -64,7 +64,7 @@ class TestUpdateCommand extends ContainerAwareCommand
 
         //for historical reasons, CoreBundle might not be installed yet...
         if ('ClarolineCoreBundle' === $bundleName) {
-            $om = $container->get('claroline.persistence.object_manager');
+            $om = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
             $plugin = $om->getRepository('ClarolineCoreBundle:Plugin')->findOneBy([
               'vendorName' => 'Claroline', 'bundleName' => 'CoreBundle',
             ]);

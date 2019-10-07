@@ -7,7 +7,7 @@ services:
     Icap\NotificationBundle\Serializer\NotificationSerializer:
         tags: [claroline.serializer]
         arguments:
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'
            - '@event_dispatcher'
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
@@ -18,4 +18,4 @@ services:
            - '@event_dispatcher'
            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'

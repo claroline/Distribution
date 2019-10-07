@@ -6,7 +6,7 @@ services:
 
     Icap\BlogBundle\Controller\API\BlogController:
         arguments:
-          - '@claroline.api.finder'
+          - '@Claroline\AppBundle\API\FinderProvider'
           - '@Icap\BlogBundle\Serializer\BlogSerializer'
           - '@Icap\BlogBundle\Serializer\BlogOptionsSerializer'
           - '@Icap\BlogBundle\Manager\BlogManager'

@@ -306,7 +306,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             $this->log('Failed to update icons..');
         }
 
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $workspaceManager = $this->container->get('claroline.manager.workspace_manager');
         $workspaceManager->setLogger($this->logger);
         $this->log('Update Roles Admin');
@@ -333,7 +333,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
 
     private function updateRolesAdmin()
     {
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
 
         /** @var Role $role */
         $adminOrganization = $om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION');
@@ -359,7 +359,7 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
     {
         $this->log('Build default home tab');
 
-        $manager = $this->container->get('claroline.persistence.object_manager');
+        $manager = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $translator = $this->container->get('translator');
         $infoName = $translator->trans('informations', [], 'platform');
 

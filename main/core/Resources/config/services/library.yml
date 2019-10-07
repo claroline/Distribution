@@ -23,7 +23,7 @@ services:
             - '@kernel'
             - '@claroline.installation.manager'
             - '@Claroline\CoreBundle\Library\Installation\Plugin\Installer'
-            - '@claroline.persistence.object_manager'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@claroline.manager.version_manager'
 
     Claroline\CoreBundle\Library\Installation\Plugin\RoutingChecker:
@@ -43,14 +43,14 @@ services:
             - '@claroline.plugin.validator'
             - '@Claroline\CoreBundle\Library\Installation\Plugin\Recorder'
             - '@claroline.installation.manager'
-            - '@claroline.persistence.object_manager'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@claroline.manager.plugin_manager'
             - '@translator'
             - '@claroline.manager.version_manager'
 
     Claroline\CoreBundle\Library\Installation\Plugin\DatabaseWriter:
         arguments:
-            - '@claroline.persistence.object_manager'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@claroline.manager.mask_manager'
             - '@filesystem'
             - '@kernel'

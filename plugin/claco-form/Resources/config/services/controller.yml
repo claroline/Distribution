@@ -9,16 +9,16 @@ services:
             calls:
               - method: setFinder
                 arguments:
-                  - '@claroline.api.finder'
+                  - '@Claroline\AppBundle\API\FinderProvider'
               - method: setSerializer
                 arguments:
-                  - '@claroline.api.serializer'
+                  - '@Claroline\AppBundle\API\SerializerProvider'
               - method: setCrud
                 arguments:
-                  - '@claroline.api.crud'
+                  - '@Claroline\AppBundle\API\Crud'
               - method: setObjectManager
                 arguments:
-                  - '@claroline.persistence.object_manager'
+                  - '@Claroline\AppBundle\Persistence\ObjectManager'
               - method: setRouterFinder
                 arguments:
                   - '@Claroline\AppBundle\Routing\Finder'
@@ -32,20 +32,20 @@ services:
 
     Claroline\ClacoFormBundle\Controller\API\CategoryController:
         arguments:
-          - '@claroline.api.finder'
+          - '@Claroline\AppBundle\API\FinderProvider'
 
     Claroline\ClacoFormBundle\Controller\API\ClacoFormController: ~
 
     Claroline\ClacoFormBundle\Controller\API\EntryController:
         arguments:
-          - '@claroline.api.finder'
+          - '@Claroline\AppBundle\API\FinderProvider'
           - '@Claroline\ClacoFormBundle\Manager\ClacoFormManager'
 
     Claroline\ClacoFormBundle\Controller\API\EntryUserController: ~
 
     Claroline\ClacoFormBundle\Controller\API\CategoryController:
         arguments:
-          - '@claroline.api.finder'
+          - '@Claroline\AppBundle\API\FinderProvider'
 
     Claroline\ClacoFormBundle\Controller\ClacoFormController:
         arguments:
@@ -57,7 +57,7 @@ services:
           - '@request_stack'
           - '@templating'
           - '@translator'
-          - '@claroline.api.serializer'
+          - '@Claroline\AppBundle\API\SerializerProvider'
           - '@security.token_storage'
           - '@claroline.manager.user_manager'
           - '@Claroline\ClacoFormBundle\Serializer\EntrySerializer'

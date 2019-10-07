@@ -55,7 +55,7 @@ class DynamicConfigPass implements CompilerPassInterface
         }
 
         //notification
-        $container->setAlias('icap.notification.orm.entity_manager', 'claroline.persistence.object_manager');
+        $container->setAlias('icap.notification.orm.entity_manager', 'Claroline\AppBundle\Persistence\ObjectManager');
 
         $definition = $container->findDefinition('security.authentication.listener.anonymous');
         $definition->setClass('Claroline\CoreBundle\Listener\AnonymousAuthenticationListener');

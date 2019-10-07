@@ -28,7 +28,7 @@ class PdfManager
 
     /**
      * @DI\InjectParams({
-     *     "om"     = @DI\Inject("claroline.persistence.object_manager"),
+     *     "om"     = @DI\Inject("Claroline\AppBundle\Persistence\ObjectManager"),
      *     "snappy" = @DI\Inject("knp_snappy.pdf"),
      *     "pdfDir" = @DI\Inject("%claroline.param.pdf_directory%"),
      *     "ut"     = @DI\Inject("claroline.utilities.misc")

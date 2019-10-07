@@ -29,7 +29,7 @@ class TokenUpdater
     /**
      * @DI\InjectParams({
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"           = @DI\Inject("Claroline\AppBundle\Persistence\ObjectManager")
      * })
      *
      * @param TokenStorageInterface $tokenStorage

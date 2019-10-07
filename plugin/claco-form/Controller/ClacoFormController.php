@@ -73,7 +73,7 @@ class ClacoFormController
      *     "request"               = @DI\Inject("request_stack"),
      *     "templating"            = @DI\Inject("templating"),
      *     "translator"            = @DI\Inject("translator"),
-     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
+     *     "serializer"            = @DI\Inject("Claroline\AppBundle\API\SerializerProvider"),
      *     "tokenStorage"          = @DI\Inject("security.token_storage"),
      *     "userManager"           = @DI\Inject("claroline.manager.user_manager"),
      *     "entrySerializer"       = @DI\Inject("Claroline\ClacoFormBundle\Serializer\EntrySerializer"),
