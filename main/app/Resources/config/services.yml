@@ -69,3 +69,10 @@ services:
     Claroline\AppBundle\Event\StrictDispatcher:
         arguments:
             - '@event_dispatcher'
+
+    Claroline\AppBundle\Routing\ApiLoader:
+        tags: ['routing.loader']
+        arguments:
+            - '@file_locator'
+            - '@annotation_reader'
+            - '@service_container'
