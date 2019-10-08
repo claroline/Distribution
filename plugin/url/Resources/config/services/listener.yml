@@ -4,7 +4,7 @@ services:
         autoconfigure: false
         public: false
 
-    HeVinci\UrlBundle\Listene\UrlListener:
+    HeVinci\UrlBundle\Listener\UrlListener:
         arguments:
             - '@claroline.serializer.url'
         tags:
