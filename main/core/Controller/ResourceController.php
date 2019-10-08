@@ -91,13 +91,13 @@ class ResourceController
      * @DI\InjectParams({
      *     "tokenStorage"              = @DI\Inject("security.token_storage"),
      *     "templating"                = @DI\Inject("templating"),
-     *     "finder"                    = @DI\Inject("claroline.api.finder"),
+     *     "finder"                    = @DI\Inject("Claroline\AppBundle\API\FinderProvider"),
      *     "security"                  = @DI\Inject("claroline.security.utilities"),
-     *     "serializer"                = @DI\Inject("claroline.api.serializer"),
+     *     "serializer"                = @DI\Inject("Claroline\AppBundle\API\SerializerProvider"),
      *     "manager"                   = @DI\Inject("claroline.manager.resource_manager"),
      *     "actionManager"             = @DI\Inject("claroline.manager.resource_action"),
      *     "restrictionsManager"       = @DI\Inject("claroline.manager.resource_restrictions"),
-     *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
+     *     "om"                        = @DI\Inject("Claroline\AppBundle\Persistence\ObjectManager"),
      *     "authorization"             = @DI\Inject("security.authorization_checker"),
      *     "eventManager"              = @DI\Inject("claroline.event.manager"),
      *     "resourceEvaluationManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
@@ -263,6 +263,7 @@ class ResourceController
         if ($fileName) {
             $fileName = str_replace('/', '_', $fileName);
             $fileName = str_replace('\\', '_', $fileName);
+            $fileName = str_replace(' ', '_', $fileName);
         }
 
         $response = new BinaryFileResponse($file, 200, ['Content-Disposition' => "attachment; filename={$fileName}"]);

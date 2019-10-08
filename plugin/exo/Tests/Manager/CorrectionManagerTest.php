@@ -39,9 +39,9 @@ class CorrectionManagerTest extends JsonDataTestCase
     {
         parent::setUp();
 
-        $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->om = $this->client->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
         $this->persist = new Persister($this->om);
-        $this->manager = $this->client->getContainer()->get('ujm_exo.manager.correction');
+        $this->manager = $this->client->getContainer()->get('UJM\ExoBundle\Manager\CorrectionManager');
         $this->paperGenerator = $this->client->getContainer()->get('ujm_exo.generator.paper');
 
         $this->questions = [
