@@ -183,7 +183,7 @@ services:
           - '@claroline.utilities.file'
           - '@claroline.api.crud'
           - '@claroline.persistence.object_manager'
-          - '@claroline.async.command'
+          - '@Claroline\AppBundle\Command\AsyncCommand'
 
     Claroline\CoreBundle\Controller\APINew\WidgetController:
         arguments:
