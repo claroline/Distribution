@@ -97,7 +97,7 @@ class FieldsValues extends Component {
         </CallbackButton>
 
         {this.props.formData.fieldsValues.map((fv, idx) =>
-          <div>
+          <div key={`field-value-${idx}`}>
             <hr/>
             <CallbackButton
               className="btn btn-sm btn-link pull-right"
