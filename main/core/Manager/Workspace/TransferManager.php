@@ -265,7 +265,7 @@ class TransferManager
     {
         foreach ($data['orderedTools'] as $key => $orderedToolData) {
             //copied from crud
-            $name = 'export_tool_'.$orderedToolData['name'];
+            $name = 'export_tool_'.$orderedToolData['tool'];
             //use an other even. StdClass is not pretty
             if (isset($orderedToolData['data'])) {
                 /** @var ExportObjectEvent $event */
@@ -317,7 +317,7 @@ class TransferManager
         $replaced = json_encode($serialized);
 
         foreach ($serialized['orderedTools'] as $tool) {
-            if ('resources' === $tool['name']) {
+            if ('resources' === $tool['tool']) {
                 $nodes = $tool['data']['nodes'];
 
                 foreach ($nodes as $data) {
