@@ -15,11 +15,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\RemoteUserSynchronizationBundle\Entity\RemoteUserToken;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.manager.remote_user_token_manager")
- */
 class RemoteUserTokenManager
 {
     const DEFAULT_DURATION = 10;
@@ -28,12 +24,6 @@ class RemoteUserTokenManager
     private $om;
     private $remoteUserTokenRepo;
 
-    /**
-     * @DI\InjectParams({
-     *     "configHandler" = @DI\Inject("Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler"),
-     *     "om"            = @DI\Inject("Claroline\AppBundle\Persistence\ObjectManager")
-     * })
-     */
     public function __construct(PlatformConfigurationHandler $configHandler, ObjectManager $om)
     {
         $this->configHandler = $configHandler;

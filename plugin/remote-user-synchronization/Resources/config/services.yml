@@ -1,0 +1,29 @@
+services:
+    _defaults:
+        autowire: false #change to true
+        autoconfigure: false
+        public: true #because controller
+
+    Claroline\RemoteUserSynchronizationBundle\Controller\RemoteUserSynchronizationController:
+        arguments:
+            - '@claroline.authenticator'
+            - '@request_stack'
+            - '@claroline.manager.role_manager'
+            - '@router'
+            - '@session'
+            - '@claroline.manager.security_token_manager'
+            - '@security.token_storage'
+            - '@claroline.manager.user_manager'
+            - '@Claroline\RemoteUserSynchronizationBundle\Manager\RemoteUserTokenManager'
+            - '@claroline.manager.workspace_manager'
+
+    Claroline\RemoteUserSynchronizationBundle\Listener\ApiListener:
+        arguments:
+            - '@Claroline\RemoteUserSynchronizationBundle\Manager\RemoteUserTokenManager'
+        tags:
+            - { name: kernel.event_listener, event: merge_users, method: onMerge }
+
+    Claroline\RemoteUserSynchronizationBundle\Manager\RemoteUserTokenManager:
+        arguments:
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'

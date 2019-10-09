@@ -19,9 +19,7 @@ use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\RemoteUserSynchronizationBundle\Library\Security\Token\UserToken;
 use Claroline\RemoteUserSynchronizationBundle\Manager\RemoteUserTokenManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -31,7 +29,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class RemoteUserSynchronizationController extends Controller
+class RemoteUserSynchronizationController
 {
     private $authenticator;
     private $request;
@@ -44,20 +42,6 @@ class RemoteUserSynchronizationController extends Controller
     private $remoteUserTokenManager;
     private $workspaceManager;
 
-    /**
-     * @DI\InjectParams({
-     *     "authenticator"          = @DI\Inject("claroline.authenticator"),
-     *     "requestStack"           = @DI\Inject("request_stack"),
-     *     "roleManager"            = @DI\Inject("claroline.manager.role_manager"),
-     *     "router"                 = @DI\Inject("router"),
-     *     "session"                = @DI\Inject("session"),
-     *     "securityTokenManager"   = @DI\Inject("claroline.manager.security_token_manager"),
-     *     "tokenStorage"           = @DI\Inject("security.token_storage"),
-     *     "userManager"            = @DI\Inject("claroline.manager.user_manager"),
-     *     "remoteUserTokenManager" = @DI\Inject("claroline.manager.remote_user_token_manager"),
-     *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager")
-     * })
-     */
     public function __construct(
         Authenticator $authenticator,
         RequestStack $requestStack,
