@@ -4,3 +4,5 @@ imports:
     - { resource: services/voter.yml }
     - { resource: services/manager.yml }
     - { resource: services/listener.yml }
+    - { resource: services/crud.yml }
+    - { resource: services/controller.yml }
