@@ -28,6 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -57,12 +58,14 @@ class DropController
         ApiManager $apiManager,
         FinderProvider $finder,
         DropzoneManager $manager,
-        ObjectManager $om
+        ObjectManager $om,
+        AuthorizationCheckerInterface $authorization
     ) {
         $this->apiManager = $apiManager;
         $this->finder = $finder;
         $this->manager = $manager;
         $this->om = $om;
+        $this->authorization = $authorization;
     }
 
     /**

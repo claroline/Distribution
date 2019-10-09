@@ -28,6 +28,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -56,12 +57,13 @@ class DropzoneController
      * @param string                   $filesDir
      * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(FinderProvider $finder, DropzoneManager $manager, $filesDir, EventDispatcherInterface  $eventDispatcher)
+    public function __construct(FinderProvider $finder, DropzoneManager $manager, $filesDir, EventDispatcherInterface  $eventDispatcher, AuthorizationCheckerInterface $authorization)
     {
         $this->finder = $finder;
         $this->manager = $manager;
         $this->filesDir = $filesDir;
         $this->eventDispatcher = $eventDispatcher;
+        $this->authorization = $authorization;
     }
 
     /**

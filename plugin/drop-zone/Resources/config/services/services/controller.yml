@@ -38,13 +38,15 @@ services:
             - '@Claroline\AppBundle\API\FinderProvider'
             - '@Claroline\DropZoneBundle\Manager\DropzoneManager'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
-
+            - '@security.authorization_checker'
+            
     Claroline\DropZoneBundle\Controller\API\DropzoneController:
         arguments:
             - '@Claroline\AppBundle\API\FinderProvider'
             - '@Claroline\DropZoneBundle\Manager\DropzoneManager'
             - '%claroline.param.files_directory%'
-            - 'event_dispatcher'
+            - '@event_dispatcher'
+            - '@security.authorization_checker'
 
     Claroline\DropZoneBundle\Controller\API\DropzoneToolController: ~
 
