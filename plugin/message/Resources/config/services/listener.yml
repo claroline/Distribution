@@ -7,7 +7,7 @@ services:
     Claroline\MessageBundle\Listener\Tool\MessagingListener:
         arguments:
             - '@security.token_storage'
-            - '@Claroline\MessageBundle\Manager\MessageManager'
+            - '@Claroline\MessageBundle\Manager\ContactManager'
         tags:
             - { name: kernel.event_listener, event: open_tool_desktop_messaging, method: onDisplayDesktop }
 
