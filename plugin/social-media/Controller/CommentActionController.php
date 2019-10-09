@@ -60,11 +60,11 @@ class CommentActionController extends Controller
     public function formAction($resourceId, User $user)
     {
         $commentManager = $this->getCommentActionManager();
-        $criteria = array('resource' => $resourceId);
+        $criteria = ['resource' => $resourceId];
         $commentsQB = $commentManager->getCommentsForPagination($resourceId);
         $pager = $this->paginateQuery($commentsQB, 1);
 
-        return array('resourceId' => $resourceId, 'pager' => $pager);
+        return ['resourceId' => $resourceId, 'pager' => $pager];
     }
 
     /**
@@ -113,7 +113,7 @@ class CommentActionController extends Controller
         $commentsQB = $this->getCommentActionManager()->getCommentsForPagination($resourceId);
         $pager = $this->paginateQuery($commentsQB, $page);
 
-        return array('pager' => $pager, 'resourceId' => $resourceId);
+        return ['pager' => $pager, 'resourceId' => $resourceId];
     }
 
     /**
