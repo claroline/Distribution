@@ -93,7 +93,7 @@ class CommentActionController extends Controller
         if ($request->isXmlHttpRequest()) {
             $response = new JsonResponse(true);
         } else {
-            $response = $this->redirectToRoute('icap_socialmedia_comments_view', array('resourceId' => $resourceId));
+            $response = $this->redirectToRoute('icap_socialmedia_comments_view', ['resourceId' => $resourceId]);
         }
 
         return $response;
