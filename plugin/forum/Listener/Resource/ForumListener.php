@@ -58,7 +58,7 @@ class ForumListener
      *     "serializer"        = @DI\Inject("Claroline\AppBundle\API\SerializerProvider"),
      *     "crud"              = @DI\Inject("Claroline\AppBundle\API\Crud"),
      *     "evaluationManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
-     *     "manager"           = @DI\Inject("claroline.manager.forum_manager"),
+     *     "manager"           = @DI\Inject("Claroline\ForumBundle\Manager\Manager"),
      *     "tokenStorage"      = @DI\Inject("security.token_storage")
      * })
      *

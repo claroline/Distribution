@@ -18,7 +18,7 @@ class ApiListener
 
     /**
      * @DI\InjectParams({
-     *     "manager" = @DI\Inject("claroline.manager.forum_manager")
+     *     "manager" = @DI\Inject("Claroline\ForumBundle\Manager\Manager")
      * })
      *
      * @param Manager $manager
