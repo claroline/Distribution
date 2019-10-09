@@ -24,7 +24,6 @@ use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Entity\Revision;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use Claroline\TeamBundle\Entity\Team;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,13 +48,6 @@ class DropController
 
     /**
      * DropController constructor.
-     *
-     * @DI\InjectParams({
-     *     "apiManager" = @DI\Inject("claroline.manager.api_manager"),
-     *     "finder"     = @DI\Inject("Claroline\AppBundle\API\FinderProvider"),
-     *     "manager"    = @DI\Inject("claroline.manager.dropzone_manager"),
-     *     "om"         = @DI\Inject("Claroline\AppBundle\Persistence\ObjectManager")
-     * })
      *
      * @param ApiManager      $apiManager
      * @param FinderProvider  $finder
