@@ -60,7 +60,6 @@ class CommentActionController extends Controller
     public function formAction($resourceId, User $user)
     {
         $commentManager = $this->getCommentActionManager();
-        $criteria = ['resource' => $resourceId];
         $commentsQB = $commentManager->getCommentsForPagination($resourceId);
         $pager = $this->paginateQuery($commentsQB, 1);
 
