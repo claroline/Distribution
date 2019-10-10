@@ -28,7 +28,7 @@ class PostListener
 
     /**
      * @DI\InjectParams({
-     * "notificationManager" = @DI\Inject("icap.notification.manager"),
+     * "notificationManager" = @DI\Inject("Icap\NotificationBundle\Manager\NotificationManager"),
      * })
      */
     public function __construct(NotificationManager $notificationManager)
