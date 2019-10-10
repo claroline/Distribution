@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {Path} from '#/plugin/analytics/tools/dashboard/path/components/path'
@@ -6,10 +6,6 @@ import {Path} from '#/plugin/analytics/tools/dashboard/path/components/path'
 class Paths extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      currentPath: null
-    }
   }
 
   componentDidMount() {
@@ -18,36 +14,27 @@ class Paths extends Component {
 
   render() {
     return (
-      <div>
-        {this.props.trackings.map((tracking, index) =>
+      <Fragment>
+        {this.props.tracking.map((tracking, index) =>
           <Path
             key={`path-tracking-${index}`}
             path={tracking.path}
             steps={tracking.steps}
-            opened={tracking.path.id === this.state.currentPath}
-            openPath={() => {
-              if (this.state.currentPath === tracking.path.id) {
-                this.setState({currentPath: null})
-              } else {
-                this.props.invalidateEvaluations()
-                this.setState({currentPath: tracking.path.id})
-              }
-            }}
+            invalidateEvaluations={this.props.invalidateEvaluations}
             showStepDetails={this.props.showStepDetails}
           />
         )}
-      </div>
+      </Fragment>
     )
   }
 }
 
 Paths.propTypes = {
   workspaceId: T.string.isRequired,
-  trackings: T.arrayOf(T.shape({
-    path: T.shape({
+  tracking: T.arrayOf(T.shape({
+    path: T.shape({ // TODO : node types
       id: T.string,
-      name: T.string,
-      resourceId: T.string
+      name: T.string
     }),
     steps: T.arrayOf(T.shape({
       step: T.shape({
