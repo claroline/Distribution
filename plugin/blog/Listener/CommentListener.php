@@ -14,8 +14,8 @@ namespace Icap\BlogBundle\Listener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\NotificationBundle\Entity\UserPickerContent;
-use JMS\DiExtraBundle\Annotation as DI;
 use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.blog_bundle.entity_listener.comment")
@@ -23,7 +23,7 @@ use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
  */
 class CommentListener
 {
-    /** @var  \Icap\NotificationBundle\Manager\NotificationManager */
+    /** @var \Icap\NotificationBundle\Manager\NotificationManager */
     private $notificationManager;
 
     /**
@@ -44,9 +44,9 @@ class CommentListener
         if (
             $post->isPublished() &&
             $comment->isPublished() &&
-            $userPicker !== null &&
+            null !== $userPicker &&
             count($userPicker->getUserIds()) > 0 &&
-            $blog->getResourceNode() !== null
+            null !== $blog->getResourceNode()
         ) {
             $details = array(
                 'post' => array(
@@ -79,7 +79,7 @@ class CommentListener
 
     public function prePersist(Comment $comment, LifecycleEventArgs $event)
     {
-        if ($comment->getMessage() != null) {
+        if (null !== $comment->getMessage()) {
             $userPicker = new UserPickerContent($comment->getMessage());
             $comment->setUserPicker($userPicker);
             $comment->setMessage($userPicker->getFinalText());
