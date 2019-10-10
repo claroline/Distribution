@@ -79,7 +79,7 @@ class CommentListener
 
     public function prePersist(Comment $comment, LifecycleEventArgs $event)
     {
-        if (null != $comment->getMessage()) {
+        if (null !== $comment->getMessage()) {
             $userPicker = new UserPickerContent($comment->getMessage());
             $comment->setUserPicker($userPicker);
             $comment->setMessage($userPicker->getFinalText());

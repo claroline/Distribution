@@ -73,7 +73,7 @@ class PostListener
 
     public function prePersist(Post $post, LifecycleEventArgs $event)
     {
-        if (null != $post->getContent()) {
+        if (null !== $post->getContent()) {
             $userPicker = new UserPickerContent($post->getContent());
             $post->setUserPicker($userPicker);
             $post->setContent($userPicker->getFinalText());
