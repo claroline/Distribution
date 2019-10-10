@@ -14,8 +14,8 @@ namespace Icap\BlogBundle\Listener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Icap\BlogBundle\Entity\Post;
 use Icap\NotificationBundle\Entity\UserPickerContent;
-use JMS\DiExtraBundle\Annotation as DI;
 use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("icap.blog_bundle.entity_listener.post")
@@ -23,7 +23,7 @@ use Icap\NotificationBundle\Manager\NotificationManager as NotificationManager;
  */
 class PostListener
 {
-    /** @var  \Icap\NotificationBundle\Manager\NotificationManager */
+    /** @var \Icap\NotificationBundle\Manager\NotificationManager */
     private $notificationManager;
 
     /**
@@ -42,9 +42,9 @@ class PostListener
         $blog = $post->getBlog();
         if (
             $post->isPublished() &&
-            $userPicker !== null &&
+            null !== $userPicker &&
             count($userPicker->getUserIds()) > 0 &&
-            $blog->getResourceNode() !== null
+            null !== $blog->getResourceNode()
         ) {
             $details = array(
                 'post' => array(
@@ -73,7 +73,7 @@ class PostListener
 
     public function prePersist(Post $post, LifecycleEventArgs $event)
     {
-        if ($post->getContent() != null) {
+        if (null != $post->getContent()) {
             $userPicker = new UserPickerContent($post->getContent());
             $post->setUserPicker($userPicker);
             $post->setContent($userPicker->getFinalText());
