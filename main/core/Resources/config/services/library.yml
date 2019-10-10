@@ -69,6 +69,7 @@ services:
             - '@claroline.installation.manager'
             - '@Claroline\CoreBundle\Library\Installation\Plugin\Installer'
             - '@Claroline\CoreBundle\Library\Installation\Refresher'
+            - '@kernel'
             - '@service_container'
 
     Claroline\CoreBundle\Library\Mailing\TransportFactory:
