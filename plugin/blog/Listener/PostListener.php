@@ -46,21 +46,21 @@ class PostListener
             count($userPicker->getUserIds()) > 0 &&
             null !== $blog->getResourceNode()
         ) {
-            $details = array(
-                'post' => array(
+            $details = [
+                'post' => [
                     'blog' => $blog->getId(),
                     'title' => $post->getTitle(),
                     'slug' => $post->getSlug(),
                     'published' => $post->isPublished(),
                     'author' => $post->getAuthor()->getFirstName().' '.$post->getAuthor()->getLastName(),
                     'authorId' => $post->getAuthor()->getId(),
-                ),
-                'resource' => array(
+                ],
+                'resource' => [
                     'id' => $blog->getId(),
                     'name' => $blog->getResourceNode()->getName(),
                     'type' => $blog->getResourceNode()->getResourceType()->getName(),
-                ),
-            );
+                ],
+            ];
             $notification = $this->notificationManager->createNotification(
                 'resource-icap_blog-post-user_tagged',
                 'blog',

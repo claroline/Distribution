@@ -48,25 +48,25 @@ class CommentListener
             count($userPicker->getUserIds()) > 0 &&
             null !== $blog->getResourceNode()
         ) {
-            $details = array(
-                'post' => array(
+            $details = [
+                'post' => [
                     'blog' => $blog->getId(),
                     'title' => $post->getTitle(),
                     'slug' => $post->getSlug(),
-                ),
-                'comment' => array(
+                ],
+                'comment' => [
                     'id' => $comment->getId(),
                     'content' => $comment->getMessage(),
                     'published' => $comment->isPublished(),
                     'author' => $comment->getAuthor()->getFirstName().' '.$post->getAuthor()->getLastName(),
                     'authorId' => $comment->getAuthor()->getId(),
-                ),
-                'resource' => array(
+                ],
+                'resource' => [
                     'id' => $blog->getId(),
                     'name' => $blog->getResourceNode()->getName(),
                     'type' => $blog->getResourceNode()->getResourceType()->getName(),
-                ),
-            );
+                ],
+            ];
             $notification = $this->notificationManager->createNotification(
                 'resource-icap_blog-comment-user_tagged',
                 'blog',
