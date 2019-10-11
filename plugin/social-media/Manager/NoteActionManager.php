@@ -47,10 +47,10 @@ class NoteActionManager
 
     public function getNote($noteId, User $user)
     {
-        return $this->noteActionRepository->findOneBy(array(
+        return $this->noteActionRepository->findOneBy([
             'id' => $noteId,
             'user' => $user,
-        ));
+        ]);
     }
 
     /**

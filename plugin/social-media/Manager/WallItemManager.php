@@ -47,7 +47,7 @@ class WallItemManager
 
     public function removeItem($itemId, User $user)
     {
-        $wallItem = $this->wallItemRepository->findOneBy(array('id' => $itemId, 'user' => $user));
+        $wallItem = $this->wallItemRepository->findOneBy(['id' => $itemId, 'user' => $user]);
 
         if (null !== $wallItem) {
             $this->em->remove($wallItem);

@@ -54,10 +54,10 @@ class CommentActionManager
 
     public function getComment($commentId, User $user)
     {
-        return $this->commentActionRepository->findOneBy(array(
+        return $this->commentActionRepository->findOneBy([
             'id' => $commentId,
             'user' => $user,
-        ));
+        ]);
     }
 
     /**
@@ -83,7 +83,7 @@ class CommentActionManager
     public function getHasCommentedUserIds($resourceId)
     {
         $queryResult = $this->commentActionRepository->findHasCommentedUserIds($resourceId);
-        $userIds = array();
+        $userIds = [];
         if (!empty($queryResult) && !empty($queryResult)) {
             foreach ($queryResult as $userId) {
                 $userIds[] = $userId['id'];
