@@ -331,7 +331,7 @@ class EntryComponent extends Component {
                           .set({
                             filename: pdfContent.name,
                             image: { type: 'jpeg', quality: 1 },
-                            html2canvas: { scale: 4 }
+                            html2canvas: { scale: 6 }
                           })
                           .from(pdfContent.content, 'string')
                           .save()
