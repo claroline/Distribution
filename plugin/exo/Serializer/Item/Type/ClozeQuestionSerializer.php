@@ -89,7 +89,7 @@ class ClozeQuestionSerializer
      */
     private function serializeHoles(ClozeQuestion $clozeQuestion)
     {
-        return array_map(function (Hole $hole) {
+        return array_values(array_map(function (Hole $hole) {
             $holeData = [
                 'id' => $hole->getUuid(),
                 'size' => $hole->getSize(),
@@ -108,7 +108,7 @@ class ClozeQuestionSerializer
             }
 
             return $holeData;
-        }, $clozeQuestion->getHoles()->toArray());
+        }, $clozeQuestion->getHoles()->toArray()));
     }
 
     /**
