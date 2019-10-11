@@ -57,7 +57,7 @@ class TranslationManager
 
     private function recursiveRemove($mainTranslations, $translations)
     {
-        foreach ($translations as $key => $value) {
+        foreach (array_keys($translations) as $key) {
             if (!array_key_exists($key, $mainTranslations)) {
                 unset($translations[$key]);
             }
