@@ -39,11 +39,13 @@ const HolePopover = props => {
   // It will be positioned just under the edit button
   const btnElement = document.querySelector(`.cloze-hole[data-hole-id="${props.hole.id}"] .edit-hole-btn`)
 
-  let left = btnElement.offsetLeft
-  let top  = btnElement.offsetTop
+  let left = btnElement ? btnElement.offsetLeft : 0
+  let top  = btnElement ? btnElement.offsetTop : 0
 
-  left += btnElement.offsetWidth / 2 // center popover and edit btn
-  top  += btnElement.offsetHeight // position popover below edit btn
+  if (btnElement) {
+    left += btnElement.offsetWidth / 2 // center popover and edit btn
+    top  += btnElement.offsetHeight // position popover below edit btn
+  }
 
   left -= 180 // half size of the popover
   top  += 25 // take into account the form group label
@@ -302,10 +304,8 @@ class MainField extends Component {
               const regex = new RegExp(`(\\[\\[${this.props.item._holeId}\\]\\])`, 'gi')
               newItem.text = newItem.text.replace(regex, bestAnswer ? bestAnswer.text : '')
 
-              if (newItem._holeId && newItem._holeId === this.props.item._holeId) {
-                this.props.update('_popover', false)
-              }
-
+              this.props.update('_popover', false)
+              this.props.update('_holeId', null)
               this.props.update('text', newItem.text)
               this.props.update('holes', newItem.holes)
               this.props.update('solutions', newItem.solutions)
