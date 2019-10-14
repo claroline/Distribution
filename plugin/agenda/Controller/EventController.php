@@ -89,42 +89,6 @@ class EventController extends AbstractCrudController
     }
 
     /**
-     * Lists events for an user.
-     *
-     * @EXT\Route("/user/list", name="apiv2_event_user_list")
-     * @EXT\Method("GET")
-     *
-     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=false})
-     *
-     * @param User    $currentUser
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function userListAction(User $currentUser, Request $request)
-    {
-        $query = $request->query->all();
-        $hiddenFilters = isset($query['hiddenFilters']) ? $query['hiddenFilters'] : [];
-        $query['hiddenFilters'] = array_merge($hiddenFilters, $this->getDefaultHiddenFilters());
-
-        // get start & end date and add them to the hidden filters list
-        $query['hiddenFilters']['createdAfter'] = $query['start'];
-        $query['hiddenFilters']['endBefore'] = $query['end'];
-
-        if (!isset($query['filters']['workspaces'])) {
-            $query['hiddenFilters']['desktop'] = $currentUser->getUuid();
-        }
-
-        $data = $this->finder->search(
-            Event::class,
-            $query,
-            $this->options['list']
-        );
-
-        return new JsonResponse($data['data']);
-    }
-
-    /**
      * Marks a list of tasks as done.
      *
      * @EXT\Route("/done", name="apiv2_task_mark_done")
