@@ -14,6 +14,7 @@ namespace Claroline\AgendaBundle\Controller;
 use Claroline\AgendaBundle\Entity\Event;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\File\PublicFile;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -73,8 +74,49 @@ class EventController extends AbstractCrudController
         $query['hiddenFilters']['createdAfter'] = $query['start'];
         $query['hiddenFilters']['endBefore'] = $query['end'];
 
+        if (!isset($query['filters']['workspaces'])) {
+            $user = $this->tokenStorage->getToken()->getUser();
+            $query['hiddenFilters']['desktop'] = 'anon.' !== $user ? $user->getUuid() : null;
+        }
+
         $data = $this->finder->search(
             $class,
+            $query,
+            $this->options['list']
+        );
+
+        return new JsonResponse($data['data']);
+    }
+
+    /**
+     * Lists events for an user.
+     *
+     * @EXT\Route("/user/list", name="apiv2_event_user_list")
+     * @EXT\Method("GET")
+     *
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param User    $currentUser
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function userListAction(User $currentUser, Request $request)
+    {
+        $query = $request->query->all();
+        $hiddenFilters = isset($query['hiddenFilters']) ? $query['hiddenFilters'] : [];
+        $query['hiddenFilters'] = array_merge($hiddenFilters, $this->getDefaultHiddenFilters());
+
+        // get start & end date and add them to the hidden filters list
+        $query['hiddenFilters']['createdAfter'] = $query['start'];
+        $query['hiddenFilters']['endBefore'] = $query['end'];
+
+        if (!isset($query['filters']['workspaces'])) {
+            $query['hiddenFilters']['desktop'] = $currentUser->getUuid();
+        }
+
+        $data = $this->finder->search(
+            Event::class,
             $query,
             $this->options['list']
         );
