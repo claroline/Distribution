@@ -2,7 +2,7 @@ services:
     _defaults:
         autowire: false
         autoconfigure: false
-        public: false
+        public: true
 
     Icap\WikiBundle\Listener\Resource\WikiListener:
        arguments:
@@ -64,6 +64,6 @@ services:
           - { name: kernel.event_listener, event: merge_users, method: onMerge }
 
     Icap\WikiBundle\Listener\Entity\ContributionListener:
+       tags: ['doctrine.entity_listener']
        arguments:
           - '@Icap\NotificationBundle\Manager\NotificationManager'
-       tags: ['doctrine.entity_listener']
