@@ -73,6 +73,11 @@ class EventController extends AbstractCrudController
         $query['hiddenFilters']['createdAfter'] = $query['start'];
         $query['hiddenFilters']['endBefore'] = $query['end'];
 
+        if (!isset($query['filters']['workspaces'])) {
+            $user = $this->tokenStorage->getToken()->getUser();
+            $query['hiddenFilters']['desktop'] = 'anon.' !== $user ? $user->getUuid() : null;
+        }
+
         $data = $this->finder->search(
             $class,
             $query,
@@ -186,7 +191,7 @@ class EventController extends AbstractCrudController
         $workspace = $workspace['id'] ? $this->om->getObject($workspace, Workspace::class) : null;
         $fileEntity = $this->om->getObject($file, PublicFile::class) ?? new PublicFile();
         $file = $this->serializer->deserialize($file, $fileEntity);
-        $fileData = $this->container->get('claroline.utilities.file')->getContents($file);
+        $fileData = $this->container->get('Claroline\CoreBundle\Library\Utilities\FileUtilities')->getContents($file);
         $events = $this->container->get('Claroline\AgendaBundle\Manager\AgendaManager')->import($fileData, $workspace);
 
         return new JsonResponse(array_map(function (Event $event) {

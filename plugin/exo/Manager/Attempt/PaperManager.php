@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Manager\Attempt;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
+use Claroline\CoreBundle\Entity\AbstractEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceEvaluation;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -162,31 +162,33 @@ class PaperManager
                         $item = $this->itemManager->deserialize($itemData);
                         if ($item->hasExpectedAnswers()) {
                             $itemTotal = $this->itemManager->calculateTotal($item);
-
-                            // search for a submitted answer for the question
-                            foreach ($answers as $answer) {
-                                if ($answer->getQuestionId() === $item->getUuid()) {
-                                    $itemAnswer = $answer;
-                                    break; // stop searching
+                            if ($itemTotal) {
+                                // no need to process item if there is no score
+                                // search for a submitted answer for the question
+                                foreach ($answers as $answer) {
+                                    if ($answer->getQuestionId() === $item->getUuid()) {
+                                        $itemAnswer = $answer;
+                                        break; // stop searching
+                                    }
                                 }
-                            }
 
-                            if (!$itemAnswer) {
-                                $corrected->addMissing(new GenericScore($itemTotal));
-                            } elseif (!is_null($itemAnswer->getScore())) {
-                                // get the answer score without hints
-                                // this is required to check if the item has been correctly answered
-                                // we don't want the use of an hint with penalty mark the question has incorrect
-                                // because this is how it works in item scores
-                                $itemScore = $this->itemManager->calculateScore($item, $itemAnswer, false);
-                                if ($itemTotal === $itemScore) {
-                                    // item is fully correct
-                                    $corrected->addExpected(new GenericScore($itemAnswer->getScore()));
-                                } else {
-                                    $corrected->addUnexpected(new GenericScore($itemAnswer->getScore()));
-
-                                    // this may be problematic there will be score "rules" (item will be counted in 2 times)
+                                if (!$itemAnswer) {
                                     $corrected->addMissing(new GenericScore($itemTotal));
+                                } elseif (!is_null($itemAnswer->getScore())) {
+                                    // get the answer score without hints
+                                    // this is required to check if the item has been correctly answered
+                                    // we don't want the use of an hint with penalty mark the question has incorrect
+                                    // because this is how it works in item scores
+                                    $itemScore = $this->itemManager->calculateScore($item, $itemAnswer, false);
+                                    if ($itemTotal === $itemScore) {
+                                        // item is fully correct
+                                        $corrected->addExpected(new GenericScore($itemAnswer->getScore()));
+                                    } else {
+                                        $corrected->addUnexpected(new GenericScore($itemAnswer->getScore()));
+
+                                        // this may be problematic there will be score "rules" (item will be counted in 2 times)
+                                        $corrected->addMissing(new GenericScore($itemTotal));
+                                    }
                                 }
                             }
                         }
@@ -422,15 +424,15 @@ class PaperManager
 
         if ($finished) {
             if (is_null($successScore) || empty($paper->getTotal())) {
-                $status = AbstractResourceEvaluation::STATUS_COMPLETED;
+                $status = AbstractEvaluation::STATUS_COMPLETED;
             } else {
                 $percentScore = ($score * 100);
                 $status = $percentScore >= $successScore ?
-                    AbstractResourceEvaluation::STATUS_PASSED :
-                    AbstractResourceEvaluation::STATUS_FAILED;
+                    AbstractEvaluation::STATUS_PASSED :
+                    AbstractEvaluation::STATUS_FAILED;
             }
         } else {
-            $status = AbstractResourceEvaluation::STATUS_INCOMPLETE;
+            $status = AbstractEvaluation::STATUS_INCOMPLETE;
         }
 
         $nbQuestions = 0;
