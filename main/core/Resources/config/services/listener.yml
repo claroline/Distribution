@@ -260,7 +260,7 @@ services:
 
     Claroline\CoreBundle\Listener\Workspace\EvaluationListener:
         arguments:
-            - '@claroline.manager.workspace.evaluation'
+            - '@Claroline\CoreBundle\Manager\Workspace\EvaluationManager'
         tags:
             - { name: kernel.event_listener, event: resource_evaluation, method: onResourceEvaluation }
 

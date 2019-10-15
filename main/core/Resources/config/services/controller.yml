@@ -108,8 +108,8 @@ services:
     Claroline\CoreBundle\Controller\APINew\Workspace\EvaluationController:
         arguments:
           - '@security.authorization_checker'
-          - '@claroline.api.finder'
-          - '@claroline.api.serializer'
+          - '@Claroline\AppBundle\API\FinderProvider'
+          - '@Claroline\AppBundle\API\SerializerProvider'
 
     Claroline\CoreBundle\Controller\APINew\Workspace\RegistrationController:
         arguments:
@@ -124,10 +124,10 @@ services:
     Claroline\CoreBundle\Controller\APINew\Workspace\RequirementsController:
         arguments:
           - '@security.authorization_checker'
-          - '@claroline.manager.workspace.evaluation'
-          - '@claroline.api.finder'
-          - '@claroline.persistence.object_manager'
-          - '@claroline.api.serializer'
+          - '@Claroline\CoreBundle\Manager\Workspace\EvaluationManager'
+          - '@Claroline\AppBundle\API\FinderProvider'
+          - '@Claroline\AppBundle\Persistence\ObjectManager'
+          - '@Claroline\AppBundle\API\SerializerProvider'
 
     Claroline\CoreBundle\Controller\APINew\Workspace\WorkspaceController:
         arguments:

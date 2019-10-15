@@ -465,7 +465,7 @@ services:
 
     Claroline\CoreBundle\Manager\Workspace\EvaluationManager:
         arguments:
-          - '@claroline.persistence.object_manager'
+          - '@Claroline\AppBundle\Persistence\ObjectManager'
 
     claroline.manager.workspace.evaluation:
         alias: Claroline\CoreBundle\Manager\Workspace\EvaluationManager
