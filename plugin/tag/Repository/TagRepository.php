@@ -26,7 +26,7 @@ class TagRepository extends EntityRepository
                 AND t.name = :name
             ')
             ->setParameter('name', $name)
-            ->getOneOrNullResult();
+            ->getResult();
     }
 
     public function findOneUserTagByName(User $user, $name)
@@ -42,6 +42,6 @@ class TagRepository extends EntityRepository
                 'user' => $user,
                 'name' => $name,
             ])
-            ->getOneOrNullResult();
+            ->getResult();
     }
 }
