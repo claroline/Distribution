@@ -299,12 +299,17 @@ class AttemptManager
         $paper->setScore($score);
 
         if ($generateEvaluation) {
-            $this->paperManager->generateResourceEvaluation($paper, $finished);
+            $evaluation = $this->paperManager->generateResourceEvaluation($paper, $finished);
         }
         $this->om->persist($paper);
         $this->om->endFlushSuite();
 
         $this->paperManager->checkPaperEvaluated($paper);
+
+        if ($generateEvaluation) {
+            $event = new GenericDataEvent($evaluation);
+            $this->eventDispatcher->dispatch('resource.score_evaluation.created', $event);
+        }
     }
 
     /**
