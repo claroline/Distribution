@@ -351,7 +351,7 @@ class Workspace
     private $workspaceModel;
 
     /**
-     * @ORM\Column(name="archived", type="boolean")
+     * @ORM\Column(name="archived", type="boolean", options={"default" = 0})
      *
      * @var bool
      */

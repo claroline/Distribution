@@ -14,14 +14,10 @@ class Version20190814143949 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql('
+        $this->addSql("
             ALTER TABLE claro_workspace
-            ADD archived TINYINT(1) DEFAULT NULL
-        ');
-
-        $this->addSql('
-            UPDATE claro_workspace SET archived = false
-        ');
+            ADD archived TINYINT(1) DEFAULT '0' NOT NULL
+        ");
     }
 
     public function down(Schema $schema)
