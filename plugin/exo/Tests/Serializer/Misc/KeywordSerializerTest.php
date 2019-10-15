@@ -34,10 +34,10 @@ class KeywordSerializerTest extends JsonDataTestCase
     {
         parent::setUp();
 
-        $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->om = $this->client->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
 
         // We trust validator service as it is fully tested
-        $this->validator = $this->client->getContainer()->get('ujm_exo.validator.keyword');
+        $this->validator = $this->client->getContainer()->get('UJM\ExoBundle\Validator\JsonSchema\Misc\KeywordValidator');
         $this->serializer = $this->client->getContainer()->get('ujm_exo.serializer.keyword');
 
         $this->keyword = new Keyword();

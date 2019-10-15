@@ -19,12 +19,8 @@ use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\WorkspaceCopyToolEvent;
 use Claroline\PlannedNotificationBundle\Entity\Message;
 use Claroline\PlannedNotificationBundle\Entity\PlannedNotification;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @DI\Service
- */
 class PlannedNotificationListener
 {
     /** @var AuthorizationCheckerInterface */
@@ -38,13 +34,6 @@ class PlannedNotificationListener
 
     /**
      * PlannedNotificationListener constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "crud"          = @DI\Inject("claroline.api.crud"),
-     *     "finder"        = @DI\Inject("claroline.api.finder")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param Crud                          $crud
@@ -64,8 +53,6 @@ class PlannedNotificationListener
     }
 
     /**
-     * @DI\Observe("open_tool_workspace_claroline_planned_notification_tool")
-     *
      * @param DisplayToolEvent $event
      */
     public function onWorkspaceToolOpen(DisplayToolEvent $event)
@@ -79,8 +66,6 @@ class PlannedNotificationListener
     }
 
     /**
-     * @DI\Observe("workspace_copy_tool_claroline_planned_notification_tool")
-     *
      * @param WorkspaceCopyToolEvent $event
      */
     public function onWorkspaceToolCopy(WorkspaceCopyToolEvent $event)

@@ -7,9 +7,9 @@ services:
     Icap\LessonBundle\Listener\Resource\LessonListener:
         arguments:
            - '@templating'
-           - '@claroline.persistence.object_manager'
-           - '@claroline.config.platform_config_handler'
-           - '@claroline.api.serializer'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'
+           - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
+           - '@Claroline\AppBundle\API\SerializerProvider'
            - '@Icap\LessonBundle\Manager\ChapterManager'
         tags:
             - { name: kernel.event_listener, event: resource.icap_lesson.load, method: onLoad }
@@ -47,16 +47,7 @@ services:
             - { name: kernel.event_listener, event: create_notification_item_resource-icap_lesson-chapter_update, method: onCreateNotificationItem }
             - { name: kernel.event_listener, event: create_notification_item_resource-icap_lesson-user_tagged, method: onCreateNotificationItem }
 
-    Icap\LessonBundle\Listener\NotificationListener:
-        arguments:
-            - '@translator'
-            - '@router'
-        tags:
-            - { name: kernel.event_listener, event: create_notification_item_resource-icap_lesson-chapter_create, method: onCreateNotificationItem }
-            - { name: kernel.event_listener, event: create_notification_item_resource-icap_lesson-chapter_update, method: onCreateNotificationItem }
-            - { name: kernel.event_listener, event: create_notification_item_resource-icap_lesson-user_tagged, method: onCreateNotificationItem }
-
     Icap\LessonBundle\Listener\ChapterListener:
         arguments:
-            - '@icap.notification.manager'
+            - '@Icap\NotificationBundle\Manager\NotificationManager'
         tags: ['doctrine.entity_listener']

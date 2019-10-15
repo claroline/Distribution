@@ -18,7 +18,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Entity\UserMessage;
 use Claroline\MessageBundle\Manager\MessageManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,10 +32,6 @@ class MessageController extends AbstractCrudController
 
     /**
      * Constructor.
-     *
-     * @DI\InjectParams({
-     *     "messageManager" = @DI\Inject("claroline.manager.message_manager")
-     * })
      *
      * @param MessageManager $messageManager
      */
@@ -283,7 +278,7 @@ class MessageController extends AbstractCrudController
 
         foreach ($ids as $id) {
             $message = $this->find($this->getClass(), $id);
-            $this->container->get('claroline.manager.message_manager')->remove($message);
+            $this->container->get('Claroline\MessageBundle\Manager\MessageManager')->remove($message);
         }
 
         $this->om->endFlushSuite();

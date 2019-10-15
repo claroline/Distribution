@@ -44,15 +44,11 @@ use Claroline\DropZoneBundle\Repository\CorrectionRepository;
 use Claroline\DropZoneBundle\Repository\DocumentRepository;
 use Claroline\DropZoneBundle\Repository\PlannedNotificationRepository;
 use Claroline\TeamBundle\Entity\Team;
-use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-/**
- * @DI\Service("claroline.manager.dropzone_manager")
- */
 class DropzoneManager
 {
     /** @var Crud */
@@ -96,19 +92,6 @@ class DropzoneManager
 
     /**
      * DropzoneManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "crud"                   = @DI\Inject("claroline.api.crud"),
-     *     "serializer"             = @DI\Inject("claroline.api.serializer"),
-     *     "fileSystem"             = @DI\Inject("filesystem"),
-     *     "filesDir"               = @DI\Inject("%claroline.param.files_directory%"),
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "resourceEvalManager"    = @DI\Inject("claroline.manager.resource_evaluation_manager"),
-     *     "archiveDir"             = @DI\Inject("%claroline.param.platform_generated_archive_path%"),
-     *     "configHandler"          = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
-     *     "roleManager"            = @DI\Inject("claroline.manager.role_manager")
-     * })
      *
      * @param Crud                         $crud
      * @param SerializerProvider           $serializer

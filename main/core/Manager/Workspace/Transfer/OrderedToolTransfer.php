@@ -76,7 +76,7 @@ class OrderedToolTransfer
     public function dispatchPreEvent(array $data, array $orderedToolData)
     {
         //use event instead maybe ? or tagged service
-        $serviceName = 'claroline.transfer.'.$orderedToolData['name'];
+        $serviceName = 'claroline.transfer.'.$orderedToolData['tool'];
 
         if ($this->container->has($serviceName)) {
             $importer = $this->container->get($serviceName);
@@ -92,7 +92,7 @@ class OrderedToolTransfer
     //only work for creation... other not supported. It's not a true Serializer anyway atm
     public function deserialize(array $data, OrderedTool $orderedTool, array $options = [], Workspace $workspace = null, FileBag $bag = null)
     {
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $tool = $om->getRepository(Tool::class)->findOneByName($data['tool']);
 
         if ($tool) {

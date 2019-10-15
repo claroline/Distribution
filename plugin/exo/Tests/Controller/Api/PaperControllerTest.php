@@ -46,9 +46,9 @@ class PaperControllerTest extends TransactionalTestCase
     {
         parent::setUp();
 
-        $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->om = $this->client->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
         $this->paperGenerator = $this->client->getContainer()->get('ujm_exo.generator.paper');
-        $this->paperManager = $this->client->getContainer()->get('ujm_exo.manager.paper');
+        $this->paperManager = $this->client->getContainer()->get('UJM\ExoBundle\Manager\Attempt\PaperManager');
         $this->rightsManager = $this->client->getContainer()->get('claroline.manager.rights_manager');
         $this->roleManager = $this->client->getContainer()->get('claroline.manager.role_manager');
 

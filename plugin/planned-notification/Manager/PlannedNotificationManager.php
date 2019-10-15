@@ -24,11 +24,7 @@ use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\PlannedNotificationBundle\Entity\Message;
 use Claroline\PlannedNotificationBundle\Entity\PlannedNotification;
 use Claroline\PlannedNotificationBundle\Repository\PlannedNotificationRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.manager.planned_notification_manager")
- */
 class PlannedNotificationManager
 {
     /** @var MailManager */
@@ -51,12 +47,6 @@ class PlannedNotificationManager
 
     /**
      * PlannedNotificationManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "mailManager"          = @DI\Inject("claroline.manager.mail_manager"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
-     *     "scheduledTaskManager" = @DI\Inject("claroline.manager.scheduled_task_manager")
-     * })
      *
      * @param MailManager          $mailManager
      * @param ObjectManager        $om

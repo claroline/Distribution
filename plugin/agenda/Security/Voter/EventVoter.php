@@ -13,14 +13,9 @@ namespace Claroline\AgendaBundle\Security\Voter;
 
 use Claroline\AgendaBundle\Entity\Event;
 use Claroline\CoreBundle\Security\Voter\AbstractVoter;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
-/**
- * @DI\Service
- * @DI\Tag("security.voter")
- */
 class EventVoter extends AbstractVoter
 {
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
@@ -38,9 +33,18 @@ class EventVoter extends AbstractVoter
     {
         $workspace = $object->getWorkspace();
 
-        $perm = $this->getWorkspaceToolPerm($workspace, 'agenda', $token);
+        if ($workspace) {
+            $perm = $this->getWorkspaceToolPerm($workspace, 'agenda', $token);
 
-        return $perm & 2 ? VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
+            return $perm & 2 ? VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
+        } else {
+            $currentUser = $token->getUser();
+            $user = $object->getUser();
+
+            return 'anon.' !== $currentUser && (!$user || $currentUser->getUuid() === $user->getUuid()) ?
+                VoterInterface::ACCESS_GRANTED :
+                VoterInterface::ACCESS_DENIED;
+        }
     }
 
     public function getClass()

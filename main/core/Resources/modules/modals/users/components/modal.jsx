@@ -18,11 +18,11 @@ const UsersModal = props => {
 
   return (
     <Modal
-      {...omit(props, 'url', 'selected', 'selectAction', 'resetSelect')}
+      {...omit(props, 'url', 'selected', 'selectAction', 'reset')}
       icon="fa fa-fw fa-user"
       className="data-picker-modal"
       bsSize="lg"
-      onExiting={props.resetSelect}
+      onExiting={props.reset}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -75,13 +75,6 @@ const UsersModal = props => {
             sortable: false
           }, {
             name: 'unionOrganizationName',
-            type: 'string',
-            label: trans('group'),
-            displayed: false,
-            displayable: false,
-            sortable: false
-          }, {
-            name: 'unionOrganizationName',
             label: trans('organization'),
             type: 'string',
             displayed: false,
@@ -111,7 +104,7 @@ UsersModal.propTypes = {
   selectAction: T.func.isRequired,
   fadeModal: T.func.isRequired,
   selected: T.arrayOf(T.shape(UserType.propTypes)).isRequired,
-  resetSelect: T.func.isRequired
+  reset: T.func.isRequired
 }
 
 UsersModal.defaultProps = {

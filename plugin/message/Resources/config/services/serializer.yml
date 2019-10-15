@@ -7,23 +7,23 @@ services:
     Claroline\MessageBundle\Serializer\MessageSerializer:
         tags: [claroline.serializer]
         arguments:
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'
            - '@security.token_storage'
-           - '@claroline.manager.message_manager'
+           - '@Claroline\MessageBundle\Manager\MessageManager'
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
 
     Claroline\MessageBundle\Serializer\Contact\OptionsSerializer:
         tags: [claroline.serializer]
         arguments:
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'
 
     Claroline\MessageBundle\Serializer\Contact\ContactSerializer:
         tags: [claroline.serializer]
         arguments:
            - '@Claroline\MessageBundle\Serializer\Contact\CategorySerializer'
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'
 
     claroline.serializer.contact:
            alias: Claroline\MessageBundle\Serializer\Contact\ContactSerializer
@@ -33,4 +33,4 @@ services:
         tags: [claroline.serializer]
         arguments:
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'

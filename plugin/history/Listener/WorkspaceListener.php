@@ -5,12 +5,8 @@ namespace Claroline\HistoryBundle\Listener;
 use Claroline\CoreBundle\Event\Workspace\OpenWorkspaceEvent;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\HistoryBundle\Manager\HistoryManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service()
- */
 class WorkspaceListener
 {
     /** @var TokenStorageInterface */
@@ -24,12 +20,6 @@ class WorkspaceListener
 
     /**
      * ResourceListener constructor.
-     *
-     * @DI\InjectParams({
-     *     "tokenStorage"     = @DI\Inject("security.token_storage"),
-     *     "manager"          = @DI\Inject("claroline.manager.history"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
-     * })
      *
      * @param TokenStorageInterface $tokenStorage
      * @param HistoryManager        $manager
@@ -46,8 +36,6 @@ class WorkspaceListener
     }
 
     /**
-     * @DI\Observe("workspace.open")
-     *
      * @param OpenWorkspaceEvent $event
      */
     public function onOpen(OpenWorkspaceEvent $event)

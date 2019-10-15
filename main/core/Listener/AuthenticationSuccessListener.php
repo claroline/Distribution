@@ -21,16 +21,12 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
 use Claroline\CoreBundle\Manager\ConnectionMessageManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 
-/**
- * @DI\Service("claroline.security.authentication.success_handler")
- */
 class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInterface
 {
     /** @var TokenStorageInterface */
@@ -53,15 +49,6 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
 
     /**
      * SecurityController constructor.
-     *
-     * @DI\InjectParams({
-     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
-     *     "config"          = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "serializer"      = @DI\Inject("claroline.api.serializer"),
-     *     "userManager"     = @DI\Inject("claroline.manager.user_manager"),
-     *     "messageManager"  = @DI\Inject("claroline.manager.connection_message_manager")
-     * })
      *
      * @param TokenStorageInterface        $tokenStorage
      * @param PlatformConfigurationHandler $config

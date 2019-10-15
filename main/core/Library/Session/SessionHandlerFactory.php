@@ -12,14 +12,10 @@
 namespace Claroline\CoreBundle\Library\Session;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
-/**
- * @DI\Service("claroline.session.handler_factory")
- */
 class SessionHandlerFactory
 {
     private $configHandler;
@@ -28,15 +24,6 @@ class SessionHandlerFactory
     private $dbPassword;
     private $dbName;
 
-    /**
-     * @DI\InjectParams({
-     *     "configHandler"  = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "sessionPath"    = @DI\Inject("%session.save_path%"),
-     *     "dbUsername"     = @DI\Inject("%database_user%"),
-     *     "dbPassword"     = @DI\Inject("%database_password%"),
-     *     "dbName"         = @DI\Inject("%database_name%")
-     * })
-     */
     public function __construct(
         PlatformConfigurationHandler $configHandler,
         $sessionPath,
@@ -55,16 +42,16 @@ class SessionHandlerFactory
     {
         $type = $this->configHandler->getParameter('session_storage_type');
 
-        if ($type === 'native') {
+        if ('native' === $type) {
             return new NativeFileSessionHandler($this->sessionPath);
         }
 
-        if ($type === 'native_php') {
+        if ('native_php' === $type) {
             return new NativeSessionHandler();
         }
 
-        if ($type === 'claro_pdo' || $type === 'pdo') {
-            if ($type === 'pdo') {
+        if ('claro_pdo' === $type || 'pdo' === $type) {
+            if ('pdo' === $type) {
                 $dsn = $this->configHandler->getParameter('session_db_dsn');
                 $username = $this->configHandler->getParameter('session_db_user');
                 $password = $this->configHandler->getParameter('session_db_password');

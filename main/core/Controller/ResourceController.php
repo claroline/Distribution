@@ -30,7 +30,6 @@ use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceRestrictionsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Repository\ResourceRightsRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -87,21 +86,6 @@ class ResourceController
 
     /**
      * ResourceController constructor.
-     *
-     * @DI\InjectParams({
-     *     "tokenStorage"              = @DI\Inject("security.token_storage"),
-     *     "templating"                = @DI\Inject("templating"),
-     *     "finder"                    = @DI\Inject("claroline.api.finder"),
-     *     "security"                  = @DI\Inject("claroline.security.utilities"),
-     *     "serializer"                = @DI\Inject("claroline.api.serializer"),
-     *     "manager"                   = @DI\Inject("claroline.manager.resource_manager"),
-     *     "actionManager"             = @DI\Inject("claroline.manager.resource_action"),
-     *     "restrictionsManager"       = @DI\Inject("claroline.manager.resource_restrictions"),
-     *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
-     *     "authorization"             = @DI\Inject("security.authorization_checker"),
-     *     "eventManager"              = @DI\Inject("claroline.event.manager"),
-     *     "resourceEvaluationManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
-     * })
      *
      * @param TokenStorageInterface         $tokenStorage
      * @param EngineInterface               $templating
@@ -263,6 +247,7 @@ class ResourceController
         if ($fileName) {
             $fileName = str_replace('/', '_', $fileName);
             $fileName = str_replace('\\', '_', $fileName);
+            $fileName = str_replace(' ', '_', $fileName);
         }
 
         $response = new BinaryFileResponse($file, 200, ['Content-Disposition' => "attachment; filename={$fileName}"]);

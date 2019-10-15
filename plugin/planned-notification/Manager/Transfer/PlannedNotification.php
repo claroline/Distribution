@@ -20,24 +20,11 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\Tools\ToolImporterInterface;
 use Claroline\PlannedNotificationBundle\Entity\Message;
 use Claroline\PlannedNotificationBundle\Entity\PlannedNotification as Planned;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @DI\Service("claroline.transfer.claroline_planned_notification_tool")
- */
 class PlannedNotification implements ToolImporterInterface
 {
-    /**
-     * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "tokenStorage"  = @DI\Inject("security.token_storage"),
-     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
-     *     "finder"        = @DI\Inject("claroline.api.finder"),
-     *     "crud"          = @DI\Inject("claroline.api.crud")
-     * })
-     */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         TokenStorageInterface $tokenStorage,
