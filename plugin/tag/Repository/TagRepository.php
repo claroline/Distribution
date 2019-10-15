@@ -18,7 +18,7 @@ class TagRepository extends EntityRepository
 {
     public function findOnePlatformTagByName($name)
     {
-        return $this->_em
+        $results = $this->_em
             ->createQuery('
                 SELECT t
                 FROM Claroline\TagBundle\Entity\Tag t
@@ -27,11 +27,13 @@ class TagRepository extends EntityRepository
             ')
             ->setParameter('name', $name)
             ->getResult();
+
+        return 0 < count($results) ? $results[0] : null;
     }
 
     public function findOneUserTagByName(User $user, $name)
     {
-        return $this->_em
+        $results = $this->_em
             ->createQuery('
                 SELECT t
                 FROM Claroline\TagBundle\Entity\Tag t
@@ -43,5 +45,7 @@ class TagRepository extends EntityRepository
                 'name' => $name,
             ])
             ->getResult();
+
+        return 0 < count($results) ? $results[0] : null;
     }
 }

@@ -303,16 +303,12 @@ class TagManager
 
     public function getOnePlatformTagByName($name)
     {
-        $tags = $this->tagRepo->findOnePlatformTagByName($name);
-
-        return 0 < count($tags) ? $tags[0] : null;
+        return $this->tagRepo->findOnePlatformTagByName($name);
     }
 
     public function getOneUserTagByName(User $user, $name)
     {
-        $tags = $this->tagRepo->findOneUserTagByName($user, $name);
-
-        return 0 < count($tags) ? $tags[0] : null;
+        return $this->tagRepo->findOneUserTagByName($user, $name);
     }
 
     public function getUserTagByNameAndUserId($name, $userId)
