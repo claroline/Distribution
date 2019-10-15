@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater120414 extends Updater
+class Updater120421 extends Updater
 {
     protected $logger;
     protected $conn;
@@ -28,7 +28,7 @@ class Updater120414 extends Updater
     public function postUpdate()
     {
         $this->log('Updating workspaces archived flag...');
-        $sql = 'UPDATE claro_workspace SET archived = false';
+        $sql = 'UPDATE claro_workspace SET archived = false WHERE archived IS NULL';
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
     }
