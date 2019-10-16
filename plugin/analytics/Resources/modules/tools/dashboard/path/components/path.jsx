@@ -6,7 +6,6 @@ import {asset} from '#/main/app/config/asset'
 import {trans, transChoice} from '#/main/app/intl/translation'
 import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
-import {Section} from '#/main/app/content/components/sections'
 import {DataCard} from '#/main/app/content/card/components/data'
 
 import {route as resourceRoute} from '#/main/core/resource/routing'
@@ -96,7 +95,7 @@ class Path extends Component {
                 }
 
                 return acc
-              }, {not_started: {xData: trans('not_started', {}, 'analytics'), yData: 4}})}
+              }, {not_started: {xData: trans('not_started', {}, 'analytics'), yData: this.props.unstartedUsers.length}})}
               yAxisLabel={{
                 show: true,
                 text: trans('users_count')
