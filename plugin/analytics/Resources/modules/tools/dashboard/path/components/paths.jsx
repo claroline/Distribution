@@ -20,6 +20,7 @@ class Paths extends Component {
             key={`path-tracking-${index}`}
             path={tracking.path}
             steps={tracking.steps}
+            unstartedUsers={tracking.unstartedUsers}
             invalidateEvaluations={this.props.invalidateEvaluations}
             showStepDetails={this.props.showStepDetails}
           />
@@ -32,23 +33,9 @@ class Paths extends Component {
 Paths.propTypes = {
   workspaceId: T.string.isRequired,
   tracking: T.arrayOf(T.shape({
-    path: T.shape({ // TODO : node types
-      id: T.string,
-      name: T.string
-    }),
-    steps: T.arrayOf(T.shape({
-      step: T.shape({
-        id: T.string,
-        title: T.string
-      }),
-      users: T.arrayOf(T.shape({
-        id: T.string,
-        username: T.string,
-        firstName: T.string,
-        lastName: T.string,
-        name: T.string
-      }))
-    }))
+    path: T.object,
+    steps: T.array,
+    unstartedUsers: T.array
   })),
   fetchPathsData: T.func.isRequired,
   invalidateEvaluations: T.func.isRequired,

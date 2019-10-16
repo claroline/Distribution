@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Manager\Workspace;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\AbstractEvaluation;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -228,6 +229,8 @@ class EvaluationManager
     {
         $createdRequirements = [];
 
+        $this->om->startFlushSuite();
+
         foreach ($users as $user) {
             $requirements = $this->requirementsRepo->findOneBy(['workspace' => $workspace, 'user' => $user]);
 
@@ -240,9 +243,12 @@ class EvaluationManager
             }
             foreach ($resources as $resource) {
                 $requirements->addResource($resource);
+
+                // Creates corresponding resource evaluation and sets required flag to true
+                $this->addRequirementToResourceEvaluation($resource, $user);
             }
         }
-        $this->om->flush();
+        $this->om->endFlushSuite();
 
         return $createdRequirements;
     }
@@ -252,10 +258,21 @@ class EvaluationManager
      */
     public function deleteMultipleRequirements(array $multipleRequirements)
     {
+        $this->om->startFlushSuite();
+
         foreach ($multipleRequirements as $requirements) {
+            // Sets required flag of resource evaluation to false if it is requirements for an user
+            $user = $requirements->getUser();
+
+            if ($user) {
+                foreach ($requirements->getResources()->toArray() as $resource) {
+                    $this->removeRequirementToResourceEvaluation($resource, $user);
+                }
+            }
+
             $this->om->remove($requirements);
         }
-        $this->om->flush();
+        $this->om->endFlushSuite();
     }
 
     /**
@@ -268,11 +285,18 @@ class EvaluationManager
     {
         $this->om->startFlushSuite();
 
+        $user = $requirements->getUser();
+
         foreach ($resourceNodes as $resourceNode) {
             if ('directory' === $resourceNode->getResourceType()->getName()) {
                 $this->addResourcesToRequirements($requirements, $resourceNode->getChildren()->toArray());
             } else {
                 $requirements->addResource($resourceNode);
+
+                // Creates corresponding resource evaluation and sets required flag to true if it is requirements for an user
+                if ($user) {
+                    $this->addRequirementToResourceEvaluation($resourceNode, $user);
+                }
             }
         }
         $this->om->endFlushSuite();
@@ -288,11 +312,53 @@ class EvaluationManager
      */
     public function removeResourcesFromRequirements(Requirements $requirements, array $resourceNodes)
     {
+        $this->om->startFlushSuite();
+
+        $user = $requirements->getUser();
+
         foreach ($resourceNodes as $resourceNode) {
             $requirements->removeResource($resourceNode);
+
+            // Sets required flag of resource evaluation to false if it is requirements for an user
+            if ($user) {
+                $this->removeRequirementToResourceEvaluation($resourceNode, $user);
+            }
         }
-        $this->om->flush();
+        $this->om->endFlushSuite();
 
         return $requirements;
+    }
+
+    /**
+     * @param ResourceNode $resourceNode
+     * @param User         $user
+     */
+    private function addRequirementToResourceEvaluation(ResourceNode $resourceNode, User $user)
+    {
+        $resourceUserEval = $this->resourceUserEvalRepo->findOneBy(['resourceNode' => $resourceNode, 'user' => $user]);
+
+        if (!$resourceUserEval) {
+            $resourceUserEval = new ResourceUserEvaluation();
+            $resourceUserEval->setResourceNode($resourceNode);
+            $resourceUserEval->setUser($user);
+        }
+        $resourceUserEval->setRequired(true);
+        $this->om->persist($resourceUserEval);
+        $this->om->flush();
+    }
+
+    /**
+     * @param ResourceNode $resourceNode
+     * @param User         $user
+     */
+    private function removeRequirementToResourceEvaluation(ResourceNode $resourceNode, User $user)
+    {
+        $resourceUserEval = $this->resourceUserEvalRepo->findOneBy(['resourceNode' => $resourceNode, 'user' => $user]);
+
+        if ($resourceUserEval) {
+            $resourceUserEval->setRequired(false);
+            $this->om->persist($resourceUserEval);
+        }
+        $this->om->flush();
     }
 }

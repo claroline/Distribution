@@ -96,7 +96,7 @@ class Path extends Component {
                 }
 
                 return acc
-              }, {})}
+              }, {not_started: {xData: trans('not_started', {}, 'analytics'), yData: 4}})}
               yAxisLabel={{
                 show: true,
                 text: trans('users_count')
@@ -106,8 +106,10 @@ class Path extends Component {
                 text: trans('steps', {}, 'path')
               }}
               onClick={(data, idx) => {
-                if (this.props.steps[idx] && this.props.steps[idx].users) {
-                  this.props.showStepDetails(this.props.steps[idx].users)
+                if (0 === idx) {
+                  this.props.showStepDetails(this.props.unstartedUsers)
+                } else if (this.props.steps[idx - 1] && this.props.steps[idx - 1].users) {
+                  this.props.showStepDetails(this.props.steps[idx - 1].users)
                 }
               }}
             />
@@ -210,6 +212,13 @@ Path.propTypes = {
       lastName: T.string,
       name: T.string
     }))
+  })),
+  unstartedUsers: T.arrayOf(T.shape({
+    id: T.string,
+    username: T.string,
+    firstName: T.string,
+    lastName: T.string,
+    name: T.string
   })),
   invalidateEvaluations: T.func.isRequired,
   showStepDetails: T.func.isRequired
