@@ -36,9 +36,11 @@ class RoleManagerTest extends MockeryTestCase
         $this->roleRepo = m::mock('Claroline\CoreBundle\Repository\RoleRepository');
         $this->userRepo = m::mock('Claroline\CoreBundle\Repository\UserRepository');
         $this->groupRepo = m::mock('Claroline\CoreBundle\Repository\GroupRepository');
-        $this->securityContext = m::mock('Symfony\Component\Security\Core\SecurityContextInterface');
         $this->om = m::mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->dispatcher = m::mock('Claroline\CoreBundle\Event\StrictDispatcher');
+        $this->translator = m::mock('Symfony\Component\Translation\TranslatorInterface');
+        $this->ch = m::mock('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;');
+        $this->templateManager = m::mock('Claroline\CoreBundle\Manager\Template\TemplateManager');
     }
 
     public function testCreateWorkspaceRole()
@@ -500,7 +502,7 @@ class RoleManagerTest extends MockeryTestCase
             ->once()->andReturn($this->groupRepo);
 
         if (0 === count($mockedMethods)) {
-            return new RoleManager($this->securityContext, $this->om, $this->dispatcher);
+            return new RoleManager($this->om, $this->dispatcher, $this->translator, $this->ch, $this->templateManager);
         }
 
         $stringMocked = '[';
@@ -514,7 +516,7 @@ class RoleManagerTest extends MockeryTestCase
 
         return $this->mock(
             'Claroline\CoreBundle\Manager\RoleManager'.$stringMocked,
-            [$this->securityContext, $this->om, $this->dispatcher]
+            [$this->om, $this->dispatcher, $this->translator, $this->ch, $this->templateManager]
         );
     }
 }
