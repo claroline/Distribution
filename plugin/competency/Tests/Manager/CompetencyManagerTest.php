@@ -6,7 +6,6 @@ use HeVinci\CompetencyBundle\Entity\Ability;
 use HeVinci\CompetencyBundle\Entity\Competency;
 use HeVinci\CompetencyBundle\Entity\CompetencyAbility;
 use HeVinci\CompetencyBundle\Entity\Level;
-use HeVinci\CompetencyBundle\Entity\Scale;
 use HeVinci\CompetencyBundle\Util\UnitTestCase;
 
 class CompetencyManagerTest extends UnitTestCase
