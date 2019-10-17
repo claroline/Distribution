@@ -4,7 +4,7 @@ services:
         autoconfigure: false
         public: true #because controller
 
-    Claroline\DropZoneBundle\DeleteListener:
+    Icap\DropzoneBundle\DeleteListener:
         arguments:
             - '@service_container'
         tags:

@@ -3,8 +3,6 @@
 namespace Icap\DropzoneBundle;
 
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
-use Icap\DropzoneBundle\Entity\Dropzone;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DeleteListener
@@ -18,8 +16,6 @@ class DeleteListener
     }
 
     /**
-     * @DI\Observe("resource.icap_dropzone.delete")
-     *
      * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)
