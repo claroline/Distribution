@@ -8,6 +8,7 @@ import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {DataCard} from '#/main/app/content/card/components/data'
 
+import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {route as resourceRoute} from '#/main/core/resource/routing'
 import {ResourceIcon} from '#/main/core/resource/components/icon'
 import {selectors} from '#/plugin/analytics/tools/dashboard/path/store'
@@ -195,10 +196,9 @@ class Path extends Component {
 }
 
 Path.propTypes = {
-  path: T.shape({ // TODO : node type
-    id: T.string,
-    name: T.string
-  }),
+  path: T.shape(
+    ResourceNodeTypes.propTypes
+  ),
   steps: T.arrayOf(T.shape({
     step: T.shape({
       id: T.string,
