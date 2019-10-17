@@ -20,7 +20,7 @@ class DeleteListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $em = $this->container->get('claroline.persistence.object_manager');
+        $em = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $resource = $event->getResource();
 
         foreach ($resource->getDrops() as $drop) {
