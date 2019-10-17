@@ -58,6 +58,7 @@ class HepnRemoveUserCommand extends ContainerAwareCommand
         $om = $this->getContainer()->get(ObjectManager::class);
         $users = $om->getRepository(User::class)->findAll();
         $i = 0;
+        $total = 0;
         $force = $input->getOption('force');
 
         if (!$force) {
@@ -70,15 +71,12 @@ class HepnRemoveUserCommand extends ContainerAwareCommand
                 ++$i;
 
                 if ($force) {
-                    $om->remove($user);
-                }
-
-                if (0 === $i % 500) {
-                    $om->flush();
+                    ++$total;
+                    $this->getContainer()->get('claroline.api.crud')->delete($user);
                 }
             }
         }
 
-        $om->flush();
+        $output->writeln('Total: '.$total);
     }
 }
