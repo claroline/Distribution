@@ -20,7 +20,7 @@ class GroupManagerTest extends MockeryTestCase
     private $eventDispatcher;
     private $roleManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

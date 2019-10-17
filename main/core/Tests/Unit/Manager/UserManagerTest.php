@@ -31,7 +31,7 @@ class UserManagerTest extends MockeryTestCase
     private $mailManager;
     private $validator;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\UserRepository');

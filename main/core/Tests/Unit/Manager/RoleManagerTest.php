@@ -29,7 +29,7 @@ class RoleManagerTest extends MockeryTestCase
     private $om;
     private $dispatcher;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

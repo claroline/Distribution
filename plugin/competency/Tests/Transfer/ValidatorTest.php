@@ -11,7 +11,7 @@ class ValidatorTest extends UnitTestCase
     private $conflictValidator;
     private $validator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->jsonValidator = $this->mock('HeVinci\CompetencyBundle\Transfer\Validator\JsonValidator');
         $this->dataValidator = $this->mock('HeVinci\CompetencyBundle\Transfer\Validator\DataConstraintValidator');

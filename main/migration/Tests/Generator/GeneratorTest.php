@@ -24,7 +24,7 @@ class GeneratorTest extends MockeryTestCase
     private $entityAMetadata;
     private $entityBMetadata;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->em = m::mock('Doctrine\ORM\EntityManager');

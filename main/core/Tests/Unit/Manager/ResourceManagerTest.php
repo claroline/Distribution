@@ -32,7 +32,7 @@ class ResourceManagerTest extends MockeryTestCase
     private $ut;
     private $sc;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

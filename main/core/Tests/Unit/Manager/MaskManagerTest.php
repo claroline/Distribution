@@ -23,7 +23,7 @@ class MaskManagerTest extends MockeryTestCase
     private $menuRepo;
     private $manager;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

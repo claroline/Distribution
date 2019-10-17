@@ -14,7 +14,7 @@ class ResourceManagerTest extends UnitTestCase
     private $abilityRepo;
     private $manager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->competencyRepo = $this->mock('HeVinci\CompetencyBundle\Repository\CompetencyRepository');

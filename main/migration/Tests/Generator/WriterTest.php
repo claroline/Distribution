@@ -22,7 +22,7 @@ class WriterTest extends MockeryTestCase
     private $twigEngine;
     private $fileSystem;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->twigEnvironment = m::mock('Twig_Environment');

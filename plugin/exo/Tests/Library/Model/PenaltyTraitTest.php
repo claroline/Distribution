@@ -11,7 +11,7 @@ class PenaltyTraitTest extends \PHPUnit\Framework\TestCase
      */
     private $mock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -20,7 +20,7 @@ class CompetencyManagerTest extends UnitTestCase
     private $competencyAbilityRepo;
     private $manager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->translator = $this->mock('Symfony\Component\Translation\TranslatorInterface');

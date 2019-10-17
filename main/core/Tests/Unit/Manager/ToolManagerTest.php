@@ -29,7 +29,7 @@ class ToolManagerTest extends MockeryTestCase
     private $translator;
     private $roleManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->markTestSkipped('Needs to be fixed');
 

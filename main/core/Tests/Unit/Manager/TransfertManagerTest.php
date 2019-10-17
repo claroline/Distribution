@@ -22,7 +22,7 @@ class TransfertManagerTest extends MockeryTestCase
     private $manager;
     private $om;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

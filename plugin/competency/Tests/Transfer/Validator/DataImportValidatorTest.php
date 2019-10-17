@@ -8,7 +8,7 @@ class DataImportValidatorTest extends RepositoryTestCase
 {
     private $validator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->validator = $this->client->getContainer()

@@ -23,7 +23,7 @@ class ManagerTest extends MockeryTestCase
     private $migrator;
     private $manager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->writer = m::mock('Claroline\MigrationBundle\Generator\Writer');

@@ -40,7 +40,7 @@ class WorkspaceManagerTest extends MockeryTestCase
     private $homeTabManager;
     private $security;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

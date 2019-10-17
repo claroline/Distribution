@@ -8,7 +8,7 @@ class DataConstraintValidatorTest extends UnitTestCase
 {
     private $validator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->validator = new DataConstraintValidator();
     }

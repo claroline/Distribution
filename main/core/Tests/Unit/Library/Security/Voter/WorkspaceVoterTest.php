@@ -21,7 +21,7 @@ class WorkspaceVoterTest extends MockeryTestCase
     private $translator;
     private $voter;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
