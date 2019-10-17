@@ -22,7 +22,7 @@ class CompetencyProgressRepositoryTest extends RepositoryTestCase
         $c2 = $this->persistCompetency('c2');
         $c3 = $this->persistCompetency('c3');
         $p1 = $this->persistCompetencyProgress($u1, $c1);
-        $p2 = $this->persistCompetencyProgress($u1, $c2); // extra data
+        $this->persistCompetencyProgress($u1, $c2); // extra data
         $p3 = $this->persistCompetencyProgress($u2, $c2);
         $p4 = $this->persistCompetencyProgress($u2, $c3);
 

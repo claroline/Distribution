@@ -2,9 +2,10 @@
 
 namespace UJM\ExoBundle\Tests\Library\Model;
 
+use PHPUnit\Framework\TestCase;
 use UJM\ExoBundle\Library\Model\PenaltyTrait;
 
-class PenaltyTraitTest extends \PHPUnit\Framework\TestCase
+class PenaltyTraitTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject

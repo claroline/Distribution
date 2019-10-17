@@ -2,9 +2,10 @@
 
 namespace UJM\ExoBundle\Tests\Library\Model;
 
+use PHPUnit\Framework\TestCase;
 use UJM\ExoBundle\Library\Model\OrderTrait;
 
-class OrderTraitTest extends \PHPUnit\Framework\TestCase
+class OrderTraitTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
