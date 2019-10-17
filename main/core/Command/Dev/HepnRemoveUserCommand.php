@@ -69,10 +69,10 @@ class HepnRemoveUserCommand extends ContainerAwareCommand
             if (!in_array($user->getEmail(), $emails) && strpos($user->getEmail(), '@students.hepn.be')) {
                 $output->writeln('Ready to remove user '.$user->getEmail());
                 ++$i;
+                ++$total;
 
                 if ($force) {
-                    ++$total;
-                    $this->getContainer()->get('claroline.api.crud')->delete($user);
+                    $this->getContainer()->get('Claroline\AppBundle\API\Crud')->delete($user);
                 }
             }
         }
