@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {asset} from '#/main/app/config/asset'
@@ -9,8 +9,6 @@ import {DataCard} from '#/main/app/content/card/components/data'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
 import {route as resourceRoute} from '#/main/core/resource/routing'
 import {ResourceIcon} from '#/main/core/resource/components/icon'
-import {selectors} from '#/plugin/analytics/tools/dashboard/path/store'
-import {MODAL_USER_MESSAGE} from '#/main/core/user/modals/message'
 import {BarChart} from '#/main/core/layout/chart/bar/components/bar-chart'
 import {MODAL_RESOURCE_PARTICIPANTS} from '#/plugin/analytics/tools/dashboard/path/modals/participants'
 
