@@ -29,6 +29,7 @@ use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
+use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Repository\OrderedToolRepository;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -37,10 +38,11 @@ class LogConnectManager
     /** @var FinderProvider */
     private $finder;
 
-    /**
-     * @var ObjectManager
-     */
+    /** @var ObjectManager */
     private $om;
+
+    /** @var ResourceEvaluationManager */
+    private $resourceEvaluationManager;
 
     /** @var TranslatorInterface */
     private $translator;
@@ -57,14 +59,20 @@ class LogConnectManager
     private $logAdminToolRepo;
 
     /**
-     * @param FinderProvider      $finder
-     * @param ObjectManager       $om
-     * @param TranslatorInterface $translator
+     * @param FinderProvider            $finder
+     * @param ObjectManager             $om
+     * @param ResourceEvaluationManager $resourceEvaluationManager
+     * @param TranslatorInterface       $translator
      */
-    public function __construct(FinderProvider $finder, ObjectManager $om, TranslatorInterface $translator)
-    {
+    public function __construct(
+        FinderProvider $finder,
+        ObjectManager $om,
+        ResourceEvaluationManager $resourceEvaluationManager,
+        TranslatorInterface $translator
+    ) {
         $this->finder = $finder;
         $this->om = $om;
+        $this->resourceEvaluationManager = $resourceEvaluationManager;
         $this->translator = $translator;
 
         $this->logRepo = $om->getRepository('ClarolineCoreBundle:Log\Log');
@@ -137,7 +145,15 @@ class LogConnectManager
 
                     // Computes last resource duration
                     if (!is_null($resourceConnection)) {
-                        $this->computeConnectionDuration($resourceConnection, $dateLog);
+                        $updatedConnection = $this->computeConnectionDuration($resourceConnection, $dateLog);
+
+                        if ($updatedConnection && $updatedConnection->getDuration()) {
+                            $this->resourceEvaluationManager->addDurationToResourceEvaluation(
+                                $resourceConnection->getResource(),
+                                $user,
+                                $updatedConnection->getDuration()
+                            );
+                        }
                     }
                     // Computes last admin tool duration
                     if (!is_null($adminToolConnection)) {
@@ -202,7 +218,14 @@ class LogConnectManager
                             if ($resourceConnection->getResource() === $logResourceNode) {
                                 break;
                             } else {
-                                $this->computeConnectionDuration($resourceConnection, $dateLog);
+                                $updatedConnection = $this->computeConnectionDuration($resourceConnection, $dateLog);
+                            }
+                            if ($updatedConnection && $updatedConnection->getDuration()) {
+                                $this->resourceEvaluationManager->addDurationToResourceEvaluation(
+                                    $resourceConnection->getResource(),
+                                    $user,
+                                    $updatedConnection->getDuration()
+                                );
                             }
                         }
                     }
@@ -235,7 +258,15 @@ class LogConnectManager
                     }
                     // Computes last resource duration
                     if (!is_null($resourceConnection)) {
-                        $this->computeConnectionDuration($resourceConnection, $dateLog);
+                        $updatedConnection = $this->computeConnectionDuration($resourceConnection, $dateLog);
+
+                        if ($updatedConnection && $updatedConnection->getDuration()) {
+                            $this->resourceEvaluationManager->addDurationToResourceEvaluation(
+                                $resourceConnection->getResource(),
+                                $user,
+                                $updatedConnection->getDuration()
+                            );
+                        }
                     }
                     // Computes last tool duration
                     if (!is_null($toolConnection)) {
@@ -266,7 +297,15 @@ class LogConnectManager
 
         if (!is_null($resourceConnection)) {
             $now = new \DateTime();
-            $this->computeConnectionDuration($resourceConnection, $now);
+            $updatedConnection = $this->computeConnectionDuration($resourceConnection, $now);
+
+            if ($updatedConnection && $updatedConnection->getDuration()) {
+                $this->resourceEvaluationManager->addDurationToResourceEvaluation(
+                    $resourceConnection->getResource(),
+                    $user,
+                    $updatedConnection->getDuration()
+                );
+            }
         }
     }
 
