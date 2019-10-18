@@ -88,7 +88,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
         $query = $this->_em->createQuery($this->builder->getDql());
         $query->setParameters($this->builder->getParameters());
 
-        $results = $query->getResults();
+        $results = $query->getResult();
 
         //in case somethign was messed up at some point
         if (1 === count($results)) {
