@@ -291,9 +291,9 @@ class LogConnectManager
         }
     }
 
-    public function computeEmbeddedResourceDuration(User $user, ResourceNode $resource)
+    public function computeResourceDuration(User $user, ResourceNode $resource, $embedded)
     {
-        $resourceConnection = $this->getLogConnectResourceEmbedded($user, $resource);
+        $resourceConnection = $this->getLogConnectResourceByResource($user, $resource, $embedded);
 
         if (!is_null($resourceConnection)) {
             $now = new \DateTime();
@@ -514,66 +514,72 @@ class LogConnectManager
     {
         // Fetches connections with no duration
         $openConnections = $this->logPlatformRepo->findBy(
-            ['user' => $user, 'duration' => null],
-            ['connectionDate' => 'DESC']
+            ['user' => $user],
+            ['connectionDate' => 'DESC'],
+            1
         );
 
-        return 0 < count($openConnections) ? $openConnections[0] : null;
+        return 0 < count($openConnections) && is_null($openConnections[0]->getDuration()) ? $openConnections[0] : null;
     }
 
     private function getLogConnectWorkspace(User $user)
     {
         // Fetches connections with no duration
         $openConnections = $this->logWorkspaceRepo->findBy(
-            ['user' => $user, 'duration' => null],
-            ['connectionDate' => 'DESC']
+            ['user' => $user],
+            ['connectionDate' => 'DESC'],
+            1
         );
 
-        return 0 < count($openConnections) ? $openConnections[0] : null;
+        return 0 < count($openConnections) && is_null($openConnections[0]->getDuration()) ? $openConnections[0] : null;
     }
 
     private function getLogConnectTool(User $user)
     {
         // Fetches connections with no duration
         $openConnections = $this->logToolRepo->findBy(
-            ['user' => $user, 'duration' => null],
-            ['connectionDate' => 'DESC']
+            ['user' => $user],
+            ['connectionDate' => 'DESC'],
+            1
         );
 
-        return 0 < count($openConnections) ? $openConnections[0] : null;
+        return 0 < count($openConnections) && is_null($openConnections[0]->getDuration()) ? $openConnections[0] : null;
     }
 
     private function getLogConnectAdminTool(User $user)
     {
         // Fetches connections with no duration
         $openConnections = $this->logAdminToolRepo->findBy(
-            ['user' => $user, 'duration' => null],
-            ['connectionDate' => 'DESC']
+            ['user' => $user],
+            ['connectionDate' => 'DESC'],
+            1
         );
 
-        return 0 < count($openConnections) ? $openConnections[0] : null;
+        return 0 < count($openConnections) && is_null($openConnections[0]->getDuration()) ? $openConnections[0] : null;
     }
 
     private function getLogConnectResource(User $user)
     {
         // Fetches connections with no duration
         $openConnections = $this->logResourceRepo->findBy(
-            ['user' => $user, 'duration' => null, 'embedded' => false],
-            ['connectionDate' => 'DESC']
+            ['user' => $user, 'embedded' => false],
+            ['connectionDate' => 'DESC'],
+            1
         );
 
-        return 0 < count($openConnections) ? $openConnections[0] : null;
+        return 0 < count($openConnections) && is_null($openConnections[0]->getDuration()) ? $openConnections[0] : null;
     }
 
-    private function getLogConnectResourceEmbedded(User $user, ResourceNode $resourceNode)
+    private function getLogConnectResourceByResource(User $user, ResourceNode $resourceNode, $embedded)
     {
         // Fetches connections with no duration
         $openConnections = $this->logResourceRepo->findBy(
-            ['user' => $user, 'resource' => $resourceNode, 'duration' => null, 'embedded' => true],
-            ['connectionDate' => 'DESC']
+            ['user' => $user, 'resource' => $resourceNode, 'embedded' => $embedded],
+            ['connectionDate' => 'DESC'],
+            1
         );
 
-        return 0 < count($openConnections) ? $openConnections[0] : null;
+        return 0 < count($openConnections) && is_null($openConnections[0]->getDuration()) ? $openConnections[0] : null;
     }
 
     private function getComputableWorkspace(User $user)
