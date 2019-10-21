@@ -5,7 +5,7 @@ import moment from 'moment'
 import times from 'lodash/times'
 
 import {withRouter} from '#/main/app/router'
-import {LinkButton} from '#/main/app/buttons/link'
+//import {LinkButton} from '#/main/app/buttons/link'
 import {now, getApiFormat} from '#/main/app/intl/date'
 
 import {Event as EventTypes} from '#/plugin/agenda/event/prop-types'

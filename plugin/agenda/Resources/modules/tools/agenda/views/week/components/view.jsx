@@ -4,10 +4,10 @@ import classes from 'classnames'
 import moment from 'moment'
 import times from 'lodash/times'
 
-import {LinkButton} from '#/main/app/buttons/link'
+//import {LinkButton} from '#/main/app/buttons/link'
 import {now} from '#/main/app/intl/date'
 
-import {route} from '#/plugin/agenda/tools/agenda/routing'
+//import {route} from '#/plugin/agenda/tools/agenda/routing'
 
 // use this when day view is implemented
 // <LinkButton
