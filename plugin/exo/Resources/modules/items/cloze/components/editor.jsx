@@ -255,7 +255,7 @@ class MainField extends Component {
                 holes.splice(holes.findIndex(hole => hole.id === toRemove), 1)
                 solutions.splice(solutions.findIndex(solution => solution.holeId === toRemove), 1)
               })
-              item = Object.assign({}, this.props.item, {holes, solutions})
+              item = Object.assign({}, item, {holes, solutions})
             }
 
             this.props.update('text', item.text)
