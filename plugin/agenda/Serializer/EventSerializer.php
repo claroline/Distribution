@@ -160,6 +160,11 @@ class EventSerializer
             $event->setEnd(DateNormalizer::denormalize($data['end']));
         }
 
+        if (isset($data['allDay'])) {
+            $end = $event->getStart();
+            $event->setEnd($end);
+        }
+
         return $event;
     }
 

@@ -168,7 +168,10 @@ class AgendaTool extends Component {
                       range: currentRange,
                       previous: currentView.previous,
                       next: currentView.next,
-                      create: (event) => this.props.create(event, this.props.contextData, this.props.currentUser),
+                      create: (event) => {
+                        console.log(event)
+                        this.props.create(event, this.props.contextData, this.props.currentUser)
+                      },
                       events: this.props.events,
                       eventActions: (event) => [
                         {

@@ -9,17 +9,20 @@ import {now} from '#/main/app/intl/date'
 
 import {route} from '#/plugin/agenda/tools/agenda/routing'
 
+// use this when day view is implemented
+// <LinkButton
+//   className="day-number"
+//   target={route(props.path, 'day', props.current)}
+// >
+// </LinkButton>
+
 const Day = props =>
   <div className={classes('calendar-col day', props.className)}>
     <div className="day-name">
       {props.current.format('ddd')}
-
-      <LinkButton
-        className="day-number"
-        target={route(props.path, 'day', props.current)}
-      >
+      <div className="day-number">
         {props.current.format('D')}
-      </LinkButton>
+      </div>
     </div>
   </div>
 

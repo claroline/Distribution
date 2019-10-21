@@ -34,6 +34,7 @@ const AgendaTool = withRouter(
         dispatch(modalActions.showModal(MODAL_EVENT_PARAMETERS, {
           event: merge({}, event, {
             workspace: !isEmpty(context) ? context : null,
+            allDay: true,
             meta: {
               creator: user
             }
