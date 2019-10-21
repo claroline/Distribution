@@ -12,12 +12,13 @@ const Day = props =>
   <div className={classes('calendar-col day', props.className)}>
     <div className="day-name">
       {props.current.format('ddd')}
-       <LinkButton
-         className="day-number"
-         target={route(props.path, 'month', props.current)}
-       >
-          {props.current.format('D')}
-       </LinkButton>
+
+      <LinkButton
+        className="day-number"
+        target={route(props.path, 'day', props.current)}
+      >
+        {props.current.format('D')}
+      </LinkButton>
     </div>
   </div>
 
