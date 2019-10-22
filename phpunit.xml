@@ -18,15 +18,6 @@
 
     <testsuites>
         <testsuite name="Claroline distribution test suite">
-            <!-- Use the two following elements only when tests from all packages are fixed -->
-
-            <!--
-            <directory>main/*/Tests/</directory>
-            <directory>plugin/*/Tests/</directory>
-            <directory>main/core/Tests/API/Admin</directory>
-            -->
-            <!-- Uncomment the following elements individually in the meantime -->
-
             <directory>main/core/Tests/API/</directory>
             <directory>main/core/Tests/NewAPI/</directory>
             <directory>main/core/Tests/Security/</directory>
@@ -45,8 +36,6 @@
             <directory>plugin/url/Tests/</directory>
             <directory>plugin/exo/Tests/</directory>
             <directory>plugin/chat/Tests/</directory>
-
-            <!-- Unit tests: uncomment when ready -->
             <directory>main/core/Tests/Unit/Converter/</directory>
             <directory>main/core/Tests/Unit/Entity/</directory>
             <directory>main/core/Tests/Unit/Event/</directory>
@@ -54,14 +43,9 @@
             <directory>main/core/Tests/Unit/Library/Configuration/</directory>
             <directory>main/core/Tests/Unit/Library/HttpFoundation/</directory>
             <directory>main/core/Tests/Unit/Library/Installation/</directory>
-            <!-- <directory>main/core/Tests/Unit/Form/Library/Transfert/</directory> -->
             <directory>main/core/Tests/Unit/Library/Utilities/</directory>
-            <!-- <directory>main/core/Tests/Unit/Form/Manager/</directory> -->
             <directory>main/core/Tests/Unit/Persistence/</directory>
             <directory>plugin/badge/Tests/Unit/Rule/Constraints</directory>
-
-            <!-- Database tests: uncomment when ready -->
-            <!-- uncomment this when everything is working and remove the rest -->
             <directory>main/core/Tests/Database/</directory>
         </testsuite>
     </testsuites>

@@ -102,7 +102,7 @@ class WorkspaceRepositoryTest extends RepositoryTestCase
     {
         $workspaces = self::$repo->findDisplayableWorkspacesBySearch('ws_');
         $this->assertEquals(3, count($workspaces));
-        $this->assertEquals(self::get('ws_3s'), $workspaces[0]);
+        $this->assertEquals(self::get('ws_3'), $workspaces[0]);
         $this->assertEquals(self::get('ws_4'), $workspaces[1]);
         $this->assertEquals(self::get('ws_5'), $workspaces[2]);
     }
