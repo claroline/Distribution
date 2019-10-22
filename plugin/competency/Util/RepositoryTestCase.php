@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
+use Claroline\CoreBundle\Entity\Resource\Text;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
@@ -129,6 +130,12 @@ abstract class RepositoryTestCase extends TransactionalTestCase
             $this->defaults['workspace'] = $workspace;
         }
 
+        if (!isset($this->defaults['activity_type'])) {
+            $text = new Text();
+            $text->setText('abc');
+            $this->om->persist($text);
+            $this->defaults['activity_type'] = $text;
+        }
         $node = new ResourceNode();
         $node->setName($name);
         $node->setCreator($this->defaults['user']);

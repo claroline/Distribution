@@ -31,11 +31,11 @@
             <directory>main/core/Tests/NewAPI/</directory>
             <directory>main/core/Tests/Security/</directory>
             <directory>main/migration/Tests/</directory>
-            <!-- <directory>plugin/announcement/Tests/</directory> -->
+            <directory>plugin/announcement/Tests/</directory>
             <directory>plugin/collecticiel/Tests/</directory>
             <directory>plugin/message/Tests/</directory>
             <directory>plugin/notification/Tests/</directory>
-            <!-- <directory>plugin/competency/Tests/</directory> -->
+            <directory>plugin/competency/Tests/</directory>
             <directory>plugin/dropzone/Tests/</directory>
             <directory>plugin/favourite/Tests/</directory>
             <directory>plugin/forum/Tests/</directory>
