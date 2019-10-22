@@ -246,7 +246,6 @@ class ResourceEvaluationManager
         $rue = $evaluation->getResourceUserEvaluation();
         $rue->setDate($evaluation->getDate());
 
-        $duration = $evaluation->getDuration();
         $score = $evaluation->getScore();
         $scoreMax = $evaluation->getScoreMax();
         $scoreMin = $evaluation->getScoreMin();
@@ -255,15 +254,6 @@ class ResourceEvaluationManager
         $rueStatus = $rue->getStatus();
 
         $statusPriority = AbstractEvaluation::STATUS_PRIORITY;
-
-        /*
-        if (isset($forced['duration']) && $forced['duration']) {
-            $rue->setDuration($duration);
-        } elseif (!is_null($duration)) {
-            $rueDuration = $rue->getDuration() ? $rue->getDuration() : 0;
-            $rueDuration += $duration;
-            $rue->setDuration($rueDuration);
-        }*/
 
         if (isset($forced['score']) && $forced['score']) {
             $rue->setScore($score);
