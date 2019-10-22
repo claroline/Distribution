@@ -91,6 +91,7 @@ services:
     Claroline\CoreBundle\Controller\APINew\Tool\ToolController:
         arguments:
           - '@claroline.manager.tool_manager'
+          - '@claroline.manager.log_connect'
 
     Claroline\CoreBundle\Controller\APINew\User\GroupController: ~
 
