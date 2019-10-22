@@ -111,13 +111,7 @@ class LogConnectManager
                     $workspaceConnection = $this->getComputableWorkspace($user);
 
                     if (!is_null($workspaceConnection)) {
-                        // Ignores log if previous workspace entering log and this one are associated to the same workspace
-                        // for the current session
-                        if ($workspaceConnection->getWorkspace() === $logWorkspace) {
-                            break;
-                        } else {
-                            $this->computeConnectionDuration($workspaceConnection, $dateLog);
-                        }
+                        $this->computeConnectionDuration($workspaceConnection, $dateLog);
                     }
                     // Creates workspace log for current connection
                     $this->createLogConnectWorkspace($user, $logWorkspace, $dateLog);
@@ -288,6 +282,15 @@ class LogConnectManager
                     $this->om->endFlushSuite();
                     break;
             }
+        }
+    }
+
+    public function computeWorkspaceDuration(User $user, Workspace $workspace)
+    {
+        $workspaceConnection = $this->getLogConnectWorkspaceByWorkspace($user, $workspace);
+
+        if (!is_null($workspaceConnection)) {
+            $this->computeConnectionDuration($workspaceConnection, new \DateTime());
         }
     }
 
@@ -527,6 +530,18 @@ class LogConnectManager
         // Fetches connections with no duration
         $openConnections = $this->logWorkspaceRepo->findBy(
             ['user' => $user],
+            ['connectionDate' => 'DESC'],
+            1
+        );
+
+        return 0 < count($openConnections) && is_null($openConnections[0]->getDuration()) ? $openConnections[0] : null;
+    }
+
+    private function getLogConnectWorkspaceByWorkspace(User $user, Workspace $workspace)
+    {
+        // Fetches connections with no duration
+        $openConnections = $this->logWorkspaceRepo->findBy(
+            ['user' => $user, 'workspace' => $workspace],
             ['connectionDate' => 'DESC'],
             1
         );

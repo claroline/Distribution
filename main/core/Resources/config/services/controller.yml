@@ -153,6 +153,7 @@ services:
           - '@claroline.manager.workspace.transfer'
           - '@claroline.manager.temp_file'
           - '%claroline.param.workspace_log_dir%'
+          - '@claroline.manager.log_connect'
 
     Claroline\CoreBundle\Controller\APINew\ConnectionMessageController:
         arguments:

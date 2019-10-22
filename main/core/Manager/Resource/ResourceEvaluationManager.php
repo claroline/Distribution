@@ -256,13 +256,14 @@ class ResourceEvaluationManager
 
         $statusPriority = AbstractEvaluation::STATUS_PRIORITY;
 
+        /*
         if (isset($forced['duration']) && $forced['duration']) {
             $rue->setDuration($duration);
         } elseif (!is_null($duration)) {
             $rueDuration = $rue->getDuration() ? $rue->getDuration() : 0;
             $rueDuration += $duration;
             $rue->setDuration($rueDuration);
-        }
+        }*/
 
         if (isset($forced['score']) && $forced['score']) {
             $rue->setScore($score);
