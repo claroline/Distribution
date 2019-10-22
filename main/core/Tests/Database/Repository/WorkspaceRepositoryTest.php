@@ -54,13 +54,13 @@ class WorkspaceRepositoryTest extends RepositoryTestCase
 
     public function testCount()
     {
-        $this->assertEquals(5, self::$repo->count());
+        $this->assertEquals(7, self::$repo->count([]));
     }
 
     public function testFindByRoles()
     {
         $workspaces = self::$repo->findByRoles(['ROLE_2', 'ROLE_ANONYMOUS']);
-        $this->assertEquals(2, count($workspaces));
+        $this->assertEquals(1, count($workspaces));
     }
 
     public function testFindByUserAndRoleNamesNotIn()
@@ -77,8 +77,8 @@ class WorkspaceRepositoryTest extends RepositoryTestCase
     public function testFindWorkspacesWithMostResources()
     {
         $workspaces = self::$repo->findWorkspacesWithMostResources(10);
-        $this->assertEquals(5, count($workspaces));
-        $this->assertEquals('ws_2', $workspaces[0]['name']);
+        $this->assertEquals(7, count($workspaces));
+        $this->assertEquals('default_workspace', $workspaces[0]['name']);
         $this->assertEquals(1, $workspaces[0]['total']);
     }
 
@@ -102,7 +102,7 @@ class WorkspaceRepositoryTest extends RepositoryTestCase
     {
         $workspaces = self::$repo->findDisplayableWorkspacesBySearch('ws_');
         $this->assertEquals(3, count($workspaces));
-        $this->assertEquals(self::get('ws_3'), $workspaces[0]);
+        $this->assertEquals(self::get('ws_3s'), $workspaces[0]);
         $this->assertEquals(self::get('ws_4'), $workspaces[1]);
         $this->assertEquals(self::get('ws_5'), $workspaces[2]);
     }
