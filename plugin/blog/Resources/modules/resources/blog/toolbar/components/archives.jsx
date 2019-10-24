@@ -47,6 +47,7 @@ const ArchivesComponent = props =>
   </div>
 
 ArchivesComponent.propTypes = {
+  path: T.string.isRequired,
   archives: T.oneOfType([T.object, T.array]),
   searchByRange: T.func.isRequired,
   goHome: T.func.isRequired,
