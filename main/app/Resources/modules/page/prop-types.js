@@ -46,7 +46,16 @@ const PageSimple = {
       target: T.oneOfType([T.string, T.array])
     })),
 
-    children: T.node.isRequired
+    children: T.node.isRequired,
+
+    /**
+     * Custom data used for document head.
+     */
+    header: T.shape({
+      title: T.string,
+      description: T.string,
+      keywords: T.string
+    })
   },
   defaultProps: {
     embedded: false,
@@ -117,7 +126,13 @@ const PageFull = {
       T.shape(
         PromisedAction.propTypes
       )
-    ])
+    ]),
+
+    header: T.shape({
+      title: T.string,
+      description: T.string,
+      keywords: T.string
+    })
   }),
   defaultProps: merge({}, PageSimple.defaultProps, {
     showHeader: true,
