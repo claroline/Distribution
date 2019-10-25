@@ -1,6 +1,6 @@
 import React from 'react'
 import classes from 'classnames'
-import {Helmet} from "react-helmet";
+import {Helmet} from 'react-helmet'
 
 import {theme} from '#/main/app/config'
 import {implementPropTypes} from '#/main/app/prop-types'
