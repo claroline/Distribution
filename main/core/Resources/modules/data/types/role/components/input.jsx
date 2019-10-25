@@ -13,14 +13,13 @@ import {MODAL_ROLES} from '#/main/core/modals/roles'
 
 const RoleButton = props =>
   <Button
-    className="btn"
+    className="btn btn-block"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-id-card"
+    icon="fa fa-fw fa-plus"
     label={trans('add_roles')}
-    primary={true}
     modal={[MODAL_ROLES, {
-      url: ['apiv2_role_platform_loggable_list'],
+      url: props.url,
       title: props.title,
       filters: props.filters,
       selectAction: (selected) => ({
@@ -32,6 +31,7 @@ const RoleButton = props =>
   />
 
 RoleButton.propTypes = {
+  url: T.oneOfType([T.string, T.array]),
   title: T.string,
   filters: T.arrayOf(T.shape({
     // TODO : list filter types
@@ -40,7 +40,7 @@ RoleButton.propTypes = {
 }
 
 const RoleInput = props => {
-  const actions = props.disabled ? []: [
+  const actions = props.disabled ? [] : [
     {
       name: 'delete',
       type: CALLBACK_BUTTON,
@@ -72,7 +72,6 @@ const RoleInput = props => {
 
   return (
     <EmptyPlaceholder
-      size="lg"
       icon="fa fa-id-card"
       title={trans('no_role')}
     >
@@ -87,6 +86,7 @@ const RoleInput = props => {
 implementPropTypes(RoleInput, FormFieldTypes, {
   value: T.arrayOf(T.shape(RoleType.propTypes)),
   picker: T.shape({
+    url: T.oneOfType([T.string, T.array]),
     title: T.string,
     filters: T.arrayOf(T.shape({
       // TODO : list filter types

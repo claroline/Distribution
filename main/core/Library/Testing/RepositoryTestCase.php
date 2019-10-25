@@ -183,6 +183,7 @@ abstract class RepositoryTestCase extends WebTestCase
         $workspace = new Workspace();
         $workspace->setName($name);
         $workspace->setCode($name.'Code');
+        $workspace->setDisplayable(false);
 
         self::create($name, $workspace);
     }
@@ -407,7 +408,7 @@ abstract class RepositoryTestCase extends WebTestCase
         $userMessage->setUser($sender);
         $userMessage->setMessage($message);
         if ($removed) {
-            $userMessage->setIsRemoved($removed);
+            $userMessage->setRemoved($removed);
         }
         self::create($alias.'/'.$sender->getUsername(), $userMessage);
         foreach ($receivers as $receiver) {

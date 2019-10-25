@@ -77,7 +77,7 @@ const Step = props =>
       <img className="step-poster img-responsive" alt={props.title} src={asset(props.poster.url)} />
     }
 
-    <h3 className="h2 step-title">
+    <h3 className="h2 h-title step-title">
       {props.numbering &&
         <span className="h-numbering">{props.numbering}</span>
       }
@@ -114,7 +114,6 @@ const Step = props =>
                 play: props.disableNavigation,
                 end: props.enableNavigation
               }}
-              onResourceClose={props.onEmbeddedResourceClose}
             />
           }
         </div>
@@ -138,8 +137,7 @@ implementPropTypes(Step, StepTypes, {
   secondaryResourcesTarget: T.oneOf(['_self', '_blank']),
   updateProgression: T.func.isRequired,
   enableNavigation: T.func.isRequired,
-  disableNavigation: T.func.isRequired,
-  onEmbeddedResourceClose: T.func
+  disableNavigation: T.func.isRequired
 })
 
 export {
