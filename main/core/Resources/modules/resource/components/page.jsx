@@ -86,8 +86,7 @@ class ResourcePage extends Component {
         className={classes('resource-page', `${this.props.resourceNode.meta.type}-page`)}
         header={{
           title: this.props.resourceNode.name,
-          description: this.props.resourceNode.meta ? this.props.resourceNode.meta.description : null,
-          keywords: this.props.resourceNode.meta ? this.props.resourceNode.meta.keywords : null
+          description: this.props.resourceNode.meta ? this.props.resourceNode.meta.description : null
         }}
         styles={this.props.styles}
         embedded={this.props.embedded}

@@ -233,7 +233,6 @@ class ResourceNodeSerializer
             'className' => $resourceNode->getResourceType()->getClass(),
             'mimeType' => $resourceNode->getMimeType(),
             'description' => $resourceNode->getDescription(),
-            'keywords' => $resourceNode->getKeywords(),
             'creator' => $resourceNode->getCreator() ?
                 $this->userSerializer->serialize($resourceNode->getCreator(), [Options::SERIALIZE_MINIMAL]) :
                 null,
@@ -342,7 +341,6 @@ class ResourceNodeSerializer
 
         $this->sipe('meta.published', 'setPublished', $data, $resourceNode);
         $this->sipe('meta.description', 'setDescription', $data, $resourceNode);
-        $this->sipe('meta.keywords', 'setKeywords', $data, $resourceNode);
         $this->sipe('meta.license', 'setLicense', $data, $resourceNode);
         $this->sipe('meta.authors', 'setAuthor', $data, $resourceNode);
         $this->sipe('meta.commentsActivated', 'setCommentsActivated', $data, $resourceNode);

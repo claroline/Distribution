@@ -51,7 +51,6 @@ const ResourceNode = {
       mimeType: T.string.isRequired,
       published: T.bool.isRequired,
       description: T.string,
-      keywords: T.string,
       views: T.number,
       creator: T.shape({
 

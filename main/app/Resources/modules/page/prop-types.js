@@ -53,8 +53,7 @@ const PageSimple = {
      */
     header: T.shape({
       title: T.string,
-      description: T.string,
-      keywords: T.string
+      description: T.string
     })
   },
   defaultProps: {
@@ -130,8 +129,7 @@ const PageFull = {
 
     header: T.shape({
       title: T.string,
-      description: T.string,
-      keywords: T.string
+      description: T.string
     })
   }),
   defaultProps: merge({}, PageSimple.defaultProps, {

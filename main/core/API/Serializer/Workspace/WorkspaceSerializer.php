@@ -228,7 +228,6 @@ class WorkspaceSerializer
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),
-            'keywords' => $workspace->getKeywords(),
             'created' => DateNormalizer::normalize($workspace->getCreated()),
             'updated' => DateNormalizer::normalize($workspace->getCreated()), // todo implement
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
@@ -422,7 +421,6 @@ class WorkspaceSerializer
 
         $this->sipe('meta.model', 'setModel', $data, $workspace);
         $this->sipe('meta.description', 'setDescription', $data, $workspace);
-        $this->sipe('meta.keywords', 'setKeywords', $data, $workspace);
         $this->sipe('meta.lang', 'setLang', $data, $workspace);
 
         $this->sipe('notifications.enabled', 'setNotifications', $data, $workspace);

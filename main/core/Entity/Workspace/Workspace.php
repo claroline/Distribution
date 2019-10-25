@@ -15,7 +15,6 @@ use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\AppBundle\Entity\Meta\Creator;
 use Claroline\AppBundle\Entity\Meta\Description;
-use Claroline\AppBundle\Entity\Meta\Keywords;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
 use Claroline\AppBundle\Entity\Restriction\AccessCode;
@@ -48,7 +47,6 @@ class Workspace
     use Thumbnail;
     use Description;
     use Creator;
-    use Keywords;
 
     // restrictions
     use AccessibleFrom;
