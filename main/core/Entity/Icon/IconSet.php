@@ -19,7 +19,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Icon\IconSetRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="claro_icon_set")
  * Class IconSet
  */
@@ -68,12 +68,6 @@ class IconSet
      * @ORM\Column(nullable=true)
      */
     private $type;
-
-    /**
-     * @var string Relative path to icon that is used as a stamp to create shortcuts for resource Icon Set
-     * @ORM\Column(name="resource_stamp_icon", nullable=true)
-     */
-    private $resourceStampIcon = null;
 
     /**
      * @var string the Sprite file containing all icons in the icon set
@@ -250,26 +244,6 @@ class IconSet
     public function getCname()
     {
         return $this->cname;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResourceStampIcon()
-    {
-        return $this->resourceStampIcon;
-    }
-
-    /**
-     * @param string $resourceStampIcon
-     *
-     * @return $this
-     */
-    public function setResourceStampIcon($resourceStampIcon)
-    {
-        $this->resourceStampIcon = $resourceStampIcon;
-
-        return $this;
     }
 
     /**

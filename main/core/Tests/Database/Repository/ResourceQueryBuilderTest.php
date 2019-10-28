@@ -40,8 +40,7 @@ class ResourceQueryBuilderTest extends MockeryTestCase
             "SELECT node{$eol}".
             "FROM Claroline\CoreBundle\Entity\Resource\ResourceNode node{$eol}".
             "JOIN node.creator creator{$eol}".
-            "JOIN node.resourceType resourceType{$eol}".
-            "LEFT JOIN node.icon icon{$eol}";
+            "JOIN node.resourceType resourceType{$eol}";
         $this->assertEquals($expectedDql, $dql);
     }
 
@@ -73,8 +72,7 @@ class ResourceQueryBuilderTest extends MockeryTestCase
             "{$eol}".
             "FROM Claroline\CoreBundle\Entity\Resource\ResourceNode node{$eol}".
             "JOIN node.creator creator{$eol}".
-            "JOIN node.resourceType resourceType{$eol}".
-            "LEFT JOIN node.icon icon{$eol}";
+            "JOIN node.resourceType resourceType{$eol}";
 
         $this->assertEquals($expectedDql, $dql);
 
@@ -102,7 +100,6 @@ class ResourceQueryBuilderTest extends MockeryTestCase
             "FROM Claroline\CoreBundle\Entity\Resource\ResourceNode node{$eol}".
             "JOIN node.creator creator{$eol}".
             "JOIN node.resourceType resourceType{$eol}".
-            "LEFT JOIN node.icon icon{$eol}".
             "LEFT JOIN node.rights rights{$eol}".
             "JOIN rights.role rightRole{$eol}";
         $this->assertEquals($expectedDql, $dql);
@@ -133,7 +130,6 @@ class ResourceQueryBuilderTest extends MockeryTestCase
             "FROM Claroline\CoreBundle\Entity\Resource\ResourceNode node{$eol}".
             "JOIN node.creator creator{$eol}".
             "JOIN node.resourceType resourceType{$eol}".
-            "LEFT JOIN node.icon icon{$eol}".
             "LEFT JOIN node.rights rights{$eol}".
             "JOIN rights.role rightRole{$eol}".
             "WHERE node.workspace = :workspace_id{$eol}".
