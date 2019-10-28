@@ -343,19 +343,6 @@ services:
         alias: Claroline\CoreBundle\Manager\ApiManager
         public: true
 
-    Claroline\CoreBundle\Manager\AnalyticsManager:
-        arguments:
-          - '@Claroline\AppBundle\Persistence\ObjectManager'
-          - '@claroline.log.manager'
-          - '@claroline.manager.user_manager'
-          - '@claroline.manager.workspace_manager'
-          - '@claroline.manager.widget_manager'
-          - '@Claroline\AppBundle\Event\StrictDispatcher'
-
-    claroline.manager.analytics_manager:
-        alias: Claroline\CoreBundle\Manager\AnalyticsManager
-        public: true
-
     Claroline\CoreBundle\Manager\Workspace\WorkspaceRestrictionsManager:
         arguments:
           - '@session'

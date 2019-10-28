@@ -7,7 +7,10 @@ services:
     Claroline\AnalyticsBundle\Controller\Administration\AnalyticsController:
         arguments:
           - '@security.token_storage'
-          - '@claroline.manager.analytics_manager'
+          - '@Claroline\AppBundle\API\SerializerProvider'
+          - '@Claroline\AppBundle\API\FinderProvider'
+          - '@Claroline\AnalyticsBundle\Manager\AnalyticsManager'
+          - '@claroline.event.manager'
 
     Claroline\AnalyticsBundle\Controller\Administration\LogController:
         arguments:
@@ -31,7 +34,7 @@ services:
     Claroline\AnalyticsBundle\Controller\Workspace\DashboardController:
         arguments:
           - '@security.authorization_checker'
-          - '@claroline.manager.analytics_manager'
+          - '@Claroline\AnalyticsBundle\Manager\AnalyticsManager'
 
     Claroline\AnalyticsBundle\Controller\Workspace\LogController:
         arguments:

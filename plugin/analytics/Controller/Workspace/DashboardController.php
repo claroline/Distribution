@@ -2,8 +2,8 @@
 
 namespace Claroline\AnalyticsBundle\Controller\Workspace;
 
+use Claroline\AnalyticsBundle\Manager\AnalyticsManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Manager\AnalyticsManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

@@ -192,7 +192,6 @@ services:
         arguments:
           - '@Claroline\AppBundle\Event\StrictDispatcher'
           - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
-          - '@claroline.manager.analytics_manager'
           - '@Claroline\CoreBundle\Manager\VersionManager'
           - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
           - '@Claroline\CoreBundle\Manager\FileManager'

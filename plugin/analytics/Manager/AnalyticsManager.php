@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\AnalyticsBundle\Manager;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -19,6 +19,8 @@ use Claroline\CoreBundle\Event\Log\LogResourceExportEvent;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
+use Claroline\CoreBundle\Manager\LogManager;
+use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\CoreBundle\Repository\Log\LogRepository;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
@@ -44,9 +46,6 @@ class AnalyticsManager
     /** @var WorkspaceManager */
     private $workspaceManager;
 
-    /** @var WidgetManager */
-    private $widgetManager;
-
     /** @var StrictDispatcher */
     private $dispatcher;
 
@@ -55,7 +54,6 @@ class AnalyticsManager
      * @param LogManager       $logManager
      * @param UserManager      $userManager
      * @param WorkspaceManager $workspaceManager
-     * @param WidgetManager    $widgetManager
      * @param StrictDispatcher $dispatcher
      */
     public function __construct(
@@ -63,13 +61,11 @@ class AnalyticsManager
         LogManager $logManager,
         UserManager $userManager,
         WorkspaceManager $workspaceManager,
-        WidgetManager $widgetManager,
         StrictDispatcher $dispatcher
     ) {
         $this->logManager = $logManager;
         $this->userManager = $userManager;
         $this->workspaceManager = $workspaceManager;
-        $this->widgetManager = $widgetManager;
         $this->dispatcher = $dispatcher;
         $this->resourceRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
         $this->resourceTypeRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceType');
@@ -88,28 +84,6 @@ class AnalyticsManager
         }
 
         return $chartData;
-    }
-
-    public function getOtherResourceTypesCount()
-    {
-        /** @var \Claroline\CoreBundle\Event\Analytics\PlatformContentItemEvent $event */
-        $event = $this->dispatcher->dispatch(
-            'administration_analytics_platform_content_item_add',
-            'Analytics\PlatformContentItem'
-        );
-
-        $resourceTypes = [];
-        foreach ($event->getItems() as $type) {
-            if (floatval($type['value']) > 0) {
-                $resourceTypes['ort-'.$type['item']] = [
-                    'id' => $type['item'],
-                    'xData' => $type['label'],
-                    'yData' => floatval($type['value']),
-                ];
-            }
-        }
-
-        return $resourceTypes;
     }
 
     public function getDailyActions(array $finderParams = [])
@@ -158,21 +132,6 @@ class AnalyticsManager
     public function countNonPersonalWorkspaces($organizations = null)
     {
         return $this->workspaceManager->getNbNonPersonalWorkspaces($organizations);
-    }
-
-    public function getWidgetsData($organizations = null)
-    {
-        $all = floatval($this->widgetManager->getNbWidgetInstances($organizations));
-        $ws = floatval($this->widgetManager->getNbWorkspaceWidgetInstances($organizations));
-        $desktop = floatval($this->widgetManager->getNbDesktopWidgetInstances($organizations));
-        $list = $this->widgetManager->countWidgetsByType($organizations);
-
-        return [
-            'all' => $all,
-            'workspace' => $ws,
-            'desktop' => $desktop,
-            'list' => $list,
-        ];
     }
 
     /**

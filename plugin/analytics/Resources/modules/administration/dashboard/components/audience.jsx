@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {merge} from 'lodash'
+import {schemeCategory20c} from 'd3-scale'
 
 // todo : remove me
 import {Grid, Row, Col} from 'react-bootstrap'
@@ -142,7 +143,7 @@ class AudienceComponent extends Component {
               <LineChart
                 style={{maxHeight: 250}}
                 responsive={true}
-                data={this.props.audience.data.activity.daily}
+                data={[this.props.audience.data.activity.daily]}
                 xAxisLabel={{
                   show: true,
                   text: trans('date'),
@@ -162,6 +163,7 @@ class AudienceComponent extends Component {
                   left: 50,
                   right: 20
                 }}
+                colors={schemeCategory20c}
               />
             </DashboardCard>
           </Col>

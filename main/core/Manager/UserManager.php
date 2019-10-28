@@ -263,7 +263,6 @@ class UserManager
         $roles = $this->roleManager->getAllPlatformRoles();
         $roleNames = array_map(function ($r) {return $r->getName(); }, $roles);
         $usersInRoles = [];
-        $usersInRoles[] = ['name' => 'user_accounts', 'total' => floatval($this->userRepo->countUsers($organizations))];
         foreach ($roles as $role) {
             $restrictionRoleNames = null;
             if ('ROLE_USER' === $role->getName()) {

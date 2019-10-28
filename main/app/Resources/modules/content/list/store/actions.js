@@ -24,10 +24,8 @@ actions.updatePageSize = paginationActions.updatePageSize
 
 // sorting
 export const LIST_SORT_UPDATE = 'LIST_SORT_UPDATE'
-export const LIST_SORT_DIRECTION_UPDATE = 'LIST_SORT_DIRECTION_UPDATE'
 
 actions.updateSort = makeInstanceActionCreator(LIST_SORT_UPDATE, 'property')
-actions.updateSortDirection = makeInstanceActionCreator(LIST_SORT_DIRECTION_UPDATE, 'direction')
 
 // selection
 export const LIST_RESET_SELECT      = 'LIST_RESET_SELECT'

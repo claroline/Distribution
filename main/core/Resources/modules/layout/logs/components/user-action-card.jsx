@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
+import {schemeCategory20c} from 'd3-scale'
 
 import {trans} from '#/main/app/intl/translation'
 import {DataCard} from '#/main/app/content/card/components/data'
@@ -22,7 +23,7 @@ const UserActionCard = props =>
     <div className="text-center">
       <LineChart
         style={{maxHeight: 100}}
-        data={props.data.chartData}
+        data={[props.data.chartData]}
         xAxisLabel={{
           show: false,
           text: trans('date'),
@@ -43,6 +44,7 @@ const UserActionCard = props =>
           left: 50,
           right: 20
         }}
+        colors={schemeCategory20c}
       />
     </div>
   </DataCard>

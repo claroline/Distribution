@@ -7,14 +7,17 @@ import {DOWNLOAD_BUTTON} from '#/main/app/buttons'
 import {matchPath, Routes} from '#/main/app/router'
 
 import {ToolPage} from '#/main/core/tool/containers/page'
-import {Overview} from '#/plugin/analytics/administration/dashboard/components/overview'
 import {Audience} from '#/plugin/analytics/administration/dashboard/components/audience'
-import {Resources} from '#/plugin/analytics/administration/dashboard/components/resources'
 import {TopActions} from '#/plugin/analytics/administration/dashboard/components/top-actions'
 import {Connections} from '#/plugin/analytics/administration/dashboard/components/connections'
 import {Logs} from '#/plugin/analytics/administration/dashboard/components/logs'
 import {UserLogs} from '#/plugin/analytics/administration/dashboard/components/logs-user'
 import {LogDetails} from '#/main/core/layout/logs'
+
+import {Overview} from '#/plugin/analytics/administration/dashboard/components/overview'
+import {ActivityDashboard} from '#/plugin/analytics/administration/dashboard/components/activity'
+import {ContentDashboard} from '#/plugin/analytics/administration/dashboard/components/content'
+import {CommunityDashboard} from '#/plugin/analytics/administration/dashboard/components/community'
 
 const DashboardTool = (props) =>
   <ToolPage
@@ -57,11 +60,21 @@ const DashboardTool = (props) =>
             render: () => trans('overview', {}, 'analytics'),
             exact: true
           }, {
+            path: '/activity',
+            render: () => trans('activity')
+          }, {
+            path: '/content',
+            render: () => trans('content')
+          }, {
+            path: '/community',
+            render: () => trans('community')
+          },
+
+
+
+          {
             path: '/audience',
             render: () => trans('user_visit')
-          }, {
-            path: '/resources',
-            render: () => trans('analytics_resources')
           }, {
             path: '/top',
             render: () => trans('analytics_top')
@@ -87,11 +100,20 @@ const DashboardTool = (props) =>
           component: Overview,
           exact: true
         }, {
+          path: '/activity',
+          component: ActivityDashboard
+        }, {
+          path: '/content',
+          component: ContentDashboard
+        }, {
+          path: '/community',
+          component: CommunityDashboard
+        },
+
+
+        {
           path: '/audience',
           component: Audience
-        }, {
-          path: '/resources',
-          component: Resources
         }, {
           path: '/top',
           component: TopActions

@@ -183,7 +183,18 @@ const DataTable = props =>
           <TableSortingCell
             key={column.name}
             direction={(column.alias && column.alias === props.sorting.current.property) || column.name === props.sorting.current.property ? props.sorting.current.direction : 0}
-            onSort={() => props.sorting.updateSort(column.alias ? column.alias : column.name)}
+            onSort={() => {
+              let direction = 1
+              if ((column.alias && column.alias === props.sorting.current.property) || column.name === props.sorting.current.property) {
+                if (1 === props.sorting.current.direction) {
+                  direction = -1
+                } else if (-1 === props.sorting.current.direction) {
+                  direction = 0
+                }
+              }
+
+              props.sorting.updateSort(column.alias ? column.alias : column.name, direction)
+            }}
           >
             {column.label}
           </TableSortingCell>

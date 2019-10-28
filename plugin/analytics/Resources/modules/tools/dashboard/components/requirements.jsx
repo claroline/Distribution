@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {AlertBlock} from '#/main/app/alert/components/alert-block'
 import {CALLBACK_BUTTON, LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
@@ -14,17 +15,18 @@ import {selectors} from '#/plugin/analytics/tools/dashboard/store'
 
 const Requirements = (props) =>
   <div style={{marginTop: 20}}>
-    <div className="well well-sm">
-      <div>
-        {trans('requirements_info_1', {}, 'analytics')}
-      </div>
+    <AlertBlock
+      type="info"
+      title={trans('requirements_info_1', {}, 'analytics')}
+    >
       <div>
         {trans('requirements_info_2', {}, 'analytics')}
       </div>
       <div>
         {trans('requirements_info_3', {}, 'analytics')}
       </div>
-    </div>
+    </AlertBlock>
+
     <FormSections
       level={3}
       defaultOpened="roles-section"
@@ -34,6 +36,7 @@ const Requirements = (props) =>
         key="roles-section"
         icon="fa fa-fw fa-id-badge"
         title={trans('roles')}
+        className="embedded-list-section"
         actions={[
           {
             type: MODAL_BUTTON,
@@ -78,11 +81,13 @@ const Requirements = (props) =>
           ]}
         />
       </FormSection>
+
       <FormSection
         id="users-section"
         key="users-section"
         icon="fa fa-fw fa-user"
         title={trans('users')}
+        className="embedded-list-section"
         actions={[
           {
             type: MODAL_BUTTON,

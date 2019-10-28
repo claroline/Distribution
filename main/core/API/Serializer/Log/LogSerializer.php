@@ -2,6 +2,10 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Log;
 
+use Claroline\AppBundle\API\Options;
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -15,16 +19,36 @@ class LogSerializer
     /** @var EventDispatcherInterface */
     private $dispatcher;
 
+    /** @var UserSerializer */
+    private $userSerializer;
+
+    /** @var WorkspaceSerializer */
+    private $workspaceSerializer;
+
+    /** @var ResourceNodeSerializer */
+    private $resourceSerializer;
+
     /**
+     * LogSerializer constructor.
+     *
      * @param TranslatorInterface      $translator
      * @param EventDispatcherInterface $dispatcher
+     * @param UserSerializer           $userSerializer
+     * @param WorkspaceSerializer      $workspaceSerializer
+     * @param ResourceNodeSerializer   $resourceSerializer
      */
     public function __construct(
         TranslatorInterface $translator,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        UserSerializer $userSerializer,
+        WorkspaceSerializer $workspaceSerializer,
+        ResourceNodeSerializer $resourceSerializer
     ) {
         $this->translator = $translator;
         $this->dispatcher = $dispatcher;
+        $this->userSerializer = $userSerializer;
+        $this->workspaceSerializer = $workspaceSerializer;
+        $this->resourceSerializer = $resourceSerializer;
     }
 
     public function getClass()
@@ -52,29 +76,19 @@ class LogSerializer
      */
     public function serialize(Log $log, array $options = [])
     {
-        $details = $log->getDetails();
         $doer = null;
         if (!is_null($log->getDoer())) {
-            $doer = [
-                'id' => $log->getDoer()->getId(),
-                'name' => $details['doer']['firstName'].' '.$details['doer']['lastName'],
-            ];
+            $doer = $this->userSerializer->serialize($log->getDoer(), [Options::SERIALIZE_MINIMAL]);
         }
 
         $workspace = null;
         if (!is_null($log->getWorkspace())) {
-            $workspace = [
-                'id' => $log->getWorkspace()->getId(),
-                'name' => isset($details['workspace']['name']) ? $details['workspace']['name'] : $log->getWorkspace()->getName(),
-            ];
+            $workspace = $this->workspaceSerializer->serialize($log->getWorkspace(), [Options::SERIALIZE_MINIMAL]);
         }
 
         $resourceNode = null;
         if (!is_null($log->getResourceNode())) {
-            $resourceNode = [
-                'id' => $log->getResourceNode()->getId(),
-                'name' => isset($details['resource']['name']) ? $details['resource']['name'] : $log->getResourceNode()->getName(),
-            ];
+            $resourceNode = $this->resourceSerializer->serialize($log->getResourceNode(), [Options::SERIALIZE_MINIMAL]);
         }
 
         $resourceType = null;

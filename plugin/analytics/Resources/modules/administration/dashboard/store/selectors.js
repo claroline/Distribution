@@ -9,29 +9,14 @@ const log = createSelector(
   (store) => store.log
 )
 
-const actions = createSelector(
-  [store],
-  (store) => store.actions
-)
-
 const chart = createSelector(
   [store],
   (store) => store.chart
 )
 
-const overview = createSelector(
-  [store],
-  (store) => store.overview
-)
-
 const audience = createSelector(
   [store],
   (store) => store.audience
-)
-
-const resources = createSelector(
-  [store],
-  (store) => store.resources
 )
 
 const widgets = createSelector(
@@ -53,11 +38,8 @@ export const selectors = {
   STORE_NAME,
   store,
   log,
-  actions,
   chart,
-  overview,
   audience,
-  resources,
   widgets,
   topActions,
   connections

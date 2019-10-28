@@ -5,8 +5,6 @@ services:
         public: false
 
     Claroline\AnalyticsBundle\Listener\Administration\DashboardListener:
-        arguments:
-            - '@claroline.event.manager'
         tags:
             - { name: kernel.event_listener, event: administration_tool_dashboard, method: onDisplayTool }
 

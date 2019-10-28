@@ -6,8 +6,9 @@ import {selectors as toolSelectors} from  '#/main/core/tool/store'
 import {actions, selectors} from '#/plugin/analytics/tools/dashboard/store'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 import {WorkspaceMetrics} from '#/main/core/workspace/components/metrics'
-import {DailyActivity} from '#/plugin/analytics/tools/dashboard/components/daily-activity'
-import {Resources} from '#/plugin/analytics/tools/dashboard/components/resources'
+
+import {ActivityChart} from '#/plugin/analytics/charts/activity/components/chart'
+import {ResourcesChart} from '#/plugin/analytics/charts/resources/containers/chart'
 
 class OverviewComponent extends Component {
   constructor(props) {
@@ -30,12 +31,11 @@ class OverviewComponent extends Component {
         />
 
         {this.props.analytics.loaded &&
-          <DailyActivity activity={this.props.analytics.data.activity} />
+          <ActivityChart activity={this.props.analytics.data.activity} />
         }
 
-        {this.props.analytics.loaded &&
-          <Resources resourceTypes={this.props.analytics.data.resourceTypes} />
-        }
+        <ResourcesChart />
+
       </Fragment>
     )
   }
