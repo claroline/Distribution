@@ -98,12 +98,6 @@ class Log
     protected $receiverGroup;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
-    protected $owner;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
      * @ORM\JoinColumn(onDelete="SET NULL")
      */
@@ -378,30 +372,6 @@ class Log
     public function getReceiverGroup()
     {
         return $this->receiverGroup;
-    }
-
-    /**
-     * Set owner.
-     *
-     * @param User $owner
-     *
-     * @return Log
-     */
-    public function setOwner(User $owner = null)
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * Get owner.
-     *
-     * @return User
-     */
-    public function getOwner()
-    {
-        return $this->owner;
     }
 
     /**

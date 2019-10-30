@@ -131,8 +131,6 @@ class LogListener
             ->setIsDisplayedInWorkspace($event->getIsDisplayedInWorkspace())
             ->setOtherElementId($event->getOtherElementId());
 
-        //Object properties
-        $log->setOwner($event->getOwner());
         if (!(LogUserDeleteEvent::ACTION === $event->getAction() && $event->getReceiver() === $doer)) {
             //Prevent self delete case
             //Sometimes, the entity manager has been cleared, so we must merge the doer.
