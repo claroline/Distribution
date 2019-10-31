@@ -191,7 +191,7 @@ class HomeTabSerializer
                 $roles = array_map(function (array $role) {
                     return $role['id'];
                 }, $data['restrictions']['roles']);
-                
+
                 foreach ($existingRoles as $role) {
                     if (!in_array($role->getUuid(), $roles)) {
                         // the role no longer exist we can remove it
