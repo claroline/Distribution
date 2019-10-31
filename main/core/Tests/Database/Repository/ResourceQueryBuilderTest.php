@@ -60,7 +60,6 @@ class ResourceQueryBuilderTest extends MockeryTestCase
             "    creator.username as creator_username,{$eol}".
             "    creator.id as creator_id,{$eol}".
             "    resourceType.name as type,{$eol}".
-            "    icon.relativeUrl as large_icon,{$eol}".
             "    node.mimeType as mime_type,{$eol}".
             "    node.index as index_dir,{$eol}".
             "    node.creationDate as creation_date,{$eol}".
@@ -87,7 +86,6 @@ class ResourceQueryBuilderTest extends MockeryTestCase
             "    creator.username as creator_username,{$eol}".
             "    creator.id as creator_id,{$eol}".
             "    resourceType.name as type,{$eol}".
-            "    icon.relativeUrl as large_icon,{$eol}".
             "    node.mimeType as mime_type,{$eol}".
             "    node.index as index_dir,{$eol}".
             "    node.creationDate as creation_date,{$eol}".

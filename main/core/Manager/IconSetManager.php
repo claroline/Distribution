@@ -48,7 +48,7 @@ class IconSetManager
      * @param $webDir
      * @param $iconSetsWebDir
      * @param $iconSetsDir
-     * @param ObjectManager    $om
+     * @param ObjectManager $om
      */
     public function __construct(
         $webDir,
@@ -174,7 +174,6 @@ class IconSetManager
                     $name = pathinfo($setDir->getFilename(), PATHINFO_FILENAME);
 
                     if (!in_array($name, ['.', ''])) {
-
                         $iconSet = $this->iconSetRepo->findOneBy(['name' => $name, 'type' => IconSetTypeEnum::RESOURCE_ICON_SET]);
 
                         if (!$iconSet) {
