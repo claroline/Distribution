@@ -341,7 +341,7 @@ class Crud
         $serializer = $this->serializer->get(get_class($args[0]));
 
         if (method_exists($serializer, 'getName')) {
-            $shortName = 'crud_'.$when.'_'.$action.'_'.$serializer->getName();
+            $shortName = 'crud.'.$when.'.'.$action.'.'.$serializer->getName();
             $specific = $this->dispatcher->dispatch($shortName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
         }
 
