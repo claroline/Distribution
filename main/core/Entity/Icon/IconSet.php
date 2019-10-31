@@ -16,7 +16,6 @@ namespace Claroline\CoreBundle\Entity\Icon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
@@ -68,25 +67,6 @@ class IconSet
      * @ORM\Column(nullable=true)
      */
     private $type;
-
-    /**
-     * @var string the Sprite file containing all icons in the icon set
-     * @ORM\Column(name="icon_sprite", nullable=true)
-     */
-    private $iconSprite = null;
-
-    /**
-     * @var string the CSS file corresponding to the Icon Set's sprite file
-     * @ORM\Column(name="icon_sprite_css", nullable=true)
-     */
-    private $iconSpriteCSS = null;
-
-    /**
-     * @Assert\File(
-     *     mimeTypes = {"application/zip"}
-     * )
-     */
-    private $iconsZipfile;
 
     /**
      * @var ArrayCollection
@@ -219,70 +199,10 @@ class IconSet
     }
 
     /**
-     * @return mixed
-     */
-    public function getIconsZipfile()
-    {
-        return $this->iconsZipfile;
-    }
-
-    /**
-     * @param mixed $iconsZipfile
-     *
-     * @return $this
-     */
-    public function setIconsZipfile($iconsZipfile)
-    {
-        $this->iconsZipfile = $iconsZipfile;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getCname()
     {
         return $this->cname;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIconSprite()
-    {
-        return $this->iconSprite;
-    }
-
-    /**
-     * @param string $iconSprite
-     *
-     * @return $this
-     */
-    public function setIconSprite($iconSprite)
-    {
-        $this->iconSprite = $iconSprite;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIconSpriteCSS()
-    {
-        return $this->iconSpriteCSS;
-    }
-
-    /**
-     * @param string $iconSpriteCSS
-     *
-     * @return $this
-     */
-    public function setIconSpriteCSS($iconSpriteCSS)
-    {
-        $this->iconSpriteCSS = $iconSpriteCSS;
-
-        return $this;
     }
 }

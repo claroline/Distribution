@@ -225,6 +225,13 @@ class DatabaseWriter
         foreach ($processedConfiguration['templates'] as $templateType) {
             $this->createTemplateType($templateType, $plugin);
         }
+        $mimeTypes = [];
+
+        foreach ($processedConfiguration['resource_icons'] as $iconConfig) {
+            $mimeTypes[$iconConfig['name']] = $iconConfig['mime_types'];
+        }
+        $this->iconSetManager->setLogger($this->logger);
+        $this->iconSetManager->generateIconSets($pluginBundle->getResourcesIconsSetsFolder(), $mimeTypes);
     }
 
     /**
@@ -317,6 +324,14 @@ class DatabaseWriter
         foreach ($processedConfiguration['templates'] as $templateType) {
             $this->updateTemplateType($templateType, $plugin);
         }
+
+        $mimeTypes = [];
+
+        foreach ($processedConfiguration['resource_icons'] as $iconConfig) {
+            $mimeTypes[$iconConfig['name']] = $iconConfig['mime_types'];
+        }
+        $this->iconSetManager->setLogger($this->logger);
+        $this->iconSetManager->generateIconSets($pluginBundle->getResourcesIconsSetsFolder(), $mimeTypes);
     }
 
     /**
