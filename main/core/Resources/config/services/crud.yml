@@ -62,8 +62,14 @@ services:
     Claroline\CoreBundle\API\Crud\Resource\ResourceNodeCrud:
         arguments:
             - '@security.token_storage'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\API\Crud'
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+            - '@Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager'
+            - '%claroline.param.files_directory%'
         tags:
-          - { name: kernel.event_listener, event: crud_pre_create_object_claroline_corebundle_entity_resource_resourcenode, method: preCreate }
+          - { name: kernel.event_listener, event: crud.pre.create.resource_node, method: preCreate }
+          - { name: kernel.event_listener, event: crud.pre.delete.resource_node, method: preDelete }
 
     Claroline\CoreBundle\API\Crud\Home\WidgetInstanceCrud:
         arguments:

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -116,7 +117,8 @@ class ResourceManager
         TranslatorInterface $translator,
         PlatformConfigurationHandler $platformConfigHandler,
         SerializerProvider $serializer,
-        ResourceLifecycleManager $lifeCycleManager
+        ResourceLifecycleManager $lifeCycleManager,
+        Crud $crud
     ) {
         $this->om = $om;
 
@@ -131,9 +133,9 @@ class ResourceManager
         $this->filesDirectory = $container->getParameter('claroline.param.files_directory');
         $this->serializer = $serializer;
         $this->lifeCycleManager = $lifeCycleManager;
-
-        $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
-        $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
+        $this->crud = $crud;
+        $this->resourceTypeRepo = $om->getRepository(ResourceType::class);
+        $this->resourceNodeRepo = $om->getRepository(ResourceNode::class);
         $this->userRepo = $om->getRepository(User::class);
         $this->roleRepo = $om->getRepository(Role::class);
     }
@@ -228,9 +230,6 @@ class ResourceManager
         $usersToNotify = $workspace && $workspace->getId() ?
             $this->userRepo->findUsersByWorkspaces([$workspace]) :
             [];
-
-        $this->dispatcher->dispatch('log', 'Log\LogResourceCreate', [$node, $usersToNotify]);
-        $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
 
         $this->om->endFlushSuite();
 
@@ -625,136 +624,7 @@ class ResourceManager
      */
     public function delete(ResourceNode $resourceNode, $force = false, $softDelete = false)
     {
-        $this->log('Removing '.$resourceNode->getName().'['.$resourceNode->getResourceType()->getName().':id:'.$resourceNode->getId().']');
-
-        if (null === $resourceNode->getParent() && !$force) {
-            throw new \LogicException('Root directory cannot be removed');
-        }
-
-        $workspace = $resourceNode->getWorkspace();
-        $nodes = $this->getDescendants($resourceNode);
-        $nodes[] = $resourceNode;
-        $this->om->startFlushSuite();
-        $this->log('Looping through '.count($nodes).' children...');
-
-        foreach ($nodes as $node) {
-            $eventSoftDelete = false;
-            $this->log('Removing '.$node->getName().'['.$node->getResourceType()->getName().':id:'.$node->getId().']');
-            $resource = $this->getResourceFromNode($node);
-            /*
-             * resChild can be null if a shortcut was removed
-             *
-             * activities must be ignored atm
-             */
-
-            $ignore = ['activity'];
-
-            if (null !== $resource) {
-                if (!$softDelete && !in_array($node->getResourceType()->getName(), $ignore)) {
-                    $event = $this->lifeCycleManager->delete($node);
-                    $eventSoftDelete = $event->isSoftDelete();
-
-                    foreach ($event->getFiles() as $file) {
-                        if ($softDelete) {
-                            $parts = explode(
-                                $this->filesDirectory.DIRECTORY_SEPARATOR,
-                                $file
-                            );
-
-                            if (2 === count($parts)) {
-                                $deleteDir = $this->filesDirectory.
-                                    DIRECTORY_SEPARATOR.
-                                    'DELETED_FILES';
-                                $dest = $deleteDir.
-                                    DIRECTORY_SEPARATOR.
-                                    $parts[1];
-                                $additionalDirs = explode(DIRECTORY_SEPARATOR, $parts[1]);
-
-                                for ($i = 0; $i < count($additionalDirs) - 1; ++$i) {
-                                    $deleteDir .= DIRECTORY_SEPARATOR.$additionalDirs[$i];
-                                }
-
-                                if (!is_dir($deleteDir)) {
-                                    mkdir($deleteDir, 0777, true);
-                                }
-                                rename($file, $dest);
-                            }
-                        } else {
-                            unlink($file);
-                        }
-
-                        //It won't work if a resource has no workspace for a reason or an other. This could be a source of bug.
-                        $dir = $this->filesDirectory.
-                            DIRECTORY_SEPARATOR.
-                            'WORKSPACE_'.
-                            $workspace->getId();
-
-                        if (is_dir($dir) && $this->isDirectoryEmpty($dir)) {
-                            rmdir($dir);
-                        }
-                    }
-                } elseif ($softDelete && !in_array($node->getResourceType()->getName(), $ignore)) {
-                    $this->dispatcher->dispatch(
-                        "resource.{$node->getResourceType()->getName()}.soft_delete",
-                        'Resource\SoftDeleteResource',
-                        [$resource]
-                    );
-                }
-
-                if ($softDelete || $eventSoftDelete) {
-                    $node->setActive(false);
-                    // Rename node to allow future nodes have the same name
-                    $node->setName($node->getName().uniqid('_'));
-                    $this->om->persist($node);
-                } else {
-                    //what is it ?
-                    $this->dispatcher->dispatch(
-                        'claroline_resources_delete',
-                        'GenericData',
-                        [[$node]]
-                    );
-
-                    /*
-                     * If the child isn't removed here aswell, doctrine will fail to remove $resChild
-                     * because it still has $resChild in its UnitOfWork or something (I have no idea
-                     * how doctrine works tbh). So if you remove this line the suppression will
-                     * not work for directory containing children.
-                     */
-                    $this->om->remove($resource);
-                    $this->om->remove($node);
-                }
-
-                $this->dispatcher->dispatch(
-                    'log',
-                    'Log\LogResourceDelete',
-                    [$node]
-                );
-            } else {
-                if ($softDelete || $eventSoftDelete) {
-                    $node->setActive(false);
-                    // Rename node to allow future nodes have the same name
-                    $node->setName($node->getName().uniqid('_'));
-                    $this->om->persist($node);
-                } else {
-                    //what is it ?
-                    $this->dispatcher->dispatch(
-                        'claroline_resources_delete',
-                        'GenericData',
-                        [[$node]]
-                    );
-
-                    $this->om->remove($node);
-                }
-
-                $this->dispatcher->dispatch(
-                    'log',
-                    'Log\LogResourceDelete',
-                    [$node]
-                );
-            }
-        }
-
-        $this->om->endFlushSuite();
+        $this->crud->delete($node, $softDelete || $eventSoftDelete ? [Options::SOFT_DELETE] : []);
     }
 
     public function setActive(ResourceNode $node)

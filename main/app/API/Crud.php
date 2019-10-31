@@ -153,10 +153,12 @@ class Crud
         if ($this->dispatch('delete', 'pre', [$object, $options])) {
             if (!in_array(Options::SOFT_DELETE, $options)) {
                 $this->om->remove($object);
-                $this->om->flush();
             }
+
             $this->dispatch('delete', 'post', [$object, $options]);
         }
+
+        $this->om->flush();
     }
 
     /**

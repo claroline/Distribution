@@ -323,3 +323,12 @@ services:
     Claroline\CoreBundle\Doctrine\EntityListenerResolver:
         arguments:
             - '@service_container'
+
+    Claroline\CoreBundle\Listener\CrudListener:
+        arguments:
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+        tags:
+          #post create is not fired
+            - { name: kernel.event_listener, event: crud.post.create.resource_node, method: onResourceCreate }
+            - { name: kernel.event_listener, event: crud.pre.delete.resource_node, method: onResourceDelete }
