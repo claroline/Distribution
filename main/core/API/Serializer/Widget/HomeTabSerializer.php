@@ -70,6 +70,11 @@ class HomeTabSerializer
         $this->publicFileSerializer = $publicFileSerializer;
     }
 
+    public function getName()
+    {
+        return 'home_tab';
+    }
+
     public function getClass()
     {
         return HomeTab::class;
@@ -188,8 +193,12 @@ class HomeTabSerializer
                     $homeTabConfig->addRole($role);
                 }
 
+                $roles = array_map(function (array $role) {
+                    return $role['id'];
+                }, $data['restrictions']['roles']);
+
                 foreach ($existingRoles as $role) {
-                    if (!in_array($role->getUuid(), $data['restrictions']['roles'])) {
+                    if (!in_array($role->getUuid(), $roles)) {
                         // the role no longer exist we can remove it
                         $homeTabConfig->removeRole($role);
                     }
