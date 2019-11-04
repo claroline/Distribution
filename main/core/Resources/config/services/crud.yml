@@ -66,10 +66,12 @@ services:
             - '@Claroline\AppBundle\API\Crud'
             - '@Claroline\AppBundle\Event\StrictDispatcher'
             - '@Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager'
+            - '@Claroline\CoreBundle\Manager\ResourceManager'
             - '%claroline.param.files_directory%'
         tags:
           - { name: kernel.event_listener, event: crud.pre.create.resource_node, method: preCreate }
           - { name: kernel.event_listener, event: crud.pre.delete.resource_node, method: preDelete }
+          - { name: kernel.event_listener, event: crud.pre.copy.resource_node, method: preCopy }
 
     Claroline\CoreBundle\API\Crud\Home\WidgetInstanceCrud:
         arguments:

@@ -227,10 +227,6 @@ class ResourceManager
 
         $node->setPathForCreationLog($parentPath.$node->getName());
 
-        $usersToNotify = $workspace && $workspace->getId() ?
-            $this->userRepo->findUsersByWorkspaces([$workspace]) :
-            [];
-
         $this->om->endFlushSuite();
 
         return $resource;
@@ -503,11 +499,7 @@ class ResourceManager
     public function copy(
         ResourceNode $node,
         ResourceNode $parent,
-        User $user,
-        $index = null,
-        $withRights = true,
-        $withDirectoryContent = true,
-        array $rights = []
+        User $user
     ) {
         $check = ['activity', 'claroline_scorm_12', 'claroline_scorm_2004'];
 
@@ -515,62 +507,15 @@ class ResourceManager
             return;
         }
 
-        $withDirectoryContent = true;
         $this->log("Copying {$node->getName()} from type {$node->getResourceType()->getName()}");
-        $resource = $this->getResourceFromNode($node);
-        $env = $this->container->get('kernel')->getEnvironment();
 
-        if (!$resource) {
-            if ('dev' === $env) {
-                $message = 'The resource '.$node->getName().' was not found (node id is '.$node->getId().')';
-                $this->container->get('logger')->error($message);
+        $newNode = $this->crud->copy($node, [Options::REFRESH_UUID], ['user' => $user, 'parent' => $parent]);
 
-                return;
-            } else {
-                //if something is malformed in production, try to not break everything if we don't need to. Just return null.
-                return;
-            }
-        }
-        $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
-        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($resource))->getName();
-
-        $serializer = $this->serializer->get($className);
-        $options = ['serialize' => [], 'deserialize' => [Options::REFRESH_UUID]];
-        if (method_exists($serializer, 'getCopyOptions')) {
-            $options = array_merge_recursive($options, $serializer->getCopyOptions());
-        }
-
-        $serialized = $serializer->serialize($resource, $options['serialize']);
-        $copy = new $className();
-        $serializer->deserialize($serialized, $copy, $options['deserialize']);
-        $copy->setResourceNode($newNode);
-        $original = $this->getResourceFromNode($node);
-
-        $event = $this->lifeCycleManager->copy($original, $copy);
-
-        // Set the published state
-        $newNode->setPublished($event->getPublish());
-
-        if ('directory' === $node->getResourceType()->getName() &&
-            $withDirectoryContent) {
-            $i = 1;
-            $this->log('Copying '.count($node->getChildren()->toArray()).' resources for directory '.$node->getName());
-
-            foreach ($node->getChildren() as $child) {
-                $this->log('Loop for  '.$child->getName().':'.$child->getResourceType()->getName());
-
-                //              if ($child->isActive()) {
-                $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
-                ++$i;
-                //             }
-            }
-        }
-
-        $this->om->persist($copy);
-        $this->dispatcher->dispatch('log', 'Log\LogResourceCopy', [$newNode, $node]);
+        $this->om->persist($newNode);
         $this->om->flush();
 
-        return $copy;
+        //for backward compatibility for the moment
+        return $newNode->getResource();
     }
 
     /**
@@ -994,56 +939,6 @@ class ResourceManager
         } catch (\Exception $e) {
             $this->log('class '.$node->getClass().' doesnt exists', 'error');
         }
-    }
-
-    /**
-     * Copy a resource node.
-     *
-     * @param ResourceNode $node
-     * @param ResourceNode $newParent
-     * @param User         $user
-     * @param bool         $withRights - Defines if the rights of the copied node have to be created
-     * @param array        $rights     - If defined, the copied node will have exactly the given rights
-     * @param int          $index
-     *
-     * @return ResourceNode
-     */
-    private function copyNode(
-        ResourceNode $node,
-        ResourceNode $newParent,
-        User $user,
-        $withRights = true,
-        array $rights = [],
-        $index = null
-    ) {
-        /** @var ResourceNode $newNode */
-        $newNode = new ResourceNode();
-
-        $serialized = $this->serializer->serialize($node);
-        unset($serialized['rights']);
-        $this->serializer->get(ResourceNode::class)->deserialize($serialized, $newNode, [Options::REFRESH_UUID]);
-
-        $newNode->setResourceType($node->getResourceType());
-        $newNode->setCreator($user);
-        $newNode->setWorkspace($newParent->getWorkspace());
-        $newNode->setParent($newParent);
-        $newParent->addChild($newNode);
-        $newNode->setName($this->getUniqueName($node, $newParent, true));
-
-        if ($withRights) {
-            //if everything happens inside the same workspace and no specific rights have been given,
-            //rights are copied
-            if ($newParent->getWorkspace() === $node->getWorkspace() && 0 === count($rights)) {
-                $this->rightsManager->copy($node, $newNode);
-            } else {
-                //otherwise we use the parent rights or the given rights if not empty
-                $this->setRights($newNode, $newParent, $rights);
-            }
-        }
-
-        $this->om->persist($newNode);
-
-        return $newNode;
     }
 
     private function getEncoding()

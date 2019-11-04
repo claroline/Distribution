@@ -186,24 +186,33 @@ class Crud
      *
      * @return object
      */
-    public function copy($object, array $options = [])
+    public function copy($object, array $options = [], array $extra = [])
     {
         $this->checkPermission('COPY', $object, [], true);
         $class = get_class($object);
         $new = new $class();
 
+        //default option for copy
+        $options[] = [Options::REFRESH_UUID];
+        $serializer = $this->serializer->get($object);
+
+        if (method_exists($serializer, 'getCopyOptions')) {
+            $options = array_merge_recursive($options, $serializer->getCopyOptions());
+        }
+
         $this->serializer->deserialize(
-          $this->serializer->serialize($object),
-          $new
+          $this->serializer->serialize($object, $options),
+          $new,
+          $options
         );
 
         $this->om->persist($new);
 
         //first event is the pre one
-        if ($this->dispatch('copy', 'pre', [$object, $options, $new])) {
+        if ($this->dispatch('copy', 'pre', [$object, $options, $new, $extra])) {
             //second event is the post one
             //we could use only one event afaik
-            $this->dispatch('copy', 'post', [$object, $options, $new]);
+            $this->dispatch('copy', 'post', [$object, $options, $new, $extra]);
         }
 
         $this->om->flush();

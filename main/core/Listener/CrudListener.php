@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Listener;
 
+use Claroline\AppBundle\Event\Crud\CopyEvent;
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -44,5 +45,13 @@ class CrudListener
           'Log\LogResourceDelete',
           [$node]
       );
+    }
+
+    public function onResourceCopy(CopyEvent $event)
+    {
+        $node = $event->getObject();
+        $newNode = $event->getCopy();
+
+        $this->dispatcher->dispatch('log', 'Log\LogResourceCopy', [$newNode, $node]);
     }
 }

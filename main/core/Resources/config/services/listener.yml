@@ -332,3 +332,4 @@ services:
           #post create is not fired
             - { name: kernel.event_listener, event: crud.post.create.resource_node, method: onResourceCreate }
             - { name: kernel.event_listener, event: crud.pre.delete.resource_node, method: onResourceDelete }
+            - { name: kernel.event_listener, event: crud.post.copy.resource_node, method: onResourceCopy }

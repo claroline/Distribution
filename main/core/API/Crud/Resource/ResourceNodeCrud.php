@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Crud\Resource;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\Event\Crud\CopyEvent;
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -11,6 +12,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -33,6 +35,7 @@ class ResourceNodeCrud
         Crud $crud,
         StrictDispatcher $dispatcher,
         ResourceLifecycleManager $lifeCycleManager,
+        ResourceManager $resourceManager,
         $filesDirectory
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -41,6 +44,7 @@ class ResourceNodeCrud
         $this->dispatcher = $dispatcher;
         $this->lifeCycleManager = $lifeCycleManager;
         $this->filesDirectory = $filesDirectory;
+        $this->resourceManager = $resourceManager;
     }
 
     /**
@@ -83,7 +87,7 @@ class ResourceNodeCrud
         $this->om->startFlushSuite();
 
         foreach ($nodes as $node) {
-            $resource = $this->getResourceFromNode($node);
+            $resource = $this->resourceManager->getResourceFromNode($node);
             /*
              * resChild can be null if a shortcut was removed
              *
@@ -173,22 +177,41 @@ class ResourceNodeCrud
         $this->om->endFlushSuite();
     }
 
-    /**
-     * Returns the resource linked to a node.
-     *
-     * @param ResourceNode $node
-     *
-     * @return AbstractResource
-     */
-    public function getResourceFromNode(ResourceNode $node)
+    public function preCopy(CopyEvent $event)
     {
-        try {
-            /* @var AbstractResource $resource */
-            $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
+        $node = $event->getObject();
+        $newNode = $event->getCopy();
+        $resource = $this->resourceManager->getResourceFromNode($node);
 
-            return $resource;
-        } catch (\Exception $e) {
-            $this->log('class '.$node->getClass().' doesnt exists', 'error');
+        if (!$resource) {
+            //if something is malformed in production, try to not break everything if we don't need to. Just return null.
+            return;
         }
+
+        $newParent = $event->getExtra()['parent'];
+        $user = $event->getExtra()['user'];
+
+        $this->om->persist($newNode);
+        $copy = $this->crud->copy($resource);
+        $copy->setResourceNode($newNode);
+        $newNode->setWorkspace($newParent->getWorkspace());
+        $newNode->setCreator($user);
+        //unmapped but allow to retrieve it with the entity without any request for the following code
+        $newNode->setResource($resource);
+        $newNode->setParent($newParent);
+        $newParent->addChild($newNode);
+        $original = $this->resourceManager->getResourceFromNode($node);
+        $event = $this->lifeCycleManager->copy($original, $copy);
+
+        $this->om->persist($copy);
+        $this->om->persist($newParent);
+
+        if ('directory' === $node->getResourceType()->getName()) {
+            foreach ($node->getChildren() as $child) {
+                $this->resourceManager->copy($child, $newNode, $user);
+            }
+        }
+
+        $this->om->flush();
     }
 }
