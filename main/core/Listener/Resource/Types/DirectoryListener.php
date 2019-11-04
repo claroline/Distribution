@@ -138,6 +138,8 @@ class DirectoryListener
 
         $this->om->flush();
 
+        $this->crud->dispatch('create', 'post', [$resourceNode]);
+
         // todo : dispatch get/load action instead
         $event->setResponse(new JsonResponse(
             [

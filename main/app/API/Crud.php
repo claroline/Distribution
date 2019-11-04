@@ -131,7 +131,6 @@ class Crud
         }
 
         $object = $this->serializer->deserialize($data, $oldObject, $options);
-
         if ($this->dispatch('update', 'pre', [$object, $options, $oldData])) {
             $this->om->save($object);
             $this->dispatch('update', 'post', [$object, $options, $oldData]);

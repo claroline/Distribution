@@ -43,7 +43,7 @@ class Create extends AbstractAction
             throw new \Exception('Workspace '.$this->printError($data['workspace'])." doesn't exists.");
         }
 
-        $options = [Options::IGNORE_CRUD_POST_EVENT];
+        //$options = [Options::IGNORE_CRUD_POST_EVENT];
 
         $permissions = [
           'open' => isset($data['open']) ? $data['open'] : false,
