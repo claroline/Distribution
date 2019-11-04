@@ -26,6 +26,11 @@ class OrganizationSerializer
         $this->om = $om;
     }
 
+    public function getName()
+    {
+        return 'organization';
+    }
+
     /**
      * Serializes an Organization entity for the JSON api.
      *
@@ -45,6 +50,10 @@ class OrganizationSerializer
             'parent' => !empty($organization->getParent()) ? [
                 'id' => $organization->getParent()->getUuid(),
                 'name' => $organization->getParent()->getName(),
+                'code' => $organization->getParent()->getCode(),
+                'meta' => [
+                    'default' => $organization->getParent()->getDefault(),
+                ],
             ] : null,
             'meta' => [
                 'default' => $organization->getDefault(),

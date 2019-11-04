@@ -106,9 +106,8 @@ class ToolMain extends Component {
               })
             }
           },
-          () => {
-            // TODO : properly handle error
-          }
+          // TODO : properly handle error
+          (error) => console.error(error) /* eslint-disable-line no-console */
         )
         .then(
           () => this.pending = null,

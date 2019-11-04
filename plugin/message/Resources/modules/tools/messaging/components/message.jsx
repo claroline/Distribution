@@ -1,120 +1,216 @@
-import React, {Fragment} from 'react'
-import {connect} from 'react-redux'
+import React, {Component, Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
+import classes from 'classnames'
 import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+import merge from 'lodash/merge'
 
+import {withRouter} from '#/main/app/router'
 import {trans} from '#/main/app/intl/translation'
-import {actions as modalActions} from '#/main/app/overlays/modal/store'
+import {now} from '#/main/app/intl/date'
+import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
-import {MODAL_CONFIRM} from '#/main/app/modals/confirm'
+import {ContentLoader} from '#/main/app/content/components/loader'
+import {selectors as securitySelectors} from '#/main/app/security/store'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
+import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 
+import {Message as MessageTypes} from '#/plugin/message/prop-types'
 import {actions, selectors} from '#/plugin/message/tools/messaging/store'
-import {NewMessage} from '#/plugin/message/tools/messaging/components/new-message'
 
-const MessageComponent = (props) =>
-  <Fragment>
-    <h2>{props.message.object}</h2>
-    <UserMessage
-      user={get(props.message, 'from')}
-      date={get(props.message, 'meta.date')}
-      content={props.message.content}
-      allowHtml={true}
-      actions={[
-        {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-sync-alt',
-          label: trans('restore'),
-          displayed: get(props.message, 'meta.removed'),
-          callback: () => props.restoreMessage([props.message])
-        }, {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-trash-o',
-          label: trans('delete'),
-          callback: () => props.removeMessage([props.message]),
-          dangerous: true,
-          displayed: get(props.message, 'meta.removed')
-        }, {
-          type: CALLBACK_BUTTON,
-          icon: 'fa fa-fw fa-trash-o',
-          label: trans('delete'),
-          callback: () => props.deleteMessage([props.message], props.history.push, props.path),
-          dangerous: true,
-          displayed: !get(props.message, 'meta.removed')
-        }
-      ]}
-    />
+function flattenMessages(root) {
+  let messages = [root]
 
-    {(!get(props.message, 'meta.sent') && !get(props.message, 'meta.removed')) &&
-      <NewMessage/>
+  if (root.children) {
+    root.children.map(child => {
+      messages = messages.concat(flattenMessages(child))
+    })
+  }
+
+  return messages
+}
+
+class MessageComponent extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      reply: false,
+      all: false
     }
-  </Fragment>
+
+    this.reply = this.reply.bind(this)
+  }
+
+  reply(content) {
+    this.props.reply(merge({}, MessageTypes.defaultProps, {
+      parent: this.props.message,
+      from: this.props.currentUser,
+      object: `Re: ${this.props.message.object}`,
+      content: content,
+      receivers: this.state.all ? this.props.message.receivers : {
+        users: [this.props.message.from]
+      },
+      meta: {date : now()}
+    })).then(() => this.setState({reply: false, all: false}))
+  }
+
+  render() {
+    if (isEmpty(this.props.message)) {
+      return (
+        <ContentLoader
+          size="lg"
+          description="Nous chargeons la conversation"
+        />
+      )
+    }
+
+    const messages = flattenMessages(this.props.message)
+
+    return (
+      <Fragment>
+        <h2 className="h-title">
+          {this.props.message.object}
+        </h2>
+
+        {messages
+          .filter(message => !get(message, 'meta.removed') || message.id === this.props.currentId)
+          .sort((a, b) => {
+            if (get(a, 'meta.date') > get(b, 'meta.date')) {
+              return 1
+            }
+
+            return - 1
+          })
+          .map(message =>
+            <UserMessage
+              className={classes({
+                'user-message-highlight': 1 < messages.length && message.id === this.props.currentId
+              })}
+              key={`message-${message.id}`}
+              user={get(message, 'from')}
+              date={get(message, 'meta.date')}
+              content={message.content}
+              allowHtml={true}
+              actions={[
+                {
+                  name: 'restore',
+                  type: CALLBACK_BUTTON,
+                  icon: 'fa fa-fw fa-sync-alt',
+                  label: trans('restore', {}, 'actions'),
+                  displayed: get(message, 'meta.removed'),
+                  callback: () => this.props.restore(message),
+                  confirm: {
+                    title: trans('messages_restore_title', {}, 'message'),
+                    message: trans('messages_confirm_restore', {}, 'message')
+                  }
+                }, {
+                  name: 'hard-delete',
+                  type: CALLBACK_BUTTON,
+                  icon: 'fa fa-fw fa-trash-o',
+                  label: trans('delete', {}, 'actions'),
+                  callback: () => this.props.delete(message, this.props.history.push, this.props.path),
+                  dangerous: true,
+                  displayed: get(message, 'meta.removed'),
+                  confirm: {
+                    title: trans('messages_delete_title', {}, 'message'),
+                    message: trans('messages_delete_confirm_permanent', {}, 'message')
+                  }
+                }, {
+                  name: 'soft-delete',
+                  type: CALLBACK_BUTTON,
+                  icon: 'fa fa-fw fa-trash-o',
+                  label: trans('delete', {}, 'actions'),
+                  callback: () => this.props.remove(message, this.props.history.push, this.props.path),
+                  dangerous: true,
+                  displayed: !get(message, 'meta.removed'),
+                  confirm: {
+                    title: trans('messages_delete_title', {}, 'message'),
+                    message: trans('remove_message_confirm_message', {}, 'message')
+                  }
+                }
+              ]}
+            />
+          )
+        }
+
+        {(!this.state.reply && !get(this.props.message, 'meta.sent') && !get(this.props.message, 'meta.removed')) &&
+          <Button
+            className="btn btn-block btn-emphasis"
+            type={CALLBACK_BUTTON}
+            label={trans('reply', {}, 'actions')}
+            callback={() => this.setState({reply: true, all: false})}
+            primary={true}
+          />
+        }
+
+        {(!this.state.reply && !get(this.props.message, 'meta.sent') && !get(this.props.message, 'meta.removed')) &&
+          <Button
+            className="btn btn-block"
+            type={CALLBACK_BUTTON}
+            label={trans('reply-all', {}, 'actions')}
+            callback={() => this.setState({reply: true, all: true})}
+          />
+        }
+
+        {this.state.reply &&
+          <UserMessageForm
+            user={this.props.currentUser}
+            allowHtml={true}
+            submitLabel={trans(this.state.all ? 'reply-all' : 'reply', {}, 'actions')}
+            submit={this.reply}
+            cancel={() => this.setState({reply: false, all: false})}
+          />
+        }
+      </Fragment>
+    )
+  }
+}
 
 MessageComponent.propTypes = {
   path: T.string.isRequired,
-  message: T.shape({
-    content: T.string,
-    object: T.string.isRequired
-  }),
-  restoreMessage: T.func.isRequired,
-  removeMessage: T.func.isRequired,
-  deleteMessage: T.func.isRequired,
   history: T.shape({
     push: T.func.isRequired
-  }).isRequired
+  }).isRequired,
+  currentUser: T.shape({
+    // TODO : user types
+  }),
+  message: T.shape(
+    MessageTypes.propTypes
+  ),
+  currentId: T.string.isRequired,
+  restore: T.func.isRequired,
+  remove: T.func.isRequired,
+  delete: T.func.isRequired,
+  reply: T.func.isRequired
 }
 
-MessageComponent.defaultProps = {
-  message: {
-    content: '',
-    meta : {
-      removed: true,
-      sent: true
-    }
-  }
-}
-const Message = connect(
-  state => ({
-    path: toolSelectors.path(state),
-    message: selectors.message(state)
-  }),
-  dispatch => ({
-    deleteMessage(message, push, path) {
-      dispatch(
-        modalActions.showModal(MODAL_CONFIRM, {
-          title: trans('messages_delete_title', {}, 'message'),
-          question: trans('messages_delete_confirm_permanent', {}, 'message'),
-          dangerous: true,
-          handleConfirm: () => {
-            dispatch(actions.deleteMessages(message))
-              .then(() => push(`${path}/received`))
-          }
-        })
-      )
-    },
-    removeMessage(message) {
-      dispatch(
-        modalActions.showModal(MODAL_CONFIRM, {
-          title: trans('messages_delete_title', {}, 'message'),
-          question: trans('remove_message_confirm_message', {}, 'message'),
-          dangerous: true,
-          handleConfirm: () => dispatch(actions.removeMessages(message))
-        })
-      )
-    },
-    restoreMessage(message) {
-      dispatch(
-        modalActions.showModal(MODAL_CONFIRM, {
-          title: trans('messages_restore_title', {}, 'message'),
-          question: trans('messages_confirm_restore', {}, 'message'),
-          handleConfirm: () => dispatch(actions.restoreMessages(message))
-        })
-      )
-    }
-  })
-)(MessageComponent)
+const Message = withRouter(
+  connect(
+    state => ({
+      currentUser: securitySelectors.currentUser(state),
+      path: toolSelectors.path(state),
+      message: selectors.message(state)
+    }),
+    dispatch => ({
+      reply(message) {
+        return dispatch(actions.sendMessage(message))
+      },
+      delete(message, push, path) {
+        dispatch(actions.deleteMessages([message])).then(() => push(`${path}/received`))
+      },
+      remove(message, push, path) {
+        dispatch(actions.removeMessages([message])).then(() => push(`${path}/received`))
+      },
+      restore(message) {
+        dispatch(actions.restoreMessages([message]))
+      }
+    })
+  )(MessageComponent)
+)
 
 export {
   Message

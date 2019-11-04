@@ -14,14 +14,13 @@ import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 const RolesButton = props =>
   <Button
-    className="btn"
+    className="btn btn-block"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
     icon="fa fa-fw fa-plus"
     label={trans('add_roles')}
-    primary={true}
     modal={[MODAL_ROLES, {
-      url: ['apiv2_role_platform_loggable_list'], // maybe not the correct URL
+      url: props.url,
       title: props.title,
       filters: props.filters,
       selectAction: (selected) => ({
@@ -33,6 +32,7 @@ const RolesButton = props =>
   />
 
 RolesButton.propTypes = {
+  url: T.oneOfType([T.string, T.array]),
   title: T.string,
   filters: T.arrayOf(T.shape({
     // TODO : list filter types
@@ -88,37 +88,34 @@ const RolesInput = props => {
         }
       </Fragment>
     )
-  } else {
-    return (
-      <EmptyPlaceholder
-        size="lg"
-        icon="fa fa-id-badge"
-        title={trans('no_role')}
-      >
-        {!props.disabled &&
-          <RolesButton
-            {...props.picker}
-            onChange={props.onChange}
-          />
-        }
-      </EmptyPlaceholder>
-    )
   }
+
+  return (
+    <EmptyPlaceholder
+      icon="fa fa-id-badge"
+      title={trans('no_role')}
+    >
+      {!props.disabled &&
+      <RolesButton
+        {...props.picker}
+        onChange={props.onChange}
+      />
+      }
+    </EmptyPlaceholder>
+  )
 }
 
 implementPropTypes(RolesInput, FormFieldTypes, {
   value: T.arrayOf(T.shape(RoleType.propTypes)),
   picker: T.shape({
+    url: T.oneOfType([T.string, T.array]),
     title: T.string,
     filters: T.arrayOf(T.shape({
       // TODO : list filter types
     }))
   })
 }, {
-  value: null,
-  picker: {
-    title: trans('role_selector')
-  }
+  value: null
 })
 
 export {
