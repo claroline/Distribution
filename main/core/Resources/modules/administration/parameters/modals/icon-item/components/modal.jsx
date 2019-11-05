@@ -41,7 +41,7 @@ const IconItemFormModal = props =>
                   return acc
                 }, {})
               },
-              displayed: props.new,
+              displayed: props.new
             }, {
               name: 'mimeType',
               label: trans('mime_type'),

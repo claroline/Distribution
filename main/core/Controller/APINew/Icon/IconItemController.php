@@ -111,6 +111,7 @@ class IconItemController extends AbstractCrudController
      * @param Request $request
      *
      * @return JsonResponse
+     *
      * @throws \Exception
      */
     public function iconSetItemUpdateAction(IconSet $iconSet, Request $request)
