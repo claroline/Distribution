@@ -38,7 +38,6 @@ class ApiListener
      */
     public function onError(GetResponseForExceptionEvent $event)
     {
-        return;
         $user = null;
         if ($this->tokenStorage->getToken()) {
             $user = $this->tokenStorage->getToken()->getUser();
