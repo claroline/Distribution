@@ -484,6 +484,8 @@ class ResourceManager
     /**
      * Copies a resource in a directory.
      *
+     * @deprecated use crud instead
+     *
      * @param ResourceNode $node
      * @param ResourceNode $parent
      * @param User         $user

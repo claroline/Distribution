@@ -393,7 +393,7 @@ class ResourceNodeSerializer
                 $role = $this->om->getRepository(Role::class)->findOneBy(['name' => $right['name']]);
             } else {
                 $workspace = $resourceNode->getWorkspace() ?
-                    $resourceNode->getWorkspace :
+                    $resourceNode->getWorkspace() :
                     $this->om->getRepository(Workspace::class)->findOneByCode($right['workspace']['code']);
 
                 $role = $this->om->getRepository(Role::class)->findOneBy(
