@@ -569,9 +569,9 @@ class ResourceManager
      *
      * @throws \LogicException
      */
-    public function delete(ResourceNode $resourceNode, $force = false, $softDelete = false)
+    public function delete(ResourceNode $node, $force = false, $softDelete = false)
     {
-        $this->crud->delete($node, $softDelete || $eventSoftDelete ? [Options::SOFT_DELETE] : []);
+        $this->crud->delete($node, $softDelete ? [Options::SOFT_DELETE] : []);
     }
 
     public function setActive(ResourceNode $node)
@@ -946,29 +946,6 @@ class ResourceManager
     private function getEncoding()
     {
         return 'UTF-8//TRANSLIT';
-    }
-
-    /**
-     * @param string $dirName
-     *
-     * @return bool
-     */
-    private function isDirectoryEmpty($dirName)
-    {
-        $files = [];
-        $dirHandle = opendir($dirName);
-
-        if ($dirHandle) {
-            while ($file = readdir($dirHandle)) {
-                if ('.' !== $file && '..' !== $file) {
-                    $files[] = $file;
-                    break;
-                }
-            }
-            closedir($dirHandle);
-        }
-
-        return 0 === count($files);
     }
 
     private function updateWorkspace(ResourceNode $node, Workspace $workspace)

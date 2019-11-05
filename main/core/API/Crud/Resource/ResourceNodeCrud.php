@@ -214,4 +214,27 @@ class ResourceNodeCrud
 
         $this->om->flush();
     }
+
+    /**
+     * @param string $dirName
+     *
+     * @return bool
+     */
+    private function isDirectoryEmpty($dirName)
+    {
+        $files = [];
+        $dirHandle = opendir($dirName);
+
+        if ($dirHandle) {
+            while ($file = readdir($dirHandle)) {
+                if ('.' !== $file && '..' !== $file) {
+                    $files[] = $file;
+                    break;
+                }
+            }
+            closedir($dirHandle);
+        }
+
+        return 0 === count($files);
+    }
 }
