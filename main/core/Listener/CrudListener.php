@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Listener;
 use Claroline\AppBundle\Event\Crud\CopyEvent;
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
+use Claroline\AppBundle\Event\Crud\UpdateEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
@@ -33,6 +34,7 @@ class CrudListener
         $usersToNotify = $workspace && $workspace->getId() ?
             $this->om->getRepository(User::class)->findUsersByWorkspaces([$workspace]) :
             [];
+
         $this->dispatcher->dispatch('log', 'Log\LogResourceCreate', [$node, $usersToNotify]);
     }
 
@@ -53,5 +55,17 @@ class CrudListener
         $newNode = $event->getCopy();
 
         $this->dispatcher->dispatch('log', 'Log\LogResourceCopy', [$newNode, $node]);
+    }
+
+    public function onResourceUpdate(UpdateEvent $event)
+    {
+        $node = $event->getObject();
+        $uow = $this->om->getUnitOfWork();
+        $uow->computeChangeSets();
+        $changeSet = $uow->getEntityChangeSet($node);
+
+        if (count($changeSet) > 0) {
+            $this->dispatcher->dispatch('log', 'Log\LogResourceUpdate', [$node, $changeSet]);
+        }
     }
 }

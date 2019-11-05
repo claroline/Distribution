@@ -49,7 +49,7 @@ class AnnouncementCrud
     /**
      * @param CreateEvent $event
      */
-    public function postUpdate(UpdateEvent $event)
+    public function endUpdate(UpdateEvent $event)
     {
         $announcement = $event->getObject();
 

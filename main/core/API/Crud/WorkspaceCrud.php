@@ -106,7 +106,7 @@ class WorkspaceCrud
     /**
      * @param UpdateEvent $event
      */
-    public function postUpdate(UpdateEvent $event)
+    public function endUpdate(UpdateEvent $event)
     {
         $workspace = $event->getObject();
         $root = $this->resourceManager->getWorkspaceRoot($workspace);

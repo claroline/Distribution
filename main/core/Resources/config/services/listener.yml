@@ -333,3 +333,4 @@ services:
             - { name: kernel.event_listener, event: crud.post.create.resource_node, method: onResourceCreate }
             - { name: kernel.event_listener, event: crud.pre.delete.resource_node, method: onResourceDelete }
             - { name: kernel.event_listener, event: crud.post.copy.resource_node, method: onResourceCopy }
+            - { name: kernel.event_listener, event: crud.end.update.resource_node, method: onResourceUpdate }
