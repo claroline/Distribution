@@ -14,78 +14,102 @@ import {Messages} from '#/main/core/administration/parameters/message/components
 import {Message} from '#/main/core/administration/parameters/message/containers/message'
 import {Technical} from '#/main/core/administration/parameters/technical/containers/technical'
 import {Appearance} from '#/main/core/administration/parameters/appearance/containers/appearance'
+import {IconsMain} from '#/main/core/administration/parameters/icon/containers/main'
 
-const ParametersTool = (props) =>
-  <ToolPage
-    className="main-settings-container"
-    actions={props.path+'/messages' === props.location.pathname ? [
-      {
+const ParametersTool = (props) => {
+  const parametersActions = []
+
+  switch (props.location.pathname) {
+    case props.path+'/messages':
+      parametersActions.push({
         name: 'add',
         type: LINK_BUTTON,
         icon: 'fa fa-fw fa-plus',
         label: trans('add_connection_message'),
         target: props.path+'/messages/form',
         primary: true
+      })
+      break
+    case props.path+'/icons':
+      parametersActions.push({
+        name: 'add',
+        type: LINK_BUTTON,
+        icon: 'fa fa-fw fa-plus',
+        label: trans('add_icon_set'),
+        target: props.path+'/icons/form',
+        primary: true
+      })
+      break
+  }
+
+  return (
+    <ToolPage
+      className="main-settings-container"
+      actions={parametersActions}
+      subtitle={
+        <Routes
+          path={props.path}
+          routes={[
+            {path: '/', exact: true, render: () => trans('general')},
+            {path: '/i18n',          render: () => trans('language')},
+            {path: '/plugins',       render: () => trans('plugins')},
+            {path: '/archives',      render: () => trans('archive')},
+            {path: '/messages',      render: () => trans('connection_messages')},
+            {path: '/technical',     render: () => trans('technical')},
+            {path: '/appearance',    render: () => trans('appearance')},
+            {path: '/icons',         render: () => trans('icons')}
+          ]}
+        />
       }
-    ] : []}
-    subtitle={
+    >
       <Routes
         path={props.path}
         routes={[
-          {path: '/', exact: true, render: () => trans('general')},
-          {path: '/i18n',          render: () => trans('language')},
-          {path: '/plugins',       render: () => trans('plugins')},
-          {path: '/archives',      render: () => trans('archive')},
-          {path: '/messages',      render: () => trans('connection_messages')},
-          {path: '/technical',     render: () => trans('technical')},
-          {path: '/appearance',    render: () => trans('appearance')}
+          {
+            path: '/',
+            exact: true,
+            component: Meta
+          }, {
+            path: '/i18n',
+            component: I18n
+          }, {
+            path: '/plugins',
+            component: Plugins
+          }, {
+            path: '/archives',
+            component: Archive
+          }, {
+            path: '/messages',
+            exact: true,
+            render() {
+              const MessagesList = (
+                <Messages
+                  path={props.path}
+                />
+              )
+
+              return MessagesList
+            }
+          }, {
+            path: '/messages/form/:id?', // TODO : should be declared in messages submodule
+            component: Message,
+            onEnter: (params) => props.openConnectionMessageForm(params.id),
+            onLeave: () => props.resetConnectionMessageFrom()
+          }, {
+            path: '/technical',
+            component: Technical
+          }, {
+            path: '/appearance',
+            component: Appearance
+          }, {
+            path: '/icons',
+            component: IconsMain
+          }
         ]}
       />
-    }
-  >
-    <Routes
-      path={props.path}
-      routes={[
-        {
-          path: '/',
-          exact: true,
-          component: Meta
-        }, {
-          path: '/i18n',
-          component: I18n
-        }, {
-          path: '/plugins',
-          component: Plugins
-        }, {
-          path: '/archives',
-          component: Archive
-        }, {
-          path: '/messages',
-          exact: true,
-          render() {
-            const MessagesList = (
-              <Messages
-                path={props.path}
-              />
-            )
-
-            return MessagesList
-          }
-        }, {
-          path: '/messages/form/:id?', // TODO : should be declared in messages submodule
-          component: Message,
-          onEnter: (params) => props.openConnectionMessageForm(params.id),
-          onLeave: () => props.resetConnectionMessageFrom()
-        }, {
-          path: '/technical',
-          component: Technical
-        }, {
-          path: '/appearance',
-          component: Appearance
-        }
-      ]}
-    />
-  </ToolPage>
+    </ToolPage>
+  )
+}
 
 ParametersTool.propTypes = {
   path: T.string,

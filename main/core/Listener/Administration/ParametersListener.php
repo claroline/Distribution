@@ -63,6 +63,7 @@ class ParametersListener
             'iconSetChoices' => array_map(function (IconSet $iconSet) {
                 return $iconSet->getName(); // TODO : create a serializer
             }, $iconSets),
+            'mimeTypes' => $this->iconSetManager->fetchAllResourcesMimeTypes(),
         ]);
 
         $event->stopPropagation();

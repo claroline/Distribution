@@ -36,6 +36,12 @@ const ParametersMenu = (props) =>
           label: trans('appearance'),
           target: props.path+'/appearance'
         }, {
+          name: 'icons',
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-icons',
+          label: trans('icons'),
+          target: props.path+'/icons'
+        }, {
           name: 'messages',
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-comment-dots',

@@ -7,6 +7,7 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store/actions'
 import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 import {PLUGINS_LOAD} from '#/main/core/administration/parameters/store/actions'
 import {selectors} from '#/main/core/administration/parameters/store/selectors'
+import {reducer as iconsReducer} from '#/main/core/administration/parameters/icon/store/reducer'
 
 const reducer = combineReducers({
   parameters: makeFormReducer(selectors.FORM_NAME, {}, {
@@ -37,7 +38,8 @@ const reducer = combineReducers({
   }),
   iconSetChoices: makeReducer([], {
     [makeInstanceAction(TOOL_LOAD, 'main_settings')]: (state, action) => action.toolData.iconSetChoices
-  })
+  }),
+  icons: iconsReducer
 })
 
 export {

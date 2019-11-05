@@ -49,6 +49,16 @@ const iconSetChoices = createSelector(
   }), {})
 )
 
+const icons = createSelector(
+  [store],
+  (store) => store.icons
+)
+
+const mimeTypes = createSelector(
+  [icons],
+  (icons) => icons.mimeTypes
+)
+
 export const selectors = {
   STORE_NAME,
   FORM_NAME,
@@ -60,5 +70,6 @@ export const selectors = {
   archives,
   toolChoices,
   theme,
-  iconSetChoices
+  iconSetChoices,
+  mimeTypes
 }

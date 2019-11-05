@@ -222,6 +222,48 @@ class IconSetManager
         }
     }
 
+    public function fetchAllResourcesMimeTypes()
+    {
+        $mimeTypes = [];
+
+        $defaultIconSet = $this->iconSetRepo->findOneBy(['default' => true]);
+
+        if ($defaultIconSet) {
+            foreach ($defaultIconSet->getIcons() as $iconItem) {
+                $mimeType = $iconItem->getMimeType();
+
+                if ($mimeType) {
+                    $mimeTypes[$mimeType] = $mimeType;
+                }
+            }
+        }
+        ksort($mimeTypes);
+
+        return array_values($mimeTypes);
+    }
+
+    public function updateIconItems(IconSet $iconSet, array $mimeTypes, $url)
+    {
+        $iconItems = [];
+
+        $this->om->startFlushSuite();
+
+        foreach ($mimeTypes as $mimeType) {
+            $iconItem = $this->fetchIconItem($iconSet, $mimeType);
+
+            if (!$iconItem) {
+                $iconItem = new IconItem($iconSet, $url, null, $mimeType);
+            }
+            $iconItem->setRelativeUrl($url);
+            $this->om->persist($iconItem);
+            $iconItems[] = $iconItem;
+        }
+
+        $this->om->endFlushSuite();
+
+        return $iconItems;
+    }
+
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
