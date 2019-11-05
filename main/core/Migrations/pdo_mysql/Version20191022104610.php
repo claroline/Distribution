@@ -33,7 +33,7 @@ class Version20191022104610 extends AbstractMigration
         ');
 
         $this->addSql('
-            ALTER TABLE claro_home_tab_config 
+            ALTER TABLE claro_home_tab_config
             ADD is_visible TINYINT(1) NOT NULL
         ');
     }
