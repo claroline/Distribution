@@ -256,7 +256,6 @@ services:
           - '%claroline.param.icon_sets_web_dir%'
           - '%claroline.param.icon_sets_directory%'
           - '@Claroline\AppBundle\Persistence\ObjectManager'
-          - '@Claroline\CoreBundle\Library\Utilities\ThumbnailCreator'
           - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
 
     claroline.manager.icon_set_manager:
@@ -357,6 +356,7 @@ services:
     Claroline\CoreBundle\Manager\ConnectionMessageManager:
         arguments:
           - '@Claroline\AppBundle\Persistence\ObjectManager'
+          - '@event_dispatcher'
           - '@Claroline\AppBundle\API\SerializerProvider'
 
     claroline.manager.connection_message_manager:
