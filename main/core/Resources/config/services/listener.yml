@@ -337,3 +337,5 @@ services:
             - { name: kernel.event_listener, event: crud.pre.create.workspace, method: onWorkspacePreCreate }
             - { name: kernel.event_listener, event: crud.pre.copy.workspace, method: onWorkspacePreCreate }
             - { name: kernel.event_listener, event: crud.pre.delete.workspace, method: onWorkspacePreDelete, priority: 1 }
+            - { name: kernel.event_listener, event: crud.post.create.user, method: onUserCreate }
+            - { name: kernel.event_listener, event: crud.post.delete.user, method: onUserDelete }

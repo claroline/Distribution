@@ -84,4 +84,18 @@ class CrudListener
         //if we create from model, we don't want to trigger the log on every resource and stuff
         $this->logListener->disable();
     }
+
+    public function onUserCreate(CreateEvent $event)
+    {
+        $user = $event->getObject();
+
+        $this->dispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
+    }
+
+    public function onUserDelete(DeleteEvebt $event)
+    {
+        $user = $event->getObject();
+
+        $this->dispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
+    }
 }

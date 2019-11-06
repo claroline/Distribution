@@ -144,7 +144,6 @@ class UserCrud
         //dispatch some events but they should be listening the same as we are imo.
         //something should be done for event listeners
         $this->dispatcher->dispatch('user_created_event', UserCreatedEvent::class, ['user' => $user]);
-        $this->dispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
         $this->om->endFlushSuite();
 
         return $user;
@@ -190,7 +189,6 @@ class UserCrud
         //dispatch some events but they should be listening the same as we are imo.
         //something should be done for event listeners
         $this->dispatcher->dispatch('claroline_users_delete', 'GenericData', [[$user]]);
-        $this->dispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
         $this->dispatcher->dispatch('delete_user', 'DeleteUser', [$user]);
     }
 
