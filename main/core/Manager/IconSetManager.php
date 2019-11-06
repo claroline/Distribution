@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Library\Utilities\FileSystem;
 use Claroline\CoreBundle\Repository\Icon\IconItemRepository;
 use Claroline\CoreBundle\Repository\Icon\IconSetRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class IconSetManager
@@ -240,6 +241,20 @@ class IconSetManager
         ksort($mimeTypes);
 
         return array_values($mimeTypes);
+    }
+
+    public function uploadIcon(IconSet $iconSet, UploadedFile $file)
+    {
+        $ds = DIRECTORY_SEPARATOR;
+        $iconSetName = $iconSet->getCname();
+
+        if (!$this->fs->exists($this->iconSetsWebDir.$ds.$iconSetName)) {
+            $this->fs->mkdir($this->iconSetsWebDir.$ds.$iconSetName, 0775);
+        }
+        $fileName = $file->getClientOriginalName();
+        $file->move($this->iconSetsWebDir.$ds.$iconSetName, $fileName);
+
+        return $this->fs->makePathRelative($this->iconSetsWebDir, $this->webDir).$iconSetName.$ds.$fileName;
     }
 
     public function updateIconItems(IconSet $iconSet, array $mimeTypes, $url)

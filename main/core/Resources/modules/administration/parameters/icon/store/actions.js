@@ -43,12 +43,24 @@ actions.openIconItemForm = (formName, defaultProps, id = null) => (dispatch) => 
   }
 }
 actions.updateIconItem = (iconSet, iconItem) => (dispatch) => {
+  const formData = new FormData()
+  formData.append('iconItem', JSON.stringify(iconItem))
+
+  if (iconItem.file) {
+    formData.append('file', iconItem.file)
+  }
+
   dispatch({
     [API_REQUEST]: {
       url: ['apiv2_icon_set_item_update', {iconSet: iconSet.id}],
+      type: 'upload',
       request: {
-        method: 'PUT',
-        body: JSON.stringify(iconItem)
+        method: 'POST',
+        body: formData,
+        headers: new Headers({
+          //no Content type for automatic detection of boundaries.
+          'X-Requested-With': 'XMLHttpRequest'
+        })
       },
       success: (response, dispatch) => {
         dispatch(listActions.invalidateData(selectors.STORE_NAME+'.icons.items'))

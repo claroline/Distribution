@@ -16,7 +16,7 @@ import {
 
 const IconItemFormModal = props =>
   <Modal
-    {...omit(props, 'mimeTypes', 'iconSet', 'iconItem', 'new', 'saveEnabled', 'updateIconItem', 'updateProp')}
+    {...omit(props, 'mimeTypes', 'iconSet', 'iconItem', 'new', 'saveEnabled', 'updateIconItem')}
     title={props.new ? trans('icon_item_creation') : trans('icon_item_edition')}
   >
     <FormData
@@ -58,13 +58,13 @@ const IconItemFormModal = props =>
               displayed: !props.new,
               disabled: true
             }, {
-              name: 'icon',
+              name: 'file',
               label: trans('icon'),
               type: 'file',
               options: {
-                types: ['image/*']
-              },
-              onChange: (file) => props.updateProp('relativeUrl', file.url)
+                types: ['image/*'],
+                autoUpload: false
+              }
             }
           ]
         }
@@ -75,7 +75,7 @@ const IconItemFormModal = props =>
       type={CALLBACK_BUTTON}
       primary={true}
       label={trans('save', {}, 'actions')}
-      disabled={!props.saveEnabled || (!props.iconItem.mimeType && !props.iconItem.mimeTypes) || !props.iconItem.relativeUrl}
+      disabled={!props.saveEnabled || (!props.iconItem.mimeType && !props.iconItem.mimeTypes) || (!props.iconItem.relativeUrl && !props.iconItem.file)}
       callback={() => {
         props.updateIconItem(props.iconSet, props.iconItem)
         props.fadeModal()
@@ -90,7 +90,6 @@ IconItemFormModal.propTypes = {
   new: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
   updateIconItem: T.func.isRequired,
-  updateProp: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
 

@@ -119,15 +119,18 @@ class IconItemController extends AbstractCrudController
         if (!$iconSet->isEditable() || !$this->hasToolAccess()) {
             throw new AccessDeniedException();
         }
-        $data = $this->decodeRequest($request);
+        $data = json_decode($request->request->all()['iconItem'], true);
         $mimeTypes = [];
+
+        $file = $request->files->all()['file'];
+        $relativeUrl = $file ? $this->iconSetManager->uploadIcon($iconSet, $file) : null;
 
         if (isset($data['mimeTypes'])) {
             $mimeTypes = $data['mimeTypes'];
         } elseif (isset($data['mimeType'])) {
             $mimeTypes = [$data['mimeType']];
         }
-        $iconItems = $this->iconSetManager->updateIconItems($iconSet, $mimeTypes, $data['relativeUrl']);
+        $iconItems = $relativeUrl ? $this->iconSetManager->updateIconItems($iconSet, $mimeTypes, $relativeUrl) : [];
 
         return new JsonResponse(array_map(function (IconItem $iconItem) {
             return $this->serializer->serialize($iconItem);

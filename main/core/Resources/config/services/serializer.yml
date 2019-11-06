@@ -352,4 +352,3 @@ services:
         tags: [claroline.serializer]
         arguments:
             - '@Claroline\CoreBundle\API\Serializer\Icon\IconSetSerializer'
-            - '@Claroline\AppBundle\Persistence\ObjectManager'
