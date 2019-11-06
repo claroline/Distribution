@@ -18,13 +18,15 @@ use Claroline\AppBundle\Event\Crud\UpdateEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Listener\Log\LogListener;
 
 class CrudListener
 {
-    public function __construct(StrictDispatcher $dispatcher, ObjectManager $om)
+    public function __construct(StrictDispatcher $dispatcher, ObjectManager $om, LogListener $logListener)
     {
         $this->dispatcher = $dispatcher;
         $this->om = $om;
+        $this->logListener = $logListener;
     }
 
     public function onResourceCreate(CreateEvent $event)
@@ -42,11 +44,7 @@ class CrudListener
     {
         $node = $event->getObject();
 
-        $this->dispatcher->dispatch(
-          'log',
-          'Log\LogResourceDelete',
-          [$node]
-      );
+        $this->dispatcher->dispatch('log', 'Log\LogResourceDelete', [$node]);
     }
 
     public function onResourceCopy(CopyEvent $event)
@@ -67,5 +65,23 @@ class CrudListener
         if (count($changeSet) > 0) {
             $this->dispatcher->dispatch('log', 'Log\LogResourceUpdate', [$node, $changeSet]);
         }
+    }
+
+    public function onWorkspacePreCreate(CreateEvent $event)
+    {
+        $workspace = $event->getObject();
+
+        $this->dispatcher->dispatch('log', 'Log\LogWorkspaceCreate', [$workspace]);
+        //if we create from model, we don't want to trigger the log on every resource and stuff
+        $this->logListener->disable();
+    }
+
+    public function onWorkspacePreDelete(DeleteEvent $event)
+    {
+        $workspace = $event->getObject();
+
+        $this->dispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
+        //if we create from model, we don't want to trigger the log on every resource and stuff
+        $this->logListener->disable();
     }
 }

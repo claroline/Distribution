@@ -328,9 +328,12 @@ services:
         arguments:
             - '@Claroline\AppBundle\Event\StrictDispatcher'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\CoreBundle\Listener\Log\LogListener'
         tags:
-          #post create is not fired
             - { name: kernel.event_listener, event: crud.post.create.resource_node, method: onResourceCreate }
             - { name: kernel.event_listener, event: crud.pre.delete.resource_node, method: onResourceDelete }
             - { name: kernel.event_listener, event: crud.post.copy.resource_node, method: onResourceCopy }
             - { name: kernel.event_listener, event: crud.end.update.resource_node, method: onResourceUpdate }
+            - { name: kernel.event_listener, event: crud.pre.create.workspace, method: onWorkspacePreCreate }
+            - { name: kernel.event_listener, event: crud.pre.copy.workspace, method: onWorkspacePreCreate }
+            - { name: kernel.event_listener, event: crud.pre.delete.workspace, method: onWorkspacePreDelete, priority: 1 }
