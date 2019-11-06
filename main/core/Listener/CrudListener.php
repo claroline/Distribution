@@ -18,6 +18,7 @@ use Claroline\AppBundle\Event\Crud\PatchEvent;
 use Claroline\AppBundle\Event\Crud\UpdateEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Listener\Log\LogListener;
@@ -133,6 +134,41 @@ class CrudListener
             } elseif ('remove' === $action) {
                 $this->dispatcher->dispatch('log', 'Log\LogRoleUnsubscribe', [$value, $group]);
             }
+        }
+    }
+
+    public function onUserPatch(PatchEvent $event)
+    {
+        $user = $event->getObject();
+        $value = $event->getValue();
+        $action = $event->getAction();
+
+        if ($value instanceof Group) {
+            if ('add' === $action) {
+                $this->dispatcher->dispatch('log', 'Log\LogGroupAddUser', [$value, $user]);
+            } elseif ('remove' === $action) {
+                $this->dispatcher->dispatch('log', 'Log\LogGroupRemoveUser', [$value, $user]);
+            }
+        } elseif ($value instanceof Role) {
+            if ('add' === $action) {
+                var_dump('add');
+                $this->dispatcher->dispatch('log', 'Log\LogRoleSubscribe', [$value, $user]);
+            } elseif ('remove' === $action) {
+                $this->dispatcher->dispatch('log', 'Log\LogRoleUnsubscribe', [$value, $user]);
+            }
+        }
+    }
+
+    public function onRolePatch(PatchEvent $event)
+    {
+        $role = $event->getObject();
+        $value = $event->getValue();
+        $action = $event->getAction();
+
+        if ('add' === $action) {
+            $this->dispatcher->dispatch('log', 'Log\LogRoleSubscribe', [$role, $value]);
+        } elseif ('remove' === $action) {
+            $this->dispatcher->dispatch('log', 'Log\LogRoleUnsubscribe', [$role, $value]);
         }
     }
 }

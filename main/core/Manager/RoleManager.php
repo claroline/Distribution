@@ -268,16 +268,7 @@ class RoleManager
             throw new Exception\AddRoleException('ROLE_USER cannot be added to groups');
         }
 
-        $hasRole = $ars->hasRole($role->getName());
-        $ars->addRole($role);
-        $this->om->startFlushSuite();
-
-        if ($dispatch && !$hasRole) {
-            $this->dispatcher->dispatch('log', 'Log\LogRoleSubscribe', [$role, $ars]);
-        }
-
-        $this->om->persist($ars);
-        $this->om->endFlushSuite();
+        $this->crud->patch($ars, 'role', Crud::COLLECTION_ADD, [$role]);
 
         $withMail = $this->configHandler->getParameter('send_mail_at_workspace_registration');
 
@@ -293,17 +284,7 @@ class RoleManager
     public function dissociateRole(AbstractRoleSubject $ars, Role $role)
     {
         if ($ars->hasRole($role->getName())) {
-            $ars->removeRole($role);
-            $this->om->startFlushSuite();
-
-            $this->dispatcher->dispatch(
-                'log',
-                'Log\LogRoleUnsubscribe',
-                [$role, $ars]
-            );
-
-            $this->om->persist($ars);
-            $this->om->endFlushSuite();
+            $this->crud->patch($ars, 'remove', Crud::COLLECTION_REMOVE, [$role]);
         }
     }
 

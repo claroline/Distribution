@@ -343,3 +343,5 @@ services:
             - { name: kernel.event_listener, event: crud.post.update.group, method: onGroupUpdate }
             - { name: kernel.event_listener, event: crud.post.delete.group, method: onGroupDelete }
             - { name: kernel.event_listener, event: crud.post.patch.group, method: onGroupPatch }
+            - { name: kernel.event_listener, event: crud.post.patch.user, method: onUserPatch }
+            - { name: kernel.event_listener, event: crud.post.patch.role, method: onRolePatch }
