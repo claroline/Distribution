@@ -182,7 +182,6 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
     private function confirmWorkspaceDelete(array $workspaces)
     {
         $helper = $this->getHelper('question');
-        $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
 
         foreach ($workspaces as $workspace) {
             $this->getOutput()->writeln("{$workspace->getId()}: {$workspace->getName()} - {$workspace->getCode()} ");
