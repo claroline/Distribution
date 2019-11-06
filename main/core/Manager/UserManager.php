@@ -42,7 +42,6 @@ class UserManager
     const MAX_EDIT_BATCH_SIZE = 100;
 
     private $container;
-    private $groupManager;
     private $mailManager;
     private $objectManager;
     private $organizationManager;
@@ -60,7 +59,6 @@ class UserManager
      * UserManager Constructor.
      *
      * @param ContainerInterface           $container
-     * @param GroupManager                 $groupManager
      * @param MailManager                  $mailManager
      * @param ObjectManager                $objectManager
      * @param OrganizationManager          $organizationManager
@@ -74,7 +72,6 @@ class UserManager
      */
     public function __construct(
         ContainerInterface $container,
-        GroupManager $groupManager,
         MailManager $mailManager,
         ObjectManager $objectManager,
         OrganizationManager $organizationManager,
@@ -87,7 +84,6 @@ class UserManager
         WorkspaceManager $workspaceManager)
     {
         $this->container = $container;
-        $this->groupManager = $groupManager;
         $this->mailManager = $mailManager;
         $this->objectManager = $objectManager;
         $this->organizationManager = $organizationManager;

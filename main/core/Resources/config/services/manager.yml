@@ -34,7 +34,6 @@ services:
     Claroline\CoreBundle\Manager\UserManager:
         arguments:
           - '@service_container'
-          - '@claroline.manager.group_manager'
           - '@claroline.manager.mail_manager'
           - '@Claroline\AppBundle\Persistence\ObjectManager'
           - '@claroline.manager.organization.organization_manager'
@@ -245,16 +244,6 @@ services:
 
     claroline.manager.icon_set_manager:
         alias: Claroline\CoreBundle\Manager\IconSetManager
-        public: true
-
-    Claroline\CoreBundle\Manager\GroupManager:
-        arguments:
-          - '@Claroline\AppBundle\Persistence\ObjectManager'
-          - '@Claroline\AppBundle\Event\StrictDispatcher'
-          - '@claroline.manager.role_manager'
-
-    claroline.manager.group_manager:
-        alias: Claroline\CoreBundle\Manager\GroupManager
         public: true
 
     Claroline\CoreBundle\Manager\FileManager:
