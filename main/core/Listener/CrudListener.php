@@ -92,10 +92,24 @@ class CrudListener
         $this->dispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
     }
 
-    public function onUserDelete(DeleteEvebt $event)
+    public function onGroupCreate(CreateEvent $event)
     {
-        $user = $event->getObject();
+        $group = $event->getObject();
 
-        $this->dispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
+        $this->dispatcher->dispatch('log', 'Log\LogGroupCreate', [$group]);
+    }
+
+    public function onGroupDelete(DeleteEvent $event)
+    {
+        $group = $event->getObject();
+
+        $this->dispatcher->dispatch('log', 'Log\LogGroupDelete', [$group]);
+    }
+
+    public function onGroupUpdate(DeleteEvent $event)
+    {
+        $group = $event->getObject();
+
+        $this->dispatcher->dispatch('log', 'Log\LogGroupUpdate', [$group]);
     }
 }

@@ -63,25 +63,6 @@ class GroupManager
     }
 
     /**
-     * Removes a group.
-     *
-     * @param Group $group
-     *
-     * @todo should use Crud
-     */
-    public function deleteGroup(Group $group)
-    {
-        $this->eventDispatcher->dispatch(
-            'claroline_groups_delete',
-            'GenericData',
-            [[$group]]
-        );
-
-        $this->om->remove($group);
-        $this->om->flush();
-    }
-
-    /**
      * Adds an array of user to a group.
      *
      * @param Group  $group
