@@ -151,7 +151,6 @@ class CrudListener
             }
         } elseif ($value instanceof Role) {
             if ('add' === $action) {
-                var_dump('add');
                 $this->dispatcher->dispatch('log', 'Log\LogRoleSubscribe', [$value, $user]);
             } elseif ('remove' === $action) {
                 $this->dispatcher->dispatch('log', 'Log\LogRoleUnsubscribe', [$value, $user]);
