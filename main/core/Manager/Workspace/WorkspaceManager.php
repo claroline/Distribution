@@ -569,7 +569,6 @@ class WorkspaceManager
      */
     public function copy(Workspace $workspace, Workspace $newWorkspace, $model = false)
     {
-        $this->crud->dispatch('copy', 'pre', [$object]);
         $transferManager = $this->container->get('claroline.manager.workspace.transfer');
 
         $fileBag = new FileBag();
@@ -632,8 +631,6 @@ class WorkspaceManager
 
         $this->om->persist($workspaceCopy);
         $this->om->flush();
-
-        $this->crud->dispatch('copy', 'post', [$object]);
 
         return $workspaceCopy;
     }
