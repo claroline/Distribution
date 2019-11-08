@@ -36,6 +36,8 @@ class OptimizedRightsManager
         $recursive ?
             $this->recursiveUpdate($node, $role, $mask, $types) :
             $this->singleUpdate($node, $role, $mask, $types);
+
+        $this->logUpdate($node, $role, $mask, $type);
     }
 
     private function singleUpdate(ResourceNode $node, Role $role, $mask = 1, $types = [])
@@ -177,7 +179,7 @@ class OptimizedRightsManager
     /**
      * @param ResourceRights $rights
      */
-    public function logUpdate(ResourceNode $node, Role $role, $mask, $type)
+    public function logUpdate(ResourceNode $node, Role $role, $mask, $types)
     {
         $this->dispatcher->dispatch(
             'log',

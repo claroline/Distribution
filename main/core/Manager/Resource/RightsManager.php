@@ -210,36 +210,6 @@ class RightsManager
         return $this->rightsRepo->findMaximumRights($roles, $node);
     }
 
-    /**
-     * Merges permissions related to a specific resource type (i.e. "post" in a
-     * forum) with a directory mask. This allows directory permissions to be
-     * applied recursively without losing particular permissions.
-     *
-     * @param int          $dirMask      A directory mask
-     * @param int          $resourceMask A specific resource mask
-     * @param ResourceType $resourceType
-     *
-     * @return int
-     */
-    private function mergeTypePermissions($dirMask, $resourceMask, ResourceType $resourceType)
-    {
-        $baseArray = [];
-        $defaultActions = $this->maskManager->getDefaultActions();
-
-        foreach ($defaultActions as $action) {
-            $baseArray[$action] = true;
-        }
-
-        $basePerms = $this->maskManager->encodeMask($baseArray, $resourceType);
-
-        //a little bit of magic goes here.
-        $all = $resourceMask | $basePerms; //merge
-        $typeMask = $all ^ $basePerms; //extract perm from type
-        $this->log('resource mask is '.$resourceMask.'  | basePerms is '.$basePerms.' | base mask is '.$typeMask);
-
-        return $dirMask | $typeMask; // merge perm from type and new perms
-    }
-
     public function getRights(ResourceNode $resourceNode, array $options = [])
     {
         return array_map(function (ResourceRights $rights) use ($resourceNode, $options) {
