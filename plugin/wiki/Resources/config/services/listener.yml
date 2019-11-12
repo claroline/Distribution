@@ -69,3 +69,7 @@ services:
        tags: ['doctrine.entity_listener']
        arguments:
           - '@Icap\NotificationBundle\Manager\NotificationManager'
+
+    Icap\WikiBundle\Listener\CrudListener:
+        arguments:
+            - '@Claroline\AppBundle\Event\StrictDispatcher'

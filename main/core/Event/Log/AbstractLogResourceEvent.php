@@ -61,7 +61,7 @@ abstract class AbstractLogResourceEvent extends LogGenericEvent
         $detailsData = array_merge($commonDetails, $details);
 
         parent::__construct(
-            static::ACTION,
+            $this->getAction(),
             $detailsData,
             null,
             null,
@@ -71,5 +71,10 @@ abstract class AbstractLogResourceEvent extends LogGenericEvent
             $node->getCreator(),
             null
         );
+    }
+
+    public function getAction()
+    {
+        return $this->action ? $this->action : static::ACTION;
     }
 }

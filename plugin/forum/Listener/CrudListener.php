@@ -125,7 +125,7 @@ class CrudListener
         $forum = $this->getSubject($message)->getForum();
 
         $usersToNotify = $this->userFinder->find(['workspace' => $forum->getResourceNode()->getWorkspace()->getUuid()]);
-        $this->dispatcher->dispatch('log', LogMessageEvent::class, [$message, $usersToNotify, $action]);
+        $this->dispatcher->dispatch('log', LogMessageEvent::class, [$action, $message, $usersToNotify]);
     }
 
     private function dispatchSubjectEvent(Subject $subject, $action)
@@ -133,7 +133,7 @@ class CrudListener
         $forum = $subject->getForum();
 
         $usersToNotify = $this->userFinder->find(['workspace' => $forum->getResourceNode()->getWorkspace()->getUuid()]);
-        $this->dispatcher->dispatch('log', LogSubjectEvent::class, [$subject, $usersToNotify, $action]);
+        $this->dispatcher->dispatch('log', LogSubjectEvent::class, [$action, $subject, $usersToNotify]);
     }
 
     private function getSubject(Message $message)

@@ -11,60 +11,39 @@
 
 namespace Claroline\ForumBundle\Event;
 
-use Claroline\CoreBundle\Event\Log\LogGenericEvent;
+use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\NotifiableInterface;
 use Claroline\ForumBundle\Entity\Subject;
 
-class LogSubjectEvent extends LogGenericEvent implements NotifiableInterface
+class LogSubjectEvent extends AbstractLogResourceEvent implements NotifiableInterface
 {
     /**
      * Constructor.
      */
-    public function __construct(Subject $subject, array $usersToNotify = [], $action)
+    public function __construct($action, Subject $subject, array $usersToNotify = [])
     {
         $this->usersToNotify = $usersToNotify;
         $this->subject = $subject;
         $node = $subject->getForum()->getResourceNode();
         $this->action = $action;
 
-        parent::__construct(
-            $action,
-            [
-                'resource' => [
-                    'name' => $node->getName(),
-                    'path' => $node->getPathForCreationLog(),
-                    'id' => $node->getId(),
-                    'guid' => $node->getGuid(),
-                    'resourceType' => $node->getResourceType()->getName(),
-                ],
-                'forum' => [
-                    'id' => $subject->getForum()->getId(),
-                    'uuid' => $subject->getForum()->getUuid(),
-                ],
-                'subject' => [
-                  'title' => $subject->getTitle(),
-                  'id' => $subject->getId(),
-                  'uuid' => $subject->getUuid(),
-                ],
-                'owner' => [
-                    'id' => $subject->getCreator()->getId(),
-                    'uuid' => $subject->getCreator()->getUuid(),
-                    'lastName' => $subject->getCreator()->getLastName(),
-                    'firstName' => $subject->getCreator()->getFirstName(),
-                ],
-                'workspace' => [
-                    'id' => $node->getWorkspace()->getId(),
-                    'name' => $node->getWorkspace()->getName(),
-                    'code' => $node->getWorkspace()->getCode(),
-                ],
-            ],
-            null,
-            null,
-            $node,
-            null,
-            $node->getWorkspace(),
-            $subject->getCreator()
-        );
+        $details = ['forum' => [
+          'id' => $subject->getForum()->getId(),
+          'uuid' => $subject->getForum()->getUuid(),
+        ],
+        'subject' => [
+          'title' => $subject->getTitle(),
+          'id' => $subject->getId(),
+          'uuid' => $subject->getUuid(),
+        ],
+        'owner' => [
+            'id' => $subject->getCreator()->getId(),
+            'uuid' => $subject->getCreator()->getUuid(),
+            'lastName' => $subject->getCreator()->getLastName(),
+            'firstName' => $subject->getCreator()->getFirstName(),
+        ], ];
+
+        parent::__construct($node, $details);
     }
 
     public function setUsersToNotify(array $usersToNotify)
