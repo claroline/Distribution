@@ -9,6 +9,10 @@ services:
        arguments:
           - '@claroline.manager.content_manager'
 
+    Claroline\CoreBundle\Twig\RoutingExtension:
+       arguments:
+          - '@router'
+
     Claroline\CoreBundle\Twig\PcreExtension: ~
 
     Claroline\CoreBundle\Twig\ThemeExtension:
