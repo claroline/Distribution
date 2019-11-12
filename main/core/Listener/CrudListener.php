@@ -65,6 +65,16 @@ class CrudListener
         $uow->computeChangeSets();
         $changeSet = $uow->getEntityChangeSet($node);
 
+        $old = $event->getOldData();
+
+        if ($old['meta']['published'] !== $node->isPublished()) {
+            $workspace = $node->getWorkspace();
+            $usersToNotify = $node->getWorkspace() && !$node->getWorkspace()->isDisabledNotifications() ?
+                $this->om->getRepository(User::class)->findUsersByWorkspaces([$workspace]) :
+                [];
+            $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
+        }
+
         if (count($changeSet) > 0) {
             $this->dispatcher->dispatch('log', 'Log\LogResourceUpdate', [$node, $changeSet]);
         }

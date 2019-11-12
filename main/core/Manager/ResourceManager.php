@@ -530,32 +530,18 @@ class ResourceManager
      */
     public function setPublishedStatus(array $nodes, $arePublished, $isRecursive = false)
     {
-        $this->om->startFlushSuite();
         foreach ($nodes as $node) {
-            $node->setPublished($arePublished);
-            $this->om->persist($node);
+            $this->crud->update(ResourceNode::class, [
+              'id' => $node->getUuid(),
+              'meta' => ['published' => $arePublished],
+            ]);
 
             //do it on every children aswell
             if ($isRecursive) {
                 $descendants = $this->resourceNodeRepo->findDescendants($node, true);
                 $this->setPublishedStatus($descendants, $arePublished, false);
             }
-
-            //only warn for the roots
-            $this->dispatcher->dispatch(
-                "publication_change_{$node->getResourceType()->getName()}",
-                'Resource\PublicationChange',
-                [$this->getResourceFromNode($node)]
-            );
-
-            $usersToNotify = $node->getWorkspace() && !$node->getWorkspace()->isDisabledNotifications() ?
-                $this->userRepo->findUsersByWorkspaces([$node->getWorkspace()]) :
-                [];
-
-            $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
         }
-
-        $this->om->endFlushSuite();
 
         return $nodes;
     }
