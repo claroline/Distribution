@@ -41,7 +41,15 @@ class CrudListener
         //c'est ici aussi qu'on catch le flag d'un message
         $message = $event->getObject();
 
-        $this->dispatchMessageEvent($message, 'forum_message-update');
+        $old = $event->getOldData();
+
+        if ($old['meta']['flagged'] !== $message->isFlagged()) {
+            if ($message->isFlagged()) {
+                $this->dispatchMessageEvent($message, 'forum_message-flag');
+            } else {
+                $this->dispatchMessageEvent($message, 'forum_message-unflag');
+            }
+        }
     }
 
     public function onPostDelete(DeleteEvent $event)
@@ -62,6 +70,32 @@ class CrudListener
     {
         //c'est ici aussi qu'on catch le flag d'un sujet
         $subject = $event->getObject();
+
+        $old = $event->getOldData();
+
+        if ($old['meta']['flagged'] !== $subject->isFlagged()) {
+            if ($subject->isFlagged()) {
+                $this->dispatchSubjectEvent($subject, 'forum_subject-flag');
+            } else {
+                $this->dispatchSubjectEvent($subject, 'forum_subject-unflag');
+            }
+        }
+
+        if ($old['meta']['closed'] !== $subject->isClosed()) {
+            if ($subject->isClosed()) {
+                $this->dispatchSubjectEvent($subject, 'forum_subject-close');
+            } else {
+                $this->dispatchSubjectEvent($subject, 'forum_subject-open');
+            }
+        }
+
+        if ($old['meta']['sticky'] !== $subject->isSticked()) {
+            if ($subject->isSticked()) {
+                $this->dispatchSubjectEvent($subject, 'forum_subject-stick');
+            } else {
+                $this->dispatchSubjectEvent($subject, 'forum_subject-unstick');
+            }
+        }
 
         $this->dispatchSubjectEvent($subject, 'forum_subject-update');
     }

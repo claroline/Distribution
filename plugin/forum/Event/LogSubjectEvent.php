@@ -112,7 +112,7 @@ class LogSubjectEvent extends LogGenericEvent implements NotifiableInterface
      */
     public function getExcludeUserIds()
     {
-        return [$this->message->getCreator()->getId()];
+        return [$this->subject->getCreator()->getId()];
     }
 
     /**

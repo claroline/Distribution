@@ -67,7 +67,7 @@ class CrudListener
 
         $old = $event->getOldData();
 
-        if ($old['meta']['published'] !== $node->isPublished()) {
+        if ($old['meta']['published'] !== $node->isPublished() && $node->isPublished()) {
             $workspace = $node->getWorkspace();
             $usersToNotify = $node->getWorkspace() && !$node->getWorkspace()->isDisabledNotifications() ?
                 $this->om->getRepository(User::class)->findUsersByWorkspaces([$workspace]) :
