@@ -183,7 +183,7 @@ class OptimizedRightsManager
     {
         $this->dispatcher->dispatch(
             'log',
-            'Log\LogWorkspaceRoleChangeRight',
+            'Log\Resource\UpdateResourceRights',
             [$role, $mask, [
                 'mask' => $mask,
                 'types' => $types,
