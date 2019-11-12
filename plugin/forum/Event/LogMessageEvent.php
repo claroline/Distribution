@@ -122,7 +122,7 @@ class LogMessageEvent extends LogGenericEvent implements NotifiableInterface
      */
     public function getActionKey()
     {
-        return $this::ACTION;
+        return $this->action;
     }
 
     /**

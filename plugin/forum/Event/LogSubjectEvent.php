@@ -25,6 +25,7 @@ class LogSubjectEvent extends LogGenericEvent implements NotifiableInterface
         $this->usersToNotify = $usersToNotify;
         $this->subject = $subject;
         $node = $subject->getForum()->getResourceNode();
+        $this->action = $action;
 
         parent::__construct(
             $action,
@@ -122,7 +123,7 @@ class LogSubjectEvent extends LogGenericEvent implements NotifiableInterface
      */
     public function getActionKey()
     {
-        return $this::ACTION;
+        return $this->action;
     }
 
     /**

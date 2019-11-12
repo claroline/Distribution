@@ -16,6 +16,7 @@ use Claroline\AppBundle\Event\Crud\DeleteEvent;
 use Claroline\AppBundle\Event\Crud\UpdateEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\API\Finder\User\UserFinder;
+use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;
 use Claroline\ForumBundle\Entity\Subject;
 use Claroline\ForumBundle\Event\LogMessageEvent;
@@ -48,6 +49,12 @@ class CrudListener
                 $this->dispatchMessageEvent($message, 'forum_message-flag');
             } else {
                 $this->dispatchMessageEvent($message, 'forum_message-unflag');
+            }
+        }
+
+        if ($old['meta']['moderation'] !== $message->getModerated()) {
+            if (Forum::VALIDATE_NONE === $message->getModerated()) {
+                $this->dispatchMessageEvent($message, 'forum_message-unmoderated');
             }
         }
     }
@@ -94,6 +101,12 @@ class CrudListener
                 $this->dispatchSubjectEvent($subject, 'forum_subject-stick');
             } else {
                 $this->dispatchSubjectEvent($subject, 'forum_subject-unstick');
+            }
+        }
+
+        if ($old['meta']['moderation'] !== $subject->getModerated()) {
+            if (Forum::VALIDATE_NONE === $subject->getModerated()) {
+                $this->dispatchSubjectEvent($subject, 'forum_subject-unmoderated');
             }
         }
 
