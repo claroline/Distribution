@@ -26,7 +26,7 @@ class LogSectionEvent extends AbstractLogResourceEvent
             ],
         ];
 
-        parent::__construct($wiki->getResourceNode(), $details);
+        parent::__construct($node, $details);
     }
 
     /**

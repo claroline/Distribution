@@ -11,7 +11,7 @@ services:
 
     Claroline\CoreBundle\Twig\RoutingExtension:
        arguments:
-          - '@router'
+          - '@Claroline\CoreBundle\Library\RoutingHelper'
 
     Claroline\CoreBundle\Twig\PcreExtension: ~
 
