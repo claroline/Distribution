@@ -213,7 +213,9 @@ class ResourceNodeCrud
 
         if ('directory' === $node->getResourceType()->getName()) {
             foreach ($node->getChildren() as $child) {
-                $this->resourceManager->copy($child, $newNode, $user);
+                if ($child->isActive()) {
+                    $this->resourceManager->copy($child, $newNode, $user);
+                }
             }
         }
 
