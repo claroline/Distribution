@@ -9,6 +9,7 @@ use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager;
@@ -36,6 +37,7 @@ class ResourceNodeCrud
         StrictDispatcher $dispatcher,
         ResourceLifecycleManager $lifeCycleManager,
         ResourceManager $resourceManager,
+        ResourceNodeSerializer $serializer,
         $filesDirectory
     ) {
         $this->tokenStorage = $tokenStorage;
@@ -45,6 +47,7 @@ class ResourceNodeCrud
         $this->lifeCycleManager = $lifeCycleManager;
         $this->filesDirectory = $filesDirectory;
         $this->resourceManager = $resourceManager;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -192,7 +195,7 @@ class ResourceNodeCrud
         $user = $event->getExtra()['user'];
 
         $this->om->persist($newNode);
-        $copy = $this->crud->copy($resource);
+        $copy = $this->crud->copy($resource, [Options::REFRESH_UUID]);
         $copy->setResourceNode($newNode);
         $newNode->setWorkspace($newParent->getWorkspace());
         $newNode->setCreator($user);
@@ -205,6 +208,8 @@ class ResourceNodeCrud
 
         $this->om->persist($copy);
         $this->om->persist($newParent);
+
+        $this->serializer->deserializeRights($this->serializer->serialize($node)['rights'], $newNode);
 
         if ('directory' === $node->getResourceType()->getName()) {
             foreach ($node->getChildren() as $child) {

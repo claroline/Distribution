@@ -200,7 +200,7 @@ class Crud
         $serializer = $this->serializer->get($object);
 
         if (method_exists($serializer, 'getCopyOptions')) {
-            $options = array_merge_recursive($options, $serializer->getCopyOptions());
+            $options = array_merge($options, $serializer->getCopyOptions());
         }
 
         $this->serializer->deserialize(

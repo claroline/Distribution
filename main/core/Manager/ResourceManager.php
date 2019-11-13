@@ -510,7 +510,7 @@ class ResourceManager
 
         $this->log("Copying {$node->getName()} from type {$node->getResourceType()->getName()}");
 
-        $newNode = $this->crud->copy($node, [Options::REFRESH_UUID], ['user' => $user, 'parent' => $parent]);
+        $newNode = $this->crud->copy($node, [Options::REFRESH_UUID, OPTIONS::IGNORE_RIGHTS], ['user' => $user, 'parent' => $parent]);
 
         $this->om->persist($newNode);
         $this->om->flush();

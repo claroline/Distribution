@@ -563,6 +563,7 @@ services:
         arguments:
           - '@doctrine.dbal.default_connection'
           - '@Claroline\AppBundle\Event\StrictDispatcher'
+          - '@Claroline\AppBundle\Persistence\ObjectManager'
 
     claroline.manager.optimized_rights_manager:
         alias: Claroline\CoreBundle\Manager\Resource\OptimizedRightsManager

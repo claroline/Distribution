@@ -67,6 +67,7 @@ services:
             - '@Claroline\AppBundle\Event\StrictDispatcher'
             - '@Claroline\CoreBundle\Manager\Resource\ResourceLifecycleManager'
             - '@Claroline\CoreBundle\Manager\ResourceManager'
+            - '@Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer'
             - '%claroline.param.files_directory%'
         tags:
           - { name: kernel.event_listener, event: crud.pre.create.resource_node, method: preCreate }

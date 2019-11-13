@@ -369,7 +369,7 @@ class ResourceNodeSerializer
         }
     }
 
-    private function deserializeRights($rights, ResourceNode $resourceNode, array $options = [])
+    public function deserializeRights($rights, ResourceNode $resourceNode, array $options = [])
     {
         // additional data might be required later (recursive)
         foreach ($rights as $right) {
@@ -404,11 +404,7 @@ class ResourceNodeSerializer
                 );
             }
 
-            if ($role) {
-                if (!$resourceNode->getId()) {
-                    $this->om->save($resourceNode);
-                }
-
+            if ($role && !in_array(OPTIONS::IGNORE_RIGHTS, $options)) {
                 $this->newRightsManager->update(
                       $resourceNode,
                       $role,
