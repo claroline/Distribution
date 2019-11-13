@@ -77,9 +77,9 @@ class UserCrud
      */
     public function preCreate(CreateEvent $event)
     {
-        if (isset($this->parameters['restrictions']['users_active']) &&
+        if (isset($this->parameters['restrictions']['users']) &&
             isset($this->parameters['restrictions']['max_users']) &&
-            $this->parameters['restrictions']['users_active'] &&
+            $this->parameters['restrictions']['users'] &&
             $this->parameters['restrictions']['max_users']
         ) {
             $usersCount = $this->userRepo->countAllEnabledUsers();

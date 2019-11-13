@@ -1338,6 +1338,7 @@
     "users_count": "Nombre d'utilisateurs",
     "users_from_group_registration": "Inscription des utilisateurs du groupe",
     "users_import": "Importer des utilisateurs",
+    "users_limit_reached": "Vous ne pouvez plus inscrire d'utilisateurs car vous avez atteint la limite autorisée.",
     "users_list": "Liste des utilisateurs",
     "users_minimum_requirement_msg": "Les utilisateurs doivent remplir ces conditions: login de 3 caractères, mot de passe de 4 caractères, courriel valide.",
     "users_per_page": "Utilisateurs par page",
