@@ -49,8 +49,17 @@ function fileSize(num, short = true) {
   return precision(num, 1)
 }
 
+function newFileSize(num, short = true) {
+  if (short) {
+    return humanize(num, 1000)
+  }
+
+  return precision(num, 1)
+}
+
 export {
   number,
   fileSize,
+  newFileSize,
   precision
 }
