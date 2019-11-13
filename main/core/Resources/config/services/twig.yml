@@ -13,6 +13,12 @@ services:
        arguments:
           - '@Claroline\CoreBundle\Library\RoutingHelper'
 
+    Claroline\CoreBundle\Twig\LogTranslatorExtension:
+       arguments:
+          - '@Claroline\CoreBundle\Library\RoutingHelper'
+          - '@translator'
+          - '@templating'
+
     Claroline\CoreBundle\Twig\PcreExtension: ~
 
     Claroline\CoreBundle\Twig\ThemeExtension:
