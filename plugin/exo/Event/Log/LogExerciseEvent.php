@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Event\Log\AbstractLogResourceEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use UJM\ExoBundle\Entity\Exercise;
 
-class LogExerciseAttemptEvent extends AbstractLogResourceEvent
+class LogExerciseEvent extends AbstractLogResourceEvent
 {
     /**
      * @param Exercise $exercise
