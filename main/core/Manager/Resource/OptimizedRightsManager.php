@@ -15,6 +15,7 @@ use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Doctrine\DBAL\Connection;
@@ -45,11 +46,20 @@ class OptimizedRightsManager
             $this->om->save($role);
         }
 
+        $logUpdate = true;
+        $right = $this->om->getRepository(ResourceRights::class)->findOneBy(['role' => $role, 'resourceNode' => $node]);
+
+        if ($right) {
+            $logUpdate = $right->getMask() !== $mask;
+        }
+
         $recursive ?
             $this->recursiveUpdate($node, $role, $mask, $types) :
             $this->singleUpdate($node, $role, $mask, $types);
 
-        $this->logUpdate($node, $role, $mask, $types);
+        if ($logUpdate) {
+            $this->logUpdate($node, $role, $mask, $types);
+        }
     }
 
     private function singleUpdate(ResourceNode $node, Role $role, $mask = 1, $types = [])
