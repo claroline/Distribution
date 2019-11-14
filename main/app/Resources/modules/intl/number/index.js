@@ -10,12 +10,12 @@ function precision(num, decimals) {
   return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals)
 }
 
-function humanize(num = 0, base) {
+function humanize(num = 0, base, octet = false) {
   const roundSteps = {
-    1: trans('unit_kilo'),
-    2: trans('unit_mega'),
-    3: trans('unit_giga'),
-    4: trans('unit_tera')
+    1: octet ? trans('unit_kilooctet') : trans('unit_kilo'),
+    2: octet ? trans('unit_megaoctet') : trans('unit_mega'),
+    3: octet ? trans('unit_gigaoctet') : trans('unit_giga'),
+    4: octet ? trans('unit_teraoctet') : trans('unit_tera')
   }
 
   let unit = ''
@@ -33,12 +33,12 @@ function humanize(num = 0, base) {
   return precision(num / rounder, 1) + unit
 }
 
-function number(num, short = false) {
+function number(num, short = false, decimals = 1, octet = false) {
   if (short) {
-    return humanize(num, 1000)
+    return humanize(num, 1000, octet)
   }
 
-  return precision(num, 1)
+  return precision(num, decimals)
 }
 
 function fileSize(num, short = true) {
@@ -49,17 +49,8 @@ function fileSize(num, short = true) {
   return precision(num, 1)
 }
 
-function newFileSize(num, short = true) {
-  if (short) {
-    return humanize(num, 1000)
-  }
-
-  return precision(num, 1)
-}
-
 export {
   number,
   fileSize,
-  newFileSize,
   precision
 }
