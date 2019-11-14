@@ -108,6 +108,7 @@ services:
           - '@translator'
           - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
           - '@claroline.manager.template_manager'
+          - '@Claroline\AppBundle\API\Crud'
 
     claroline.manager.role_manager:
         alias: Claroline\CoreBundle\Manager\RoleManager

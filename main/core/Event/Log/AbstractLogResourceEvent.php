@@ -52,6 +52,7 @@ abstract class AbstractLogResourceEvent extends LogGenericEvent
             ],
             'workspace' => [
                 'name' => $node->getWorkspace()->getName(),
+                'slug' => $node->getWorkspade()->getSlug(),
             ],
             'owner' => [
                 'lastName' => $node->getCreator()->getLastName(),

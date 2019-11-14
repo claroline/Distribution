@@ -134,7 +134,7 @@ class Crud
         if ($this->dispatch('update', 'pre', [$object, $options, $oldData])) {
             $this->om->persist($object);
             $this->dispatch('update', 'post', [$object, $options, $oldData]);
-            $this->om->flush($object);
+            $this->om->flush();
         }
 
         $this->dispatch('update', 'end', [$object, $options, $oldData]);

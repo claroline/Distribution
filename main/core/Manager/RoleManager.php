@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
@@ -74,7 +75,8 @@ class RoleManager
         Container $container,
         TranslatorInterface $translator,
         PlatformConfigurationHandler $configHandler,
-        TemplateManager $templateManager
+        TemplateManager $templateManager,
+        Crud $crud
     ) {
         $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
         $this->workspaceRepo = $om->getRepository('ClarolineCoreBundle:Workspace\Workspace');
@@ -87,6 +89,7 @@ class RoleManager
         $this->translator = $translator;
         $this->configHandler = $configHandler;
         $this->templateManager = $templateManager;
+        $this->crud = $crud;
     }
 
     /**
@@ -284,7 +287,7 @@ class RoleManager
     public function dissociateRole(AbstractRoleSubject $ars, Role $role)
     {
         if ($ars->hasRole($role->getName())) {
-            $this->crud->patch($ars, 'remove', Crud::COLLECTION_REMOVE, [$role]);
+            $this->crud->patch($ars, 'role', Crud::COLLECTION_REMOVE, [$role]);
         }
     }
 

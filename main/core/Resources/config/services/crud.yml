@@ -28,7 +28,7 @@ services:
             - '@service_container'
         tags:
           - { name: kernel.event_listener, event: crud_pre_create_object_claroline_corebundle_entity_user, method: preCreate }
-          - { name: kernel.event_listener, event: crud_pre_delete_object_claroline_corebundle_entity_user, method: preDelete }
+          - { name: kernel.event_listener, event: crud.pre.delete.user, method: preDelete }
           - { name: kernel.event_listener, event: crud_pre_update_object_claroline_corebundle_entity_user, method: preUpdate }
 
     claroline.crud.user:
