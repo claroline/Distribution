@@ -90,7 +90,7 @@ class ArrayUtils
                 if (is_int($key)) {
                     $newPos = null;
                 } else {
-                    if (null == $currentPos) {
+                    if (null === $currentPos) {
                         $newPos = $key;
                     } else {
                         $newPos = $currentPos.'.'.$key;
