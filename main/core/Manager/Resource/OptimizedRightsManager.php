@@ -34,7 +34,7 @@ class OptimizedRightsManager
         $this->om = $om;
     }
 
-    public function update(ResourceNode $node, Role $role, $mask = 1, $types = [], $recursive = false)
+    public function update(ResourceNode $node, Role $role, $mask = 1, $types = [], $recursive = false, $log = true)
     {
         if (!$node->getId()) {
             $this->om->save($node);
@@ -57,7 +57,7 @@ class OptimizedRightsManager
             $this->recursiveUpdate($node, $role, $mask, $types) :
             $this->singleUpdate($node, $role, $mask, $types);
 
-        if ($logUpdate) {
+        if ($logUpdate && $log) {
             $this->logUpdate($node, $role, $mask, $types);
         }
     }

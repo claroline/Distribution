@@ -13,6 +13,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Listener\Log\LogListener;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
@@ -36,7 +37,8 @@ class WorkspaceCrud
         OrganizationManager $orgaManager,
         ObjectManager $om,
         Crud $crud,
-        StrictDispatcher $dispatcher
+        StrictDispatcher $dispatcher,
+        LogListener $logListener
     ) {
         $this->manager = $manager;
         $this->userManager = $userManager;
@@ -47,6 +49,7 @@ class WorkspaceCrud
         $this->om = $om;
         $this->crud = $crud;
         $this->dispatcher = $dispatcher;
+        $this->logListener = $logListener;
     }
 
     /**
@@ -55,6 +58,7 @@ class WorkspaceCrud
     public function preDelete(DeleteEvent $event)
     {
         $workspace = $event->getObject();
+        $this->logListener->disable();
         // Log action
         $this->om->startFlushSuite();
         $roots = $this->om->getRepository(ResourceNode::class)->findBy(['workspace' => $workspace, 'parent' => null]);
@@ -83,6 +87,7 @@ class WorkspaceCrud
         );
         $this->om->remove($workspace);
         $this->om->endFlushSuite();
+        $this->logListener->enable();
     }
 
     /**

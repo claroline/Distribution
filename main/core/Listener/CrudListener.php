@@ -89,13 +89,18 @@ class CrudListener
         $this->logListener->disable();
     }
 
+    public function onWorkspacePostCreate(CreateEvent $event)
+    {
+        $workspace = $event->getObject();
+
+        $this->dispatcher->dispatch('log', 'Log\LogWorkspaceCreate', [$workspace]);
+    }
+
     public function onWorkspacePreDelete(DeleteEvent $event)
     {
         $workspace = $event->getObject();
 
         $this->dispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
-        //if we create from model, we don't want to trigger the log on every resource and stuff
-        $this->logListener->disable();
     }
 
     public function onUserCreate(CreateEvent $event)

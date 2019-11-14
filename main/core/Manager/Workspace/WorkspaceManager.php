@@ -608,7 +608,7 @@ class WorkspaceManager
         $root = $this->resourceManager->getWorkspaceRoot($workspaceCopy);
 
         if ($root) {
-            $this->resourceManager->createRights($root);
+            $this->resourceManager->createRights($root, [], true, false);
         }
 
         // Copy workspace shortcuts
@@ -631,6 +631,8 @@ class WorkspaceManager
 
         $this->om->persist($workspaceCopy);
         $this->om->flush();
+
+        $transferManager->dispatch('create', 'post', [$workspaceCopy]);
 
         return $workspaceCopy;
     }

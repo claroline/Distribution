@@ -330,11 +330,11 @@ class ResourceManager
      * @param array                                              $rights
      * @param bool                                               $withDefault
      */
-    public function createRights(ResourceNode $node, array $rights = [], $withDefault = true)
+    public function createRights(ResourceNode $node, array $rights = [], $withDefault = true, $log = true)
     {
         foreach ($rights as $data) {
             $resourceTypes = $this->checkResourceTypes($data['create']);
-            $this->rightsManager->create($data, $data['role'], $node, false, $resourceTypes);
+            $this->rightsManager->create($data, $data['role'], $node, false, $resourceTypes, $log);
         }
         if ($withDefault) {
             if (!array_key_exists('ROLE_ANONYMOUS', $rights)) {
@@ -343,7 +343,8 @@ class ResourceManager
                     $this->roleRepo->findOneBy(['name' => 'ROLE_ANONYMOUS']),
                     $node,
                     false,
-                    []
+                    [],
+                    $log
                 );
             }
             if (!array_key_exists('ROLE_USER', $rights)) {
@@ -352,7 +353,8 @@ class ResourceManager
                     $this->roleRepo->findOneBy(['name' => 'ROLE_USER']),
                     $node,
                     false,
-                    []
+                    [],
+                    $log
                 );
             }
         }
