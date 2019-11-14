@@ -135,6 +135,7 @@ class WorkspaceCrud
      */
     public function preCopy(CopyEvent $event)
     {
+        $this->logListener->disable();
         $workspace = $event->getObject();
         $options = $event->getOptions();
 
@@ -142,6 +143,7 @@ class WorkspaceCrud
         $new->refreshUuid();
 
         $this->manager->copy($workspace, $new, in_array(Options::WORKSPACE_MODEL, $options));
+        $this->logListener->enable();
     }
 
     /**

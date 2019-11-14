@@ -107,17 +107,9 @@ class TransferManager
         return $workspace;
     }
 
-    //copied from crud
     public function dispatch($action, $when, array $args)
     {
-        $name = 'crud_'.$when.'_'.$action.'_object';
-        $eventClass = ucfirst($action);
-        $generic = $this->dispatcher->dispatch($name, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
-        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($args[0]))->getName();
-        $serializedName = $name.'_'.strtolower(str_replace('\\', '_', $className));
-        $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
-
-        return $generic->isAllowed() && $specific->isAllowed();
+        return $this->crud->dispatch($action, $when, $args);
     }
 
     public function export(Workspace $workspace)
