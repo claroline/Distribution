@@ -219,6 +219,7 @@ class PlatformDefaults implements ParameterProviderInterface
                 'max_users' => null,
                 'max_storage_size' => null,
                 'max_storage_reached' => false,
+                'used_storage' => null
             ],
         ];
     }
