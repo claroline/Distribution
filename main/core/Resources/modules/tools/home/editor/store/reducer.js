@@ -6,6 +6,7 @@ import {makeFormReducer} from '#/main/app/content/form/store/reducer'
 
 import {TOOL_LOAD} from '#/main/core/tool/store/actions'
 import {TABS_LOAD} from '#/main/core/tools/home/store/actions'
+import {selectors as baseSelectors} from '#/main/core/tools/home/store/selectors'
 import {selectors} from '#/main/core/tools/home/editor/store/selectors'
 
 const reducer = makeFormReducer(selectors.FORM_NAME, {data: [], originalData: []}, {
@@ -16,7 +17,7 @@ const reducer = makeFormReducer(selectors.FORM_NAME, {data: [], originalData: []
       }
 
       return [
-        selectors.defaultTab({context: action.context})
+        baseSelectors.defaultTab({context: action.context})
       ]
     },
     [TABS_LOAD]: (state, action) => action.tabs
@@ -37,7 +38,7 @@ const reducer = makeFormReducer(selectors.FORM_NAME, {data: [], originalData: []
       }
 
       return [
-        selectors.defaultTab({context: action.context})
+        baseSelectors.defaultTab({context: action.context})
       ]
     }
   })
