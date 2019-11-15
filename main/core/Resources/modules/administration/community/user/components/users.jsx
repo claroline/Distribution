@@ -7,6 +7,7 @@ import {actions as listActions} from '#/main/app/content/list/store'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 import {trans} from '#/main/app/intl/translation'
+import {Alert} from '#/main/app/alert/components/alert'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 import {selectors as baseSelectors} from '#/main/core/administration/community/store'
@@ -19,9 +20,7 @@ import {getActions} from '#/main/core/user/utils'
 const UsersList = props =>
   <Fragment>
     {props.limitReached &&
-      <div className="alert alert-warning">
-        {trans('users_limit_reached')}
-      </div>
+      <Alert type="warning" message={trans('users_limit_reached')} />
     }
     <ListData
       name={`${baseSelectors.STORE_NAME}.users.list`}

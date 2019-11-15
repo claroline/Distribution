@@ -125,7 +125,6 @@ class ResourceActionManager
             ) {
                 throw new AccessDeniedException();
             }
-
         }
         $resourceAction = $this->get($resourceNode, $actionName);
         $resource = $this->resourceManager->getResourceFromNode($resourceNode);

@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
+import {Alert} from '#/main/app/alert/components/alert'
 
 import {FormData} from '#/main/app/content/form/containers/data'
 import {ListForm} from '#/main/app/content/list/parameters/containers/form'
@@ -15,9 +16,7 @@ import {Directory as DirectoryTypes} from '#/main/core/resources/directory/prop-
 const EditorMain = (props) =>
   <Fragment>
     {props.storageLock &&
-      <div className="alert alert-warning">
-        {trans('storage_limit_reached_resources')}
-      </div>
+      <Alert type="warning" message={trans('storage_limit_reached_resources')} />
     }
     <FormData
       level={2}

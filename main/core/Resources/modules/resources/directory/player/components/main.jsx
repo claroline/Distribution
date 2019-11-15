@@ -9,6 +9,7 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {ListSource} from '#/main/app/content/list/containers/source'
 import {ListParameters as ListParametersTypes} from '#/main/app/content/list/parameters/prop-types'
+import {Alert} from '#/main/app/alert/components/alert'
 
 import resourcesSource from '#/main/core/data/sources/resources'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'
@@ -42,9 +43,7 @@ function transformAction(action, resourceNodes, embedded = false) {
 const PlayerMain = props =>
   <Fragment>
     {props.storageLock &&
-      <div className="alert alert-warning">
-        {trans('storage_limit_reached_resources')}
-      </div>
+      <Alert type="warning" message={trans('storage_limit_reached_resources')} />
     }
     <ListSource
       name={props.listName}

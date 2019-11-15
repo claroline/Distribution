@@ -58,7 +58,6 @@ class DirectoryListener
      * @param RightsManager         $rightsManager
      * @param LogListener           $logListener
      * @param ParametersSerializer  $parametersSerializer
-    ) {
      */
     public function __construct(
         ObjectManager $om,
