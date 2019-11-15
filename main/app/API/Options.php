@@ -58,7 +58,6 @@ final class Options
     const GENERATE_UUID = 'generate_uuid';
     const FORCE_FLUSH = 'force_flush';
 
-    const FORCE_RANDOM_PUBLIC_URL = 'force_random_public_url';
     const ADD_PERSONAL_WORKSPACE = 'add_personal_workspace';
     const NO_PERSONAL_WORKSPACE = 'no_personal_workspace';
     const DESERIALIZE_FACET = 'deserialize_facet';
@@ -93,6 +92,7 @@ final class Options
     //for resource node
     const SKIP_RESOURCE_NOTIFICATION = 'skip_resource_notification';
     const SERIALIZE_RESOURCE = 'serialize_resource';
+    const IGNORE_RIGHTS = 'ignore_rights';
     const SERIALIZE_TOOL = 'serialize_tool';
 
     const CRUD_CREATE = 'crud_create';

@@ -108,13 +108,7 @@ class UserCrud
     {
         $this->om->startFlushSuite();
 
-        if (in_array(Options::FORCE_RANDOM_PUBLIC_URL, $options)) {
-            $publicUrl = $user->getFirstName().'.'.$user->getLastName();
-            $publicUrl = strtolower(str_replace(' ', '-', $publicUrl)).uniqid();
-            $user->setPublicUrl($publicUrl);
-        } else {
-            $user->setPublicUrl($this->userManager->generatePublicUrl($user));
-        }
+        $user->setPublicUrl($this->userManager->generatePublicUrl($user));
 
         $addedTools = $this->toolManager->addRequiredToolsToUser($user, 0);
         $this->toolManager->addRequiredToolsToUser($user, 1);
@@ -195,7 +189,6 @@ class UserCrud
         //dispatch some events but they should be listening the same as we are imo.
         //something should be done for event listeners
         $this->dispatcher->dispatch('user_created_event', UserCreatedEvent::class, ['user' => $user]);
-        $this->dispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
         $this->om->endFlushSuite();
 
         return $user;
@@ -241,7 +234,6 @@ class UserCrud
         //dispatch some events but they should be listening the same as we are imo.
         //something should be done for event listeners
         $this->dispatcher->dispatch('claroline_users_delete', 'GenericData', [[$user]]);
-        $this->dispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
         $this->dispatcher->dispatch('delete_user', 'DeleteUser', [$user]);
     }
 
