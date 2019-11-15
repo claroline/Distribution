@@ -1,4 +1,4 @@
-import {getDefinition} from '#/plugin/exo/items/item-types'
+import {getDefinition, isQuestionType} from '#/plugin/exo/items/item-types'
 import {Answerable} from '#/plugin/exo/items/utils'
 import {
   calculateScore as calculateRuleScore,
@@ -44,7 +44,8 @@ function calculateScore(item, answer, applyHints = true) {
  * @return {number|null}
  */
 function calculateTotal(item) {
-  const definition = getDefinition(item.type) // TODO : use new registry
+
+  const definition = isQuestionType(item.type) ? getDefinition(item.type): null
 
   // only calculate score for answerable items
   if (definition && definition.answerable) {
