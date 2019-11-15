@@ -17,7 +17,7 @@ const reducer = makeFormReducer(selectors.FORM_NAME, {data: [], originalData: []
       }
 
       return [
-        baseSelectors.defaultTab({context: action.context})
+        baseSelectors.defaultTab({tool: {currentContext: action.context}})
       ]
     },
     [TABS_LOAD]: (state, action) => action.tabs
@@ -29,7 +29,7 @@ const reducer = makeFormReducer(selectors.FORM_NAME, {data: [], originalData: []
       }
 
       return [
-        selectors.defaultTab({context: action.context})
+        baseSelectors.defaultTab({tool: {currentContext: action.context}})
       ]
     },
     [TABS_LOAD]: (state, action) => {
@@ -38,7 +38,7 @@ const reducer = makeFormReducer(selectors.FORM_NAME, {data: [], originalData: []
       }
 
       return [
-        baseSelectors.defaultTab({context: action.context})
+        baseSelectors.defaultTab({tool: {currentContext: action.context}})
       ]
     }
   })
