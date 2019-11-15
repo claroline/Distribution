@@ -30,7 +30,7 @@ const UserTabComponent = props =>
         label: trans('add_user'),
         target: `${props.path}/users/form`,
         primary: true,
-        disabled: () => props.limitReached
+        disabled: props.limitReached
       }
     ]}
   >

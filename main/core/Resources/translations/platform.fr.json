@@ -1168,7 +1168,7 @@
     "status": "État",
     "steal_session": "Voler la session",
     "storage_limit_exceeded": "Il ne vous reste pas assez d'espace de stockage (%storageLeft%) dans votre espace d'activités. La taille de votre fichier est de %fileSize%.",
-    "storage_limit_reached_resources": "Vous avez atteint la limite d'espace de stockage autorisé. La création de ressources a été désactivée.",
+    "storage_limit_reached_resources": "La création de ressources a été désactivée car vous avez atteint la limite d'espace de stockage autorisé.",
     "storage_type": "Type de stockage",
     "storage_used": "Stockage utilisé",
     "street": "Rue",

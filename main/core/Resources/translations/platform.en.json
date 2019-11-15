@@ -1144,7 +1144,7 @@
     "status": "Status",
     "steal_session": "Steal the session",
     "storage_limit_exceeded": "You don't have enough storage left (%storageLeft%) in your workspace. Your file size is %fileSize%.",
-    "storage_limit_reached_resources": "You have reached the authorized storage limit. Resources creation has been deactivated.",
+    "storage_limit_reached_resources": "Resources creation has been deactivated because you have reached the authorized storage limit",
     "storage_type": "Storage type",
     "storage_used": "Storage used",
     "street": "Street",

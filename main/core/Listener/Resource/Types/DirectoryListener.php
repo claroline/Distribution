@@ -15,6 +15,7 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -44,6 +45,9 @@ class DirectoryListener
     /** @var RightsManager */
     private $rightsManager;
 
+    /** @var ParametersSerializer */
+    private $parametersSerializer;
+
     /**
      * DirectoryListener constructor.
      *
@@ -51,8 +55,10 @@ class DirectoryListener
      * @param SerializerProvider    $serializer
      * @param Crud                  $crud
      * @param ResourceManager       $resourceManager
-     * @param RightsManager         $rightsManager
      * @param ResourceActionManager $actionManager
+     * @param RightsManager         $rightsManager
+     * @param ParametersSerializer  $parametersSerializer
+    ) {
      */
     public function __construct(
         ObjectManager $om,
@@ -60,7 +66,8 @@ class DirectoryListener
         Crud $crud,
         ResourceManager $resourceManager,
         ResourceActionManager $actionManager,
-        RightsManager $rightsManager
+        RightsManager $rightsManager,
+        ParametersSerializer $parametersSerializer
     ) {
         $this->om = $om;
         $this->serializer = $serializer;
@@ -68,6 +75,7 @@ class DirectoryListener
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->actionManager = $actionManager;
+        $this->parametersSerializer = $parametersSerializer;
     }
 
     /**
@@ -77,8 +85,15 @@ class DirectoryListener
      */
     public function onLoad(LoadResourceEvent $event)
     {
+        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
+        $storageLock = isset($parameters['restrictions']['storage']) &&
+            isset($parameters['restrictions']['max_storage_reached']) &&
+            $parameters['restrictions']['storage'] &&
+            $parameters['restrictions']['max_storage_reached'];
+
         $event->setData([
             'directory' => $this->serializer->serialize($event->getResource()),
+            'storageLock' => $storageLock,
         ]);
 
         $event->stopPropagation();
