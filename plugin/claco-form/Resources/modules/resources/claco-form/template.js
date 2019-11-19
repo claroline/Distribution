@@ -9,7 +9,8 @@ function generateFromTemplate(template, fields, entry, includeMeta = false) {
 
   fields.map(f => {
     let replacedField
-    if (includeMeta || !f.isMetadata) {
+
+    if (includeMeta || !f.restrictions.isMetadata) {
       const fieldValue = entry.values ? entry.values[f.id] : ''
 
       if (fieldValue) {

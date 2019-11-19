@@ -163,7 +163,9 @@ class ClacoFormController
      *
      * Deletes entries
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function entriesDeleteAction(Request $request)
     {
@@ -473,7 +475,10 @@ class ClacoFormController
      *
      * Saves entry options for current user
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param User  $user
+     * @param Entry $entry
+     *
+     * @return JsonResponse
      */
     public function entryUserSaveAction(User $user, Entry $entry)
     {
@@ -785,7 +790,8 @@ class ClacoFormController
      *
      * Switches lock of entries
      *
-     * @param int $locked
+     * @param int     $locked
+     * @param Request $request
      *
      * @return JsonResponse
      */
