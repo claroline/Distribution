@@ -220,6 +220,7 @@ class WebResourceListener
     {
         $ds = DIRECTORY_SEPARATOR;
         $hash = $this->getHash($resource);
+        $fs = new Filesystem();
 
         $file->setSize($resource->getSize());
         $file->setName($resource->getName());
@@ -234,7 +235,7 @@ class WebResourceListener
           DIRECTORY_SEPARATOR.$file->getResourceNode()->getWorkspace()->getUuid().
           DIRECTORY_SEPARATOR.$file->getHashName();
 
-        copy($name, $newName);
+        $fs->copy($name, $newName);
 
         return $file;
     }
