@@ -304,7 +304,7 @@ abstract class AbstractCrudController extends AbstractApiController
         fclose($fp);
 
         return new BinaryFileResponse($tmpFile, 200, [
-            'Content-Disposition' => "attachment; filename={$this->getName()}.csv"
+            'Content-Disposition' => "attachment; filename={$this->getName()}.csv",
         ]);
     }
 
