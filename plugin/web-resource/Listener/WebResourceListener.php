@@ -218,7 +218,6 @@ class WebResourceListener
      */
     private function copy(File $resource, File $file)
     {
-        $ds = DIRECTORY_SEPARATOR;
         $hash = $this->getHash($resource);
         $fs = new Filesystem();
 
