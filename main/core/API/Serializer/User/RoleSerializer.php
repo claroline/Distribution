@@ -356,7 +356,6 @@ class RoleSerializer
                             }
                             $rights->setMask($mask);
                             $this->om->persist($rights);
-                        } else {
                         }
                     }
                 }
