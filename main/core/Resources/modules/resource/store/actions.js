@@ -123,6 +123,7 @@ actions.checkAccessCode = (resourceNode, code, embedded = false) => ({
     },
     success: (response, dispatch) => {
       dispatch(actions.unlockResource())
+      window.location.reload()
       dispatch(actions.fetchResource(resourceNode, embedded))
     },
     error: (response, status, dispatch) => dispatch(actions.fetchResource(resourceNode, embedded))
