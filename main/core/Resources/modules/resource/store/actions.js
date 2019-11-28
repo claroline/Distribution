@@ -121,12 +121,12 @@ actions.checkAccessCode = (resourceNode, code, embedded = false) => (dispatch) =
       method: 'POST',
       body: JSON.stringify({code: code})
     },
-    success: (response) => {
+    success: () => {
       dispatch(actions.setResourceLoaded(false))
       dispatch(actions.unlockResource())
       dispatch(actions.fetchResource(resourceNode, embedded))
     },
-    error: (response, status) => dispatch(actions.fetchResource(resourceNode, embedded))
+    error: () => dispatch(actions.fetchResource(resourceNode, embedded))
   }
 })
 
