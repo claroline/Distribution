@@ -1,7 +1,7 @@
 import times from 'lodash/times'
 
 import {trans} from '#/main/app/intl/translation'
-import {notBlank, number, chain} from '#/main/app/data/types/validators'
+import {notBlank, number} from '#/main/app/data/types/validators'
 import {makeId} from '#/main/core/scaffolding/id'
 
 import {emptyAnswer, CorrectedAnswer, Answerable} from '#/plugin/exo/items/utils'
