@@ -88,4 +88,37 @@ class LegacyController
             $this->routingHelper->workspacePath($id)
         );
     }
+
+    /**
+     * Pre SPA main home route.
+     *
+     * @EXT\Route("/apiv2/")
+     * @EXT\Route("/apiv2")
+     * @EXT\Method("GET")
+     *
+     * @return RedirectResponse
+     */
+    public function openPlatformHomeAction()
+    {
+        return new RedirectResponse(
+            // go to workspace path even if it does not exist to have correct 404 page
+            $this->routingHelper->indexPath().'#/home'
+        );
+    }
+
+    /**
+     * Pre SPA desktop home route.
+     *
+     * @EXT\Route("/desktop/tool/open/home")
+     * @EXT\Method("GET")
+     *
+     * @return RedirectResponse
+     */
+    public function openDesktopHomeAction()
+    {
+        return new RedirectResponse(
+            // go to workspace path even if it does not exist to have correct 404 page
+            $this->routingHelper->desktopPath('home')
+        );
+    }
 }
