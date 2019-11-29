@@ -101,7 +101,7 @@ class LegacyController
     public function openPlatformHomeAction()
     {
         return new RedirectResponse(
-            // go to workspace path even if it does not exist to have correct 404 page
+            // go to platform main home tab
             $this->routingHelper->indexPath().'#/home'
         );
     }
@@ -117,7 +117,7 @@ class LegacyController
     public function openDesktopHomeAction()
     {
         return new RedirectResponse(
-            // go to workspace path even if it does not exist to have correct 404 page
+            // go to desktop main home tab
             $this->routingHelper->desktopPath('home')
         );
     }
