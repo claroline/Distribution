@@ -170,6 +170,7 @@ UserMenu.propTypes = {
     id: T.string,
     name: T.string,
     username: T.string,
+    email: T.string,
     publicUrl: T.string,
     picture: T.shape({
       url: T.string.isRequired
@@ -253,6 +254,7 @@ HeaderUser.propTypes = {
     id: T.string,
     name: T.string,
     username: T.string,
+    email: T.string,
     publicUrl: T.string,
     picture: T.shape({
       url: T.string.isRequired
