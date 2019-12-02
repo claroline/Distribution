@@ -104,16 +104,9 @@ class UserVoter extends AbstractVoter
             return VoterInterface::ACCESS_GRANTED;
         }
 
-        //require dedicated unit test imo
+        // we can only add platform roles to users if we have that platform role
+        // require dedicated unit test imo
         if ($collection->isInstanceOf('Claroline\CoreBundle\Entity\Role')) {
-            // allow self registration to workspace (this feels very ugly but cannot find anywhere else to do it)
-            if (count(array_filter($collection->toArray(), function (Role $role) {
-                return Role::WS_ROLE === $role->getType() && $role->getWorkspace()->getSelfRegistration() && !$role->getWorkspace()->getRegistrationValidation();
-            })) === $collection->count()) {
-                return VoterInterface::ACCESS_GRANTED;
-            }
-
-            // we can only add platform roles to users if we have that platform role
             $currentRoles = array_map(function ($role) {
                 return $role->getRole();
             }, $token->getRoles());
@@ -129,7 +122,7 @@ class UserVoter extends AbstractVoter
         }
 
         //maybe do something more complicated later
-        return $this->isGranted(self::EDIT, $collection) ?
+        return $this->isGranted(self::EDIT, $user) ?
             VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
     }
 
