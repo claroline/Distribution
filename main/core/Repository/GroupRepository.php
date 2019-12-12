@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Repository;
 
-use Claroline\AppBundle\Persistence\MissingObjectException;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -266,8 +265,6 @@ class GroupRepository extends EntityRepository
      * @param array $names
      *
      * @return Group[]
-     *
-     * @throws MissingObjectException if one or more groups cannot be found
      */
     public function findByNames(array $names)
     {
