@@ -157,6 +157,22 @@ class HomeListener
         }
         ksort($orderedTabs);
 
+        if (0 === count($orderedTabs)) {	
+            $defaultTab = new HomeTab();	
+            $defaultTab->setType(HomeTab::TYPE_WORKSPACE);	
+            $defaultTab->setWorkspace($workspace);	
+            $this->om->persist($defaultTab);	
+            $defaultHomeTabConfig = new HomeTabConfig();	
+            $defaultHomeTabConfig->setHomeTab($defaultTab);	
+            $defaultHomeTabConfig->setName($this->translator->trans('home', [], 'platform'));	
+            $defaultHomeTabConfig->setLongTitle($this->translator->trans('home', [], 'platform'));	
+            $defaultHomeTabConfig->setLocked(true);	
+            $defaultHomeTabConfig->setTabOrder(0);	
+            $this->om->persist($defaultHomeTabConfig);	
+            $this->om->flush();	
+            $orderedTabs[] = $this->serializer->serialize($defaultTab);	
+        }
+        
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:home.html.twig', [
                 'workspace' => $workspace,
