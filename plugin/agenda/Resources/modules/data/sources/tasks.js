@@ -9,10 +9,10 @@ export default {
   parameters: {
     primaryAction: (task) => ({
       type: URL_BUTTON,
-      target: ['claro_workspace_open_tool', {
+      target: task.workspace ? ['claro_workspace_open_tool', {
         workspaceId: task.workspace.id,
         toolName: 'agenda_'
-      }]
+      }] : ['claro_desktop_open_tool', {toolName: 'agenda_'}]
     }),
     definition: [
       {
