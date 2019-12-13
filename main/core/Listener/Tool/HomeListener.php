@@ -172,7 +172,7 @@ class HomeListener
             $this->om->flush();	
             $orderedTabs[] = $this->serializer->serialize($defaultTab);	
         }
-        
+
         $content = $this->templating->render(
             'ClarolineCoreBundle:tool:home.html.twig', [
                 'workspace' => $workspace,
