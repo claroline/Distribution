@@ -50,6 +50,7 @@ actions.fetch = (toolName, context) => (dispatch) => {
         silent: true,
         url: context.url,
         success: (response, dispatch) => {
+          console.log('fetch tool')
           dispatch(actions.load(toolName, response, context))
           dispatch(actions.setLoaded(true))
           dispatch(menuActions.changeSection('tool'))
