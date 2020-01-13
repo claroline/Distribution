@@ -130,7 +130,7 @@ class ToolMain extends Component {
         )
     }
 
-    return this.pending
+    return this.pending.promise
   }
 
   componentWillUnmount() {
