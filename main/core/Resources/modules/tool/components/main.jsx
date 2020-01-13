@@ -85,10 +85,10 @@ class ToolMain extends Component {
       }
 
       if (this.props.toolName && prevProps.toolName && this.props.toolContext && prevProps.toolContext && (
-          this.props.toolName !== prevProps.toolName ||
-          this.props.toolContext.type !== prevProps.toolContext.type ||
-          (this.props.toolContext.data && prevProps.toolContext.data && this.props.toolContext.data.id !== prevProps.toolContext.data.id)
-        )) {
+        this.props.toolName !== prevProps.toolName ||
+        this.props.toolContext.type !== prevProps.toolContext.type ||
+        (this.props.toolContext.data && prevProps.toolContext.data && this.props.toolContext.data.id !== prevProps.toolContext.data.id)
+      )) {
         this.props.close(prevProps.toolName, prevProps.toolContext)
       }
     })
