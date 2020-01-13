@@ -41,6 +41,8 @@ const reducer = combineReducers({
         )
       }
 
+      console.log('action dispatched')
+
       return tabs
     },
     [makeInstanceAction(FORM_SUBMIT_SUCCESS, selectors.STORE_NAME + '.editor')]: (state, action) => action.updatedData,

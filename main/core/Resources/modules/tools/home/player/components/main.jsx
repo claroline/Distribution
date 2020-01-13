@@ -9,7 +9,7 @@ import {PlayerTab} from '#/main/core/tools/home/player/components/tab'
 
 const PlayerMain = props => {
   console.log(props.tabs)
-  
+
   return (
     <Routes
       path={props.path}
