@@ -7,51 +7,46 @@ import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {PlayerTab} from '#/main/core/tools/home/player/components/tab'
 
-const PlayerMain = props => {
-  console.log(props.tabs)
+const PlayerMain = props =>
+  <Routes
+    path={props.path}
+    redirect={[
+      props.tabs[0] && {from: '/', exact: true, to: '/' + props.tabs[0].slug }
+    ].filter(redirect => !!redirect)}
+    routes={[
+      {
+        path: '/:slug',
+        onEnter: (params = {}) => props.setCurrentTab(params.slug),
+        render: (routeProps) => {
+          if (props.tabs.find(tab => tab.slug === routeProps.match.params.slug)) {
+            const Player = (
+              <PlayerTab
+                path={props.path}
+                currentContext={props.currentContext}
+                tabs={props.tabs}
+                currentTabTitle={props.currentTabTitle}
+                currentTab={props.currentTab}
+                editable={props.editable}
+                administration={props.administration}
+                desktopAdmin={props.desktopAdmin}
+                widgets={props.widgets}
+                setAdministration={props.setAdministration}
+                fetchTabs={props.desktopAdmin ? props.fetchTabs : () => false}
+              />
+            )
 
-  return (
-    <Routes
-      path={props.path}
-      redirect={[
-        props.tabs[0] && {from: '/', exact: true, to: '/' + props.tabs[0].slug }
-      ].filter(redirect => !!redirect)}
-      routes={[
-        {
-          path: '/:slug',
-          onEnter: (params = {}) => props.setCurrentTab(params.slug),
-          render: (routeProps) => {
-            if (props.tabs.find(tab => tab.slug === routeProps.match.params.slug)) {
-              const Player = (
-                <PlayerTab
-                  path={props.path}
-                  currentContext={props.currentContext}
-                  tabs={props.tabs}
-                  currentTabTitle={props.currentTabTitle}
-                  currentTab={props.currentTab}
-                  editable={props.editable}
-                  administration={props.administration}
-                  desktopAdmin={props.desktopAdmin}
-                  widgets={props.widgets}
-                  setAdministration={props.setAdministration}
-                  fetchTabs={props.desktopAdmin ? props.fetchTabs : () => false}
-                />
-              )
-
-              return Player
-            }
-
-            // tab does not exist
-            // let's redirection open the first available
-            routeProps.history.replace(props.path)
-
-            return null
+            return Player
           }
+
+          // tab does not exist
+          // let's redirection open the first available
+          routeProps.history.replace(props.path)
+
+          return null
         }
-      ]}
-    />
-  )
-}
+      }
+    ]}
+  />
 
 PlayerMain.propTypes = {
   path: T.string.isRequired,
