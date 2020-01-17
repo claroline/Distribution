@@ -59,6 +59,7 @@
 .app-header-brand {
     height: 100%;
     text-align: center;
+    margin-right: auto; // will stack button bar to the rights (TODO : it will not work if brand is not displayed)
 
     // permit to center the img
     display: flex;
@@ -186,11 +187,11 @@
         line-height: 0;
 
         // for FA icons
-        color: #777777 !important;
+        color: @gray-light !important;
 
         // for SVG icons
-        fill: #777777 !important;
-        stroke: #777777 !important;
+        fill: @gray-light !important;
+        stroke: @gray-light !important;
 
         img {
             max-width: 100%;

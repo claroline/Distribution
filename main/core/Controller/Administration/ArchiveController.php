@@ -12,24 +12,14 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
-use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
+use Claroline\AppBundle\Controller\SecurityController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-/**
- * @DI\Tag("security.secure_service")
- * @SEC\PreAuthorize("canOpenAdminTool('main_settings')")
- */
-class ArchiveController extends Controller
+class ArchiveController extends SecurityController
 {
     /**
      * ArchiveController constructor.
-     *
-     * @DI\InjectParams({
-     *     "archivePath" = @DI\Inject("%claroline.param.archive_directory%")
-     * })
      */
     public function __construct($archivePath)
     {
@@ -44,6 +34,8 @@ class ArchiveController extends Controller
      */
     public function downloadAction($archive)
     {
+        $this->canOpenAdminTool('main_settings');
+
         $file = $this->archivePath.DIRECTORY_SEPARATOR.$archive;
 
         $response = new BinaryFileResponse($file, 200, ['Content-Disposition' => "attachment; filename={$file}"]);

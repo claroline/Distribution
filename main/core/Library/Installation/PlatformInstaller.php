@@ -15,7 +15,6 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
 use Claroline\InstallationBundle\Manager\InstallationManager;
 use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -24,8 +23,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * @DI\Service("claroline.installation.platform_installer")
- *
  * Entry point of platform installation/update, ensuring that minimal requirements
  * (e.g. existing database) are met before executing operations.
  */
@@ -41,15 +38,6 @@ class PlatformInstaller
     private $container;
     private $output;
 
-    /**
-     * @DI\InjectParams({
-     *     "opExecutor"         = @DI\Inject("claroline.installation.operation_executor"),
-     *     "baseInstaller"      = @DI\Inject("claroline.installation.manager"),
-     *     "pluginInstaller"    = @DI\Inject("claroline.plugin.installer"),
-     *     "refresher"          = @DI\Inject("claroline.installation.refresher"),
-     *     "container"          = @DI\Inject("service_container")
-     * })
-     */
     public function __construct(
         OperationExecutor $opExecutor,
         InstallationManager $baseInstaller,

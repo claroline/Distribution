@@ -11,7 +11,7 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 
 import {selectors as baseSelectors} from '#/main/core/administration/community/store'
-import {constants} from '#/main/core/administration/community/parameters/constants'
+import {constants as registrationConst} from '#/main/app/security/registration/constants'
 
 const Parameters = (props) => {
   const roleEnum = {}
@@ -45,7 +45,7 @@ const Parameters = (props) => {
                 name: 'registration.url',
                 type: 'url',
                 label: trans('registration_url'),
-                calculated: () => url(['claro_user_registration', {}, true]),
+                calculated: () => `${url(['claro_index', {}, true])}#/registration`,
                 required: true,
                 disabled: true
               }, {
@@ -69,6 +69,11 @@ const Parameters = (props) => {
                     type: 'boolean',
                     label: trans('allow_workspace_registration'),
                     displayed: props.parameters.registration && props.parameters.registration.self
+                  }, {
+                    name: 'registration.auto_logging',
+                    type: 'boolean',
+                    label: trans('auto_logging_after_registration'),
+                    displayed: props.parameters.registration && props.parameters.registration.self
                   }
                 ]
               }, {
@@ -77,9 +82,9 @@ const Parameters = (props) => {
                 label: trans('default_role'),
                 required: true,
                 options: {
-                  noEmpty: true,
+                  choices: roleEnum,
                   condensed: true,
-                  choices: roleEnum
+                  noEmpty: true
                 }
               }, {
                 name: 'registration.validation',
@@ -89,7 +94,7 @@ const Parameters = (props) => {
                 options: {
                   noEmpty: true,
                   condensed: true,
-                  choices: constants.registrationValidationTypes
+                  choices: registrationConst.registrationValidationTypes
                 }
               }
             ]
@@ -187,22 +192,6 @@ const Parameters = (props) => {
                     return choices
                   }, {})
                 }
-              }
-            ]
-          }, {
-            id: 'anonymous',
-            icon: 'fa fa-fw fa-user-secret',
-            title: trans('anonymous_users'),
-            displayed: false, // FIXME
-            fields: [
-              {
-                name: 'security.form_captcha',
-                type: 'boolean',
-                label: trans('display_captcha')
-              }, {
-                name: 'security.anonymous_public_profile',
-                type: 'boolean',
-                label: trans('show_profile_for_anonymous')
               }
             ]
           }, {

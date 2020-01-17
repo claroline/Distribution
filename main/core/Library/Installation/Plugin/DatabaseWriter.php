@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Entity\DataSource;
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
-use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Template\TemplateType;
@@ -33,7 +32,6 @@ use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\ToolMaskDecoderManager;
 use Claroline\CoreBundle\Repository\PluginRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Filesystem\Filesystem;
@@ -42,8 +40,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  * This class is used to save/delete a plugin and its possible dependencies (like
  * custom resource types) in the database.
- *
- * @DI\Service("claroline.plugin.recorder_database_writer")
  *
  * @todo break me into multiple writers (one for each config section).
  */
@@ -65,16 +61,6 @@ class DatabaseWriter
     /**
      * Constructor.
      *
-     * @DI\InjectParams({
-     *     "em"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "mm"              = @DI\Inject("claroline.manager.mask_manager"),
-     *     "fileSystem"      = @DI\Inject("filesystem"),
-     *     "kernel"          = @DI\Inject("kernel"),
-     *     "toolManager"     = @DI\Inject("claroline.manager.tool_manager"),
-     *     "toolMaskManager" = @DI\Inject("claroline.manager.tool_mask_decoder_manager"),
-     *     "iconSetManager"  = @DI\Inject("claroline.manager.icon_set_manager")
-     * })
-     *
      * @param ObjectManager          $em
      * @param Filesystem             $fileSystem
      * @param KernelInterface        $kernel
@@ -85,9 +71,9 @@ class DatabaseWriter
      */
     public function __construct(
         ObjectManager $em,
+        MaskManager $mm,
         Filesystem $fileSystem,
         KernelInterface $kernel,
-        MaskManager $mm,
         ToolManager $toolManager,
         ToolMaskDecoderManager $toolMaskManager,
         IconSetManager $iconSetManager
@@ -239,6 +225,13 @@ class DatabaseWriter
         foreach ($processedConfiguration['templates'] as $templateType) {
             $this->createTemplateType($templateType, $plugin);
         }
+        $mimeTypes = [];
+
+        foreach ($processedConfiguration['resource_icons'] as $iconConfig) {
+            $mimeTypes[$iconConfig['name']] = $iconConfig['mime_types'];
+        }
+        $this->iconSetManager->setLogger($this->logger);
+        $this->iconSetManager->generateIconSets($pluginBundle->getResourcesIconsSetsFolder(), $mimeTypes);
     }
 
     /**
@@ -331,6 +324,14 @@ class DatabaseWriter
         foreach ($processedConfiguration['templates'] as $templateType) {
             $this->updateTemplateType($templateType, $plugin);
         }
+
+        $mimeTypes = [];
+
+        foreach ($processedConfiguration['resource_icons'] as $iconConfig) {
+            $mimeTypes[$iconConfig['name']] = $iconConfig['mime_types'];
+        }
+        $this->iconSetManager->setLogger($this->logger);
+        $this->iconSetManager->generateIconSets($pluginBundle->getResourcesIconsSetsFolder(), $mimeTypes);
     }
 
     /**
@@ -390,8 +391,6 @@ class DatabaseWriter
 
         $this->em->flush();
 
-        $this->updateIcons($resourceConfiguration, $resourceType, $pluginBundle);
-
         return $resourceType;
     }
 
@@ -431,86 +430,6 @@ class DatabaseWriter
         } else {
             return $this->persistWidget($widgetConfiguration, $widget);
         }
-    }
-
-    /**
-     * @param array                 $resource
-     * @param ResourceType          $resourceType
-     * @param PluginBundleInterface $pluginBundle
-     */
-    private function persistIcons(array $resource, ResourceType $resourceType, PluginBundleInterface $pluginBundle)
-    {
-        $resourceIcon = new ResourceIcon();
-        $resourceIcon->setMimeType('custom/'.$resourceType->getName());
-        $ds = DIRECTORY_SEPARATOR;
-
-        if (isset($resource['icon'])) {
-            $webBundleDir = "{$this->kernelRootDir}{$ds}..{$ds}web{$ds}bundles";
-            $webPluginDir = "{$webBundleDir}{$ds}{$pluginBundle->getAssetsFolder()}";
-            $webPluginImgDir = "{$webPluginDir}{$ds}images";
-            $webPluginIcoDir = "{$webPluginImgDir}{$ds}icons";
-            $this->fileSystem->mkdir([$webBundleDir, $webPluginDir, $webPluginImgDir, $webPluginIcoDir]);
-            $this->fileSystem->copy(
-                "{$pluginBundle->getImgFolder()}{$ds}{$resource['icon']}",
-                "{$webPluginIcoDir}{$ds}{$resource['icon']}"
-            );
-            $resourceIcon->setRelativeUrl(
-                "bundles/{$pluginBundle->getAssetsFolder()}/images/icons/{$resource['icon']}"
-            );
-        } else {
-            $defaultIcon = $this->em
-                ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
-                ->findOneBy(['mimeType' => 'custom/default']);
-            $resourceIcon->setRelativeUrl($defaultIcon->getRelativeUrl());
-        }
-
-        $resourceIcon->setUuid(uniqid('', true));
-        $resourceIcon->setShortcut(false);
-        $this->em->persist($resourceIcon);
-        $this->em->flush(); // icon set manager requires the new icon to be flushed (it expects an id)
-
-        // Also add the new resource type icon to default resource icon set
-        $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet($resourceIcon);
-    }
-
-    /**
-     * @param array                 $resource
-     * @param ResourceType          $resourceType
-     * @param PluginBundleInterface $pluginBundle
-     */
-    private function updateIcons(array $resource, ResourceType $resourceType, PluginBundleInterface $pluginBundle)
-    {
-        $resourceIcon = $this->em
-            ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
-            ->findOneBy(['mimeType' => 'custom/'.$resourceType->getName()]);
-        $isNew = false;
-        if (null === $resourceIcon) {
-            $resourceIcon = new ResourceIcon();
-            $resourceIcon->setUuid(uniqid('', true));
-            $resourceIcon->setMimeType('custom/'.$resourceType->getName());
-            $isNew = true;
-        }
-
-        if (isset($resource['icon'])) {
-            $newRelativeUrl = "bundles/{$pluginBundle->getAssetsFolder()}/images/icons/{$resource['icon']}";
-        } else {
-            $defaultIcon = $this->em
-                ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
-                ->findOneBy(['mimeType' => 'custom/default']);
-            $newRelativeUrl = $defaultIcon->getRelativeUrl();
-        }
-        // If icon is new, create it and persist it to db
-        if ($isNew) {
-            $resourceIcon->setRelativeUrl($newRelativeUrl);
-            $resourceIcon->setShortcut(false);
-            $this->em->persist($resourceIcon);
-            $this->em->flush(); // icon set manager requires the new icon to be flushed (it expects an id)
-        }
-        // Also add/update the resource type icon to default resource icon set
-        $this->iconSetManager->addOrUpdateIconItemToDefaultResourceIconSet(
-            $resourceIcon,
-            $newRelativeUrl
-        );
     }
 
     /**
@@ -592,7 +511,6 @@ class DatabaseWriter
         }
 
         $this->setResourceTypeDefaultMask($resourceConfiguration['default_rights'], $resourceType);
-        $this->persistIcons($resourceConfiguration, $resourceType, $pluginBundle);
 
         return $resourceType;
     }

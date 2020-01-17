@@ -49,6 +49,11 @@ class PostSerializer
         $this->nodeSerializer = $nodeSerializer;
     }
 
+    public function getName()
+    {
+        return 'blog_post';
+    }
+
     /**
      * @return string
      */
@@ -228,7 +233,7 @@ class PostSerializer
         ]);
         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
 
-        return implode(', ', $event->getResponse());
+        return is_array($event->getResponse()) ? implode(', ', $event->getResponse()) : null;
     }
 
     /**

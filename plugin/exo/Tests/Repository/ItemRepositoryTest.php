@@ -32,11 +32,11 @@ class ItemRepositoryTest extends TransactionalTestCase
      */
     private $questions = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->om = $this->client->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
         $this->persist = new Persister($this->om);
         $this->repo = $this->om->getRepository('UJMExoBundle:Item\Item');
 

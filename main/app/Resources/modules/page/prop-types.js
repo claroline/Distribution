@@ -18,7 +18,6 @@ const PageSection = {
 const PageSimple = {
   propTypes: {
     className: T.string,
-    styles: T.arrayOf(T.string),
     size: T.oneOf(['sm', 'lg']),
 
     /**
@@ -46,13 +45,20 @@ const PageSimple = {
       target: T.oneOfType([T.string, T.array])
     })),
 
-    children: T.node.isRequired
+    children: T.node.isRequired,
+
+    /**
+     * Custom data used for document head.
+     */
+    header: T.shape({
+      title: T.string,
+      description: T.string
+    })
   },
   defaultProps: {
     embedded: false,
     fullscreen: false,
-    showBreadcrumb: true,
-    styles: []
+    showBreadcrumb: true
   }
 }
 
@@ -117,7 +123,12 @@ const PageFull = {
       T.shape(
         PromisedAction.propTypes
       )
-    ])
+    ]),
+
+    header: T.shape({
+      title: T.string,
+      description: T.string
+    })
   }),
   defaultProps: merge({}, PageSimple.defaultProps, {
     showHeader: true,

@@ -1,3 +1,6 @@
+import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+
 import {makeInstanceAction} from '#/main/app/store/actions'
 import {combineReducers, makeReducer} from '#/main/app/store/reducer'
 
@@ -29,15 +32,30 @@ const reducer = combineReducers({
   }),
 
   tabs: makeReducer([], {
-    [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => action.toolData.tabs,
+    [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => {
+      const tabs = [].concat(action.toolData.tabs || [])
+
+      if (isEmpty(tabs) || -1 === tabs.findIndex(tab => !get(tab, 'restrictions.hidden', false))) {
+        tabs.push(
+          selectors.defaultTab({tool: {currentContext: action.context}})
+        )
+      }
+
+      return tabs
+    },
     [makeInstanceAction(FORM_SUBMIT_SUCCESS, selectors.STORE_NAME + '.editor')]: (state, action) => action.updatedData,
-    [TABS_LOAD]: (state, action) => action.tabs
-  }),
+    [TABS_LOAD]: (state, action) => {
+      const tabs = [].concat(action.toolData.tabs || [])
 
-  roles: makeReducer([], {
-    [makeInstanceAction(TOOL_LOAD, selectors.STORE_NAME)]: (state, action) => action.toolData.roles || []
-  }),
+      if (isEmpty(tabs) || -1 === tabs.findIndex(tab => !get(tab, 'restrictions.hidden', false))) {
+        tabs.push(
+          selectors.defaultTab({tool: {currentContext: action.context}})
+        )
+      }
 
+      return tabs
+    }
+  }),
   editor: editorReducer
 })
 

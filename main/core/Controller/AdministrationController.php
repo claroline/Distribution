@@ -15,7 +15,6 @@ use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Event\Log\LogAdminToolReadEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,13 +42,6 @@ class AdministrationController
 
     /**
      * AdministrationController constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization"   = @DI\Inject("security.authorization_checker"),
-     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "toolManager"     = @DI\Inject("claroline.manager.tool_manager")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param TokenStorageInterface         $tokenStorage
@@ -86,10 +78,10 @@ class AdministrationController
         }
 
         return new JsonResponse([
-            'tools' => array_values(array_map(function (AdminTool $orderedTool) {
+            'tools' => array_values(array_map(function (AdminTool $tool) {
                 return [
-                    'icon' => $orderedTool->getClass(),
-                    'name' => $orderedTool->getName(),
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
                 ];
             }, $tools)),
         ]);
@@ -137,10 +129,10 @@ class AdministrationController
         $tools = $this->toolManager->getAdminToolsByRoles($this->tokenStorage->getToken()->getRoles());
 
         return new JsonResponse([
-            'tools' => array_values(array_map(function (AdminTool $orderedTool) {
+            'tools' => array_values(array_map(function (AdminTool $tool) {
                 return [
-                    'icon' => $orderedTool->getClass(),
-                    'name' => $orderedTool->getName(),
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
                 ];
             }, $tools)),
         ]);

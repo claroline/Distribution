@@ -86,7 +86,7 @@ class WorkspaceRestrictions extends Component {
                 />
               }
 
-              {!this.props.authenticated && this.props.errors.selfRegistration &&
+              {!this.props.authenticated &&
                 <Button
                   style={{marginTop: 20}}
                   className="btn btn-block btn-emphasis"
@@ -233,6 +233,7 @@ WorkspaceRestrictions.propTypes = {
   managed: T.bool.isRequired,
   errors: T.shape({
     noRights: T.bool.isRequired,
+    registered: T.bool,
     pendingRegistration: T.bool,
     selfRegistration: T.bool,
     locked: T.bool,

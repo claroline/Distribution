@@ -2,13 +2,9 @@
 
 namespace UJM\ExoBundle\Manager\Attempt;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 
-/**
- * @DI\Service("ujm_exo.manager.score")
- */
 class ScoreManager
 {
     /**
@@ -55,7 +51,9 @@ class ScoreManager
                         0
                     );
 
-                    $score = ($score / $answersTotal) * $scoreRule['total'];
+                    if ($answersTotal) {
+                        $score = ($score / $answersTotal) * $scoreRule['total'];
+                    }
                 }
 
                 break;

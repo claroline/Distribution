@@ -17,13 +17,9 @@ use Doctrine\Common\Persistence\ObjectManagerDecorator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\UnitOfWork;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- * @DI\Service("claroline.persistence.object_manager")
- */
 class ObjectManager extends ObjectManagerDecorator
 {
     use LoggableTrait;
@@ -40,11 +36,6 @@ class ObjectManager extends ObjectManagerDecorator
 
     /**
      * ObjectManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"     = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "logger" = @DI\Inject("logger")
-     * })
      *
      * @param ObjectManagerInterface $om
      */
@@ -364,11 +355,18 @@ class ObjectManager extends ObjectManagerDecorator
 
         foreach ($stack as $call) {
             if ('endFlushSuite' === $call['function'] || 'startFlushSuite' === $call['function']) {
-                $this->log('Function "'.$call['function'].'" was called from file '.$call['file'].' on line '.$call['line'].'.', LogLevel::DEBUG);
+                if (method_exists($this, 'log')) {
+                    $this->log('Function "'.$call['function'].'" was called from file '.$call['file'].' on line '.$call['line'].'.', LogLevel::DEBUG);
+                } else {
+                    echo 'Function "'.$call['function'].'" was called from file '.$call['file'].' on line '.$call['line'].'.';
+                }
             }
         }
 
-        $this->log('Flush level: '.$this->flushSuiteLevel.'.');
+        if (method_exists($this, 'log')) {
+            $this->log('Flush level: '.$this->flushSuiteLevel.'.');
+        } else {
+        }
     }
 
     public function save($object, $options = [], $log = true)

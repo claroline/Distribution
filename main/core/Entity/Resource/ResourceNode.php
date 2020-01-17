@@ -19,6 +19,7 @@ use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
 use Claroline\AppBundle\Entity\Restriction\AccessibleFrom;
 use Claroline\AppBundle\Entity\Restriction\AccessibleUntil;
+use Claroline\AppBundle\Entity\Restriction\Hidden;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\PreFlushEventArgs;
@@ -49,6 +50,7 @@ class ResourceNode
     use Creator;
 
     // restrictions
+    use Hidden;
     use AccessibleFrom;
     use AccessibleUntil;
 
@@ -84,21 +86,6 @@ class ResourceNode
     private $resourceType;
 
     /**
-     * @var ResourceIcon
-     *
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceIcon",
-     *     cascade={"persist"}
-     * )
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     *
-     * @deprecated
-     *
-     * @todo remove me with migration (was used to store thumbnails in some cases)
-     */
-    private $icon;
-
-    /**
      * Display resource icon/evaluation when the resource is rendered.
      *
      * @var bool
@@ -114,16 +101,6 @@ class ResourceNode
      * @ORM\Column()
      */
     private $name;
-
-    /**
-     * Permits to hide resources.
-     * For now it's only used in widgets. It should be think more globally.
-     *
-     * @ORM\Column(type="boolean")
-     *
-     * @var bool
-     */
-    private $hidden = false;
 
     /**
      * @var ResourceNode
@@ -321,16 +298,6 @@ class ResourceNode
         $this->comments = new ArrayCollection();
     }
 
-    public function isHidden()
-    {
-        return $this->hidden;
-    }
-
-    public function setHidden($hidden)
-    {
-        $this->hidden = $hidden;
-    }
-
     /**
      * Returns the resource license.
      *
@@ -416,6 +383,21 @@ class ResourceNode
     }
 
     /**
+     * Unmapped field so we don't have to force flush and fetch the database at node copy for the momoent.
+     *
+     * @param ResourceType
+     */
+    public function setResource(AbstractResource $resource)
+    {
+        $this->resource = $resource;
+    }
+
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
      * Returns the children resource instances.
      *
      * @return ArrayCollection|ResourceNode[]
@@ -443,30 +425,6 @@ class ResourceNode
     public function getWorkspace()
     {
         return $this->workspace;
-    }
-
-    /**
-     * Returns the resource icon.
-     *
-     * @return ResourceIcon
-     *
-     * @deprecated
-     */
-    public function getIcon()
-    {
-        return $this->icon;
-    }
-
-    /**
-     * Sets the resource icon.
-     *
-     * @param ResourceIcon $icon
-     *
-     * @deprecated
-     */
-    public function setIcon(ResourceIcon $icon = null)
-    {
-        $this->icon = $icon;
     }
 
     public function getShowIcon()

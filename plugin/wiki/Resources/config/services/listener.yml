@@ -7,7 +7,7 @@ services:
     Icap\WikiBundle\Listener\Resource\WikiListener:
        arguments:
           - '@security.token_storage'
-          - '@claroline.persistence.object_manager'
+          - '@Claroline\AppBundle\Persistence\ObjectManager'
           - '@Icap\WikiBundle\Serializer\WikiSerializer'
           - '@Icap\WikiBundle\Manager\WikiManager'
           - '@Icap\WikiBundle\Manager\SectionManager'
@@ -62,3 +62,10 @@ services:
           - '@Icap\WikiBundle\Manager\ContributionManager'
        tags:
           - { name: kernel.event_listener, event: merge_users, method: onMerge }
+
+    Icap\WikiBundle\Listener\Entity\ContributionListener:
+       public: true
+       #if not public doctrine wont work
+       tags: ['doctrine.entity_listener']
+       arguments:
+          - '@Icap\NotificationBundle\Manager\NotificationManager'

@@ -12,11 +12,8 @@
 namespace Claroline\CoreBundle\Library\Configuration;
 
 use Claroline\AppBundle\API\Utils\ArrayUtils;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.config.platform_config_handler")
- *
  * Service used for accessing or modifying the platform configuration parameters.
  */
 class PlatformConfigurationHandler
@@ -26,10 +23,6 @@ class PlatformConfigurationHandler
 
     /**
      * PlatformConfigurationHandler constructor.
-     *
-     * @DI\InjectParams({
-     *     "configFile" = @DI\Inject("%claroline.param.platform_options%")
-     * })
      *
      * @param string $configFile
      */
@@ -101,16 +94,12 @@ class PlatformConfigurationHandler
         if (!is_writable($this->configFile)) {
             throw new \RuntimeException('Platform options is not writable');
         }
-        $this->parameters[$parameter] = $value;
+
+        ArrayUtils::set($this->parameters, $parameter, $value);
 
         ksort($this->parameters);
         $parameters = json_encode($this->parameters, JSON_PRETTY_PRINT);
         file_put_contents($this->configFile, $parameters);
-    }
-
-    public function isRedirectOption($option)
-    {
-        return $this->getParameter('authentication.redirect_after_login_option') === $option;
     }
 
     public function addDefaultParameters(ParameterProviderInterface $config)
@@ -133,6 +122,11 @@ class PlatformConfigurationHandler
         $this->parameters = array_merge($newDefault, $this->parameters);
     }
 
+    public function getDefaultParameters()
+    {
+        return $this->parameters;
+    }
+
     protected function mergeParameters()
     {
         $defaults = new PlatformDefaults();
@@ -144,33 +138,9 @@ class PlatformConfigurationHandler
         $parameters = json_decode(file_get_contents($this->configFile), true);
 
         if ($parameters) {
-            return $this->arrayMerge($parameters, $defaults->getDefaultParameters());
+            return array_replace_recursive($defaults->getDefaultParameters(), $parameters);
         }
 
         return $this->parameters;
-    }
-
-    public function getDefaultParameters()
-    {
-        return $this->parameters;
-    }
-
-    public function arrayMerge(array $array1, array $array2)
-    {
-        foreach ($array2 as $key => $value) {
-            if (!array_key_exists($key, $array1) && !in_array($value, $array1)) {
-                $array1[$key] = $value;
-            } else {
-                if (is_array($value)) {
-                    if (array_key_exists($key, $array1)) {
-                        $array1[$key] = $this->arrayMerge($array1[$key], $array2[$key]);
-                    } else {
-                        $array1[$key] = $value;
-                    }
-                }
-            }
-        }
-
-        return $array1;
     }
 }

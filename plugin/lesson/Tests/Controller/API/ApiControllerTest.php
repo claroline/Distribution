@@ -12,12 +12,12 @@ class ApiControllerTest extends TransactionalTestCase
     /** @var LessonChapterManager */
     private $chapterManager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $container = $this->client->getContainer();
         $this->chapterManager = $container->get('Icap\LessonBundle\Manager\ChapterManager');
-        $this->om = $container->get('claroline.persistence.object_manager');
+        $this->om = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $this->persist = new Persister($this->om);
     }
 

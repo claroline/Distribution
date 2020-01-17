@@ -13,12 +13,10 @@ namespace Claroline\CoreBundle\Listener\Tool;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
-use Claroline\AppBundle\API\ToolsOptions;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -70,8 +68,6 @@ class ParametersListener
     }
 
     /**
-     * @DI\Observe("open_tool_desktop_parameters")
-     *
      * @param DisplayToolEvent $event
      */
     public function onDisplayDesktopParameters(DisplayToolEvent $event)
@@ -87,15 +83,7 @@ class ParametersListener
             ['isDisplayableInDesktop' => true],
             ['property' => 'name', 'direction' => 1]
         );
-        $tools = [];
 
-        foreach ($desktopTools as $desktopTool) {
-            $toolName = $desktopTool->getName();
-
-            if (!in_array($toolName, ToolsOptions::EXCLUDED_TOOLS)) {
-                $tools[] = $desktopTool;
-            }
-        }
         $orderedTools = $this->toolManager->computeUserOrderedTools($user, $toolsRolesConfig);
         $toolsConfig = [];
 
@@ -110,7 +98,7 @@ class ParametersListener
         $event->setData([
             'tools' => array_map(function (Tool $tool) {
                 return $this->serializer->serialize($tool);
-            }, $tools),
+            }, $desktopTools),
             'toolsConfig' => 0 < count($toolsConfig) ? $toolsConfig : new \stdClass(),
         ]);
     }

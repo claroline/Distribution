@@ -32,31 +32,47 @@ class ArrayUtils
         }
     }
 
+    public static function remove(array &$object, $keys)
+    {
+        $keys = explode('.', $keys);
+        $depth = count($keys);
+        $key = array_shift($keys);
+
+        if (1 === $depth) {
+            unset($object[$key]);
+        } else {
+            if (isset($object[$key])) {
+                static::remove($object[$key], implode('.', $keys));
+            }
+        }
+    }
+
     /**
      * This is more or less the equivalent of lodash get for array.
      *
-     * @param array  $object - the array
-     * @param string $keys   - the property path
+     * @param array  $object  - the array
+     * @param string $keys    - the property path
+     * @param mixed  $default
      *
      * @return mixed
      *
      * @throws \Exception
      */
-    public static function get(array $object, $keys)
+    public static function get(array $object, $keys, $default = null)
     {
         $parts = explode('.', $keys);
         $key = array_shift($parts);
 
         if (isset($object[$key])) {
             if (!empty($parts) && is_array($object[$key])) {
-                return static::get($object[$key], implode('.', $parts));
+                return static::get($object[$key], implode('.', $parts), $default);
             }
 
             return $object[$key];
         }
 
         if (array_key_exists($key, $object)) {
-            return null;
+            return $default;
         }
 
         throw new \Exception("Key `{$keys}` doesn't exist for array keys [".implode(',', array_keys($object)).']');
@@ -87,7 +103,16 @@ class ArrayUtils
 
         foreach ($keys as $key) {
             if (is_array($object[$key]) && is_string($key)) {
-                $titles = static::getPropertiesName($object[$key], $titles, is_int($key) ? null : $key);
+                if (is_int($key)) {
+                    $newPos = null;
+                } else {
+                    if (null === $currentPos) {
+                        $newPos = $key;
+                    } else {
+                        $newPos = $currentPos.'.'.$key;
+                    }
+                }
+                $titles = static::getPropertiesName($object[$key], $titles, is_int($key) ? null : $newPos);
             } else {
                 if (is_string($key)) {
                     $displayName = $currentPos ? $currentPos.'.'.$key : $key;

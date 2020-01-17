@@ -58,7 +58,6 @@ final class Options
     const GENERATE_UUID = 'generate_uuid';
     const FORCE_FLUSH = 'force_flush';
 
-    const FORCE_RANDOM_PUBLIC_URL = 'force_random_public_url';
     const ADD_PERSONAL_WORKSPACE = 'add_personal_workspace';
     const NO_PERSONAL_WORKSPACE = 'no_personal_workspace';
     const DESERIALIZE_FACET = 'deserialize_facet';
@@ -78,7 +77,6 @@ final class Options
     const SERIALIZE_ROLES = 'serialize_roles';
     const SERIALIZE_COUNT_USER = 'serialize_count_user';
     const SERIALIZE_ROLE_TOOLS_RIGHTS = 'serialize_role_tools_rights';
-    const SERIALIZE_ROLE_DESKTOP_TOOLS = 'serialize_role_desktop_tools';
 
     //for serialize, do we want to (de)serialize objects in subtrees ?
     const DEEP_SERIALIZE = 'deep_serialize';
@@ -93,6 +91,7 @@ final class Options
     //for resource node
     const SKIP_RESOURCE_NOTIFICATION = 'skip_resource_notification';
     const SERIALIZE_RESOURCE = 'serialize_resource';
+    const IGNORE_RIGHTS = 'ignore_rights';
     const SERIALIZE_TOOL = 'serialize_tool';
 
     const CRUD_CREATE = 'crud_create';
@@ -100,7 +99,6 @@ final class Options
     const IGNORE_CRUD_POST_EVENT = 'ignore_crud_post_event';
 
     //finder options
-    const SQL_ARRAY_MAP = 'sql_array_map';
     const SQL_QUERY = 'sql_query';
 
     //transfer_options

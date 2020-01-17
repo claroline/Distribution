@@ -5,6 +5,7 @@ namespace HeVinci\CompetencyBundle\Util;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -24,11 +25,11 @@ abstract class RepositoryTestCase extends TransactionalTestCase
     protected $om;
     private $defaults = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $container = $this->client->getContainer();
-        $this->om = $container->get('claroline.persistence.object_manager');
+        $this->om = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
     }
 
     protected function persistCompetency($name, Competency $parent = null, Scale $scale = null)
@@ -129,6 +130,13 @@ abstract class RepositoryTestCase extends TransactionalTestCase
             $this->defaults['workspace'] = $workspace;
         }
 
+        if (!isset($this->defaults['activity_type'])) {
+            $type = new ResourceType();
+            $type->setName('activity_type');
+            $type->setClass('path/to/class');
+            $this->om->persist($type);
+            $this->defaults['activity_type'] = $type;
+        }
         $node = new ResourceNode();
         $node->setName($name);
         $node->setCreator($this->defaults['user']);

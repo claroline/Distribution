@@ -6,7 +6,6 @@ import times from 'lodash/times'
 
 import {LinkButton} from '#/main/app/buttons/link'
 import {now} from '#/main/app/intl/date'
-
 import {route} from '#/plugin/agenda/tools/agenda/routing'
 
 const Day = props =>
@@ -15,7 +14,7 @@ const Day = props =>
       {props.current.format('ddd')}
 
       <LinkButton
-        className="day-number"
+        className="day-number btn-link"
         target={route(props.path, 'day', props.current)}
       >
         {props.current.format('D')}

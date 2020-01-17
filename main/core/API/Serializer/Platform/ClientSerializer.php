@@ -109,6 +109,11 @@ class ClientSerializer
         $this->oauthManager = $oauthManager;
     }
 
+    public function getName()
+    {
+        return 'client';
+    }
+
     /**
      * Serializes required information for FrontEnd rendering.
      */
@@ -122,6 +127,17 @@ class ClientSerializer
                 'url' => $this->config->getParameter('logo'),
             ]);
         }
+        $usersLimitReached = false;
+
+        if ($this->config->getParameter('restrictions.users') && $this->config->getParameter('restrictions.max_users')) {
+            $maxUsers = $this->config->getParameter('restrictions.max_users');
+            $userRepo = $this->om->getRepository(User::class);
+            $usersCount = $userRepo->countAllEnabledUsers();
+
+            if ($usersCount >= $maxUsers) {
+                $usersLimitReached = true;
+            }
+        }
 
         $data = [
             'logo' => $logo ? $logo->getUrl() : null,
@@ -131,9 +147,9 @@ class ClientSerializer
             'version' => $this->versionManager->getDistributionVersion(),
             'environment' => $this->env,
             'helpUrl' => $this->config->getParameter('help_url'),
-            'selfRegistration' => $this->config->getParameter('registration.self'),
+            'selfRegistration' => $this->config->getParameter('registration.self') && !$usersLimitReached,
             'asset' => $this->assets->getUrl(''),
-            'server' => [
+            'server' => [ // TODO : maybe only expose final URL
                 'protocol' => $request->isSecure() || $this->config->getParameter('ssl_enabled') ? 'https' : 'http',
                 'host' => $this->config->getParameter('domain_name') ? $this->config->getParameter('domain_name') : $request->getHost(),
                 'path' => $request->getBasePath(),
@@ -143,6 +159,7 @@ class ClientSerializer
             'display' => [
                 'breadcrumb' => $this->config->getParameter('display.breadcrumb'),
             ],
+            'restrictions' => $this->config->getParameter('restrictions'),
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
             ],
@@ -177,7 +194,7 @@ class ClientSerializer
 
         $event = new GenericDataEvent();
         $this->eventDispatcher->dispatch('claroline_populate_client_config', $event);
-        $data = array_merge($data, $event->getData() ?? []);
+        $data = array_merge($data, $event->getResponse() ?? []);
 
         return $data;
     }
@@ -192,17 +209,18 @@ class ClientSerializer
         }
 
         // retrieve the current platform locale
-        $locale = $this->config->getParameter('locale_language');
+        $defaultLocale = $this->config->getParameter('locales.default');
         if ($currentUser instanceof User) {
             // Get the locale for the logged user
             $locale = $currentUser->getLocale();
-        } elseif (!empty($this->config->getParameter('locales')) && array_key_exists($request->getLocale(), $this->config->getParameter('locales'))) {
+        } elseif (!empty($this->config->getParameter('locales.available')) && array_key_exists($request->getLocale(), $this->config->getParameter('locales.available'))) {
             // The current request locale is implemented so we use it
             $locale = $request->getLocale();
         }
 
         return [
-            'current' => $locale,
+            'default' => $defaultLocale,
+            'current' => $locale ?? $defaultLocale,
             'available' => $this->config->getParameter('locales.available'),
         ];
     }

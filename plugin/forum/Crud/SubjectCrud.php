@@ -4,51 +4,58 @@ namespace Claroline\ForumBundle\Crud;
 
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\ForumBundle\Entity\Forum;
+use Claroline\ForumBundle\Entity\Subject;
+use Claroline\ForumBundle\Entity\Validation\User;
 use Claroline\MessageBundle\Manager\MessageManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @DI\Service("claroline.crud.forum_subject")
- * @DI\Tag("claroline.crud")
- */
 class SubjectCrud
 {
     use PermissionCheckerTrait;
 
+    /** @var ObjectManager */
+    private $om;
+
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
+    /** @var MessageManager */
+    private $messageManager;
+
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
+
     /**
      * ForumSerializer constructor.
      *
-     * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "tokenStorage" = @DI\Inject("security.token_storage"),
-     *     "messageManager" = @DI\Inject("claroline.manager.message_manager")
-     * })
-     *
-     * @param FinderProvider $finder
+     * @param ObjectManager                 $om
+     * @param TokenStorageInterface         $tokenStorage
+     * @param MessageManager                $messageManager
+     * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
         ObjectManager $om,
         TokenStorageInterface $tokenStorage,
-        MessageManager $messageManager
+        MessageManager $messageManager,
+        AuthorizationCheckerInterface $authorization
     ) {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->messageManager = $messageManager;
+        $this->authorization = $authorization;
     }
 
     /**
-     * @DI\Observe("crud_pre_create_object_claroline_forumbundle_entity_subject")
-     *
      * @param CreateEvent $event
      *
-     * @return ResourceNode
+     * @return Subject
      */
     public function preCreate(CreateEvent $event)
     {
+        /** @var Subject $subject */
         $subject = $event->getObject();
         $forum = $subject->getForum();
 

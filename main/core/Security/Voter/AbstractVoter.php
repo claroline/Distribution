@@ -17,15 +17,12 @@ use Claroline\AppBundle\Security\Voter\VoterInterface as ClarolineVoterInterface
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 /**
  *  This is the voter we use in the API. It's able to handle the ObjectCollection.
- *
- * @DI\Service()
  */
 abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
 {
@@ -44,20 +41,6 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
 
     /** @var ContainerInterface */
     protected $container;
-
-    /**
-     * Should use setter instead.
-     *
-     * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
-     * })
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * @param ContainerInterface $container
@@ -126,7 +109,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
      */
     protected function getObjectManager()
     {
-        return $this->getContainer()->get('claroline.persistence.object_manager');
+        return $this->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
     }
 
     /**
@@ -272,7 +255,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
 
         $perm = 0;
 
-        $finder = $this->container->get('claroline.api.finder.ordered_tool');
+        $finder = $this->container->get('Claroline\CoreBundle\API\Finder\Workspace\OrderedToolFinder');
         $ot = $finder->findOneBy([
           'tool' => $toolName,
           'workspace' => $workspace->getUuid(),

@@ -11,12 +11,10 @@
 
 namespace Claroline\ClacoFormBundle\Controller\API;
 
-use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,26 +24,16 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class EntryController extends AbstractCrudController
 {
-    /* @var FinderProvider */
-    protected $finder;
-
     /* @var ClacoFormManager */
     protected $manager;
 
     /**
      * EntryController constructor.
      *
-     * @DI\InjectParams({
-     *     "finder"  = @DI\Inject("claroline.api.finder"),
-     *     "manager" = @DI\Inject("claroline.manager.claco_form_manager")
-     * })
-     *
-     * @param FinderProvider   $finder
      * @param ClacoFormManager $manager
      */
-    public function __construct(FinderProvider $finder, ClacoFormManager $manager)
+    public function __construct(ClacoFormManager $manager)
     {
-        $this->finder = $finder;
         $this->manager = $manager;
     }
 
@@ -105,7 +93,7 @@ class EntryController extends AbstractCrudController
 
             foreach ($params['filters'] as $key => $value) {
                 if (!in_array($key, $excludedFilters)) {
-                    $filters['field_'.$key] = $value;
+                    $filters[$key] = $value;
                 }
             }
             $params['filters'] = $filters;
@@ -174,7 +162,7 @@ class EntryController extends AbstractCrudController
 
         //array map is not even needed; objects are fine here
         /** @var Entry[] $data */
-        $data = $this->finder->get(Entry::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        $data = $this->finder->get(Entry::class)->find($filters, $sortBy, 0, -1, false);
         $next = null;
 
         foreach ($data as $position => $value) {
@@ -219,7 +207,7 @@ class EntryController extends AbstractCrudController
 
         //array map is not even needed; objects are fine here
         /** @var Entry[] $data */
-        $data = $this->finder->get(Entry::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        $data = $this->finder->get(Entry::class)->find($filters, $sortBy, 0, -1, false);
         $prev = null;
 
         foreach ($data as $position => $value) {

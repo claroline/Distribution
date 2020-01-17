@@ -6,7 +6,7 @@ services:
 
     Icap\BlogBundle\Controller\API\BlogController:
         arguments:
-          - '@claroline.api.finder'
+          - '@Claroline\AppBundle\API\FinderProvider'
           - '@Icap\BlogBundle\Serializer\BlogSerializer'
           - '@Icap\BlogBundle\Serializer\BlogOptionsSerializer'
           - '@Icap\BlogBundle\Manager\BlogManager'
@@ -26,4 +26,16 @@ services:
           - '@Icap\BlogBundle\Manager\PostManager'
           - '@Icap\BlogBundle\Manager\BlogTrackingManager'
           - '%non_repeatable_log_time_in_seconds%'
+          - '@security.authorization_checker'
+
+    Icap\BlogBundle\Controller\Resource\BlogController:
+        arguments:
+          - '@Icap\BlogBundle\Serializer\BlogSerializer'
+          - '@Icap\BlogBundle\Serializer\BlogOptionsSerializer'
+          - '@Icap\BlogBundle\Manager\BlogManager'
+          - '@Icap\BlogBundle\Manager\PostManager'
+          - '@router'
+          - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
+          - '@security.token_storage'
+          - '@templating'
           - '@security.authorization_checker'

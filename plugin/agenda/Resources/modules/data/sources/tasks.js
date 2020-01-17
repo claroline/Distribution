@@ -2,7 +2,8 @@ import {URL_BUTTON} from '#/main/app/buttons'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {route} from '#/main/core/workspace/routing'
+import {route} from '#/main/core/tool/routing'
+import {route as workspaceRoute} from '#/main/core/workspace/routing'
 import {EventCard} from '#/plugin/agenda/data/components/event-card'
 
 export default {
@@ -10,7 +11,7 @@ export default {
   parameters: {
     primaryAction: (task) => ({
       type: URL_BUTTON,
-      target: `#${route(task.workspace, 'agenda')}`
+      target: `#${task.workspace ? workspaceRoute(task.workspace, 'agenda') : route('agenda')}`
     }),
     definition: [
       {
@@ -30,19 +31,19 @@ export default {
         label: trans('start_date'),
         displayed: true
       }, {
+        name: 'afterToday',
+        type: 'boolean',
+        label: trans('after_today', {}, 'agenda'),
+        displayed: false,
+        displayable: false,
+        filterable: true,
+        sortable: false
+      }, {
         name: 'meta.done',
         alias: 'isTaskDone',
         type: 'boolean',
         label: trans('task_done', {}, 'agenda'),
         displayed: true
-      }, {
-        name: 'notDoneYet',
-        type: 'boolean',
-        label: trans('not_done_yet'),
-        displayed: false,
-        displayable: false,
-        filterable: true,
-        sortable: false
       }, {
         name: 'workspace',
         type: 'workspace',

@@ -15,10 +15,9 @@ use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\RoutingHelper;
 use Claroline\CoreBundle\Manager\UserManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -33,7 +32,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  *
  * @EXT\Route("/user/registration", options={"expose"=true})
  */
-class RegistrationController extends Controller
+class RegistrationController
 {
     /** @var TokenStorageInterface */
     private $tokenStorage;
@@ -51,21 +50,13 @@ class RegistrationController extends Controller
     /**
      * RegistrationController constructor.
      *
-     * @DI\InjectParams({
-     *     "tokenStorage"         = @DI\Inject("security.token_storage"),
-     *     "session"              = @DI\Inject("session"),
-     *     "translator"           = @DI\Inject("translator"),
-     *     "profileSerializer"    = @DI\Inject("Claroline\CoreBundle\API\Serializer\User\ProfileSerializer"),
-     *     "userManager"          = @DI\Inject("claroline.manager.user_manager"),
-     *     "parametersSerializer" = @DI\Inject("Claroline\CoreBundle\API\Serializer\ParametersSerializer")
-     * })
-     *
      * @param TokenStorageInterface $tokenStorage
      * @param SessionInterface      $session
      * @param TranslatorInterface   $translator
      * @param ProfileSerializer     $profileSerializer
      * @param UserManager           $userManager
      * @param ParametersSerializer  $parametersSerializer
+     * @param RoutingHelper         $routingHelper
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
@@ -73,30 +64,16 @@ class RegistrationController extends Controller
         TranslatorInterface $translator,
         ProfileSerializer $profileSerializer,
         UserManager $userManager,
-        ParametersSerializer $parametersSerializer
+        ParametersSerializer $parametersSerializer,
+        RoutingHelper $routingHelper
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->session = $session;
         $this->translator = $translator;
         $this->profileSerializer = $profileSerializer;
         $this->userManager = $userManager;
-
         $this->parameters = $parametersSerializer->serialize();
-    }
-
-    /**
-     * Displays the user self-registration form.
-     *
-     * @EXT\Route("", name="claro_user_registration")
-     * @EXT\Template("ClarolineCoreBundle:user:registration.html.twig")
-     *
-     * @return array
-     */
-    public function indexAction()
-    {
-        $this->checkAccess();
-
-        return [];
+        $this->routingHelper = $routingHelper;
     }
 
     /**
@@ -105,8 +82,6 @@ class RegistrationController extends Controller
      * @param string $hash
      *
      * @return RedirectResponse
-     *
-     * @todo move this to the api
      */
     public function activateUserAction($hash)
     {
@@ -117,13 +92,17 @@ class RegistrationController extends Controller
                 $this->translator->trans('link_outdated', [], 'platform')
             );
 
-            return new RedirectResponse($this->generateUrl('claro_security_login'));
+            return new RedirectResponse(
+                $this->routingHelper->indexPath()
+            );
         }
 
         $this->userManager->activateUser($user);
         $this->userManager->logUser($user);
 
-        return new RedirectResponse($this->generateUrl('claro_desktop_open'));
+        return new RedirectResponse(
+            $this->routingHelper->desktopPath('home')
+        );
     }
 
     /**
@@ -142,6 +121,7 @@ class RegistrationController extends Controller
             'termOfService' => $this->parameters['tos']['text'] ? $this->parameters['tos']['text'] : null,
             'options' => [
                 'autoLog' => $this->parameters['registration']['auto_logging'],
+                'validation' => $this->parameters['registration']['validation'],
                 'localeLanguage' => $this->parameters['locales']['default'],
                 'defaultRole' => $this->parameters['registration']['default_role'],
                 'userNameRegex' => $this->parameters['registration']['username_regex'],

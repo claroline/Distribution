@@ -2,20 +2,24 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Resource;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AppBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\CoreBundle\Manager\LogConnectManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @EXT\Route("/resource")
@@ -31,21 +35,33 @@ class ResourceNodeController extends AbstractCrudController
     /** @var ResourceActionManager */
     private $actionManager;
 
+    /** @var LogConnectManager */
+    private $logConnectManager;
+
+    /** @var ParametersSerializer */
+    private $parametersSerializer;
+
     /**
      * ResourceNodeController constructor.
      *
      * @param ResourceActionManager $actionManager
      * @param ResourceManager       $resourceManager
      * @param RightsManager         $rightsManager
+     * @param LogConnectManager     $logConnectManager
+     * @param ParametersSerializer  $parametersSerializer
      */
     public function __construct(
         ResourceActionManager $actionManager,
         ResourceManager $resourceManager,
-        RightsManager $rightsManager
+        RightsManager $rightsManager,
+        LogConnectManager $logConnectManager,
+        ParametersSerializer $parametersSerializer
     ) {
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->actionManager = $actionManager;
+        $this->logConnectManager = $logConnectManager;
+        $this->parametersSerializer = $parametersSerializer;
     }
 
     /**
@@ -134,6 +150,15 @@ class ResourceNodeController extends AbstractCrudController
      */
     public function resourceFilesCreateAction(ResourceNode $parent, User $user, Request $request)
     {
+        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
+
+        if (isset($parameters['restrictions']['storage']) &&
+            isset($parameters['restrictions']['max_storage_reached']) &&
+            $parameters['restrictions']['storage'] &&
+            $parameters['restrictions']['max_storage_reached']
+        ) {
+            throw new AccessDeniedException();
+        }
         $attributes['type'] = 'file';
         $collection = new ResourceCollection([$parent]);
         $collection->setAttributes($attributes);
@@ -150,7 +175,7 @@ class ResourceNodeController extends AbstractCrudController
         $publicFiles = [];
         $resources = [];
         /** @var StrictDispatcher */
-        $dispatcher = $this->container->get('claroline.event.event_dispatcher');
+        $dispatcher = $this->container->get('Claroline\AppBundle\Event\StrictDispatcher');
 
         foreach ($files as $file) {
             $publicFile = $this->crud->create(
@@ -171,6 +196,8 @@ class ResourceNodeController extends AbstractCrudController
             $resource->setHashName($publicFile->getUrl());
             $resource->setMimeType($publicFile->getMimeType());
             $resource->setSize($publicFile->getSize());
+
+            // TODO : use crud instead
             $resources[] = $this->resourceManager->create(
                 $resource,
                 $resourceType,
@@ -213,5 +240,30 @@ class ResourceNodeController extends AbstractCrudController
             $this->finder->search(ResourceNode::class,
             array_merge($request->query->all(), ['hiddenFilters' => $filters]))
         );
+    }
+
+    /**
+     * @EXT\Route("/{slug}/close", name="claro_resource_close")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("resourceNode", class="ClarolineCoreBundle:Resource\ResourceNode", options={"mapping": {"slug": "slug"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     *
+     * @param ResourceNode $resourceNode
+     * @param Request      $request
+     * @param User         $user
+     *
+     * @return JsonResponse
+     */
+    public function closeAction(ResourceNode $resourceNode, Request $request, User $user = null)
+    {
+        if ($user) {
+            $data = $this->decodeRequest($request);
+
+            if (isset($data['embedded'])) {
+                $this->logConnectManager->computeResourceDuration($user, $resourceNode, $data['embedded']);
+            }
+        }
+
+        return new JsonResponse();
     }
 }

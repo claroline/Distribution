@@ -25,9 +25,9 @@ use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Event\Workspace\OpenWorkspaceEvent;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\ToolManager;
+use Claroline\CoreBundle\Manager\Workspace\EvaluationManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceRestrictionsManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,22 +64,11 @@ class WorkspaceController
     private $manager;
     /** @var WorkspaceRestrictionsManager */
     private $restrictionsManager;
+    /** @var EvaluationManager */
+    private $evaluationManager;
 
     /**
      * WorkspaceController constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization"       = @DI\Inject("security.authorization_checker"),
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "eventDispatcher"     = @DI\Inject("event_dispatcher"),
-     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
-     *     "serializer"          = @DI\Inject("claroline.api.serializer"),
-     *     "toolManager"         = @DI\Inject("claroline.manager.tool_manager"),
-     *     "translator"          = @DI\Inject("translator"),
-     *     "utils"               = @DI\Inject("claroline.security.utilities"),
-     *     "manager"             = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "restrictionsManager" = @DI\Inject("claroline.manager.workspace_restrictions")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param ObjectManager                 $om
@@ -91,6 +80,7 @@ class WorkspaceController
      * @param Utilities                     $utils
      * @param WorkspaceManager              $manager
      * @param WorkspaceRestrictionsManager  $restrictionsManager
+     * @param EvaluationManager             $evaluationManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -102,7 +92,8 @@ class WorkspaceController
         TranslatorInterface $translator,
         Utilities $utils,
         WorkspaceManager $manager,
-        WorkspaceRestrictionsManager $restrictionsManager
+        WorkspaceRestrictionsManager $restrictionsManager,
+        EvaluationManager $evaluationManager
     ) {
         $this->authorization = $authorization;
         $this->om = $om;
@@ -114,6 +105,7 @@ class WorkspaceController
         $this->utils = $utils;
         $this->manager = $manager;
         $this->restrictionsManager = $restrictionsManager;
+        $this->evaluationManager = $evaluationManager;
     }
 
     /**
@@ -162,6 +154,13 @@ class WorkspaceController
                 $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
             }
 
+            $userEvaluation = null;
+            if ($user) {
+                $userEvaluation = $this->serializer->serialize(
+                    $this->evaluationManager->getEvaluation($workspace, $user)
+                );
+            }
+
             return new JsonResponse([
                 'workspace' => $this->serializer->serialize($workspace),
                 'managed' => $isManager,
@@ -169,7 +168,7 @@ class WorkspaceController
                 // append access restrictions to the loaded data if any
                 // to let the manager knows that other users can not enter the workspace
                 'accessErrors' => $accessErrors,
-                'userProgression' => null,
+                'userEvaluation' => $userEvaluation,
                 'tools' => array_values(array_map(function (OrderedTool $orderedTool) { // todo : create a serializer
                     return [
                         'icon' => $orderedTool->getTool()->getClass(),
@@ -199,8 +198,7 @@ class WorkspaceController
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "id", "strictId" = true},
-     *      converter="strict_id"
+     *      options={"id" = "id"}
      * )
      *
      * @param Workspace $workspace

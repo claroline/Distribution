@@ -9,7 +9,7 @@ import {toKey} from '#/main/core/scaffolding/text'
 import {Button} from '#/main/app/action/components/button'
 import {MENU_BUTTON, CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Heading} from '#/main/core/layout/components/heading'
-import {ContentMeta} from '#/main/app/content/meta/components/meta'
+import {ContentMeta} from '#/main/app/content/components/meta'
 import {Form} from '#/main/app/content/form/components/form'
 import {FormFieldset} from '#/main/app/content/form/components/fieldset'
 import {FormSections, FormSection} from '#/main/app/content/form/components/sections'
@@ -77,7 +77,7 @@ const FormData = (props) => {
     hDisplay = props.displayLevel + (props.title ? 1 : 0)
   }
 
-  const sections = createFormDefinition(props.mode, props.sections, props.data)
+  const sections = createFormDefinition(props.mode, props.sections, props.locked, props.data)
 
   const primarySections = 1 === sections.length ? [sections[0]] : sections.filter(section => section.primary)
   const otherSections = 1 !== sections.length ? sections.filter(section => !section.primary) : []
@@ -215,6 +215,7 @@ FormData.propTypes = {
   sections: T.arrayOf(T.shape(
     DataFormSectionTypes.propTypes
   )).isRequired,
+  locked: T.arrayOf(T.string), // a list of inputs to be locked in form
 
   lock: T.shape({
     id: T.string.isRequired,

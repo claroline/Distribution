@@ -17,7 +17,7 @@ class RoleRepositoryTest extends RepositoryTestCase
 {
     private static $repo;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$repo = self::getRepository('ClarolineCoreBundle:Role');
@@ -40,12 +40,6 @@ class RoleRepositoryTest extends RepositoryTestCase
     {
         $roles = self::$repo->findByWorkspace(self::get('ws_1'));
         $this->assertEquals(5, count($roles));
-    }
-
-    public function testFindVisitorRole()
-    {
-        $role = self::$repo->findVisitorRole(self::get('ws_1'));
-        $this->assertEquals('ROLE_WS_VISITOR_'.self::get('ws_1')->getGuid(), $role->getName());
     }
 
     public function testFindCollaboratorRole()

@@ -1,7 +1,4 @@
-import React from 'react'
-
 import {trans} from '#/main/app/intl/translation'
-import {url} from '#/main/app/api'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {constants} from '#/main/core/user/constants'
@@ -43,7 +40,16 @@ const RoleList = {
       type: 'workspace',
       label: trans('workspace'),
       displayed: true,
-      filterable: false
+      filterable: true
+    }, {
+      name: 'user',
+      type: 'user',
+      label: trans('user'),
+      displayed: true,
+      filterable: false,
+      options: {
+        placeholder: false
+      }
     }
   ],
 

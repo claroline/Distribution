@@ -16,7 +16,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\TagBundle\Entity\Tag;
 use Claroline\TagBundle\Entity\TaggedObject;
 use Claroline\TagBundle\Manager\TagManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,10 +30,6 @@ class TagController extends AbstractCrudController
 
     /**
      * TagController constructor.
-     *
-     * @DI\InjectParams({
-     *     "tagManager" = @DI\Inject("claroline.manager.tag_manager")
-     * })
      *
      * @param TagManager $tagManager
      */
@@ -52,6 +47,48 @@ class TagController extends AbstractCrudController
     public function getName()
     {
         return 'tag';
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function createAction(Request $request, $class)
+    {
+        $query = $request->query->all();
+        $data = $this->decodeRequest($request);
+
+        // Skips creation if a tag already exists with the same name
+        $tag = isset($data['meta']['creator']) ?
+            $this->manager->getUserTagByNameAndUserId($data['name'], $data['meta']['creator']) :
+            $this->manager->getOnePlatformTagByName($data['name']);
+
+        if ($tag) {
+            return new JsonResponse($this->serializer->serialize($tag));
+        } else {
+            $options = $this->options['create'];
+
+            if (isset($query['options'])) {
+                $options = $query['options'];
+            }
+
+            $object = $this->crud->create(
+                $class,
+                $this->decodeRequest($request),
+                $options
+            );
+
+            if (is_array($object)) {
+                return new JsonResponse($object, 400);
+            }
+
+            return new JsonResponse(
+                $this->serializer->serialize($object, $options),
+                201
+            );
+        }
     }
 
     /**

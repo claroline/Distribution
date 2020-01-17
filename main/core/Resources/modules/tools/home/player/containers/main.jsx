@@ -11,14 +11,15 @@ const PlayerMain = withRouter(
   connect(
     (state) => ({
       path: toolSelectors.path(state),
-      currentContext: selectors.context(state),
+      currentContext: toolSelectors.context(state),
       editable: selectors.editable(state),
       administration: selectors.administration(state),
       desktopAdmin: selectors.desktopAdmin(state),
+
       tabs: playerSelectors.tabs(state),
-      currentTab: selectors.currentTab(state),
-      currentTabTitle: selectors.currentTabTitle(state),
-      widgets: selectors.widgets(state)
+      currentTab: playerSelectors.currentTab(state),
+      currentTabTitle: playerSelectors.currentTabTitle(state),
+      widgets: playerSelectors.widgets(state)
     }),
     (dispatch) => ({
       setCurrentTab(tab) {
@@ -27,8 +28,8 @@ const PlayerMain = withRouter(
       setAdministration(administration) {
         dispatch(actions.setAdministration(administration))
       },
-      fetchTabs(administration) {
-        dispatch(actions.fetchTabs(administration))
+      fetchTabs(context, administration) {
+        dispatch(actions.fetchTabs(context, administration))
       }
     })
   )(PlayerMainComponent)

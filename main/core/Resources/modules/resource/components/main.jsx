@@ -1,71 +1,48 @@
 import React, {Fragment, Component, createElement} from 'react'
 import {PropTypes as T} from 'prop-types'
+import {ReactReduxContext} from 'react-redux'
+import {Helmet} from 'react-helmet'
 
 import {theme} from '#/main/app/config'
-import {withReducer} from '#/main/app/store/components/withReducer'
+import {trans} from '#/main/app/intl/translation'
+import {Button} from '#/main/app/action/components/button'
+import {LINK_BUTTON} from '#/main/app/buttons'
 import {makeCancelable} from '#/main/app/api'
+import {route as toolRoute} from '#/main/core/tool/routing'
 import {getResource} from '#/main/core/resources'
 
 import {ContentLoader} from '#/main/app/content/components/loader'
-
-const Resource = props => {
-  if (props.loaded) {
-    return (
-      <Fragment>
-        {props.children}
-
-        {props.styles && props.styles.map(style =>
-          <link key={style} rel="stylesheet" type="text/css" href={theme(style)} />
-        )}
-      </Fragment>
-    )
-  }
-
-  return (
-    <ContentLoader
-      size="lg"
-      description="Nous chargeons votre ressource"
-    />
-  )
-}
-
-Resource.propTypes = {
-  loaded: T.bool.isRequired,
-  styles: T.arrayOf(T.string),
-  children: T.node
-}
+import {ContentNotFound} from '#/main/app/content/components/not-found'
 
 class ResourceMain extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      appLoaded: false,
-      app: null,
+      type: null,
       component: null,
+      store: null,
       styles: []
     }
+
+    this.loadApp = this.loadApp.bind(this)
   }
 
   componentDidMount() {
-    this.loadApp()
     if (!this.props.loaded) {
-      this.props.open(this.props.resourceSlug)
+      this.props.open(this.props.resourceSlug, this.props.embedded, this.loadApp)
+    } else {
+      this.loadApp(this.props.resourceType)
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.resourceType !== prevProps.resourceType) {
-      if (this.pending) {
-        this.pending.cancel()
-        this.pending = null
-      }
-
-      this.loadApp()
+    if (!this.props.notFound && this.props.resourceSlug !== prevProps.resourceSlug) {
+      this.props.close(prevProps.resourceSlug, prevProps.embedded)
     }
 
     if (!this.props.loaded && this.props.loaded !== prevProps.loaded) {
-      this.props.open(this.props.resourceSlug)
+      this.props.open(this.props.resourceSlug, this.props.embedded, this.loadApp)
     }
   }
 
@@ -74,24 +51,25 @@ class ResourceMain extends Component {
       this.pending.cancel()
       this.pending = null
     }
+
+    if (!this.props.notFound) {
+      this.props.close(this.props.resourceSlug, this.props.embedded)
+    }
   }
 
-  loadApp() {
-    if (this.props.resourceType && !this.pending) {
-      this.setState({appLoaded: false})
-      this.pending = makeCancelable(getResource(this.props.resourceType))
+  loadApp(resourceType) {
+    if (!this.pending) {
+      this.pending = makeCancelable(getResource(resourceType))
 
       this.pending.promise
         .then(
           (resolved) => {
             if (resolved.default) {
               this.setState({
-                appLoaded: true,
-                // I build the store here because if I do it in the render()
-                // it will be called many times and will cause multiple mount/unmount of the app
-                app: withReducer(this.props.resourceType, resolved.default.store)(Resource),
+                type: resourceType,
                 component: resolved.default.component,
-                styles: resolved.default.styles
+                store: resolved.default.store,
+                styles: resolved.default.styles || []
               })
             }
           },
@@ -107,27 +85,68 @@ class ResourceMain extends Component {
           () => this.pending = null
         )
     }
+
+    return this.pending.promise
   }
 
   render() {
-    if (!this.props.loaded || !this.state.appLoaded) {
+    if (this.props.notFound) {
       return (
-        <ContentLoader
+        <ContentNotFound
           size="lg"
-          description="Nous chargeons votre ressource"
-        />
+          title={trans('not_found', {}, 'resource')}
+          description={trans('not_found_desc', {}, 'resource')}
+        >
+          {!this.props.embedded &&
+            <Button
+              className="btn btn-emphasis"
+              type={LINK_BUTTON}
+              label={trans('browse-resources', {}, 'actions')}
+              target={toolRoute('resources')}
+              exact={true}
+              primary={true}
+            />
+          }
+        </ContentNotFound>
       )
     }
 
-    if (this.state.app) {
-      return createElement(this.state.app, {
-        loaded: this.props.loaded,
-        styles: this.state.styles,
-        children: this.state.component && createElement(this.state.component, {
-          path: this.props.path
-        })
-      })
-    }
+    return (
+      <ReactReduxContext.Consumer>
+        {({ store }) => {
+          // this will mount the requested reducer into the current redux store
+          if (this.state.type && this.state.store) {
+            store.injectReducer(this.state.type, this.state.store)
+          }
+
+          // just render the original component and forward its props
+          if (!this.props.loaded) {
+            return (
+              <ContentLoader
+                size="lg"
+                description={trans('loading', {}, 'resource')}
+              />
+            )
+          }
+
+          return (
+            <Fragment>
+              {this.state.component && createElement(this.state.component, {
+                path: this.props.path
+              })}
+
+              {0 !== this.state.styles.length &&
+                <Helmet>
+                  {this.state.styles.map(style =>
+                    <link key={style} rel="stylesheet" type="text/css" href={theme(style)} />
+                  )}
+                </Helmet>
+              }
+            </Fragment>
+          )
+        }}
+      </ReactReduxContext.Consumer>
+    )
   }
 }
 
@@ -136,8 +155,11 @@ ResourceMain.propTypes = {
   resourceSlug: T.string.isRequired,
   resourceType: T.string,
 
+  embedded: T.bool.isRequired,
   loaded: T.bool.isRequired,
-  open: T.func.isRequired
+  notFound: T.bool.isRequired,
+  open: T.func.isRequired,
+  close: T.func.isRequired
 }
 
 export {

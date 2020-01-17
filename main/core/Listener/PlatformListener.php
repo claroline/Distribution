@@ -13,21 +13,15 @@ namespace Claroline\CoreBundle\Listener;
 
 use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Manager\LocaleManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service
- */
 class PlatformListener
 {
-    /** @var Kernel */
-    private $kernel;
-
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
@@ -47,35 +41,34 @@ class PlatformListener
      * @var array
      */
     const PUBLIC_ROUTES = [
-        'claro_index',
+        // to let admin log in
         'claro_security_login',
+        // to be able to render client UI
+        'claro_index',
+        'fos_js_routing_js',
+        // to have access to debug tools
+        '_wdt',
+        '_profiler',
+
+        // open reactivation routes
+        'apiv2_platform_extend',
+        'apiv2_platform_enable',
     ];
 
     /**
      * PlatformListener constructor.
      *
-     * @DI\InjectParams({
-     *     "kernel"        = @DI\Inject("kernel"),
-     *     "tokenStorage"  = @DI\Inject("security.token_storage"),
-     *     "config"        = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "tempManager"   = @DI\Inject("claroline.manager.temp_file"),
-     *     "localeManager" = @DI\Inject("claroline.manager.locale_manager")
-     * })
-     *
-     * @param Kernel                       $kernel
      * @param TokenStorageInterface        $tokenStorage
      * @param PlatformConfigurationHandler $config
      * @param TempFileManager              $tempManager
      * @param LocaleManager                $localeManager
      */
     public function __construct(
-        Kernel $kernel,
         TokenStorageInterface $tokenStorage,
         PlatformConfigurationHandler $config,
         TempFileManager $tempManager,
         LocaleManager $localeManager)
     {
-        $this->kernel = $kernel;
         $this->tokenStorage = $tokenStorage;
         $this->config = $config;
         $this->tempManager = $tempManager;
@@ -84,8 +77,6 @@ class PlatformListener
 
     /**
      * Sets the platform language.
-     *
-     * @DI\Observe("kernel.request", priority = 17)
      *
      * @param GetResponseEvent $event
      */
@@ -101,19 +92,37 @@ class PlatformListener
 
     /**
      * Checks the app availability before displaying the platform.
-     *   - Checks are enabled only on productions.
-     *   - Administrators are always granted.
-     *   - Public routes are still accessible.
-     *
-     * @DI\Observe("kernel.request")
      *
      * @param GetResponseEvent $event
      */
     public function checkAvailability(GetResponseEvent $event)
     {
-        if ('prod' === $this->kernel->getEnvironment() && $event->isMasterRequest()) {
-            $isAdmin = false;
+        if (!$event->isMasterRequest() || in_array($event->getRequest()->get('_route'), static::PUBLIC_ROUTES)) {
+            return;
+        }
 
+        // checks platform restrictions
+        if ($this->config->getParameter('restrictions.disabled')) {
+            throw new HttpException(503, 'Platform is not available (Platform is disabled).');
+        }
+
+        $dates = $this->config->getParameter('restrictions.dates');
+        if (!empty($dates)) {
+            $now = new \DateTime();
+            if (!empty($dates[0]) && DateNormalizer::normalize($now) < $dates[0]) {
+                throw new HttpException(503, 'Platform is not available (Platform start date not reached).');
+            }
+
+            if (!empty($dates[1]) && DateNormalizer::normalize($now) > $dates[1]) {
+                throw new HttpException(503, 'Platform is not available (Platform end date reached).');
+            }
+        }
+
+        // checks platform maintenance
+        if (MaintenanceHandler::isMaintenanceEnabled() || $this->config->getParameter('maintenance.enable')) {
+            // only disable for non admin
+            // TODO : it may break the impersonation mode
+            $isAdmin = false;
             $token = $this->tokenStorage->getToken();
             if ($token) {
                 foreach ($token->getRoles() as $role) {
@@ -124,34 +133,14 @@ class PlatformListener
                 }
             }
 
-            $now = time();
-            if (is_int($this->config->getParameter('platform_init_date'))) {
-                $minDate = new \DateTime();
-                $minDate->setTimestamp($this->config->getParameter('platform_init_date'));
-            } else {
-                $minDate = new \DateTime($this->config->getParameter('platform_init_date'));
-            }
-
-            if (is_int($this->config->getParameter('platform_limit_date'))) {
-                $expirationDate = new \DateTime();
-                $expirationDate->setTimestamp($this->config->getParameter('platform_limit_date'));
-            } else {
-                $expirationDate = new \DateTime($this->config->getParameter('platform_limit_date'));
-            }
-
-            if (!$isAdmin &&
-                !in_array($event->getRequest()->get('_route'), static::PUBLIC_ROUTES) &&
-                ($minDate->getTimeStamp() > $now || $now > $expirationDate->getTimeStamp() || $this->config->getParameter('maintenance.enable'))
-            ) {
-                throw new HttpException(503, 'Platform is not available.');
+            if (!$isAdmin) {
+                throw new HttpException(503, 'Platform is not available (Platform is under maintenance).');
             }
         }
     }
 
     /**
      * Clears all temp files at the end of each request.
-     *
-     * @DI\Observe("kernel.terminate")
      */
     public function clearTemp()
     {

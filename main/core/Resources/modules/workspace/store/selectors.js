@@ -14,6 +14,11 @@ const loaded = createSelector(
   (store) => store.loaded
 )
 
+const notFound = createSelector(
+  [store],
+  (store) => store.notFound
+)
+
 const impersonated = createSelector(
   [store],
   (store) => store.impersonated
@@ -43,6 +48,11 @@ const root = createSelector(
 const shortcuts = createSelector(
   [store],
   (store) => store.shortcuts
+)
+
+const userEvaluation = createSelector(
+  [store],
+  (store) => store.userEvaluation
 )
 
 // the current user enabled shortcuts
@@ -101,11 +111,13 @@ export const selectors = {
   root,
   loaded,
   impersonated,
+  notFound,
   workspace,
   managed,
   tools,
   shortcuts,
   userShortcuts,
+  userEvaluation,
   defaultOpening,
   accessErrors,
   serverErrors

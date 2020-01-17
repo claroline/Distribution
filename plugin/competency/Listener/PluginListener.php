@@ -2,13 +2,11 @@
 
 namespace HeVinci\CompetencyBundle\Listener;
 
-use Claroline\CoreBundle\Event\CustomActionResourceEvent;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use HeVinci\CompetencyBundle\Manager\CompetencyManager;
 use HeVinci\CompetencyBundle\Manager\ObjectiveManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -16,8 +14,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * Defines the listening methods for all the core extension
  * points used in this plugin (tools and widgets).
- *
- * @DI\Service("hevinci.competency.plugin_listener")
  */
 class PluginListener
 {
@@ -33,14 +29,6 @@ class PluginListener
 
     /**
      * PluginListener constructor.
-     *
-     * @DI\InjectParams({
-     *     "competencyManager" = @DI\Inject("hevinci.competency.competency_manager"),
-     *     "objectiveManager"  = @DI\Inject("hevinci.competency.objective_manager"),
-     *     "tokenStorage"      = @DI\Inject("security.token_storage"),
-     *     "stack"             = @DI\Inject("request_stack"),
-     *     "kernel"            = @DI\Inject("http_kernel")
-     * })
      *
      * @param CompetencyManager     $competencyManager
      * @param ObjectiveManager      $objectiveManager
@@ -63,8 +51,6 @@ class PluginListener
     }
 
     /**
-     * @DI\Observe("administration_tool_learning-objectives")
-     *
      * @param OpenAdministrationToolEvent $event
      */
     public function onOpenLearningObjectivesTool(OpenAdministrationToolEvent $event)
@@ -75,12 +61,11 @@ class PluginListener
     }
 
     /**
-     * @DI\Observe("open_tool_desktop_my-learning-objectives")
-     *
      * @param DisplayToolEvent $event
      */
     public function onOpenMyLearningObjectivesTool(DisplayToolEvent $event)
     {
+        /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
         $objectives = 'anon.' !== $user ? $this->objectiveManager->loadSubjectObjectives($user) : [];
         $objectivesCompetencies = [];
@@ -113,38 +98,6 @@ class PluginListener
             'objectivesCompetencies' => $objectivesCompetencies,
             'competencies' => $competencies,
         ]);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("resource_action_manage_competencies")
-     *
-     * @param CustomActionResourceEvent $event
-     */
-    public function onOpenResourceCompetencies(CustomActionResourceEvent $event)
-    {
-        $this->forward('HeVinciCompetencyBundle:Resource:competencies', $event, true);
-    }
-
-    private function forward($controller, Event $event, $withNode = false)
-    {
-        $attributes = ['_controller' => $controller];
-
-        if ($event instanceof CustomActionResourceEvent) {
-            $attributes['id'] = $withNode ?
-                $event->getResource()->getResourceNode()->getId() :
-                $event->getResource()->getId();
-        }
-
-        $subRequest = $this->request->duplicate([], null, $attributes);
-        $response = $this->kernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-
-        if ($event instanceof DisplayToolEvent) {
-            $event->setContent($response->getContent());
-        } else {
-            $event->setResponse($response);
-        }
-
         $event->stopPropagation();
     }
 }

@@ -15,11 +15,9 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\MessageBundle\Entity\Contact\Contact;
 use Claroline\MessageBundle\Manager\ContactManager;
 use Claroline\MessageBundle\Serializer\Contact\ContactSerializer;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,8 +28,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class ContactController extends AbstractCrudController
 {
-    /** @var ApiManager */
-    private $apiManager;
     /** @var ContactManager */
     private $contactManager;
     /** @var ContactSerializer */
@@ -46,16 +42,6 @@ class ContactController extends AbstractCrudController
     /**
      * ContactController constructor.
      *
-     * @DI\InjectParams({
-     *     "apiManager"        = @DI\Inject("claroline.manager.api_manager"),
-     *     "contactManager"    = @DI\Inject("claroline.manager.contact_manager"),
-     *     "contactSerializer" = @DI\Inject("claroline.serializer.contact"),
-     *     "finder"            = @DI\Inject("claroline.api.finder"),
-     *     "tokenStorage"      = @DI\Inject("security.token_storage"),
-     *     "userSerializer"    = @DI\Inject("Claroline\CoreBundle\API\Serializer\User\UserSerializer")
-     * })
-     *
-     * @param ApiManager            $apiManager
      * @param ContactManager        $contactManager
      * @param ContactSerializer     $contactSerializer
      * @param FinderProvider        $finder
@@ -63,14 +49,12 @@ class ContactController extends AbstractCrudController
      * @param UserSerializer        $userSerializer
      */
     public function __construct(
-        ApiManager $apiManager,
         ContactManager $contactManager,
         ContactSerializer $contactSerializer,
         FinderProvider $finder,
         TokenStorageInterface $tokenStorage,
         UserSerializer $userSerializer
     ) {
-        $this->apiManager = $apiManager;
         $this->contactManager = $contactManager;
         $this->contactSerializer = $contactSerializer;
         $this->finder = $finder;

@@ -22,14 +22,18 @@ class AgendaSource
     /** @var FinderProvider */
     private $finder;
 
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /**
      * AgendaSource constructor.
      *
-     * @param FinderProvider $finder
+     * @param FinderProvider        $finder
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
-      FinderProvider $finder,
-      TokenStorageInterface $tokenStorage
+        FinderProvider $finder,
+        TokenStorageInterface $tokenStorage
     ) {
         $this->finder = $finder;
         $this->tokenStorage = $tokenStorage;
@@ -48,7 +52,7 @@ class AgendaSource
         } elseif (DataSource::CONTEXT_HOME === $event->getContext()) {
             $options['hiddenFilters']['anonymous'] = true;
         } else {
-            $options['hiddenFilters']['user'] = $this->tokenStorage->getToken()->getUser()->getUuid();
+            $options['hiddenFilters']['desktop'] = $this->tokenStorage->getToken()->getUser()->getUuid();
         }
 
         $event->setData(
@@ -70,7 +74,10 @@ class AgendaSource
             $options['hiddenFilters']['workspaces'] = [$event->getWorkspace()->getUuid()];
         } elseif (DataSource::CONTEXT_HOME === $event->getContext()) {
             $options['hiddenFilters']['anonymous'] = true;
+        } else {
+            $options['hiddenFilters']['desktop'] = $this->tokenStorage->getToken()->getUser()->getUuid();
         }
+
         $event->setData(
             $this->finder->search(Event::class, $options)
         );

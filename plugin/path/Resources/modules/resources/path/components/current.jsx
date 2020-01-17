@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
@@ -22,7 +22,7 @@ const PathCurrent = props => {
   }
 
   return (
-    <div className="content-container">
+    <Fragment>
       <ProgressBar
         value={Math.floor(((currentIndex+1) / props.all.length) * 100)}
         size="xs"
@@ -36,10 +36,8 @@ const PathCurrent = props => {
           {previous &&
             <LinkButton
               className="btn-link btn-previous"
-              disabled={!previous}
-              primary={true}
               size="lg"
-              target={previous ? `${props.prefix}/${previous.slug}`:''}
+              target={`${props.prefix}/${previous.slug}`}
             >
               <span className="fa fa-angle-double-left icon-with-text-right" />
               {trans('previous')}
@@ -49,10 +47,9 @@ const PathCurrent = props => {
           {next &&
             <LinkButton
               className="btn-link btn-next"
-              disabled={!next}
               primary={true}
               size="lg"
-              target={next ? `${props.prefix}/${next.slug}`:''}
+              target={`${props.prefix}/${next.slug}`}
             >
               {trans('next')}
               <span className="fa fa-angle-double-right icon-with-text-left" />
@@ -60,7 +57,7 @@ const PathCurrent = props => {
           }
         </nav>
       }
-    </div>
+    </Fragment>
   )
 }
 

@@ -11,7 +11,7 @@ import {MenuSection} from '#/main/app/layout/menu/components/section'
 const BadgeMenu = (props) =>
   <MenuSection
     {...omit(props, 'path', 'isAdmin')}
-    title={trans('open-badge', {}, 'tools')}
+    title={trans('badges', {}, 'tools')}
   >
     <Toolbar
       className="list-group"
@@ -36,12 +36,18 @@ const BadgeMenu = (props) =>
           displayed: props.isAdmin
         }
       ]}
+      onClick={props.autoClose}
     />
   </MenuSection>
 
 BadgeMenu.propTypes = {
   path: T.string,
-  isAdmin: T.bool.isRequired
+  isAdmin: T.bool.isRequired,
+
+  // from menu
+  opened: T.bool.isRequired,
+  toggle: T.func.isRequired,
+  autoClose: T.func.isRequired
 }
 
 export {

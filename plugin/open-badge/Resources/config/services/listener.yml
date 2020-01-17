@@ -6,7 +6,7 @@ services:
 
     Claroline\OpenBadgeBundle\Listener\RuleListener:
         arguments:
-            - '@claroline.persistence.object_manager'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@translator'
             - '@security.token_storage'
         tags:
@@ -18,9 +18,22 @@ services:
 
     Claroline\OpenBadgeBundle\Listener\ToolListener:
         arguments:
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\API\SerializerProvider'
             - '@templating'
         tags:
-            - { name: kernel.event_listener, event: open_tool_desktop_open-badge, method: onDisplayDesktop }
-            - { name: kernel.event_listener, event: open_tool_workspace_open-badge, method: onDisplayWorkspace }
+            - { name: kernel.event_listener, event: open_tool_desktop_badges, method: onDisplayDesktop }
+            - { name: kernel.event_listener, event: open_tool_workspace_badges, method: onDisplayWorkspace }
             - { name: kernel.event_listener, event: layout.inject.javascript, method: onInjectJs }
+
+    Claroline\OpenBadgeBundle\Listener\DataSource\BadgesSource:
+        arguments:
+            - '@Claroline\AppBundle\API\FinderProvider'
+        tags:
+            - { name: kernel.event_listener, event: data_source.badges.load, method: getData }
+
+    Claroline\OpenBadgeBundle\Listener\DataSource\MyBadgesSource:
+        arguments:
+            - '@security.token_storage'
+            - '@Claroline\AppBundle\API\FinderProvider'
+        tags:
+            - { name: kernel.event_listener, event: data_source.my_badges.load, method: getData }

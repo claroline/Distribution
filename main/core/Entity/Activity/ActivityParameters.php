@@ -11,9 +11,8 @@
 
 namespace Claroline\CoreBundle\Entity\Activity;
 
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Rule\Rulable;
 use Claroline\CoreBundle\Entity\Resource\Activity;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="claro_activity_parameters")
  */
-class ActivityParameters extends Rulable
+class ActivityParameters
 {
     /**
      * Unique identifier of the parameters.
@@ -117,24 +116,11 @@ class ActivityParameters extends Rulable
     protected $evaluationType;
 
     /**
-     * Rules for the Activity.
-     *
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Activity\ActivityRule",
-     *     mappedBy="activityParameters"
-     * )
-     */
-    protected $rules;
-
-    /**
      * Class constructor.
      */
     public function __construct()
     {
         $this->secondaryResources = new ArrayCollection();
-        $this->rules = new ArrayCollection();
     }
 
     /**

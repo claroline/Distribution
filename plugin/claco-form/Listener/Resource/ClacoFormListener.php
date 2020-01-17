@@ -20,6 +20,7 @@ use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\FieldValue;
+use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
@@ -28,14 +29,12 @@ use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\RoleManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @DI\Service
- */
 class ClacoFormListener
 {
     private $clacoFormManager;
@@ -45,25 +44,17 @@ class ClacoFormListener
     private $roleManager;
     private $serializer;
     private $tokenStorage;
+    private $authorization;
 
     /**
-     * @DI\InjectParams({
-     *     "clacoFormManager"      = @DI\Inject("claroline.manager.claco_form_manager"),
-     *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
-     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
-     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
-     *     "tokenStorage"          = @DI\Inject("security.token_storage"),
-     *     "finder"                = @DI\Inject("claroline.api.finder")
-     * })
-     *
-     * @param ClacoFormManager             $clacoFormManager
-     * @param ObjectManager                $om
-     * @param FinderProvider               $finder
-     * @param PlatformConfigurationHandler $platformConfigHandler
-     * @param RoleManager                  $roleManager,
-     * @param SerializerProvider           $serializer
-     * @param TokenStorageInterface        $tokenStorage
+     * @param ClacoFormManager              $clacoFormManager
+     * @param ObjectManager                 $om
+     * @param FinderProvider                $finder
+     * @param PlatformConfigurationHandler  $platformConfigHandler
+     * @param RoleManager                   $roleManager,
+     * @param SerializerProvider            $serializer
+     * @param TokenStorageInterface         $tokenStorage
+     * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
         ClacoFormManager $clacoFormManager,
@@ -72,7 +63,8 @@ class ClacoFormListener
         PlatformConfigurationHandler $platformConfigHandler,
         RoleManager $roleManager,
         SerializerProvider $serializer,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        AuthorizationCheckerInterface $authorization
     ) {
         $this->clacoFormManager = $clacoFormManager;
         $this->om = $om;
@@ -81,12 +73,11 @@ class ClacoFormListener
         $this->roleManager = $roleManager;
         $this->serializer = $serializer;
         $this->tokenStorage = $tokenStorage;
+        $this->authorization = $authorization;
     }
 
     /**
      * Loads the ClacoForm resource.
-     *
-     * @DI\Observe("resource.claroline_claco_form.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -97,9 +88,7 @@ class ClacoFormListener
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = 'anon.' === $user;
         $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
-        $canGeneratePdf = !$isAnon &&
-            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
-            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
+        $canGeneratePdf = !$isAnon;
         $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
             $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
             2;
@@ -114,9 +103,20 @@ class ClacoFormListener
             $roles[] = $this->serializer->serialize($workspaceRole, [Options::SERIALIZE_MINIMAL]);
         }
         $myRoles = $isAnon ? [$roleAnonymous->getName()] : $user->getRoles();
+        $serializedClacoForm = $this->serializer->serialize($clacoForm);
+        $canEdit = $isAnon ?
+            false :
+            $this->authorization->isGranted('EDIT', new ResourceCollection([$clacoForm->getResourceNode()]));
+
+        if ($canEdit) {
+            foreach ($serializedClacoForm['list']['filters'] as $key => $filter) {
+                $filter['locked'] = false;
+                $serializedClacoForm['list']['filters'][$key] = $filter;
+            }
+        }
 
         $event->setData([
-            'clacoForm' => $this->serializer->serialize($clacoForm),
+            'clacoForm' => $serializedClacoForm,
             'canGeneratePdf' => $canGeneratePdf,
             'cascadeLevelMax' => $cascadeLevelMax,
             'myEntriesCount' => count($myEntries),
@@ -127,12 +127,11 @@ class ClacoFormListener
     }
 
     /**
-     * @DI\Observe("resource.claroline_claco_form.copy")
-     *
      * @param CopyResourceEvent $event
      */
     public function onCopy(CopyResourceEvent $event)
     {
+        /** @var ClacoForm $clacoForm */
         $clacoForm = $event->getResource();
         $copy = $event->getCopy();
         $copy = $this->clacoFormManager->copyClacoForm($clacoForm, $copy);
@@ -141,9 +140,6 @@ class ClacoFormListener
         $event->stopPropagation();
     }
 
-    /**
-     * @DI\Observe("transfer.claroline_claco_form.export")
-     */
     public function onExport(ExportObjectEvent $exportEvent)
     {
         $clacoForm = $exportEvent->getObject();
@@ -154,9 +150,6 @@ class ClacoFormListener
         $exportEvent->setData($data);
     }
 
-    /**
-     * @DI\Observe("transfer.claroline_claco_form.import.before")
-     */
     public function onImportBefore(ImportObjectEvent $event)
     {
         $data = $event->getData();
@@ -171,12 +164,11 @@ class ClacoFormListener
         $event->setExtra($data);
     }
 
-    /**
-     * @DI\Observe("transfer.claroline_claco_form.import.after")
-     */
     public function onImportAfter(ImportObjectEvent $event)
     {
         $data = $event->getData();
+
+        /** @var ClacoForm $clacoForm */
         $clacoForm = $event->getObject();
 
         foreach ($data['categories'] as $dataCategory) {
@@ -232,8 +224,6 @@ class ClacoFormListener
     }
 
     /**
-     * @DI\Observe("resource.claroline_claco_form.delete")
-     *
      * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)

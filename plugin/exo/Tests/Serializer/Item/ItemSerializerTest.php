@@ -18,12 +18,12 @@ class ItemSerializerTest extends JsonDataTestCase
      */
     private $serializer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         // We trust validator service as it is fully tested
-        $this->validator = $this->client->getContainer()->get('ujm_exo.validator.item');
+        $this->validator = $this->client->getContainer()->get('UJM\ExoBundle\Validator\JsonSchema\Item\ItemValidator');
         $this->serializer = $this->client->getContainer()->get('ujm_exo.serializer.item');
     }
 

@@ -32,10 +32,8 @@
             {{ config.getParameter('google_meta_tag') | raw }}
         {% endif %}
 
-        {% block favicon %}
-            <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
-            <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png')}}" />
-        {% endblock %}
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png')}}" />
 
         {# Adds stylesheets #}
         {# Styles from current theme #}
@@ -53,6 +51,7 @@
     <body>
         {# Anchor for react app to mount in #}
         <div
+            id="claroline-app"
             class="app-container"
             role="presentation"
 
@@ -64,13 +63,8 @@
             data-config="{{ parameters | json_encode | raw | escape }}"
         ></div>
 
-        {# Anchor for UI portals (eg. modals, walkthroughs) #}
-        <div class="app-overlays-container"></div>
-
-        {# Dumps some server vars in the DOM to make it available in JS #}
-        <div id="sf-environement" data-env="{{ app.environment }}"></div>
-        <div id="platform-config" data-parameters="{{ parameters | json_encode | raw | escape }}"></div>
-        <div id="current-user"    data-user="{{ currentUser | json_encode | raw | escape }}"></div>
+        {# Anchor for UI portals (eg. modals) #}
+        <div class="app-modal-container"></div>
 
         {# Adds javascripts #}
         <script src="{{ hotAsset('runtime') }}"></script>

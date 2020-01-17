@@ -53,13 +53,31 @@ const DashboardMenu = (props) =>
           icon: 'fa fa-fw fa-wave-square',
           label: trans('paths_tracking'),
           target: `${props.path}/paths`
+        }, {
+          name: 'evaluations',
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-graduation-cap',
+          label: trans('evaluations', {}, 'analytics'),
+          target: `${props.path}/evaluations`
+        }, {
+          name: 'requirements',
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-clipboard-list',
+          label: trans('evaluation_requirements', {}, 'analytics'),
+          target: `${props.path}/requirements`
         }
       ]}
+      onClick={props.autoClose}
     />
   </MenuSection>
 
 DashboardMenu.propTypes = {
-  path: T.string
+  path: T.string,
+
+  // from menu
+  opened: T.bool.isRequired,
+  toggle: T.func.isRequired,
+  autoClose: T.func.isRequired
 }
 
 export {

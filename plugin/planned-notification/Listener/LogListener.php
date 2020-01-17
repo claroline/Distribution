@@ -15,12 +15,8 @@ use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogRoleSubscribeEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\PlannedNotificationBundle\Manager\PlannedNotificationManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service
- */
 class LogListener
 {
     /** @var PlannedNotificationManager */
@@ -29,11 +25,6 @@ class LogListener
     private $tokenStorage;
 
     /**
-     * @DI\InjectParams({
-     *     "manager"       = @DI\Inject("claroline.manager.planned_notification_manager"),
-     *     "tokenStorage"  = @DI\Inject("security.token_storage")
-     * })
-     *
      * @param PlannedNotificationManager $manager
      * @param TokenStorageInterface      $tokenStorage
      */
@@ -46,8 +37,6 @@ class LogListener
     }
 
     /**
-     * @DI\Observe("log", priority=1)
-     *
      * @param LogGenericEvent $event
      */
     public function onLog(LogGenericEvent $event)

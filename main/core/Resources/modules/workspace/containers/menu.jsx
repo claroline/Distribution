@@ -5,7 +5,6 @@ import {withReducer} from '#/main/app/store/components/withReducer'
 
 import {selectors as securitySelectors} from '#/main/app/security/store'
 import {actions as menuActions, selectors as menuSelectors} from '#/main/app/layout/menu/store'
-import {actions as walkthroughActions} from '#/main/app/overlays/walkthrough/store'
 
 import {WorkspaceMenu as WorkspaceMenuComponent} from '#/main/core/workspace/components/menu'
 import {actions, reducer, selectors} from '#/main/core/workspace/store'
@@ -19,18 +18,16 @@ const WorkspaceMenu = withRouter(
         workspace: selectors.workspace(state),
         section: menuSelectors.openedSection(state),
         tools: selectors.tools(state),
-        shortcuts: selectors.userShortcuts(state)
+        shortcuts: selectors.userShortcuts(state),
+        userEvaluation: selectors.userEvaluation(state)
       }),
       (dispatch) => ({
         update(workspace) {
           dispatch(actions.setLoaded(false))
-          dispatch(actions.open(workspace.slug))
+          dispatch(actions.fetch(workspace.slug))
         },
         changeSection(section) {
           dispatch(menuActions.changeSection(section))
-        },
-        startWalkthrough(steps) {
-          dispatch(walkthroughActions.start(steps))
         }
       })
     )(WorkspaceMenuComponent)

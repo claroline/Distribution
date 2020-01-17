@@ -22,7 +22,7 @@ class WaveformQuestionSerializer
     public function serialize(WaveformQuestion $waveformQuestion, array $options = [])
     {
         $serialized = [
-            'url' => $waveformQuestion->getUrl(),
+            'file' => $waveformQuestion->getUrl(),
             'tolerance' => $waveformQuestion->getTolerance(),
             'penalty' => $waveformQuestion->getPenalty(),
             'answersLimit' => $waveformQuestion->getAnswersLimit(),
@@ -33,6 +33,11 @@ class WaveformQuestionSerializer
         }
 
         return $serialized;
+    }
+
+    public function getName()
+    {
+        return 'waveform_question';
     }
 
     /**
@@ -49,7 +54,7 @@ class WaveformQuestionSerializer
         if (empty($waveformQuestion)) {
             $waveformQuestion = new WaveformQuestion();
         }
-        $this->sipe('url', 'setUrl', $data, $waveformQuestion);
+        $this->sipe('file', 'setUrl', $data, $waveformQuestion);
         $this->sipe('tolerance', 'setTolerance', $data, $waveformQuestion);
         $this->sipe('penalty', 'setPenalty', $data, $waveformQuestion);
         $this->sipe('answersLimit', 'setAnswersLimit', $data, $waveformQuestion);
@@ -107,8 +112,9 @@ class WaveformQuestionSerializer
             if (!$section) {
                 $section = new Section();
                 $section->setWaveform($waveformQuestion);
+            } else {
+                $section->setUuid($solutionData['section']['id']);
             }
-            $section->setUuid($solutionData['section']['id']);
             $section->setScore($solutionData['score']);
 
             if (!empty($solutionData['feedback'])) {

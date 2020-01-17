@@ -14,12 +14,11 @@ import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
 
 const WorkspacesButton = props =>
   <Button
-    className="btn"
+    className="btn btn-block"
     style={{marginTop: 10}}
     type={MODAL_BUTTON}
-    icon="fa fa-fw fa-book"
-    label={props.model ? trans('select_a_workspace_model') : trans('select_a_workspace')}
-    primary={true}
+    icon="fa fa-fw fa-plus"
+    label={props.model ? trans('add_workspace_model') : trans('add_workspace')}
     disabled={props.disabled}
     modal={[MODAL_WORKSPACES, {
       url: props.model ? ['apiv2_workspace_list_model'] : ['apiv2_workspace_list_managed'],
@@ -74,7 +73,6 @@ const WorkspaceInput = props => {
 
   return (
     <EmptyPlaceholder
-      size="lg"
       icon="fa fa-book"
       title={props.picker.model ? trans('no_workspace_model') : trans('no_workspace')}
     >

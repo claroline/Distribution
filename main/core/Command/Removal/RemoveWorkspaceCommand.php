@@ -146,7 +146,7 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
 
     private function deleteOrphans()
     {
-        $toDelete = $this->getContainer()->get('claroline.api.finder')->fetch(Workspace::class, ['orphan' => true]);
+        $toDelete = $this->getContainer()->get('Claroline\AppBundle\API\FinderProvider')->fetch(Workspace::class, ['orphan' => true]);
         if (count($toDelete) > 0) {
             $this->confirmWorkspaceDelete($toDelete);
         }
@@ -174,15 +174,15 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
             $workspaceManager->getPersonalWorkspaceByRolesIncludingGroups($rolesSearch, $includeOrphans, $empty, null, self::BATCH_SIZE);
 
         if (count($workspacesToDelete) > 0) {
-            $this->confirmWorkspaceDelete($workspacesToDelete);
-            $this->deletePersonalWorkspace($all, $rolesSearch, $includeOrphans);
+            if ($this->confirmWorkspaceDelete($workspacesToDelete)) {
+                $this->deletePersonalWorkspace($all, $rolesSearch, $includeOrphans);
+            }
         }
     }
 
     private function confirmWorkspaceDelete(array $workspaces)
     {
         $helper = $this->getHelper('question');
-        $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
 
         foreach ($workspaces as $workspace) {
             $this->getOutput()->writeln("{$workspace->getId()}: {$workspace->getName()} - {$workspace->getCode()} ");
@@ -197,22 +197,23 @@ class RemoveWorkspaceCommand extends ContainerAwareCommand
         $this->getContainer()->get('Claroline\CoreBundle\Listener\Log\LogListener')->disable();
 
         if ($this->getForce() || $continue) {
-            $om = $this->getContainer()->get('claroline.persistence.object_manager');
+            $om = $this->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
             $i = 1;
 
             $om->startFlushSuite();
 
             foreach ($workspaces as $workspace) {
                 $this->getOutput()->writeln('Removing '.$i.'/'.count($workspaces));
-                $workspaceManager->deleteWorkspace($workspace);
+                $this->getContainer()->get('Claroline\AppBundle\API\Crud')->delete($workspace);
                 ++$i;
             }
 
             $this->getOutput()->writeln('<comment> Flushing... </comment>');
             $om->endFlushSuite();
-        } else {
-            //stop script here
-            exit(0);
+
+            return true;
         }
+
+        return false;
     }
 }

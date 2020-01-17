@@ -192,10 +192,26 @@ class Path extends AbstractResource
         return $this;
     }
 
+    public function getStep($stepId)
+    {
+        $found = null;
+
+        foreach ($this->steps as $step) {
+            if ($step->getUuid() === $stepId) {
+                $found = $step;
+                break;
+            }
+        }
+
+        return $found;
+    }
+
     /**
      * Remove all steps.
      *
      * @return Path
+     *
+     * @deprecated
      */
     public function emptySteps()
     {

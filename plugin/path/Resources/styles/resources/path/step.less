@@ -1,3 +1,6 @@
+.current-step {
+    flex: 1; // will push navigation to the bottom of the page
+}
 
 .step-poster,
 .step-title {
@@ -10,19 +13,6 @@
     + .step-title {
         margin-top: @line-height-computed; // restore default margin
     }
-}
-
-.parameters-title,
-.step-title {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: left;
-}
-
-.step-toolbar {
-    margin-left: auto;
-    white-space: nowrap;
 }
 
 .step-manual-progression {

@@ -51,6 +51,7 @@ registry.add('ClarolineCoreBundle', {
 
     workspace: {
       'about'          : () => { return import(/* webpackChunkName: "core-action-workspace-about" */           '#/main/core/workspace/actions/about') },
+      'archive'        : () => { return import(/* webpackChunkName: "core-action-workspace-archive" */         '#/main/core/workspace/actions/archive') },
       'configure'      : () => { return import(/* webpackChunkName: "core-action-workspace-configure" */       '#/main/core/workspace/actions/configure') },
       'copy'           : () => { return import(/* webpackChunkName: "core-action-workspace-copy" */            '#/main/core/workspace/actions/copy') },
       'copy-model'     : () => { return import(/* webpackChunkName: "core-action-workspace-copy-model" */      '#/main/core/workspace/actions/copy-model') },
@@ -60,6 +61,7 @@ registry.add('ClarolineCoreBundle', {
       'register-users' : () => { return import(/* webpackChunkName: "core-action-workspace-register-users" */  '#/main/core/workspace/actions/register-users') },
       'register-groups': () => { return import(/* webpackChunkName: "core-action-workspace-register-groups" */ '#/main/core/workspace/actions/register-groups') },
       'register-self'  : () => { return import(/* webpackChunkName: "core-action-workspace-register-self" */   '#/main/core/workspace/actions/register-self') },
+      'unarchive'      : () => { return import(/* webpackChunkName: "core-action-workspace-unarchive" */       '#/main/core/workspace/actions/unarchive') },
       'unregister-self': () => { return import(/* webpackChunkName: "core-action-workspace-unregister-self" */ '#/main/core/workspace/actions/unregister-self') },
       'view-as'        : () => { return import(/* webpackChunkName: "core-action-workspace-view-as" */         '#/main/core/workspace/actions/view-as') }
     },
@@ -105,9 +107,7 @@ registry.add('ClarolineCoreBundle', {
    */
   administration: {
     'community'           : () => { return import(/* webpackChunkName: "core-admin-users" */          '#/main/core/administration/community') },
-    'main_settings'       : () => { return import(/* webpackChunkName: "core-admin-parameters" */     '#/main/core/administration/parameters/main') },
-    'technical_settings'  : () => { return import(/* webpackChunkName: "core-admin-technical" */      '#/main/core/administration/parameters/technical') },
-    'appearance_settings' : () => { return import(/* webpackChunkName: "core-admin-appearance" */     '#/main/core/administration/parameters/appearance') },
+    'main_settings'       : () => { return import(/* webpackChunkName: "core-admin-parameters" */     '#/main/core/administration/parameters') },
     'templates_management': () => { return import(/* webpackChunkName: "core-admin-template" */       '#/main/core/administration/template') },
     'tasks_scheduling'    : () => { return import(/* webpackChunkName: "core-admin-scheduled-task" */ '#/main/core/administration/scheduled-task') },
     'integration'         : () => { return import(/* webpackChunkName: "core-admin-integration" */    '#/main/core/administration/integration') },

@@ -89,8 +89,13 @@ class ItemSerializer
         $this->hintSerializer = $hintSerializer;
         $this->resourceContentSerializer = $resourceContentSerializer;
         $this->itemObjectSerializer = $itemObjectSerializer;
-        $this->container = $container; // FIXME : this is a cheat to avoid a circular reference with `ujm_exo.manager.item`
+        $this->container = $container; // FIXME : this is a cheat to avoid a circular reference with `UJM\ExoBundle\Manager\Item\ItemManager`
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function getName()
+    {
+        return 'exo_item';
     }
 
     /**
@@ -125,7 +130,7 @@ class ItemSerializer
         if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $question->getMimeType())) {
             // question items
             $canEdit = $this->tokenStorage->getToken() && $this->tokenStorage->getToken()->getUser() instanceof User ?
-                $this->container->get('ujm_exo.manager.item')->canEdit($question, $this->tokenStorage->getToken()->getUser()) :
+                $this->container->get('UJM\ExoBundle\Manager\Item\ItemManager')->canEdit($question, $this->tokenStorage->getToken()->getUser()) :
                 false;
             // Adds minimal information
             $serialized = array_merge($serialized, [
@@ -556,7 +561,7 @@ class ItemSerializer
         ]);
         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
 
-        return $event->getResponse();
+        return $event->getResponse() ?? [];
     }
 
     /**

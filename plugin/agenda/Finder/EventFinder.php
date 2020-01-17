@@ -24,10 +24,15 @@ class EventFinder extends AbstractFinder
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
+        $workspaceJoin = false;
+
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'workspaces':
-                    $qb->leftJoin('obj.workspace', 'w');
+                    if (!$workspaceJoin) {
+                        $qb->leftJoin('obj.workspace', 'w');
+                        $workspaceJoin = true;
+                    }
                     $qb->andWhere('w.uuid IN (:'.$filterName.')');
                     $qb->setParameter($filterName, $filterValue);
                     break;
@@ -39,35 +44,75 @@ class EventFinder extends AbstractFinder
                             $qb->andWhere('obj.isTask = false');
                         }
                     }
+                    break;
+                case 'inRange':
+                    if (!empty($filterValue[0])) {
+                        $qb->andWhere('obj.start >= :startRange OR obj.end >= :startRange2');
+                        $qb->setParameter('startRange', $filterValue[0]);
+                        $qb->setParameter('startRange2', $filterValue[0]);
+                    }
+
+                    if (!empty($filterValue[1])) {
+                        $qb->andWhere('obj.start <= :endRange OR obj.end <= :endRange2');
+                        $qb->setParameter('endRange', $filterValue[1]);
+                        $qb->setParameter('endRange2', $filterValue[1]);
+                    }
 
                     break;
-                case 'createdBefore':
-                    $qb->andWhere("obj.start <= :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
-                    break;
-                case 'createdAfter':
-                    $qb->andWhere("obj.start >= :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
-                    break;
-                case 'endBefore':
-                    $qb->andWhere("obj.end <= :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
-                    break;
-                case 'endAfter':
-                    $qb->andWhere("obj.end >= :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
-                    break;
-                case 'notDoneYet':
-                    //includes today
-                    $now = new \DateTime();
-                    $interval = new \DateInterval('P1D');
-                    $now->sub($interval);
+                case 'afterToday':
                     if ($filterValue) {
                         $qb->andWhere("obj.start >= :{$filterName}");
-                    } else {
-                        $qb->andWhere("obj.start <= :{$filterName}");
+                        $qb->setParameter($filterName, new \DateTime());
                     }
-                    $qb->setParameter($filterName, $now);
+                    break;
+                case 'userId':
+                    $qb->leftJoin('obj.user', 'u');
+                    $qb->andWhere("u.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+                case 'hasRole':
+                    if (!$workspaceJoin) {
+                        $qb->leftJoin('obj.workspace', 'w');
+                        $workspaceJoin = true;
+                    }
+                    // join for tool rights
+                    $qb->leftJoin('w.orderedTools', 'ot');
+                    $qb->leftJoin('ot.tool', 'ott');
+                    $qb->leftJoin('ot.rights', 'otr');
+                    $qb->leftJoin('otr.role', 'otrr');
+                    $qb->leftJoin('otrr.users', 'otrru');
+                    // join for workspace manager role
+                    $qb->leftJoin('w.roles', 'wr');
+                    $qb->leftJoin('wr.users', 'wru');
+
+                    $qb->andWhere('w.displayable = true');
+                    $qb->andWhere('w.model = false');
+                    $qb->andWhere('w.personal = false');
+
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('ott.name', ':agenda'),
+                            $qb->expr()->eq('otrru.uuid', ':roleUserId'),
+                            $qb->expr()->eq('BIT_AND(otr.mask, 1)', '1')
+                        ),
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('wr.name', 'CONCAT(:managerRolePrefix, w.uuid)'),
+                            $qb->expr()->eq('wru.uuid', ':managerId')
+                        )
+                    ));
+                    $qb->setParameter('agenda', 'agenda');
+                    $qb->setParameter('roleUserId', $filterValue);
+                    $qb->setParameter('managerId', $filterValue);
+                    $qb->setParameter('managerRolePrefix', 'ROLE_WS_MANAGER_');
+                    break;
+                case 'desktop':
+                    $byUserSearch = $byWorkspaceSearch = $searches;
+                    $byUserSearch['userId'] = $filterValue;
+                    $byWorkspaceSearch['hasRole'] = $filterValue;
+                    unset($byUserSearch['desktop']);
+                    unset($byWorkspaceSearch['desktop']);
+
+                    return $this->union($byUserSearch, $byWorkspaceSearch, $options, $sortBy);
                     break;
                 case 'user':
                     $byUserSearch = $byGroupSearch = $searches;
@@ -79,7 +124,10 @@ class EventFinder extends AbstractFinder
                     return $this->union($byUserSearch, $byGroupSearch, $options, $sortBy);
                     break;
                 case '_user':
-                    $qb->join('obj.workspace', 'w');
+                    if (!$workspaceJoin) {
+                        $qb->leftJoin('obj.workspace', 'w');
+                        $workspaceJoin = true;
+                    }
                     $qb->leftJoin('w.roles', 'r');
                     $qb->leftJoin('r.users', 'ru');
                     $qb->andWhere($qb->expr()->orX(
@@ -93,7 +141,10 @@ class EventFinder extends AbstractFinder
 
                     break;
                 case '_group':
-                    $qb->join('obj.workspace', 'w');
+                    if (!$workspaceJoin) {
+                        $qb->leftJoin('obj.workspace', 'w');
+                        $workspaceJoin = true;
+                    }
                     $qb->leftJoin('w.roles', 'r');
                     $qb->leftJoin('r.groups', 'rg');
                     $qb->leftJoin('rg.users', 'rgu');
@@ -107,7 +158,10 @@ class EventFinder extends AbstractFinder
                     $qb->setParameter('roleUser', 'ROLE_USER');
                     break;
                 case 'anonymous':
-                    $qb->join('obj.workspace', 'w');
+                    if (!$workspaceJoin) {
+                        $qb->join('obj.workspace', 'w');
+                        $workspaceJoin = true;
+                    }
                     $qb->join('w.orderedTools', 'ot');
                     $qb->join('ot.tool', 'ott');
                     $qb->join('ot.rights', 'otr');
@@ -123,6 +177,8 @@ class EventFinder extends AbstractFinder
                     $this->setDefaults($qb, $filterName, $filterValue);
            }
         }
+
+        $qb->andWhere($qb->expr()->gte('obj.end', 'obj.start'));
 
         return $qb;
     }

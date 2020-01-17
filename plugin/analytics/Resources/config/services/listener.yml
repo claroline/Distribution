@@ -9,12 +9,11 @@ services:
             - '@claroline.event.manager'
         tags:
             - { name: kernel.event_listener, event: administration_tool_dashboard, method: onDisplayTool }
-            - { name: kernel.event_listener, event: crud_pre_patch_object_claroline_corebundle_entity_user, method: listenUserPatch }
 
     Claroline\AnalyticsBundle\Listener\Tool\DashboardListener:
         arguments:
             - '@claroline.event.manager'
-            - '@claroline.persistence.object_manager'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@claroline.manager.progression_manager'
             - '@security.token_storage'
         tags:

@@ -1,4 +1,5 @@
 {
+    "all_events": "Tous les évènements",
     "all_day": "toute la journée",
     "event": "Evénement",
     "events": "Evènements",
@@ -11,5 +12,13 @@
     "task": "Tâche",
     "tasks": "Tâches",
     "display_modes": "Modes de vue",
-    "new_event": "Nouvel évènement"
+    "new_event": "Nouvel évènement",
+    "after_today": "A partir d'aujourd'hui",
+    "agenda_day": "Jour",
+    "agenda_week": "Semaine",
+    "agenda_month": "Mois",
+    "agenda_year": "Année",
+    "agenda_schedule": "Planning",
+    "agenda_list": "Liste",
+    "no_event": "Aucun évènement planifié."
 }

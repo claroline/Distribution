@@ -11,12 +11,6 @@
 
 namespace Claroline\CoreBundle\Library\Configuration;
 
-use JMS\DiExtraBundle\Annotation as DI;
-
-/**
- * @DI\Service()
- * @DI\Tag("claroline.configuration")
- */
 class PlatformDefaults implements ParameterProviderInterface
 {
     const REGISTRATION_MAIL_VALIDATION_NONE = 0;
@@ -34,6 +28,7 @@ class PlatformDefaults implements ParameterProviderInterface
     public function getDefaultParameters()
     {
         return [
+            'meta' => [],
             'home' => [
                 'type' => 'none',
                 'data' => null,
@@ -96,7 +91,6 @@ class PlatformDefaults implements ParameterProviderInterface
                 'max_workspace_users' => 10000,
                 'enable_rich_text_file_import' => false,
                 'send_mail_at_registration' => true,
-                'users_csv_by_full_name' => false, //is it still used ?
                 'default_tag' => null,
                 'list' => [
                     'default_mode' => 'tiles-sm',
@@ -124,15 +118,9 @@ class PlatformDefaults implements ParameterProviderInterface
                 'force_organization_creation' => false,
             ],
             'security' => [
-                'form_captcha' => true,
-                'form_honeypot' => false,
-                'platform_limit_date' => null,
-                'platform_init_date' => 1388534461, //1 june 2014
                 'cookie_lifetime' => 3600,
                 'account_duration' => null,
                 'default_root_anon_id' => null,
-                'anonymous_public_profile' => false,
-                'disabled_admin_tools' => [],
             ],
             'session' => [
                 'storage_type' => 'native',
@@ -160,17 +148,17 @@ class PlatformDefaults implements ParameterProviderInterface
                 'show_terms_of_service' => false,
             ],
             'mailer' => [
-              'enabled' => true,
-              'transport' => 'sendmail',
-              'host' => null,
-              'port' => null,
-              'encryption' => null,
-              'username' => null,
-              'password' => null,
-              'auth_mode' => null,
-              'api_key' => null,
-              'tag' => null,
-              'from' => null,
+                'enabled' => true,
+                'transport' => 'sendmail',
+                'host' => null,
+                'port' => null,
+                'encryption' => null,
+                'username' => null,
+                'password' => null,
+                'auth_mode' => null,
+                'api_key' => null,
+                'tag' => null,
+                'from' => null,
             ],
             'ssl' => [
                 'enabled' => false,
@@ -207,7 +195,6 @@ class PlatformDefaults implements ParameterProviderInterface
                 'search',
                 'history',
                 'favourites',
-                'favourites',
                 'notifications',
             ],
             'admin' => [
@@ -215,12 +202,20 @@ class PlatformDefaults implements ParameterProviderInterface
             ],
             'desktop' => [
                 'default_tool' => 'home',
-                'show_progression' => true,
+                'show_progression' => false,
             ],
             'show_about_button' => true,
             'notifications_refresh_delay' => 0, // in ms
             'is_cron_configured' => false,
             'javascripts' => [],
+            'restrictions' => [
+                'users' => false,
+                'storage' => false,
+                'max_users' => null,
+                'max_storage_size' => null,
+                'max_storage_reached' => false,
+                'used_storage' => null,
+            ],
         ];
     }
 }

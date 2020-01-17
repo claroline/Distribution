@@ -3,8 +3,6 @@
 namespace Claroline\CoreBundle\Library\Testing;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Facet\Facet;
-use Claroline\CoreBundle\Entity\Facet\PanelFacet;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\Organization\Organization;
@@ -22,7 +20,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\HttpFoundation\File\File as SfFile;
 
 /**
- * @service("claroline.library.testing.persister")
+ * @Service("claroline.library.testing.persister")
  */
 class Persister
 {
@@ -31,16 +29,11 @@ class Persister
      */
     private $om;
 
-    /**
-     * @var Role
-     */
-    private $userRole;
-
     private $container;
 
     /**
      * @InjectParams({
-     *     "om"        = @Inject("claroline.persistence.object_manager"),
+     *     "om"        = @Inject("Claroline\AppBundle\Persistence\ObjectManager"),
      *     "container" = @Inject("service_container")
      * })
      */
@@ -123,13 +116,6 @@ class Persister
           $workspace,
           $parent
       );
-    }
-
-    public function grantAdminRole(User $user)
-    {
-        $role = $this->role('ROLE_ADMIN');
-        $user->addRole($role);
-        $this->om->persist($user);
     }
 
     public function group($name)
@@ -222,33 +208,6 @@ class Persister
         $this->om->persist($location);
 
         return $location;
-    }
-
-    public function panelFacet(Facet $facet, $name, $collapse, $autoEditable = false)
-    {
-        return $this->container->get('claroline.manager.facet_manager')->addPanel($facet, $name, $collapse, $autoEditable);
-    }
-
-    public function fieldFacet(PanelFacet $panelFacet, $name, $type, array $choices = [], $isRequired = false)
-    {
-        $this->om->startFlushSuite();
-        $field = $this->container->get('claroline.manager.facet_manager')->addField($panelFacet, $name, $isRequired, $type);
-
-        foreach ($choices as $choice) {
-            $this->container->get('claroline.manager.facet_manager')->addFacetFieldChoice($choice, $field);
-        }
-
-        $this->om->endFlushSuite();
-
-        return $field;
-    }
-
-    public function grantAdminToolAccess(User $user, $toolName)
-    {
-        $toolManager = $this->container->get('claroline.manager.tool_manager');
-        $tool = $toolManager->getAdminToolByName($toolName);
-        $role = $this->container->get('claroline.manager.role_manager')->getUserRole($user->getUsername());
-        $toolManager->addRoleToAdminTool($tool, $role);
     }
 
     /**

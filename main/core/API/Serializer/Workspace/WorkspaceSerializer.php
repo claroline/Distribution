@@ -101,6 +101,11 @@ class WorkspaceSerializer
         $this->resNodeSerializer = $resNodeSerializer;
     }
 
+    public function getName()
+    {
+        return 'workspace';
+    }
+
     /**
      * @return string
      */
@@ -127,23 +132,28 @@ class WorkspaceSerializer
      */
     public function serialize(Workspace $workspace, array $options = [])
     {
+        $thumbnail = null;
+        if ($workspace->getThumbnail()) {
+            /** @var PublicFile $thumbnail */
+            $thumbnail = $this->om->getRepository(PublicFile::class)->findOneBy([
+                'url' => $workspace->getThumbnail(),
+            ]);
+        }
+
+        $poster = null;
+        if ($workspace->getPoster()) {
+            /** @var PublicFile $poster */
+            $poster = $this->om->getRepository(PublicFile::class)->findOneBy([
+                'url' => $workspace->getPoster(),
+            ]);
+        }
+
         $serialized = [
             'name' => $workspace->getName(),
             'code' => $workspace->getCode(),
             'slug' => $workspace->getSlug(),
-            'thumbnail' => $workspace->getThumbnail() && $this->om->getRepository(PublicFile::class)->findOneBy([
-                  'url' => $workspace->getThumbnail(),
-              ]) ? $this->publicFileSerializer->serialize($this->om->getRepository(PublicFile::class)->findOneBy([
-                  'url' => $workspace->getThumbnail(),
-              ])
-            ) : null,
-            'poster' => $workspace->getPoster() && $this->om->getRepository(PublicFile::class)->findOneBy([
-                  'url' => $workspace->getPoster(),
-              ]) ? $this->publicFileSerializer->serialize(
-                $this->om->getRepository(PublicFile::class)->findOneBy([
-                    'url' => $workspace->getPoster(),
-              ])
-            ) : null,
+            'thumbnail' => $thumbnail ? $this->publicFileSerializer->serialize($thumbnail) : null,
+            'poster' => $poster ? $this->publicFileSerializer->serialize($poster) : null,
             'permissions' => [ // TODO it will decrease perfs, should be tested, but it is required in lists
                 'open' => $this->authorization->isGranted('OPEN', $workspace),
                 'delete' => $this->authorization->isGranted('DELETE', $workspace),
@@ -174,13 +184,14 @@ class WorkspaceSerializer
 
             // TODO : remove me. Used by ViewAs modal in UI and workspace transfer
             if (!in_array(Options::SERIALIZE_LIST, $options)) {
+                $workspaceRoles = array_values(array_unique(array_merge($this->workspaceManager->getRolesWithAccess($workspace), $workspace->getRoles()->toArray())));
                 if (in_array(Options::REFRESH_UUID, $options)) {
                     $serialized['roles'] = array_map(function (Role $role) {
                         return [
                           'translationKey' => $role->getTranslationKey(),
                           'type' => $role->getType(),
                         ];
-                    }, array_values(array_unique(array_merge($this->workspaceManager->getRolesWithAccess($workspace), $workspace->getRoles()->toArray()))));
+                    }, $workspaceRoles);
                 } else {
                     $serialized['roles'] = array_map(function (Role $role) {
                         return [
@@ -189,7 +200,7 @@ class WorkspaceSerializer
                             'type' => $role->getType(), // TODO : should be a string for better data readability
                             'translationKey' => $role->getTranslationKey(),
                         ];
-                    }, array_values(array_unique(array_merge($this->workspaceManager->getRolesWithAccess($workspace), $workspace->getRoles()->toArray()))));
+                    }, $workspaceRoles);
                 }
             }
         }
@@ -219,6 +230,7 @@ class WorkspaceSerializer
         $data = [
             'lang' => $workspace->getLang(),
             'forceLang' => (bool) $workspace->getLang(),
+            'archived' => $workspace->isArchived(),
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),

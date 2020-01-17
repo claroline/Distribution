@@ -5,7 +5,8 @@ import {trans} from '#/main/app/intl/translation'
 import {AgendaViewYear} from '#/plugin/agenda/tools/agenda/views/year/components/view'
 
 export default {
-  label: trans('Année'),
+  autoload: true,
+  label: trans('agenda_year', {}, 'agenda'),
   component: AgendaViewYear,
 
   display: (referenceDate) => referenceDate.format('YYYY'),

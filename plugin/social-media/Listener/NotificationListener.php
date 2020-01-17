@@ -12,23 +12,17 @@
 namespace Icap\SocialmediaBundle\Listener;
 
 use Icap\NotificationBundle\Event\Notification\NotificationCreateDelegateViewEvent;
-use JMS\DiExtraBundle\Annotation as DI;
+use Icap\SocialmediaBundle\Event\Log\LogSocialmediaCommentEvent;
+use Icap\SocialmediaBundle\Event\Log\LogSocialmediaLikeEvent;
+use Icap\SocialmediaBundle\Event\Log\LogSocialmediaShareEvent;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class NotificationListener.
- *
- * @DI\Service
  */
 class NotificationListener
 {
-    /**
-     * @DI\InjectParams({
-     *     "translator" = @DI\Inject("translator"),
-     *     "router"     = @DI\Inject("router")
-     * })
-     */
     public function __construct(TranslatorInterface $translator, RouterInterface $router)
     {
         $this->translator = $translator;
@@ -37,20 +31,16 @@ class NotificationListener
 
     /**
      * @param NotificationCreateDelegateViewEvent $event
-     * @DI\Observe("create_notification_item_resource-icap_socialmedia-comment_action")
-     * @DI\Observe("create_notification_item_resource-icap_socialmedia-like_action")
-     * @DI\Observe("create_notification_item_resource-icap_socialmedia-share_action")
      */
     public function onCreateNotificationItem(NotificationCreateDelegateViewEvent $event)
     {
         $notificationView = $event->getNotificationView();
         $notification = $notificationView->getNotification();
+        $slug = isset($notification->getDetails()['resource']['slug']) ? $notification->getDetails()['resource']['slug'] : $notification->getDetails()['id'];
 
         $primaryAction = [
-          'url' => 'claro_resource_open_short',
-          'parameters' => [
-            'node' => $notification->getDetails()['resource']['id'],
-          ],
+          'url' => 'claro_index',
+          'parameters' => ['#' => '/desktop/open/'.$slug.'/resources/'.$slug],
         ];
 
         $text = '';

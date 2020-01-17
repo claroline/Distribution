@@ -1,5 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
 import {PageSimple} from '#/main/app/page/components/simple'
@@ -10,18 +12,18 @@ import {
   PageActions,
   MoreAction
 } from '#/main/core/layout/page'
-import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
-import {MODAL_WALKTHROUGHS} from '#/main/app/overlays/walkthrough/modals/walkthroughs'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {AlertBlock} from '#/main/app/alert/components/alert-block'
+import {FormData} from '#/main/app/content/form/containers/data'
 
 import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
-import {getWalkthroughs} from '#/main/core/tools/home/walkthroughs'
 import {WidgetGrid} from '#/main/core/widget/player/components/grid'
 import {WidgetContainer as WidgetContainerTypes} from '#/main/core/widget/prop-types'
 import {Tab as TabTypes} from '#/main/core/tools/home/prop-types'
 import {Tabs} from '#/main/core/tools/home/components/tabs'
 
 import {EditorForm} from '#/main/core/tools/home/editor/components/form'
+import {selectors} from '#/main/core/tools/home/editor/store/selectors'
 
 const EditorTab = props =>
   <PageSimple
@@ -31,6 +33,10 @@ const EditorTab = props =>
       label: props.currentTab.longTitle,
       target: '/' // this don't work but it's never used as current tab is always last for now
     }] : [])}
+    header={{
+      title: `${trans('home', {}, 'tools')}${'workspace' === props.currentContext.type ? ' - ' + props.currentContext.data.code : ''}`,
+      description: 'workspace' === props.currentContext.type && props.currentContext.data.meta ? props.currentContext.data.meta.description : null
+    }}
   >
     <PageHeader
       alignTitle={props.currentTab && props.currentTab.centerTitle ? 'center' : 'left'}
@@ -42,7 +48,6 @@ const EditorTab = props =>
         tabs={props.tabs}
         create={() => props.createTab(props.currentContext, props.administration, props.currentUser, props.tabs.length, (path) => props.history.push(props.path+path))}
         currentContext={props.currentContext}
-        editing={true}
       />
 
       <PageActions>
@@ -50,14 +55,6 @@ const EditorTab = props =>
           <MoreAction
             actions={[
               {
-                name: 'walkthrough',
-                type: MODAL_BUTTON,
-                icon: 'fa fa-street-view',
-                label: trans('show-walkthrough', {}, 'actions'),
-                modal: [MODAL_WALKTHROUGHS, {
-                  walkthroughs: getWalkthroughs(props.currentTab, (field, value) => props.updateTab(props.currentTabIndex, field, value))
-                }]
-              }, {
                 type: CALLBACK_BUTTON,
                 label: trans('delete', {}, 'actions'),
                 icon: 'fa fa-fw fa-trash-o',
@@ -87,10 +84,30 @@ const EditorTab = props =>
       }
 
       {props.readOnly &&
-        <WidgetGrid
-          currentContext={props.currentContext}
-          widgets={props.widgets}
-        />
+        <FormData
+          name={selectors.FORM_NAME}
+          dataPart={`[${props.currentTabIndex}]`}
+          buttons={true}
+          lock={props.currentTab ? {
+            id: props.currentTab.id,
+            className: 'Claroline\\CoreBundle\\Entity\\Tab\\HomeTab'
+          } : undefined}
+          target={[props.administration ? 'apiv2_home_admin' : 'apiv2_home_update', {
+            context: props.currentContext.type,
+            contextId: !isEmpty(props.currentContext.data) ? props.currentContext.data.uuid : get(props.currentUser, 'id')
+          }]}
+          sections={[]}
+          cancel={{
+            type: LINK_BUTTON,
+            target: `${props.path}/${props.currentTab ? props.currentTab.slug : ''}`,
+            exact: true
+          }}
+        >
+          <WidgetGrid
+            currentContext={props.currentContext}
+            widgets={props.widgets}
+          />
+        </FormData>
       }
 
       {!props.readOnly &&
@@ -103,7 +120,6 @@ const EditorTab = props =>
           widgets={props.widgets}
           administration={props.administration}
           tabs={props.tabs}
-          roles={props.roles}
 
           update={props.updateTab}
           move={props.moveTab}
@@ -122,7 +138,6 @@ EditorTab.propTypes = {
   tabs: T.arrayOf(T.shape(
     TabTypes.propTypes
   )),
-  roles: T.array,
   currentTabTitle: T.string,
   currentTab: T.shape(TabTypes.propTypes),
   currentTabIndex: T.number.isRequired,

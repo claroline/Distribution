@@ -22,27 +22,32 @@ import {WorkspaceMain} from '#/main/core/workspace/containers/main'
 const LayoutMain = props =>
   <Fragment>
     <div className="app" role="presentation">
-      {false &&
-        <div className="app-loader" />
-      }
+      {false && <div className="app-loader" />}
 
       <HeaderMain
-        maintenance={props.maintenance}
+        unavailable={props.unavailable}
         toggleMenu={props.toggleMenu}
       />
 
       {props.menuOpened &&
         <Routes
+          redirect={[
+            {from: '/desktop', to: '/', disabled: !props.unavailable},
+            {from: '/admin',   to: '/', disabled: !props.unavailable}
+          ]}
           routes={[
             {
               path: '/desktop/workspaces/open/:slug',
-              component: WorkspaceMenu
+              component: WorkspaceMenu,
+              disabled: props.unavailable
             }, {
               path: '/desktop',
-              component: DesktopMenu
+              component: DesktopMenu,
+              disabled: props.unavailable
             }, {
               path: '/admin',
-              component: AdministrationMenu
+              component: AdministrationMenu,
+              disabled: props.unavailable
             }
           ]}
         />
@@ -51,22 +56,23 @@ const LayoutMain = props =>
       <div className="app-content" role="presentation">
         <Routes
           redirect={[
-            {from: '/desktop', to: '/', disabled: !props.maintenance || props.authenticated},
-            {from: '/admin',   to: '/', disabled: !props.maintenance || props.authenticated}
+            {from: '/desktop', to: '/', disabled: !props.unavailable},
+            {from: '/admin',   to: '/', disabled: !props.unavailable}
           ]}
           routes={[
             {
               path: '/desktop/workspaces/open/:slug',
               onEnter: (params = {}) => props.openWorkspace(params.slug),
-              component: WorkspaceMain
+              component: WorkspaceMain,
+              disabled: props.unavailable
             }, {
               path: '/desktop',
               component: DesktopMain,
-              disabled: !props.authenticated && props.maintenance
+              disabled: props.unavailable
             }, {
               path: '/admin',
               component: AdministrationMain,
-              disabled: !props.authenticated && props.maintenance
+              disabled: props.unavailable
             },
             // it must be declared last otherwise it will always match.
             // and it cannot be set to exact: true because it contains sub routes for maintenance, login and registration.
@@ -88,7 +94,7 @@ const LayoutMain = props =>
       }
     </div>
 
-    {false && (props.authenticated && props.sidebar) &&
+    {(false && props.authenticated && props.sidebar) &&
       <LayoutSidebar
         close={props.closeSidebar}
       />
@@ -96,7 +102,7 @@ const LayoutMain = props =>
   </Fragment>
 
 LayoutMain.propTypes = {
-  maintenance: T.bool.isRequired,
+  unavailable: T.bool.isRequired,
   authenticated: T.bool.isRequired,
 
   openWorkspace: T.func.isRequired,

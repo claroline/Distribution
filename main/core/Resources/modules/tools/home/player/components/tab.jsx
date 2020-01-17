@@ -20,6 +20,10 @@ const PlayerTab = props =>
       label: props.currentTab.title,
       target: '/' // this don't work but it's never used as current tab is always last for now
     }] : [])}
+    header={{
+      title: `${trans('home', {}, 'tools')}${'workspace' === props.currentContext.type ? ' - ' + props.currentContext.data.code : ''}`,
+      description: 'workspace' === props.currentContext.type && props.currentContext.data.meta ? props.currentContext.data.meta.description : null
+    }}
   >
     <PageHeader
       className={props.currentTab && props.currentTab.centerTitle ? 'text-center' : ''}
@@ -31,7 +35,6 @@ const PlayerTab = props =>
           prefix={props.path}
           tabs={props.tabs}
           currentContext={props.currentContext}
-          editing={false}
         />
       }
 
@@ -52,7 +55,7 @@ const PlayerTab = props =>
               dangerous={true}
               callback={() => {
                 props.setAdministration(false)
-                props.fetchTabs(false)
+                props.fetchTabs(props.currentContext, false)
               }}
             />
           }
@@ -63,7 +66,7 @@ const PlayerTab = props =>
               icon="fa fa-fw fa-exchange"
               callback={() => {
                 props.setAdministration(true)
-                props.fetchTabs(true)
+                props.fetchTabs(props.currentContext, true)
               }}
             />
           }

@@ -4,17 +4,13 @@ namespace Claroline\CoreBundle\Listener\Doctrine;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
- * @DI\Service("claroline.doctrine.debug")
- * @DI\Tag("doctrine.event_listener", attributes={"event"="onFlush"})
- *
- * @todo merge with logger in claroline.persistence.object_manager and keep only one implementation
- *  - logging MUST BE enabled inside the claroline.persistence.object_manager
+ * @todo merge with logger in Claroline\AppBundle\Persistence\ObjectManager and keep only one implementation
+ *  - logging MUST BE enabled inside the Claroline\AppBundle\Persistence\ObjectManager
  *  - printing log MUST BE down through event listening
  */
 class DebugListener
@@ -47,7 +43,7 @@ class DebugListener
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
         //reduce the amount of flushes to increase performances !
-        //you can also activate the log from the claroline.persistence.object_manager service when you use it
+        //you can also activate the log from the Claroline\AppBundle\Persistence\ObjectManager service when you use it
         //if you want additional information about transactions
         if ($this->activateLog) {
             $this->log('onFlush event fired !!!', LogLevel::DEBUG);

@@ -32,7 +32,7 @@ Document.propTypes = {
   type: T.string.isRequired
 }
 
-const formatUrl = (url) => url.startsWith('http') ? url : `http://${url}`
+const formatUrl = (url) => !url || url.startsWith('http') ? url : `http://${url}`
 
 const DocumentRow = props =>
   <tr className={classes('drop-document', {'manager-document': props.document.isManager})}>
@@ -76,7 +76,7 @@ const DocumentRow = props =>
     {(props.canEdit && !props.document.isManager) || (props.isManager && props.document.isManager) ?
       <td>
         <span
-          className="fa fa-fw fa-trash pointer-hand"
+          className="fa fa-fw fa-trash-o pointer-hand"
           onClick={() => {
             props.showModal(MODAL_CONFIRM, {
               icon: 'fa fa-fw fa-trash-o',

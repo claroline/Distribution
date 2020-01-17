@@ -9,7 +9,8 @@ function generateFromTemplate(template, fields, entry, includeMeta = false) {
 
   fields.map(f => {
     let replacedField
-    if (includeMeta || !f.isMetadata) {
+
+    if (includeMeta || !f.restrictions.isMetadata) {
       const fieldValue = entry.values ? entry.values[f.id] : ''
 
       if (fieldValue) {
@@ -48,13 +49,17 @@ function generateFromTemplate(template, fields, entry, includeMeta = false) {
             }
             break
 
+          case 'boolean':
+            replacedField = fieldValue ? f.label : ''
+            break
+
           default:
             replacedField = fieldValue
         }
       }
     }
 
-    generated = generated.replace(generateFieldKey(f.autoId), replacedField || '')
+    generated = generated.replace(generateFieldKey(f.id), replacedField || '')
   })
 
   return generated
@@ -79,7 +84,7 @@ function getTemplateErrors(template, fields) {
 
     fields.map(field => {
       if (!field.restrictions.hidden) {
-        const fieldKey = generateFieldKey(field.autoId)
+        const fieldKey = generateFieldKey(field.id)
 
         const matches = template.match(
           new RegExp(fieldKey, 'g')
@@ -107,9 +112,9 @@ function getTemplateHelp(fields) {
   ].concat(fields
     .filter(field => !field.restrictions.hidden)
     .map(field => field.required ?
-      `${field.name} : ${generateFieldKey(field.autoId)}`
+      `${field.name} : ${generateFieldKey(field.id)}`
       :
-      `${field.name} : ${generateFieldKey(field.autoId)} (${trans('optional')})`
+      `${field.name} : ${generateFieldKey(field.id)} (${trans('optional')})`
     )
   )
 }

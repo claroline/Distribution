@@ -69,6 +69,7 @@ class CommunityListener
             'platformRoles' => $this->finder->search('Claroline\CoreBundle\Entity\Role', [
                 'filters' => ['type' => Role::PLATFORM_ROLE],
             ]),
+            'usersLimitReached' => $this->userManager->hasReachedLimit(),
         ]);
         $event->stopPropagation();
     }

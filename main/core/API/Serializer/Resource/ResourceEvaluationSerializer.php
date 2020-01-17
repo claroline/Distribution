@@ -18,6 +18,11 @@ class ResourceEvaluationSerializer
         $this->resourceUserEvaluationSerializer = $resourceUserEvaluationSerializer;
     }
 
+    public function getName()
+    {
+        return 'resource_evaluation';
+    }
+
     /**
      * Serializes a ResourceEvaluation entity for the JSON api.
      *
@@ -27,12 +32,17 @@ class ResourceEvaluationSerializer
      */
     public function serialize(ResourceEvaluation $resourceEvaluation)
     {
+        $score = $resourceEvaluation->getScore();
+        if ($score) {
+            $score = round($score, 2);
+        }
+
         $serialized = [
             'id' => $resourceEvaluation->getId(),
             'date' => $resourceEvaluation->getDate() ? $resourceEvaluation->getDate()->format('Y-m-d H:i') : null,
             'status' => $resourceEvaluation->getStatus(),
             'duration' => $resourceEvaluation->getDuration(),
-            'score' => $resourceEvaluation->getScore(),
+            'score' => $score,
             'scoreMin' => $resourceEvaluation->getScoreMin(),
             'scoreMax' => $resourceEvaluation->getScoreMax(),
             'customScore' => $resourceEvaluation->getCustomScore(),

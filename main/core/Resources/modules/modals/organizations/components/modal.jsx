@@ -16,10 +16,11 @@ const OrganizationsModal = props => {
 
   return (
     <Modal
-      {...omit(props, 'selected', 'selectAction', 'resetSelect')}
-      icon="fa fa-fw fa-users"
+      {...omit(props, 'selected', 'selectAction', 'reset')}
+      icon="fa fa-fw fa-building"
+      className="data-picker-modal"
       bsSize="lg"
-      onExiting={props.resetSelect}
+      onExiting={props.reset}
     >
       <ListData
         name={selectors.STORE_NAME}
@@ -51,7 +52,7 @@ OrganizationsModal.propTypes = {
 
   // from store
   selected: T.arrayOf(T.shape(OrganizationType.propTypes)).isRequired,
-  resetSelect: T.func.isRequired
+  reset: T.func.isRequired
 }
 
 OrganizationsModal.defaultProps = {

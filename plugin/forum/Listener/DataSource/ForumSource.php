@@ -15,33 +15,31 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\DataSource;
 use Claroline\CoreBundle\Event\DataSource\GetDataEvent;
 use Claroline\ForumBundle\Entity\Message;
-use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @DI\Service
- */
 class ForumSource
 {
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     /** @var FinderProvider */
     private $finder;
 
     /**
      * ForumSource constructor.
      *
-     * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder")
-     * })
-     *
-     * @param FinderProvider $finder
+     * @param TokenStorageInterface $tokenStorage
+     * @param FinderProvider        $finder
      */
-    public function __construct(FinderProvider $finder)
-    {
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        FinderProvider $finder
+    ) {
+        $this->tokenStorage = $tokenStorage;
         $this->finder = $finder;
     }
 
     /**
-     * @DI\Observe("data_source.forum_messages.load")
-     *
      * @param GetDataEvent $event
      */
     public function getData(GetDataEvent $event)
@@ -49,11 +47,21 @@ class ForumSource
         $options = $event->getOptions() ? $event->getOptions() : [];
         $options['hiddenFilters']['moderation'] = false;
 
+        $roles = DataSource::CONTEXT_HOME === $event->getContext() ?
+            ['ROLE_ANONYMOUS'] :
+            array_map(
+                function ($role) { return $role->getRole(); },
+                $this->tokenStorage->getToken()->getRoles()
+            );
+
+        if (!in_array('ROLE_ADMIN', $roles)) {
+            $options['hiddenFilters']['roles'] = $roles;
+        }
+
         if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {
             $options['hiddenFilters']['workspace'] = $event->getWorkspace()->getUuid();
-        } elseif (DataSource::CONTEXT_HOME === $event->getContext()) {
-            $options['hiddenFilters']['anonymous'] = true;
         }
+
         $event->setData(
             $this->finder->search(Message::class, $options)
         );

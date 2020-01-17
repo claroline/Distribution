@@ -1,4 +1,5 @@
 {
+    "all_events": "All events",
     "all_day": "the whole day",
     "event": "Event",
     "events": "Events",
@@ -11,5 +12,13 @@
     "task": "Task",
     "tasks": "Tasks",
     "display_modes": "View modes",
-    "new_event": "New event"
+    "new_event": "New event",
+    "after_today": "After today",
+    "agenda_day": "Day",
+    "agenda_week": "Week",
+    "agenda_month": "Month",
+    "agenda_year": "Year",
+    "agenda_schedule": "Schedule",
+    "agenda_list": "List",
+    "no_event": "No events planned."
 }

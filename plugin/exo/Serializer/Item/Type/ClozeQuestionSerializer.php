@@ -28,6 +28,11 @@ class ClozeQuestionSerializer
         $this->keywordSerializer = $keywordSerializer;
     }
 
+    public function getName()
+    {
+        return 'exo_question_cloze';
+    }
+
     /**
      * Converts a Cloze question into a JSON-encodable structure.
      *
@@ -80,7 +85,7 @@ class ClozeQuestionSerializer
      */
     private function serializeHoles(ClozeQuestion $clozeQuestion)
     {
-        return array_map(function (Hole $hole) {
+        return array_values(array_map(function (Hole $hole) {
             $holeData = [
                 'id' => $hole->getUuid(),
                 'size' => $hole->getSize(),
@@ -99,7 +104,7 @@ class ClozeQuestionSerializer
             }
 
             return $holeData;
-        }, $clozeQuestion->getHoles()->toArray());
+        }, $clozeQuestion->getHoles()->toArray()));
     }
 
     /**

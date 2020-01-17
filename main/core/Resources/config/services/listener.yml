@@ -3,18 +3,10 @@ services:
         autowire: false
         autoconfigure: false
         public: true #because lazy
-        tags: [claroline.crud]
-
-    Claroline\CoreBundle\Listener\Administration\AppearanceListener:
-        arguments:
-            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
-            - '@claroline.manager.icon_set_manager'
-        tags:
-            - { name: kernel.event_listener, event: administration_tool_appearance_settings, method: onDisplayTool }
 
     Claroline\CoreBundle\Listener\Administration\CommunityListener:
         arguments:
-            - '@claroline.api.finder'
+            - '@Claroline\AppBundle\API\FinderProvider'
             - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\ProfileSerializer'
             - '@claroline.manager.resource_manager'
@@ -25,7 +17,7 @@ services:
 
     Claroline\CoreBundle\Listener\Administration\HomeListener:
         arguments:
-            - '@claroline.api.finder'
+            - '@Claroline\AppBundle\API\FinderProvider'
         tags:
             - { name: kernel.event_listener, event: administration_tool_home, method: onDisplayTool }
 
@@ -35,8 +27,10 @@ services:
 
     Claroline\CoreBundle\Listener\Administration\ParametersListener:
         arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
             - '@claroline.manager.locale_manager'
+            - '@claroline.manager.icon_set_manager'
         tags:
             - { name: kernel.event_listener, event: administration_tool_main_settings, method: onDisplayTool }
 
@@ -46,60 +40,48 @@ services:
         tags:
             - { name: kernel.event_listener, event: administration_tool_tasks_scheduling, method: onDisplayTool }
 
-    Claroline\CoreBundle\Listener\Administration\TechnicalListener:
-        arguments:
-            - '@claroline.persistence.object_manager'
-            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
-        tags:
-            - { name: kernel.event_listener, event: administration_tool_technical_settings, method: onDisplayTool }
-
     Claroline\CoreBundle\Listener\Administration\TemplateListener:
-        arguments:
-            - '@security.authorization_checker'
-            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
-            - '@templating'
-            - '@claroline.manager.tool_manager'
         tags:
             - { name: kernel.event_listener, event: administration_tool_templates_management, method: onAdministrationToolOpen }
 
     Claroline\CoreBundle\Listener\Administration\TransferListener:
         arguments:
-            - '@claroline.api.transfer'
+            - '@Claroline\AppBundle\API\TransferProvider'
         tags:
             - { name: kernel.event_listener, event: administration_tool_transfer, method: onDisplayTool }
 
     Claroline\CoreBundle\Listener\DataSource\Workspace\AllSource:
         arguments:
-            - '@claroline.api.finder'
+            - '@Claroline\AppBundle\API\FinderProvider'
         tags:
             - { name: kernel.event_listener, event: data_source.workspaces.load, method: getData }
 
     Claroline\CoreBundle\Listener\DataSource\Workspace\RegisteredSource:
         arguments:
-            - '@claroline.api.finder'
+            - '@Claroline\AppBundle\API\FinderProvider'
             - '@security.token_storage'
         tags:
             - { name: kernel.event_listener, event: data_source.my_workspaces.load, method: getData }
 
     Claroline\CoreBundle\Listener\DataSource\AdminToolSource:
         arguments:
-            - '@claroline.api.finder'
+            - '@Claroline\AppBundle\API\FinderProvider'
             - '@security.token_storage'
         tags:
             - { name: kernel.event_listener, event: data_source.admin_tools.load, method: getData }
 
     Claroline\CoreBundle\Listener\DataSource\ResourceSource:
         arguments:
-            - '@claroline.persistence.object_manager'
-            - '@claroline.api.finder'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\API\FinderProvider'
             - '@security.token_storage'
         tags:
             - { name: kernel.event_listener, event: data_source.resources.load, method: getData }
 
     Claroline\CoreBundle\Listener\DataSource\ToolSource:
         arguments:
-            - '@claroline.api.finder'
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\API\FinderProvider'
+            - '@Claroline\AppBundle\API\SerializerProvider'
             - '@security.token_storage'
             - '@claroline.manager.workspace_manager'
         tags:
@@ -107,18 +89,18 @@ services:
 
     Claroline\CoreBundle\Listener\DataSource\UserSource:
         arguments:
-            - '@claroline.api.finder'
+            - '@Claroline\AppBundle\API\FinderProvider'
         tags:
             - { name: kernel.event_listener, event: data_source.users.load, method: getData }
 
     Claroline\CoreBundle\Listener\Log\LogListener:
         public: true
         arguments:
-            - '@claroline.persistence.object_manager'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@security.token_storage'
             - '@service_container'
             - '@claroline.manager.role_manager'
-            - '@claroline.config.platform_config_handler'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@claroline.manager.resource_manager'
             - '@claroline.manager.resource_evaluation_manager'
             - '@claroline.manager.log_connect'
@@ -133,12 +115,14 @@ services:
 
     Claroline\CoreBundle\Listener\Resource\Types\DirectoryListener:
         arguments:
-            - '@claroline.persistence.object_manager'
-            - '@claroline.api.serializer'
-            - '@claroline.api.crud'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\API\SerializerProvider'
+            - '@Claroline\AppBundle\API\Crud'
             - '@claroline.manager.resource_manager'
             - '@claroline.manager.resource_action'
             - '@claroline.manager.rights_manager'
+            - '@Claroline\CoreBundle\Listener\Log\LogListener'
+            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
         tags:
             - { name: kernel.event_listener, event: resource.directory.load, method: onLoad }
             - { name: kernel.event_listener, event: resource.directory.add, method: onAdd }
@@ -148,14 +132,14 @@ services:
     Claroline\CoreBundle\Listener\Resource\Types\FileListener:
         arguments:
             - '@security.token_storage'
-            - '@claroline.persistence.object_manager'
-            - '@claroline.event.event_dispatcher'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
             - '%claroline.param.files_directory%'
-            - '@claroline.utilities.mime_type_guesser'
-            - '@claroline.api.serializer'
+            - '@Claroline\CoreBundle\Library\Utilities\MimeTypeGuesser'
+            - '@Claroline\AppBundle\API\SerializerProvider'
             - '@claroline.manager.resource_manager'
             - '@claroline.manager.resource_evaluation_manager'
-            - '@claroline.utilities.file'
+            - '@Claroline\CoreBundle\Library\Utilities\FileUtilities'
         tags:
             - { name: kernel.event_listener, event: resource.file.load, method: onLoad }
             - { name: kernel.event_listener, event: resource.file.change_file, method: onFileChange }
@@ -169,8 +153,8 @@ services:
 
     Claroline\CoreBundle\Listener\Resource\Types\TextListener:
         arguments:
-            - '@claroline.persistence.object_manager'
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\API\SerializerProvider'
         tags:
             - { name: kernel.event_listener, event: resource.text.load, method: load }
             - { name: kernel.event_listener, event: resource.text.delete, method: delete }
@@ -178,14 +162,14 @@ services:
     Claroline\CoreBundle\Listener\Resource\ResourceListener:
         arguments:
             - '@security.token_storage'
-            - '@claroline.api.crud'
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\API\Crud'
+            - '@Claroline\AppBundle\API\SerializerProvider'
             - '@claroline.manager.resource_manager'
             - '@claroline.manager.resource_lifecycle'
+            - '@claroline.manager.resource_evaluation_manager'
         tags:
             - { name: kernel.event_listener, event: resource.load, method: load }
             - { name: kernel.event_listener, event: resource.create, method: create }
-            - { name: kernel.event_listener, event: resource.open, method: open }
             - { name: kernel.event_listener, event: resource.about, method: about }
             - { name: kernel.event_listener, event: resource.configure, method: configure }
             - { name: kernel.event_listener, event: resource.rights, method: rights }
@@ -203,14 +187,15 @@ services:
             - '@security.authorization_checker'
             - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\ProfileSerializer'
+            - '@claroline.manager.user_manager'
         tags:
             - { name: kernel.event_listener, event: open_tool_workspace_community, method: onDisplayWorkspace }
             - { name: kernel.event_listener, event: open_tool_desktop_community, method: onDisplayDesktop }
 
     Claroline\CoreBundle\Listener\Tool\DataTransferListener:
         arguments:
-            - '@claroline.api.transfer'
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\API\TransferProvider'
+            - '@Claroline\AppBundle\API\SerializerProvider'
         tags:
             - { name: kernel.event_listener, event: open_tool_workspace_transfer, method: onDisplayWorkspace }
 
@@ -218,20 +203,17 @@ services:
         arguments:
             - '@security.authorization_checker'
             - '@security.token_storage'
-            - '@templating'
-            - '@claroline.api.finder'
-            - '@claroline.api.serializer'
-            - '@translator'
-            - '@claroline.persistence.object_manager'
+            - '@Claroline\AppBundle\API\FinderProvider'
+            - '@Claroline\AppBundle\API\SerializerProvider'
         tags:
             - { name: kernel.event_listener, event: open_tool_desktop_home, method: onDisplayDesktop }
             - { name: kernel.event_listener, event: open_tool_workspace_home, method: onDisplayWorkspace }
 
     Claroline\CoreBundle\Listener\Tool\ParametersListener:
         arguments:
-            - '@claroline.api.finder'
-            - '@claroline.persistence.object_manager'
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\API\FinderProvider'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\API\SerializerProvider'
             - '@templating'
             - '@security.token_storage'
             - '@claroline.manager.tool_manager'
@@ -240,8 +222,8 @@ services:
 
     Claroline\CoreBundle\Listener\Tool\ResourcesListener:
         arguments:
-            - '@claroline.persistence.object_manager'
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\API\SerializerProvider'
         tags:
             - { name: kernel.event_listener, event: open_tool_desktop_resources, method: onDisplayDesktop }
             - { name: kernel.event_listener, event: open_tool_workspace_resources, method: onDisplayWorkspace }
@@ -253,9 +235,119 @@ services:
     Claroline\CoreBundle\Listener\Tool\WorkspacesListener:
         arguments:
             - '@security.token_storage'
-            - '@templating'
-            - '@claroline.api.finder'
-            - '@claroline.api.serializer'
+            - '@Claroline\AppBundle\API\FinderProvider'
+            - '@Claroline\AppBundle\API\SerializerProvider'
             - '@security.authorization_checker'
         tags:
             - { name: kernel.event_listener, event: open_tool_desktop_workspaces, method: onDisplayDesktop }
+
+    Claroline\CoreBundle\Listener\Workspace\EvaluationListener:
+        arguments:
+            - '@Claroline\CoreBundle\Manager\Workspace\EvaluationManager'
+        tags:
+            - { name: kernel.event_listener, event: resource_evaluation, method: onResourceEvaluation }
+            - { name: kernel.event_listener, event: log, method: onLog }
+            - { name: kernel.event_listener, event: crud_post_collection_patch_object_claroline_corebundle_entity_group, method: groupUsersPostCollectionPatch }
+
+    Claroline\CoreBundle\Listener\ViewAsListener:
+        arguments:
+            - '@security.authorization_checker'
+            - '@security.token_storage'
+            - '@doctrine.orm.entity_manager'
+            - '@claroline.manager.role_manager'
+            - '@Claroline\CoreBundle\Library\Security\TokenUpdater'
+            - '@claroline.manager.user_manager'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onViewAs }
+
+    Claroline\CoreBundle\Listener\ScheduledTaskListener:
+        arguments:
+            - '@claroline.manager.mail_manager'
+            - '@claroline.manager.scheduled_task_manager'
+        tags:
+            - { name: kernel.event_listener, event: claroline_scheduled_task_execute_email, method: onExecuteMailTask }
+
+    Claroline\CoreBundle\Listener\PlatformListener:
+        arguments:
+            - '@security.token_storage'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
+            - '@claroline.manager.temp_file'
+            - '@claroline.manager.locale_manager'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: setLocale, priority: 17 }
+            - { name: kernel.event_listener, event: kernel.request, method: checkAvailability }
+            - { name: kernel.event_listener, event: kernel.terminate, method: clearTemp }
+
+    Claroline\CoreBundle\Listener\CliListener:
+        arguments:
+            - '@security.token_storage'
+            - '@doctrine.orm.entity_manager'
+            - '@claroline.manager.user_manager'
+        tags:
+            - { name: kernel.event_listener, event: console.command, method: setDefaultUser, priority: 17 }
+
+    Claroline\CoreBundle\Listener\AuthenticationSuccessListener:
+        arguments:
+            - '@security.token_storage'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+            - '@Claroline\AppBundle\API\SerializerProvider'
+            - '@claroline.manager.user_manager'
+            - '@claroline.manager.connection_message_manager'
+
+    Claroline\CoreBundle\Listener\Entity\UserListener:
+        arguments:
+            - '@security.encoder_factory'
+        tags: ['doctrine.entity_listener']
+
+    Claroline\CoreBundle\Listener\Doctrine\DebugListener:
+        public: true
+        tags:
+            - { name: doctrine.event_listener, event: onFLush }
+
+    Claroline\CoreBundle\Doctrine\EntityListenerResolver:
+        arguments:
+            - '@service_container'
+
+    Claroline\CoreBundle\Listener\Log\GroupListener:
+        arguments:
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+        tags:
+            - { name: kernel.event_listener, event: crud.post.create.group, method: onGroupCreate }
+            - { name: kernel.event_listener, event: crud.post.update.group, method: onGroupUpdate }
+            - { name: kernel.event_listener, event: crud.post.delete.group, method: onGroupDelete }
+            - { name: kernel.event_listener, event: crud.post.patch.group, method: onGroupPatch }
+
+    Claroline\CoreBundle\Listener\Log\ResourceListener:
+        arguments:
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+        tags:
+            - { name: kernel.event_listener, event: resource.load, method: onResourceLoad }
+            - { name: kernel.event_listener, event: crud.post.create.resource_node, method: onResourceCreate }
+            - { name: kernel.event_listener, event: crud.pre.delete.resource_node, method: onResourceDelete }
+            - { name: kernel.event_listener, event: crud.post.copy.resource_node, method: onResourceCopy }
+            - { name: kernel.event_listener, event: crud.end.update.resource_node, method: onResourceUpdate }
+
+    Claroline\CoreBundle\Listener\Log\WorkspaceListener:
+        arguments:
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+            - '@Claroline\CoreBundle\Listener\Log\LogListener'
+        tags:
+            - { name: kernel.event_listener, event: crud.pre.create.workspace, method: onWorkspacePreCreate }
+            - { name: kernel.event_listener, event: crud.post.create.workspace, method: onWorkspacePostCreate }
+            - { name: kernel.event_listener, event: crud.pre.delete.workspace, method: onWorkspacePreDelete, priority: 1 }
+
+    Claroline\CoreBundle\Listener\Log\UserListener:
+        arguments:
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+        tags:
+            - { name: kernel.event_listener, event: crud.post.create.user, method: onUserCreate }
+            - { name: kernel.event_listener, event: crud.pre.delete.user, method: onUserDelete, priority: 1 }
+            - { name: kernel.event_listener, event: crud.post.patch.user, method: onUserPatch }
+
+    Claroline\CoreBundle\Listener\Log\RoleListener:
+        arguments:
+            - '@Claroline\AppBundle\Event\StrictDispatcher'
+        tags:
+            - { name: kernel.event_listener, event: crud.post.patch.role, method: onRolePatch }

@@ -6,12 +6,12 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Item;
+use UJM\ExoBundle\Event\Log\LogExerciseEvent;
 use UJM\ExoBundle\Library\Attempt\PaperGenerator;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
@@ -21,8 +21,6 @@ use UJM\ExoBundle\Serializer\Item\ItemSerializer;
 
 /**
  * AttemptManager provides methods to manage user attempts to exercises.
- *
- * @DI\Service("ujm_exo.manager.attempt")
  */
 class AttemptManager
 {
@@ -68,16 +66,6 @@ class AttemptManager
 
     /**
      * AttemptManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "paperGenerator"  = @DI\Inject("ujm_exo.generator.paper"),
-     *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
-     *     "answerManager"   = @DI\Inject("ujm_exo.manager.answer"),
-     *     "itemManager"     = @DI\Inject("ujm_exo.manager.item"),
-     *     "itemSerializer"  = @DI\Inject("ujm_exo.serializer.item"),
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
-     * })
      *
      * @param ObjectManager            $om
      * @param PaperGenerator           $paperGenerator
@@ -219,6 +207,13 @@ class AttemptManager
             $this->om->flush();
         }
 
+        $user = $paper->getUser();
+        $event = new LogExerciseEvent('resource-ujm_exercise-paper-start-or-continue', $paper->getExercise(), [
+          'user' => $user ?
+           ['username' => $user->getUsername(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName()] : 'anon',
+        ]);
+        $this->eventDispatcher->dispatch('log', $event);
+
         return $paper;
     }
 
@@ -310,7 +305,7 @@ class AttemptManager
         $paper->setScore($score);
 
         if ($generateEvaluation) {
-            $evalutaion = $this->paperManager->generateResourceEvaluation($paper, $finished);
+            $evaluation = $this->paperManager->generateResourceEvaluation($paper, $finished);
         }
         $this->om->persist($paper);
         $this->om->endFlushSuite();
@@ -318,7 +313,15 @@ class AttemptManager
         $this->paperManager->checkPaperEvaluated($paper);
 
         if ($generateEvaluation) {
-            $event = new GenericDataEvent($evalutaion);
+            $user = $paper->getUser();
+
+            $event = new LogExerciseEvent('resource-ujm_exercise-paper-end', $paper->getExercise(), [
+              'user' => $user ?
+               ['username' => $user->getUsername(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName()] : 'anon',
+            ]);
+            $this->eventDispatcher->dispatch('log', $event);
+
+            $event = new GenericDataEvent($evaluation);
             $this->eventDispatcher->dispatch('resource.score_evaluation.created', $event);
         }
     }

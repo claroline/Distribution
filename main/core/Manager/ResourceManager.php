@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
@@ -18,7 +19,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
-use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
@@ -116,7 +116,8 @@ class ResourceManager
         TranslatorInterface $translator,
         PlatformConfigurationHandler $platformConfigHandler,
         SerializerProvider $serializer,
-        ResourceLifecycleManager $lifeCycleManager
+        ResourceLifecycleManager $lifeCycleManager,
+        Crud $crud
     ) {
         $this->om = $om;
 
@@ -131,9 +132,9 @@ class ResourceManager
         $this->filesDirectory = $container->getParameter('claroline.param.files_directory');
         $this->serializer = $serializer;
         $this->lifeCycleManager = $lifeCycleManager;
-
-        $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
-        $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
+        $this->crud = $crud;
+        $this->resourceTypeRepo = $om->getRepository(ResourceType::class);
+        $this->resourceNodeRepo = $om->getRepository(ResourceNode::class);
         $this->userRepo = $om->getRepository(User::class);
         $this->roleRepo = $om->getRepository(Role::class);
     }
@@ -155,7 +156,6 @@ class ResourceManager
      * @param User             $creator
      * @param Workspace        $workspace
      * @param ResourceNode     $parent
-     * @param ResourceIcon     $icon
      * @param array            $rights
      * @param bool             $isPublished
      * @param bool             $createRights
@@ -170,13 +170,11 @@ class ResourceManager
         User $creator,
         Workspace $workspace = null,
         ResourceNode $parent = null,
-        ResourceIcon $icon = null,
         array $rights = [],
         $isPublished = true,
         $createRights = true
     ) {
         $this->om->startFlushSuite();
-
         /** @var ResourceNode $node */
         $node = new ResourceNode();
         $node->setResourceType($resourceType);
@@ -184,56 +182,37 @@ class ResourceManager
         $mimeType = (null === $resource->getMimeType()) ?
             'custom/'.$resourceType->getName() :
             $resource->getMimeType();
-
         $node->setMimeType($mimeType);
         $node->setName($resource->getName());
         $node->setCreator($creator);
-
         if (!$workspace && $parent && $parent->getWorkspace()) {
             $workspace = $parent->getWorkspace();
         }
-
         if ($workspace) {
             $node->setWorkspace($workspace);
         }
-
         $node->setParent($parent);
         $node->setName($this->getUniqueName($node, $parent));
-
         if ($parent) {
             $this->setLastIndex($parent, $node);
         }
-
         if (!is_null($parent)) {
             $node->setAccessibleFrom($parent->getAccessibleFrom());
             $node->setAccessibleUntil($parent->getAccessibleUntil());
         }
-
         $resource->setResourceNode($node);
-
         if ($createRights) {
             $this->setRights($node, $parent, $rights);
         }
         $this->om->persist($node);
         $this->om->persist($resource);
-
         $parentPath = '';
-
         if ($parent) {
             $parentPath .= $parent->getPathForDisplay().' / ';
         }
-
         $node->setPathForCreationLog($parentPath.$node->getName());
-
-        $usersToNotify = $workspace && $workspace->getId() ?
-            $this->userRepo->findUsersByWorkspaces([$workspace]) :
-            [];
-
-        $this->dispatcher->dispatch('log', 'Log\LogResourceCreate', [$node, $usersToNotify]);
-        $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
-
         $this->om->endFlushSuite();
-
+        
         return $resource;
     }
 
@@ -336,11 +315,11 @@ class ResourceManager
      * @param array                                              $rights
      * @param bool                                               $withDefault
      */
-    public function createRights(ResourceNode $node, array $rights = [], $withDefault = true)
+    public function createRights(ResourceNode $node, array $rights = [], $withDefault = true, $log = true)
     {
         foreach ($rights as $data) {
             $resourceTypes = $this->checkResourceTypes($data['create']);
-            $this->rightsManager->create($data, $data['role'], $node, false, $resourceTypes);
+            $this->rightsManager->create($data, $data['role'], $node, false, $resourceTypes, $log);
         }
         if ($withDefault) {
             if (!array_key_exists('ROLE_ANONYMOUS', $rights)) {
@@ -349,7 +328,8 @@ class ResourceManager
                     $this->roleRepo->findOneBy(['name' => 'ROLE_ANONYMOUS']),
                     $node,
                     false,
-                    []
+                    [],
+                    $log
                 );
             }
             if (!array_key_exists('ROLE_USER', $rights)) {
@@ -358,7 +338,8 @@ class ResourceManager
                     $this->roleRepo->findOneBy(['name' => 'ROLE_USER']),
                     $node,
                     false,
-                    []
+                    [],
+                    $log
                 );
             }
         }
@@ -489,6 +470,8 @@ class ResourceManager
     /**
      * Copies a resource in a directory.
      *
+     * @deprecated use crud instead
+     *
      * @param ResourceNode $node
      * @param ResourceNode $parent
      * @param User         $user
@@ -504,11 +487,7 @@ class ResourceManager
     public function copy(
         ResourceNode $node,
         ResourceNode $parent,
-        User $user,
-        $index = null,
-        $withRights = true,
-        $withDirectoryContent = true,
-        array $rights = []
+        User $user
     ) {
         $check = ['activity', 'claroline_scorm_12', 'claroline_scorm_2004'];
 
@@ -516,62 +495,15 @@ class ResourceManager
             return;
         }
 
-        $withDirectoryContent = true;
         $this->log("Copying {$node->getName()} from type {$node->getResourceType()->getName()}");
-        $resource = $this->getResourceFromNode($node);
-        $env = $this->container->get('kernel')->getEnvironment();
 
-        if (!$resource) {
-            if ('dev' === $env) {
-                $message = 'The resource '.$node->getName().' was not found (node id is '.$node->getId().')';
-                $this->container->get('logger')->error($message);
+        $newNode = $this->crud->copy($node, [Options::REFRESH_UUID, OPTIONS::IGNORE_RIGHTS], ['user' => $user, 'parent' => $parent]);
 
-                return;
-            } else {
-                //if something is malformed in production, try to not break everything if we don't need to. Just return null.
-                return;
-            }
-        }
-        $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
-        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($resource))->getName();
-
-        $serializer = $this->serializer->get($className);
-        $options = ['serialize' => [], 'deserialize' => [Options::REFRESH_UUID]];
-        if (method_exists($serializer, 'getCopyOptions')) {
-            $options = array_merge_recursive($options, $serializer->getCopyOptions());
-        }
-
-        $serialized = $serializer->serialize($resource, $options['serialize']);
-        $copy = new $className();
-        $serializer->deserialize($serialized, $copy, $options['deserialize']);
-        $copy->setResourceNode($newNode);
-        $original = $this->getResourceFromNode($node);
-
-        $event = $this->lifeCycleManager->copy($original, $copy);
-
-        // Set the published state
-        $newNode->setPublished($event->getPublish());
-
-        if ('directory' === $node->getResourceType()->getName() &&
-            $withDirectoryContent) {
-            $i = 1;
-            $this->log('Copying '.count($node->getChildren()->toArray()).' resources for directory '.$node->getName());
-
-            foreach ($node->getChildren() as $child) {
-                $this->log('Loop for  '.$child->getName().':'.$child->getResourceType()->getName());
-
-                //              if ($child->isActive()) {
-                $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
-                ++$i;
-                //             }
-            }
-        }
-
-        $this->om->persist($copy);
-        $this->dispatcher->dispatch('log', 'Log\LogResourceCopy', [$newNode, $node]);
+        $this->om->persist($newNode);
         $this->om->flush();
 
-        return $copy;
+        //for backward compatibility for the moment
+        return $newNode->getResource();
     }
 
     /**
@@ -585,32 +517,18 @@ class ResourceManager
      */
     public function setPublishedStatus(array $nodes, $arePublished, $isRecursive = false)
     {
-        $this->om->startFlushSuite();
         foreach ($nodes as $node) {
-            $node->setPublished($arePublished);
-            $this->om->persist($node);
+            $this->crud->update(ResourceNode::class, [
+              'id' => $node->getUuid(),
+              'meta' => ['published' => $arePublished],
+            ]);
 
             //do it on every children aswell
             if ($isRecursive) {
                 $descendants = $this->resourceNodeRepo->findDescendants($node, true);
                 $this->setPublishedStatus($descendants, $arePublished, false);
             }
-
-            //only warn for the roots
-            $this->dispatcher->dispatch(
-                "publication_change_{$node->getResourceType()->getName()}",
-                'Resource\PublicationChange',
-                [$this->getResourceFromNode($node)]
-            );
-
-            $usersToNotify = $node->getWorkspace() && !$node->getWorkspace()->isDisabledNotifications() ?
-                $this->userRepo->findUsersByWorkspaces([$node->getWorkspace()]) :
-                [];
-
-            $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
         }
-
-        $this->om->endFlushSuite();
 
         return $nodes;
     }
@@ -623,138 +541,9 @@ class ResourceManager
      *
      * @throws \LogicException
      */
-    public function delete(ResourceNode $resourceNode, $force = false, $softDelete = false)
+    public function delete(ResourceNode $node, $force = false, $softDelete = false)
     {
-        $this->log('Removing '.$resourceNode->getName().'['.$resourceNode->getResourceType()->getName().':id:'.$resourceNode->getId().']');
-
-        if (null === $resourceNode->getParent() && !$force) {
-            throw new \LogicException('Root directory cannot be removed');
-        }
-
-        $workspace = $resourceNode->getWorkspace();
-        $nodes = $this->getDescendants($resourceNode);
-        $nodes[] = $resourceNode;
-        $this->om->startFlushSuite();
-        $this->log('Looping through '.count($nodes).' children...');
-
-        foreach ($nodes as $node) {
-            $eventSoftDelete = false;
-            $this->log('Removing '.$node->getName().'['.$node->getResourceType()->getName().':id:'.$node->getId().']');
-            $resource = $this->getResourceFromNode($node);
-            /*
-             * resChild can be null if a shortcut was removed
-             *
-             * activities must be ignored atm
-             */
-
-            $ignore = ['activity'];
-
-            if (null !== $resource) {
-                if (!$softDelete && !in_array($node->getResourceType()->getName(), $ignore)) {
-                    $event = $this->lifeCycleManager->delete($node);
-                    $eventSoftDelete = $event->isSoftDelete();
-
-                    foreach ($event->getFiles() as $file) {
-                        if ($softDelete) {
-                            $parts = explode(
-                                $this->filesDirectory.DIRECTORY_SEPARATOR,
-                                $file
-                            );
-
-                            if (2 === count($parts)) {
-                                $deleteDir = $this->filesDirectory.
-                                    DIRECTORY_SEPARATOR.
-                                    'DELETED_FILES';
-                                $dest = $deleteDir.
-                                    DIRECTORY_SEPARATOR.
-                                    $parts[1];
-                                $additionalDirs = explode(DIRECTORY_SEPARATOR, $parts[1]);
-
-                                for ($i = 0; $i < count($additionalDirs) - 1; ++$i) {
-                                    $deleteDir .= DIRECTORY_SEPARATOR.$additionalDirs[$i];
-                                }
-
-                                if (!is_dir($deleteDir)) {
-                                    mkdir($deleteDir, 0777, true);
-                                }
-                                rename($file, $dest);
-                            }
-                        } else {
-                            unlink($file);
-                        }
-
-                        //It won't work if a resource has no workspace for a reason or an other. This could be a source of bug.
-                        $dir = $this->filesDirectory.
-                            DIRECTORY_SEPARATOR.
-                            'WORKSPACE_'.
-                            $workspace->getId();
-
-                        if (is_dir($dir) && $this->isDirectoryEmpty($dir)) {
-                            rmdir($dir);
-                        }
-                    }
-                } elseif ($softDelete && !in_array($node->getResourceType()->getName(), $ignore)) {
-                    $this->dispatcher->dispatch(
-                        "resource.{$node->getResourceType()->getName()}.soft_delete",
-                        'Resource\SoftDeleteResource',
-                        [$resource]
-                    );
-                }
-
-                if ($softDelete || $eventSoftDelete) {
-                    $node->setActive(false);
-                    // Rename node to allow future nodes have the same name
-                    $node->setName($node->getName().uniqid('_'));
-                    $this->om->persist($node);
-                } else {
-                    //what is it ?
-                    $this->dispatcher->dispatch(
-                        'claroline_resources_delete',
-                        'GenericData',
-                        [[$node]]
-                    );
-
-                    /*
-                     * If the child isn't removed here aswell, doctrine will fail to remove $resChild
-                     * because it still has $resChild in its UnitOfWork or something (I have no idea
-                     * how doctrine works tbh). So if you remove this line the suppression will
-                     * not work for directory containing children.
-                     */
-                    $this->om->remove($resource);
-                    $this->om->remove($node);
-                }
-
-                $this->dispatcher->dispatch(
-                    'log',
-                    'Log\LogResourceDelete',
-                    [$node]
-                );
-            } else {
-                if ($softDelete || $eventSoftDelete) {
-                    $node->setActive(false);
-                    // Rename node to allow future nodes have the same name
-                    $node->setName($node->getName().uniqid('_'));
-                    $this->om->persist($node);
-                } else {
-                    //what is it ?
-                    $this->dispatcher->dispatch(
-                        'claroline_resources_delete',
-                        'GenericData',
-                        [[$node]]
-                    );
-
-                    $this->om->remove($node);
-                }
-
-                $this->dispatcher->dispatch(
-                    'log',
-                    'Log\LogResourceDelete',
-                    [$node]
-                );
-            }
-        }
-
-        $this->om->endFlushSuite();
+        $this->crud->delete($node, $softDelete ? [Options::SOFT_DELETE] : []);
     }
 
     public function setActive(ResourceNode $node)
@@ -1126,82 +915,9 @@ class ResourceManager
         }
     }
 
-    /**
-     * Copy a resource node.
-     *
-     * @param ResourceNode $node
-     * @param ResourceNode $newParent
-     * @param User         $user
-     * @param bool         $withRights - Defines if the rights of the copied node have to be created
-     * @param array        $rights     - If defined, the copied node will have exactly the given rights
-     * @param int          $index
-     *
-     * @return ResourceNode
-     */
-    private function copyNode(
-        ResourceNode $node,
-        ResourceNode $newParent,
-        User $user,
-        $withRights = true,
-        array $rights = [],
-        $index = null
-    ) {
-        /** @var ResourceNode $newNode */
-        $newNode = new ResourceNode();
-
-        $serialized = $this->serializer->serialize($node);
-        unset($serialized['rights']);
-        $this->serializer->get(ResourceNode::class)->deserialize($serialized, $newNode, [Options::REFRESH_UUID]);
-
-        $newNode->setResourceType($node->getResourceType());
-        $newNode->setCreator($user);
-        $newNode->setWorkspace($newParent->getWorkspace());
-        $newNode->setParent($newParent);
-        $newParent->addChild($newNode);
-        $newNode->setName($this->getUniqueName($node, $newParent, true));
-
-        if ($withRights) {
-            //if everything happens inside the same workspace and no specific rights have been given,
-            //rights are copied
-            if ($newParent->getWorkspace() === $node->getWorkspace() && 0 === count($rights)) {
-                $this->rightsManager->copy($node, $newNode);
-            } else {
-                //otherwise we use the parent rights or the given rights if not empty
-                $this->setRights($newNode, $newParent, $rights);
-            }
-        }
-
-        $this->om->persist($newNode);
-
-        return $newNode;
-    }
-
     private function getEncoding()
     {
         return 'UTF-8//TRANSLIT';
-    }
-
-    /**
-     * @param string $dirName
-     *
-     * @return bool
-     */
-    private function isDirectoryEmpty($dirName)
-    {
-        $files = [];
-        $dirHandle = opendir($dirName);
-
-        if ($dirHandle) {
-            while ($file = readdir($dirHandle)) {
-                if ('.' !== $file && '..' !== $file) {
-                    $files[] = $file;
-                    break;
-                }
-            }
-            closedir($dirHandle);
-        }
-
-        return 0 === count($files);
     }
 
     private function updateWorkspace(ResourceNode $node, Workspace $workspace)
@@ -1380,20 +1096,6 @@ class ResourceManager
         $this->om->flush();
     }
 
-    /**
-     * @param ResourceNode $node
-     *
-     * @return AbstractResource
-     *
-     * @deprecated
-     */
-    public function getResourceFromShortcut(ResourceNode $node)
-    {
-        $target = $this->getRealTarget($node);
-
-        return $this->getResourceFromNode($target);
-    }
-
     public function getNotDeletableResourcesByWorkspace(Workspace $workspace)
     {
         return $this->resourceNodeRepo->findBy(['workspace' => $workspace, 'deletable' => false]);
@@ -1456,10 +1158,7 @@ class ResourceManager
 
     public function load(ResourceNode $resourceNode, $embedded = false)
     {
-        // maybe use a specific log ?
-        $this->dispatcher->dispatch('log', 'Log\LogResourceRead', [$resourceNode, $embedded]);
         $resource = $this->getResourceFromNode($resourceNode);
-
         if ($resource) {
             /** @var LoadResourceEvent $event */
             $event = $this->dispatcher->dispatch(

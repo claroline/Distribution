@@ -9,11 +9,11 @@ use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;
 use Icap\WikiBundle\Manager\SectionManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @EXT\Route("/wiki")
@@ -29,11 +29,6 @@ class SectionController
     private $sectionManager;
 
     /**
-     * @DI\InjectParams({
-     *     "finder"                 = @DI\Inject("claroline.api.finder"),
-     *     "sectionManager"         = @DI\Inject("Icap\WikiBundle\Manager\SectionManager")
-     * })
-     *
      * SectionController constructor.
      *
      * @param FinderProvider $finder
@@ -41,10 +36,12 @@ class SectionController
      */
     public function __construct(
         FinderProvider $finder,
-        SectionManager $sectionManager
+        SectionManager $sectionManager,
+        AuthorizationCheckerInterface $authorization
     ) {
         $this->finder = $finder;
         $this->sectionManager = $sectionManager;
+        $this->authorization = $authorization;
     }
 
     /**
@@ -124,7 +121,7 @@ class SectionController
         $this->checkPermission('OPEN', $resourceNode, [], true);
         $isAdmin = $this->checkPermission('EDIT', $resourceNode);
         if (Wiki::READ_ONLY_MODE === $wiki->getMode() && !$isAdmin) {
-            throw new AccessDeniedHttpException('Cannot edit section in READ ONLY wiki');
+            throw new AccessDeniedException('Cannot edit section in READ ONLY wiki');
         }
         $newSection = $this->sectionManager->createSection($wiki, $section, $user, $isAdmin, json_decode($request->getContent(), true));
 
@@ -156,7 +153,7 @@ class SectionController
         $this->checkPermission('OPEN', $resourceNode, [], true);
         $isAdmin = $this->checkPermission('EDIT', $resourceNode);
         if (Wiki::READ_ONLY_MODE === $wiki->getMode() && !$isAdmin) {
-            throw new AccessDeniedHttpException('Cannot edit section in READ ONLY wiki');
+            throw new AccessDeniedException('Cannot edit section in READ ONLY wiki');
         }
         $this->sectionManager->updateSection($section, $user, json_decode($request->getContent(), true));
 

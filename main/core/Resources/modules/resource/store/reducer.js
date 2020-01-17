@@ -7,14 +7,11 @@ import {SECURITY_USER_CHANGE} from '#/main/app/security/store/actions'
 import {
   RESOURCE_OPEN,
   RESOURCE_LOAD,
-  RESOURCE_LOAD_NODE,
   RESOURCE_SET_LOADED,
   RESOURCE_UPDATE_NODE,
   USER_EVALUATION_UPDATE,
   RESOURCE_RESTRICTIONS_DISMISS,
-  RESOURCE_RESTRICTIONS_ERROR,
-  RESOURCE_SERVER_ERRORS,
-  RESOURCE_RESTRICTIONS_UNLOCKED,
+  RESOURCE_NOT_FOUND,
   RESOURCE_COMMENT_ADD,
   RESOURCE_COMMENT_UPDATE,
   RESOURCE_COMMENT_REMOVE
@@ -24,15 +21,14 @@ const reducer = combineReducers({
   slug: makeReducer(null, {
     [RESOURCE_OPEN]: (state, action) => action.resourceSlug
   }),
-  nodeLoaded: makeReducer(false, {
-    [SECURITY_USER_CHANGE]: () => false,
-    [RESOURCE_OPEN]: () => false,
-    [RESOURCE_LOAD_NODE]: () => true
-  }),
   loaded: makeReducer(false, {
     [SECURITY_USER_CHANGE]: () => false,
     [RESOURCE_OPEN]: () => false,
     [RESOURCE_SET_LOADED]: (state, action) => action.loaded
+  }),
+  notFound: makeReducer(false, {
+    [RESOURCE_OPEN]: () => false,
+    [RESOURCE_NOT_FOUND]: () => true
   }),
 
   embedded: makeReducer(false), // this can not be changed at runtime
@@ -47,7 +43,6 @@ const reducer = combineReducers({
    * Manages the ResourceNode of the resource.
    */
   resourceNode: makeReducer({}, {
-    [RESOURCE_LOAD_NODE]: (state, action) => action.resourceNode,
     [RESOURCE_LOAD]: (state, action) => action.resourceData.resourceNode,
 
     /**
@@ -93,7 +88,7 @@ const reducer = combineReducers({
    * Manages current user's evaluation for the resource.
    */
   userEvaluation: makeReducer(null, {
-    [RESOURCE_LOAD]: (state, action) => action.resourceData.userEvaluation,
+    [RESOURCE_LOAD]: (state, action) => action.resourceData.userEvaluation || null,
     [USER_EVALUATION_UPDATE]: (state, action) => action.userEvaluation
   }),
 
@@ -101,7 +96,7 @@ const reducer = combineReducers({
 
   accessErrors: combineReducers({
     dismissed: makeReducer(false, {
-      [RESOURCE_RESTRICTIONS_DISMISS]: () => true,
+      [RESOURCE_RESTRICTIONS_DISMISS]: (state, action) => action.dismissed,
       [RESOURCE_LOAD]: (state, action) => {
         //+ date check and ips and the hidden flag most likely but I have no example now
         return action.resourceData.resourceNode.permissions.open &&
@@ -113,18 +108,8 @@ const reducer = combineReducers({
       }
     }),
     details: makeReducer({}, {
-      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessErrors || {},
-      [RESOURCE_RESTRICTIONS_ERROR]: (state, action) => action.errors,
-      [RESOURCE_RESTRICTIONS_UNLOCKED]: (state) => {
-        const newState = cloneDeep(state)
-        newState.locked = false
-        return newState
-      }
+      [RESOURCE_LOAD]: (state, action) => action.resourceData.accessErrors || {}
     })
-  }),
-
-  serverErrors: makeReducer([], {
-    [RESOURCE_SERVER_ERRORS]: (state, action) => action.errors
   })
 })
 

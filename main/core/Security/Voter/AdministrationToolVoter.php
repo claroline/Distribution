@@ -11,14 +11,9 @@
 
 namespace Claroline\CoreBundle\Security\Voter;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
-/**
- * @DI\Service
- * @DI\Tag("security.voter")
- */
 class AdministrationToolVoter extends AbstractVoter implements VoterInterface
 {
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
@@ -30,15 +25,6 @@ class AdministrationToolVoter extends AbstractVoter implements VoterInterface
             foreach ($roles as $role) {
                 if ($role->getRole() === $tokenRole->getRole()) {
                     return VoterInterface::ACCESS_GRANTED;
-                }
-            }
-        }
-
-        //exception for the workspace creator for now. We'll streamline everything later.
-        if ('workspace_management' === $object->getName()) {
-            foreach ($tokenRoles as $tokenRole) {
-                if ('ROLE_WS_CREATOR' === $tokenRole->getRole()) {
-                    return true;
                 }
             }
         }

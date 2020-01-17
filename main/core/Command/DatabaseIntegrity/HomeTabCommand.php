@@ -27,9 +27,9 @@ class HomeTabCommand extends ContainerAwareCommand implements AdminCliCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
-        $manager = $container->get('claroline.persistence.object_manager');
+        $manager = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $translator = $container->get('translator');
-        $finder = $container->get('claroline.api.finder');
+        $finder = $container->get('Claroline\AppBundle\API\FinderProvider');
         $tabs = $finder->fetch(HomeTab::class, ['type' => HomeTab::TYPE_ADMIN_DESKTOP]);
 
         if (0 === count($tabs)) {
@@ -43,7 +43,6 @@ class HomeTabCommand extends ContainerAwareCommand implements AdminCliCommand
             $desktopHomeTabConfig = new HomeTabConfig();
             $desktopHomeTabConfig->setHomeTab($desktopHomeTab);
             $desktopHomeTabConfig->setVisible(true);
-            $desktopHomeTabConfig->setLocked(false);
             $desktopHomeTabConfig->setTabOrder(1);
             $desktopHomeTabConfig->setName($infoName);
             $desktopHomeTabConfig->setLongTitle($infoName);
@@ -81,7 +80,7 @@ class HomeTabCommand extends ContainerAwareCommand implements AdminCliCommand
             $manager->flush();
         }
 
-        $workspaces = $container->get('claroline.persistence.object_manager')->getRepository(Workspace::class)->findAll();
+        $workspaces = $container->get('Claroline\AppBundle\Persistence\ObjectManager')->getRepository(Workspace::class)->findAll();
 
         $output->writeln(count($workspaces).' found');
         $i = 1;
@@ -105,7 +104,6 @@ class HomeTabCommand extends ContainerAwareCommand implements AdminCliCommand
                 $workspaceTabConfig = new HomeTabConfig();
                 $workspaceTabConfig->setHomeTab($workspaceTab);
                 $workspaceTabConfig->setVisible(true);
-                $workspaceTabConfig->setLocked(true);
                 $workspaceTabConfig->setTabOrder(1);
                 $workspaceTabConfig->setName($infoName);
                 $workspaceTabConfig->setLongTitle($infoName);
@@ -161,7 +159,7 @@ class HomeTabCommand extends ContainerAwareCommand implements AdminCliCommand
     public function getConfig(HomeTab $tab)
     {
         $container = $this->getContainer();
-        $manager = $container->get('claroline.persistence.object_manager');
+        $manager = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
 
         /** @var HomeTabConfig $homeTabConfig */
         $homeTabConfig = $manager->getRepository(HomeTabConfig::class)

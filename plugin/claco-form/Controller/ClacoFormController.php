@@ -11,7 +11,6 @@
 
 namespace Claroline\ClacoFormBundle\Controller;
 
-use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Controller\RequestDecoderTrait;
@@ -24,16 +23,14 @@ use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
 use Claroline\ClacoFormBundle\Serializer\CommentSerializer;
 use Claroline\ClacoFormBundle\Serializer\EntrySerializer;
 use Claroline\ClacoFormBundle\Serializer\EntryUserSerializer;
-use Claroline\ClacoFormBundle\Serializer\FieldSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use JMS\DiExtraBundle\Annotation as DI;
+use Dompdf\Dompdf;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,7 +43,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * @todo : break me into multiple files
  */
-class ClacoFormController extends Controller
+class ClacoFormController
 {
     use RequestDecoderTrait;
 
@@ -54,8 +51,8 @@ class ClacoFormController extends Controller
     private $clacoFormManager;
     private $configHandler;
     private $filesDir;
-    private $finder;
     private $locationManager;
+    private $om;
     private $request;
     private $templating;
     private $translator;
@@ -66,37 +63,15 @@ class ClacoFormController extends Controller
     private $userManager;
     private $entrySerializer;
     private $commentSerializer;
-    private $fieldSerializer;
     private $entryUserSerializer;
 
-    /**
-     * @DI\InjectParams({
-     *     "archiveDir"            = @DI\Inject("%claroline.param.platform_generated_archive_path%"),
-     *     "clacoFormManager"      = @DI\Inject("claroline.manager.claco_form_manager"),
-     *     "configHandler"         = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
-     *     "finder"                = @DI\Inject("claroline.api.finder"),
-     *     "locationManager"       = @DI\Inject("claroline.manager.organization.location_manager"),
-     *     "request"               = @DI\Inject("request_stack"),
-     *     "templating"            = @DI\Inject("templating"),
-     *     "translator"            = @DI\Inject("translator"),
-     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
-     *     "tokenStorage"          = @DI\Inject("security.token_storage"),
-     *     "userManager"           = @DI\Inject("claroline.manager.user_manager"),
-     *     "entrySerializer"       = @DI\Inject("Claroline\ClacoFormBundle\Serializer\EntrySerializer"),
-     *     "commentSerializer"     = @DI\Inject("Claroline\ClacoFormBundle\Serializer\CommentSerializer"),
-     *     "fieldSerializer"       = @DI\Inject("Claroline\ClacoFormBundle\Serializer\FieldSerializer"),
-     *     "entryUserSerializer"   = @DI\Inject("Claroline\ClacoFormBundle\Serializer\EntryUserSerializer"),
-     *     "om"                    = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     */
     public function __construct(
         $archiveDir,
         ClacoFormManager $clacoFormManager,
         PlatformConfigurationHandler $configHandler,
         $filesDir,
-        FinderProvider $finder,
         LocationManager $locationManager,
+        ObjectManager $om,
         RequestStack $request,
         TwigEngine $templating,
         TranslatorInterface $translator,
@@ -105,16 +80,14 @@ class ClacoFormController extends Controller
         UserManager $userManager,
         EntrySerializer $entrySerializer,
         CommentSerializer $commentSerializer,
-        FieldSerializer $fieldSerializer,
-        EntryUserSerializer $entryUserSerializer,
-        ObjectManager $om
+        EntryUserSerializer $entryUserSerializer
     ) {
         $this->archiveDir = $archiveDir;
         $this->clacoFormManager = $clacoFormManager;
         $this->configHandler = $configHandler;
         $this->filesDir = $filesDir;
-        $this->finder = $finder;
         $this->locationManager = $locationManager;
+        $this->om = $om;
         $this->request = $request->getMasterRequest();
         $this->templating = $templating;
         $this->translator = $translator;
@@ -123,9 +96,7 @@ class ClacoFormController extends Controller
         $this->userManager = $userManager;
         $this->entrySerializer = $entrySerializer;
         $this->commentSerializer = $commentSerializer;
-        $this->fieldSerializer = $fieldSerializer;
         $this->entryUserSerializer = $entryUserSerializer;
-        $this->om = $om;
     }
 
     /**
@@ -192,7 +163,9 @@ class ClacoFormController extends Controller
      *
      * Deletes entries
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function entriesDeleteAction(Request $request)
     {
@@ -502,7 +475,10 @@ class ClacoFormController extends Controller
      *
      * Saves entry options for current user
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param User  $user
+     * @param Entry $entry
+     *
+     * @return JsonResponse
      */
     public function entryUserSaveAction(User $user, Entry $entry)
     {
@@ -555,10 +531,17 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkEntryAccess($entry);
 
-        return new JsonResponse([
-            'name' => $entry->getTitle(),
-            'content' => $this->generatePdfForEntry($entry, $user),
-        ]);
+        $name = $entry->getTitle();
+        $content = $this->generatePdfForEntry($entry, $user);
+
+        $dompdf = new Dompdf();
+        $dompdf->set_option('isHtml5ParserEnabled', true);
+        $dompdf->set_option('isRemoteEnabled', true);
+        $dompdf->loadHtml($content);
+
+        // Render the HTML as PDF
+        $dompdf->render();
+        $dompdf->stream($name);
     }
 
     /**
@@ -807,7 +790,8 @@ class ClacoFormController extends Controller
      *
      * Switches lock of entries
      *
-     * @param int $locked
+     * @param int     $locked
+     * @param Request $request
      *
      * @return JsonResponse
      */
@@ -1013,6 +997,9 @@ class ClacoFormController extends Controller
                             }
                             $value = implode(', ', $values);
                             break;
+                        case FieldFacet::BOOLEAN_TYPE:
+                            $value = $fieldValues[$field->getId()] ? $field->getName() : '';
+                            break;
                         default:
                             $value = $fieldValues[$field->getId()];
                     }
@@ -1078,7 +1065,8 @@ class ClacoFormController extends Controller
                     $file = $fieldFacetValue->getValue();
 
                     if (!empty($file) && is_array($file)) {
-                        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$file['url'];
+                        $fileUrl = preg_replace('#^\.\.\/files\/#', '', $file['url']);
+                        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$fileUrl;
                         $fileParts = explode('/', $file['url']);
                         $fileName = count($fileParts) > 0 ? $fileParts[count($fileParts) - 1] : $file['name'];
                         $archive->addFile(

@@ -48,6 +48,11 @@ class ForumSerializer
         return Forum::class;
     }
 
+    public function getName()
+    {
+        return 'forum';
+    }
+
     /**
      * @return string
      */
@@ -167,7 +172,7 @@ class ForumSerializer
                 $event
             );
 
-            $tags = $event->getResponse();
+            $tags = $event->getResponse() ?? [];
             $availables = array_merge($availables, $tags);
         }
 

@@ -15,7 +15,6 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
@@ -24,11 +23,11 @@ use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Entity\Revision;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use Claroline\TeamBundle\Entity\Team;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -38,39 +37,33 @@ class DropController
 {
     use PermissionCheckerTrait;
 
-    /** @var ApiManager */
-    private $apiManager;
-
     /** @var FinderProvider */
     private $finder;
 
     /** @var DropzoneManager */
     private $manager;
 
+    /** @var ObjectManager */
+    private $om;
+
     /**
      * DropController constructor.
      *
-     * @DI\InjectParams({
-     *     "apiManager" = @DI\Inject("claroline.manager.api_manager"),
-     *     "finder"     = @DI\Inject("claroline.api.finder"),
-     *     "manager"    = @DI\Inject("claroline.manager.dropzone_manager"),
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     *
-     * @param ApiManager      $apiManager
-     * @param FinderProvider  $finder
-     * @param DropzoneManager $manager
+     * @param FinderProvider                $finder
+     * @param DropzoneManager               $manager
+     * @param ObjectManager                 $om
+     * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
-        ApiManager $apiManager,
         FinderProvider $finder,
         DropzoneManager $manager,
-        ObjectManager $om
+        ObjectManager $om,
+        AuthorizationCheckerInterface $authorization
     ) {
-        $this->apiManager = $apiManager;
         $this->finder = $finder;
         $this->manager = $manager;
         $this->om = $om;
+        $this->authorization = $authorization;
     }
 
     /**
@@ -498,16 +491,19 @@ class DropController
     }
 
     /**
+     * Downloads drops documents into a ZIP archive.
+     *
      * @EXT\Route("/drops/download", name="claro_dropzone_drops_download")
      * @EXT\Method("POST")
      *
-     * Downloads drops documents into a ZIP archive
+     * @param Request $request
      *
      * @return StreamedResponse
      */
     public function dropsDownloadAction(Request $request)
     {
         $drops = $this->decodeIdsString($request, Drop::class);
+        /** @var Dropzone $dropzone */
         $dropzone = $drops[0]->getDropzone();
         $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
         $fileName = $dropzone->getResourceNode()->getName();
@@ -560,7 +556,7 @@ class DropController
 
         //array map is not even needed; objects are fine here
         /** @var Drop[] $data */
-        $data = $this->finder->get(Drop::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        $data = $this->finder->get(Drop::class)->find($filters, $sortBy, 0, -1, false);
         $next = null;
 
         foreach ($data as $position => $value) {
@@ -605,7 +601,7 @@ class DropController
 
         //array map is not even needed; objects are fine here
         /** @var Drop[] $data */
-        $data = $this->finder->get(Drop::class)->find($filters, $sortBy, 0, -1, false/*, [Options::SQL_ARRAY_MAP]*/);
+        $data = $this->finder->get(Drop::class)->find($filters, $sortBy, 0, -1, false);
         $previous = null;
 
         foreach ($data as $position => $value) {

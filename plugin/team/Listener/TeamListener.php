@@ -16,13 +16,9 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Manager\TeamManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * @DI\Service
- */
 class TeamListener
 {
     /** @var AuthorizationCheckerInterface */
@@ -35,13 +31,6 @@ class TeamListener
     private $tokenStorage;
 
     /**
-     * @DI\InjectParams({
-     *     "authorization" = @DI\Inject("security.authorization_checker"),
-     *     "serializer"    = @DI\Inject("claroline.api.serializer"),
-     *     "teamManager"   = @DI\Inject("claroline.manager.team_manager"),
-     *     "tokenStorage"  = @DI\Inject("security.token_storage")
-     * })
-     *
      * @param AuthorizationCheckerInterface $authorization
      * @param SerializerProvider            $serializer
      * @param TeamManager                   $teamManager
@@ -60,8 +49,6 @@ class TeamListener
     }
 
     /**
-     * @DI\Observe("open_tool_workspace_claroline_team_tool")
-     *
      * @param DisplayToolEvent $event
      */
     public function onWorkspaceToolOpen(DisplayToolEvent $event)

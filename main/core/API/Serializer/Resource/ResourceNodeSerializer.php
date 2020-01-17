@@ -21,6 +21,7 @@ use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\OptimizedRightsManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Claroline\LinkBundle\Entity\Resource\Shortcut;
 
 class ResourceNodeSerializer
 {
@@ -80,6 +81,11 @@ class ResourceNodeSerializer
         $this->maskManager = $maskManager;
         $this->rightsManager = $rightsManager;
         $this->serializer = $serializer;
+    }
+
+    public function getName()
+    {
+        return 'resource_node';
     }
 
     /**
@@ -243,6 +249,16 @@ class ResourceNodeSerializer
             'commentsActivated' => $resourceNode->isCommentsActivated(),
         ];
 
+        if (Shortcut::class === $resourceNode->getResourceType()->getClass()) {
+            //required for opening the proper player in case of shortcut. This is not pretty but the players
+            //need the meta['type'] to be the target one to open the proper player/editor (they dont know what to do otherwise)
+            //unless we implement a "link" player wich will then the target and dispatch again.
+            //This is the easy way
+            $resource = $this->om->getRepository($resourceNode->getClass())->findOneBy(['resourceNode' => $resourceNode]);
+            $target = $resource->getTarget();
+            $meta['type'] = $target->getResourceType()->getName();
+        }
+
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $meta = array_merge($meta, [
                 'authors' => $resourceNode->getAuthor(),
@@ -353,7 +369,7 @@ class ResourceNodeSerializer
         }
     }
 
-    private function deserializeRights($rights, ResourceNode $resourceNode, array $options = [])
+    public function deserializeRights($rights, ResourceNode $resourceNode, array $options = [])
     {
         // additional data might be required later (recursive)
         foreach ($rights as $right) {
@@ -376,34 +392,26 @@ class ResourceNodeSerializer
             if (isset($right['name'])) {
                 $role = $this->om->getRepository(Role::class)->findOneBy(['name' => $right['name']]);
             } else {
+                $workspace = $resourceNode->getWorkspace() ?
+                    $resourceNode->getWorkspace() :
+                    $this->om->getRepository(Workspace::class)->findOneByCode($right['workspace']['code']);
+
                 $role = $this->om->getRepository(Role::class)->findOneBy(
                   [
                     'translationKey' => $right['translationKey'],
-                    'workspace' => $resourceNode->getWorkspace()->getId(),
+                    'workspace' => $workspace,
                   ]
                 );
             }
 
-            if ($role) {
-                //if we update (we need the id anyway)
-                if ($resourceNode->getId()) {
-                    $this->newRightsManager->update(
+            if ($role && !in_array(OPTIONS::IGNORE_RIGHTS, $options)) {
+                $this->newRightsManager->update(
                       $resourceNode,
                       $role,
                       $this->maskManager->encodeMask($right['permissions'], $resourceNode->getResourceType()),
                       $creationPerms,
                       $recursive
                   );
-                //otherwise the old one will do the trick
-                } else {
-                    $this->rightsManager->editPerms(
-                      $right['permissions'],
-                      $role->getName(),
-                      $resourceNode,
-                      false,
-                      $creationPerms
-                  );
-                }
             } else {
                 //role not found ... how to retrieve it ?
             }

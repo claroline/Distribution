@@ -11,18 +11,11 @@
 
 namespace Claroline\CoreBundle\Listener;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler;
 
-/**
- * @DI\Service(
- *     "claroline.security.authentication.failure_handler",
- *     parent="security.authentication.failure_handler"
- * )
- */
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
     /**
@@ -31,7 +24,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         if ($request->isXmlHttpRequest()) {
-            return new JsonResponse($exception->getMessage(), 400);
+            return new JsonResponse($exception->getMessage(), 422);
         }
 
         return parent::onAuthenticationFailure($request, $exception);

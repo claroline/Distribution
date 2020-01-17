@@ -2,6 +2,7 @@ import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'
 import moment from 'moment'
 
+import {url as urlGenerator} from '#/main/app/api/router'
 import {trans, tval} from '#/main/app/intl/translation'
 import {isValidDate} from '#/main/app/intl/date'
 import {isHtmlEmpty} from '#/main/app/data/types/html/validators'
@@ -10,7 +11,8 @@ import {isHtmlEmpty} from '#/main/app/data/types/html/validators'
 
 function notEmpty(value) {
   if (
-    undefined === value
+    false === value
+    || undefined === value
     || null === value
     || (!(value instanceof File) && typeof value === 'object' && isEmpty(value)) // objects and arrays (lodash isEmpty always returns true for files)
     || (typeof value === 'string' && ('' === value || '' === value.trim() || isHtmlEmpty(value))) // strings and HTML
@@ -171,6 +173,14 @@ function validateIf(condition, validator) {
  */
 function chain(value, options, validators) {
   return validators.reduce((result, validate) => {
+    return result.then(res => {
+      return res || Promise.resolve(validate(value, options))
+    })
+  }, Promise.resolve())
+}
+
+function chainSync(value, options, validators) {
+  return validators.reduce((result, validate) => {
     return result || validate(value, options)
   }, undefined)
 }
@@ -249,9 +259,33 @@ function unique(value, options = {}) {
   }
 }
 
+function notExist(value, options = {}) {
+  if (options.unique) {
+    return fetch(urlGenerator([options.unique.check, {field: options.unique.name, value: value}]), {
+      credentials: 'include',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=utf-8',
+        // next header is required for symfony to recognize our requests as XMLHttpRequest
+        // there is no spec about possible values, but this is the one expected by symfony
+        // @see Symfony\Component\HttpFoundation\Request::isXmlHttpRequest
+        'X-Requested-With': 'XMLHttpRequest'
+      })
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response) {
+          return Promise.resolve(tval(options.unique.error || 'value_not_unique'))
+        }
+
+        return Promise.resolve(undefined)
+      })
+  }
+}
+
 export {
   validateIf,
   chain,
+  chainSync,
   setIfError,
 
   // validators
@@ -276,5 +310,6 @@ export {
   lowerOrEqual,
   between,
   dateAfter,
-  unique
+  unique,
+  notExist
 }

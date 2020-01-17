@@ -25,7 +25,7 @@ class DatabaseWriterTest extends MockeryTestCase
     private $kernel;
     private $dbWriter;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -43,9 +43,9 @@ class DatabaseWriterTest extends MockeryTestCase
         $this->kernelRootDir = 'kernelRootDir';
         $this->dbWriter = new DatabaseWriter(
             $this->om,
+            $this->mm,
             $this->fileSystem,
             $this->kernel,
-            $this->mm,
             $this->tm,
             $this->tmd,
             $this->ism

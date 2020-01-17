@@ -13,16 +13,17 @@ namespace Claroline\CoreBundle\Controller;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Controller\RequestDecoderTrait;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\Log\LogDesktopToolReadEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -34,6 +35,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class DesktopController
 {
+    use RequestDecoderTrait;
+
     /** @var AuthorizationCheckerInterface */
     private $authorization;
 
@@ -51,14 +54,6 @@ class DesktopController
 
     /**
      * DesktopController constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization"         = @DI\Inject("security.authorization_checker"),
-     *     "eventDispatcher"       = @DI\Inject("event_dispatcher"),
-     *     "parametersSerializer"  = @DI\Inject("Claroline\CoreBundle\API\Serializer\ParametersSerializer"),
-     *     "serializer"            = @DI\Inject("claroline.api.serializer"),
-     *     "toolManager"           = @DI\Inject("claroline.manager.tool_manager")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param EventDispatcherInterface      $eventDispatcher
@@ -111,7 +106,12 @@ class DesktopController
 
         return new JsonResponse([
             'userProgression' => null,
-            'tools' => $tools,
+            'tools' => array_values(array_map(function (Tool $tool) {
+                return [
+                    'icon' => $tool->getClass(),
+                    'name' => $tool->getName(),
+                ];
+            }, $tools)),
             'shortcuts' => isset($parameters['desktop_shortcuts']) ? $parameters['desktop_shortcuts'] : [],
         ]);
     }
@@ -130,7 +130,7 @@ class DesktopController
         $tool = $this->toolManager->getToolByName($toolName);
 
         if (!$tool) {
-            throw new NotFoundHttpException('Tool not found');
+            throw new NotFoundHttpException(sprintf('Tool "%s" not found', $toolName));
         }
 
         if (!$this->authorization->isGranted('OPEN', $tool)) {
@@ -159,11 +159,33 @@ class DesktopController
     {
         $tools = $this->toolManager->getDisplayedDesktopOrderedTools($currentUser);
 
-        return new JsonResponse(array_values(array_map(function (Tool $orderedTool) {
+        return new JsonResponse(array_values(array_map(function (Tool $tool) {
             return [
-                'icon' => $orderedTool->getClass(),
-                'name' => $orderedTool->getName(),
+                'icon' => $tool->getClass(),
+                'name' => $tool->getName(),
             ];
         }, $tools)));
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/desktop/tool/configure",
+     *     name="apiv2_desktop_tools_configure",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Request $request
+     * @param User    $user
+     *
+     * @return JsonResponse
+     */
+    public function configureUserOrderedToolsAction(Request $request, User $user)
+    {
+        $toolsConfig = $this->decodeRequest($request);
+        $this->toolManager->saveUserOrderedTools($user, $toolsConfig);
+
+        return new JsonResponse($toolsConfig);
     }
 }

@@ -14,7 +14,7 @@ namespace Claroline\DropZoneBundle\Manager;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
+use Claroline\CoreBundle\Entity\AbstractEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -44,15 +44,11 @@ use Claroline\DropZoneBundle\Repository\CorrectionRepository;
 use Claroline\DropZoneBundle\Repository\DocumentRepository;
 use Claroline\DropZoneBundle\Repository\PlannedNotificationRepository;
 use Claroline\TeamBundle\Entity\Team;
-use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-/**
- * @DI\Service("claroline.manager.dropzone_manager")
- */
 class DropzoneManager
 {
     /** @var Crud */
@@ -96,19 +92,6 @@ class DropzoneManager
 
     /**
      * DropzoneManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "crud"                   = @DI\Inject("claroline.api.crud"),
-     *     "serializer"             = @DI\Inject("claroline.api.serializer"),
-     *     "fileSystem"             = @DI\Inject("filesystem"),
-     *     "filesDir"               = @DI\Inject("%claroline.param.files_directory%"),
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "resourceEvalManager"    = @DI\Inject("claroline.manager.resource_evaluation_manager"),
-     *     "archiveDir"             = @DI\Inject("%claroline.param.platform_generated_archive_path%"),
-     *     "configHandler"          = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "eventDispatcher"        = @DI\Inject("event_dispatcher"),
-     *     "roleManager"            = @DI\Inject("claroline.manager.role_manager")
-     * })
      *
      * @param Crud                         $crud
      * @param SerializerProvider           $serializer
@@ -313,7 +296,7 @@ class DropzoneManager
                 $dropzone->getResourceNode(),
                 $user,
                 null,
-                ['status' => AbstractResourceEvaluation::STATUS_INCOMPLETE]
+                ['status' => AbstractEvaluation::STATUS_INCOMPLETE]
             );
             $this->om->endFlushSuite();
 
@@ -354,7 +337,7 @@ class DropzoneManager
                         $dropzone->getResourceNode(),
                         $teamUser,
                         null,
-                        ['status' => AbstractResourceEvaluation::STATUS_INCOMPLETE]
+                        ['status' => AbstractEvaluation::STATUS_INCOMPLETE]
                     );
                 }
                 $this->om->persist($drop);
@@ -368,7 +351,7 @@ class DropzoneManager
                     $dropzone->getResourceNode(),
                     $user,
                     null,
-                    ['status' => AbstractResourceEvaluation::STATUS_INCOMPLETE]
+                    ['status' => AbstractEvaluation::STATUS_INCOMPLETE]
                 );
                 $this->om->persist($drop);
                 $this->om->endFlushSuite();
@@ -1204,9 +1187,9 @@ class DropzoneManager
     public function checkCompletion(Dropzone $dropzone, array $users, Drop $drop = null)
     {
         $fixedStatusList = [
-            AbstractResourceEvaluation::STATUS_COMPLETED,
-            AbstractResourceEvaluation::STATUS_PASSED,
-            AbstractResourceEvaluation::STATUS_FAILED,
+            AbstractEvaluation::STATUS_COMPLETED,
+            AbstractEvaluation::STATUS_PASSED,
+            AbstractEvaluation::STATUS_FAILED,
         ];
         $teamId = !empty($drop) ? $drop->getTeamUuid() : null;
 
@@ -1230,7 +1213,7 @@ class DropzoneManager
                         $dropzone->getResourceNode(),
                         $user,
                         null,
-                        ['status' => AbstractResourceEvaluation::STATUS_COMPLETED, 'progression' => 100]
+                        ['status' => AbstractEvaluation::STATUS_COMPLETED, 'progression' => 100]
                     );
                 } elseif (!empty($drop)) {
                     $this->updateDropProgression($dropzone, $drop, 100);
@@ -1276,8 +1259,8 @@ class DropzoneManager
             $scoreToPass = $dropzone->getScoreToPass();
             $scoreMax = $dropzone->getScoreMax();
             $status = !empty($scoreMax) && (($score / $scoreMax) * 100) >= $scoreToPass ?
-                AbstractResourceEvaluation::STATUS_PASSED :
-                AbstractResourceEvaluation::STATUS_FAILED;
+                AbstractEvaluation::STATUS_PASSED :
+                AbstractEvaluation::STATUS_FAILED;
 
             foreach ($users as $user) {
                 $this->resourceEvalManager->createResourceEvaluation(
@@ -1319,7 +1302,7 @@ class DropzoneManager
                 $dropzone->getResourceNode(),
                 $user,
                 null,
-                ['status' => AbstractResourceEvaluation::STATUS_NOT_ATTEMPTED]
+                ['status' => AbstractEvaluation::STATUS_NOT_ATTEMPTED]
             );
         }
 

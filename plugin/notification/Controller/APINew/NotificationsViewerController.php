@@ -18,7 +18,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Icap\NotificationBundle\Entity\NotificationViewer;
 use Icap\NotificationBundle\Manager\NotificationManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,15 +42,6 @@ class NotificationsViewerController
     private $notificationManager;
 
     /**
-     * NotificationsViewerController constructor.
-     *
-     * @DI\InjectParams({
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "finder"              = @DI\Inject("claroline.api.finder"),
-     *     "crud"                = @DI\Inject("claroline.api.crud"),
-     *     "notificationManager" = @DI\Inject("icap.notification.manager")
-     * })
-     *
      * @param ObjectManager       $om
      * @param FinderProvider      $finder
      * @param Crud                $crud

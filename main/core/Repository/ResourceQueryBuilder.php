@@ -57,8 +57,7 @@ class ResourceQueryBuilder
         $this->bundles = [];
 
         $this->joinRelativesClause = "JOIN node.creator creator{$eol}".
-            "JOIN node.resourceType resourceType{$eol}".
-            "LEFT JOIN node.icon icon{$eol}";
+            "JOIN node.resourceType resourceType{$eol}";
     }
 
     public function setBundles(array $bundles)
@@ -119,7 +118,6 @@ class ResourceQueryBuilder
             "    creator.username as creator_username,{$eol}".
             "    creator.id as creator_id,{$eol}".
             "    resourceType.name as type,{$eol}".
-            "    icon.relativeUrl as large_icon,{$eol}".
             "    node.mimeType as mime_type,{$eol}".
             "    node.index as index_dir,{$eol}".
             "    node.creationDate as creation_date,{$eol}".
@@ -205,33 +203,6 @@ class ResourceQueryBuilder
     }
 
     /**
-     * Filters nodes that are bound to any of the given roles.
-     *
-     * @param Role[]|string[] $roles
-     *
-     * @return \Claroline\CoreBundle\Repository\ResourceQueryBuilder
-     */
-    public function whereRoleIn(array $roles)
-    {
-        if (0 < count($roles)) {
-            $this->leftJoinRights = true;
-            $eol = PHP_EOL;
-            $clause = "{$eol}({$eol}";
-
-            foreach ($roles as $i => $role) {
-                $role = $roles[$i] instanceof Role ? $roles[$i]->getRole() : $roles[$i];
-                $clause .= $i > 0 ? '    OR ' : '    ';
-                $clause .= "rightRole.name = :role_{$i}{$eol}";
-                $this->parameters[":role_{$i}"] = $role;
-            }
-
-            $this->addWhereClause($clause.')');
-        }
-
-        return $this;
-    }
-
-    /**
      * Filters nodes that can be opened.
      *
      * @return ResourceQueryBuilder
@@ -240,29 +211,6 @@ class ResourceQueryBuilder
     {
         $this->leftJoinRights = true;
         $this->addWhereClause('BIT_AND(rights.mask, 1) = 1');
-
-        return $this;
-    }
-
-    /**
-     * Filters nodes belonging to any of the workspaces a given user has access to.
-     *
-     * @param User $user
-     *
-     * @return ResourceQueryBuilder
-     */
-    public function whereInUserWorkspace(User $user)
-    {
-        $eol = PHP_EOL;
-        $clause =
-            "node.workspace IN{$eol}".
-            "({$eol}".
-            "    SELECT aw FROM Claroline\CoreBundle\Entity\Workspace\Workspace aw{$eol}".
-            "    JOIN aw.roles r{$eol}".
-            "    WHERE r.name IN (:user_roles) {$eol}".
-            ") {$eol}";
-        $this->addWhereClause($clause);
-        $this->parameters[':user_roles'] = $user->getRoles();
 
         return $this;
     }
@@ -291,92 +239,6 @@ class ResourceQueryBuilder
 
             $this->addWhereClause($clause.')');
         }
-
-        return $this;
-    }
-
-    /**
-     * Filters nodes that are the descendants of any of the given root directory paths.
-     *
-     * @param array[string] $roots
-     *
-     * @return ResourceQueryBuilder
-     */
-    public function whereRootIn(array $roots)
-    {
-        if (0 !== $count = count($roots)) {
-            $eol = PHP_EOL;
-            $clause = "{$eol}({$eol}";
-
-            for ($i = 0; $i < $count; ++$i) {
-                $clause .= $i > 0 ? '    OR ' : '    ';
-                $clause .= "node.path LIKE :root_{$i}{$eol}";
-                $this->parameters[":root_{$i}"] = "{$roots[$i]}_%";
-            }
-
-            $this->addWhereClause($clause.')');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Filters nodes created at or after a given date.
-     *
-     * @param string $date
-     *
-     * @return ResourceQueryBuilder
-     */
-    public function whereDateFrom($date)
-    {
-        $this->addWhereClause('node.creationDate >= :dateFrom');
-        $this->parameters[':dateFrom'] = $date;
-
-        return $this;
-    }
-
-    /**
-     * Filters nodes created at or before a given date.
-     *
-     * @param string $date
-     *
-     * @return ResourceQueryBuilder
-     */
-    public function whereDateTo($date)
-    {
-        $this->addWhereClause('node.creationDate <= :dateTo');
-        $this->parameters[':dateTo'] = $date;
-
-        return $this;
-    }
-
-    /**
-     * Filters nodes whose name contains a given string.
-     *
-     * @param string $name
-     *
-     * @return ResourceQueryBuilder
-     */
-    public function whereNameLike($name)
-    {
-        $this->addWhereClause('node.name LIKE :name');
-        $this->parameters[':name'] = "%{$name}%";
-
-        return $this;
-    }
-
-    /**
-     * Filters nodes that can or cannot be exported.
-     *
-     * @param bool $isExportable
-     *
-     * @return ResourceQueryBuilder
-     */
-    public function whereIsExportable($isExportable)
-    {
-        $this->joinSingleRelatives = true;
-        $this->addWhereClause('resourceType.isExportable = :isExportable');
-        $this->parameters[':isExportable'] = $isExportable;
 
         return $this;
     }
@@ -427,18 +289,6 @@ class ResourceQueryBuilder
     }
 
     /**
-     * Orders nodes by path.
-     *
-     * @return ResourceQueryBuilder
-     */
-    public function orderByPath()
-    {
-        $this->orderClause = 'ORDER BY node.path'.PHP_EOL;
-
-        return $this;
-    }
-
-    /**
      * Orders nodes by name.
      *
      * @return ResourceQueryBuilder
@@ -482,8 +332,7 @@ class ResourceQueryBuilder
                      previous.id,
                      next.id,
                      creator.username,
-                     resourceType.name,
-                     icon.relativeUrl
+                     resourceType.name
         '.PHP_EOL;
 
         return $this;

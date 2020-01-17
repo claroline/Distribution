@@ -7,7 +7,6 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\Utils\FileBag;
-use Claroline\AppBundle\API\ValidatorProvider;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Manager\File\TempFileManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
@@ -19,6 +18,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
+use Claroline\CoreBundle\Listener\Log\LogListener;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Ramsey\Uuid\Uuid;
@@ -31,20 +31,35 @@ class TransferManager
 
     /** @var ObjectManager */
     private $om;
-
     /** @var StrictDispatcher */
     private $dispatcher;
-
+    /** @var TempFileManager */
+    private $tempFileManager;
     /** @var SerializerProvider */
     private $serializer;
+    /** @var FinderProvider */
+    private $finder;
+    /** @var Crud */
+    private $crud;
+    /** @var TokenStorage */
+    private $tokenStorage;
+    /** @var OrderedToolTransfer */
+    private $ots;
+    /** @var FileUtilities */
+    private $fileUts;
 
     /**
-     * Crud constructor.
+     * TransferManager constructor.
      *
-     * @param ObjectManager      $om
-     * @param StrictDispatcher   $dispatcher
-     * @param SerializerProvider $serializer
-     * @param ValidatorProvider  $validator
+     * @param ObjectManager       $om
+     * @param StrictDispatcher    $dispatcher
+     * @param TempFileManager     $tempFileManager
+     * @param SerializerProvider  $serializer
+     * @param OrderedToolTransfer $ots
+     * @param FinderProvider      $finder
+     * @param Crud                $crud
+     * @param TokenStorage        $tokenStorage
+     * @param FileUtilities       $fileUts
      */
     public function __construct(
       ObjectManager $om,
@@ -55,7 +70,8 @@ class TransferManager
       FinderProvider $finder,
       Crud $crud,
       TokenStorage $tokenStorage,
-      FileUtilities $fileUts
+      FileUtilities $fileUts,
+      LogListener $logListener
     ) {
         $this->om = $om;
         $this->dispatcher = $dispatcher;
@@ -66,10 +82,12 @@ class TransferManager
         $this->tokenStorage = $tokenStorage;
         $this->ots = $ots;
         $this->fileUts = $fileUts;
+        $this->logListener = $logListener;
     }
 
     /**
-     * @param mixed $data - the serialized data of the object to create
+     * @param array     $data      - the serialized data of the object to create
+     * @param Workspace $workspace
      *
      * @return object
      */
@@ -78,7 +96,6 @@ class TransferManager
         $options = [Options::LIGHT_COPY, Options::REFRESH_UUID];
         // gets entity from raw data.
         $workspace = $this->deserialize($data, $workspace, $options);
-
         // creates the entity if allowed
         $this->checkPermission('CREATE', $workspace, [], true);
 
@@ -90,17 +107,9 @@ class TransferManager
         return $workspace;
     }
 
-    //copied from crud
     public function dispatch($action, $when, array $args)
     {
-        $name = 'crud_'.$when.'_'.$action.'_object';
-        $eventClass = ucfirst($action);
-        $generic = $this->dispatcher->dispatch($name, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
-        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($args[0]))->getName();
-        $serializedName = $name.'_'.strtolower(str_replace('\\', '_', $className));
-        $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
-
-        return $generic->isAllowed() && $specific->isAllowed();
+        return $this->crud->dispatch($action, $when, $args);
     }
 
     public function export(Workspace $workspace)
@@ -133,9 +142,10 @@ class TransferManager
     {
         $serialized = $this->serializer->serialize($workspace, [Options::REFRESH_UUID]);
 
-        //if roles duplicatas, remove them
+        // if roles duplicates, remove them
         $roles = $serialized['roles'];
 
+        $uniques = [];
         foreach ($roles as $role) {
             $uniques[$role['translationKey']] = ['type' => $role['type']];
         }
@@ -149,12 +159,13 @@ class TransferManager
         $serialized['roles'] = $roles;
 
         //we want to load the resources first
+        /** @var OrderedTool[] $ot */
         $ot = $workspace->getOrderedTools()->toArray();
 
         $idx = 0;
 
         foreach ($ot as $key => $tool) {
-            if ('resources' === $tool->getName()) {
+            if ('resources' === $tool->getTool()->getName()) {
                 $idx = $key;
             }
         }
@@ -175,13 +186,16 @@ class TransferManager
     /**
      * Deserializes Workspace data into entities.
      *
-     * @param array $data
-     * @param array $options
+     * @param array     $data
+     * @param Workspace $workspace
+     * @param array     $options
+     * @param FileBag   $bag
      *
      * @return Workspace
      */
     public function deserialize(array $data, Workspace $workspace, array $options = [], FileBag $bag = null)
     {
+        $this->logListener->disable();
         $data = $this->replaceResourceIds($data);
 
         $defaultRole = $data['registration']['defaultRole'];
@@ -193,6 +207,7 @@ class TransferManager
         $workspace = $this->serializer->deserialize($data, $workspace, $options);
 
         $this->log('Deserializing the roles...');
+        $roles = [];
         foreach ($data['roles'] as $roleData) {
             $roleData['workspace']['uuid'] = $workspace->getUuid();
             $role = $this->serializer->deserialize($roleData, new Role());
@@ -237,6 +252,8 @@ class TransferManager
             $workspace->setCreator($this->tokenStorage->getToken()->getUser());
         }
 
+        $this->logListener->enable();
+
         return $workspace;
     }
 
@@ -245,7 +262,7 @@ class TransferManager
     {
         foreach ($data['orderedTools'] as $key => $orderedToolData) {
             //copied from crud
-            $name = 'export_tool_'.$orderedToolData['name'];
+            $name = 'export_tool_'.$orderedToolData['tool'];
             //use an other even. StdClass is not pretty
             if (isset($orderedToolData['data'])) {
                 /** @var ExportObjectEvent $event */
@@ -297,7 +314,7 @@ class TransferManager
         $replaced = json_encode($serialized);
 
         foreach ($serialized['orderedTools'] as $tool) {
-            if ('resources' === $tool['name']) {
+            if ('resources' === $tool['tool']) {
                 $nodes = $tool['data']['nodes'];
 
                 foreach ($nodes as $data) {

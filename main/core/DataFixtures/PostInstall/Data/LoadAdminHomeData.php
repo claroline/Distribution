@@ -17,6 +17,10 @@ use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Entity\Tab\HomeTab;
 use Symfony\Component\Translation\TranslatorInterface;
 
+/**
+ * Create a default tab in administration Home and
+ * add a widget to display the list of available tools.
+ */
 class LoadAdminHomeData implements RequiredFixture
 {
     private $container;
@@ -30,7 +34,7 @@ class LoadAdminHomeData implements RequiredFixture
         $this->container = $container;
 
         $this->translator = $container->get('translator');
-        $this->serializer = $container->get('claroline.api.serializer');
+        $this->serializer = $container->get(SerializerProvider::class);
     }
 
     public function load(ObjectManager $manager)
@@ -57,7 +61,6 @@ class LoadAdminHomeData implements RequiredFixture
                     'type' => 'list',
                     'source' => 'admin_tools',
                     'parameters' => [
-                        'showResourceHeader' => false,
                         'display' => 'tiles-sm',
                         'enableDisplays' => false,
                         'availableDisplays' => [],

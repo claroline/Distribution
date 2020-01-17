@@ -18,6 +18,10 @@ claro_user_registration:
     type: annotation
     options: { expose: true }
 
+claro_legacy:
+    resource: "@ClarolineCoreBundle/Controller/LegacyController.php"
+    type: annotation
+
 claro_desktop:
     resource: "@ClarolineCoreBundle/Controller/DesktopController.php"
     type: annotation
@@ -42,11 +46,6 @@ claro_file:
     resource: "@ClarolineCoreBundle/Controller/FileController.php"
     type: annotation
     prefix: file
-
-claro_admin_resource_icons:
-    resource: "@ClarolineCoreBundle/Controller/Administration/IconController.php"
-    prefix: admin/parameters/appearance/icon
-    type: annotation
 
 claro_admin_archives:
     resource: "@ClarolineCoreBundle/Controller/Administration/ArchiveController.php"

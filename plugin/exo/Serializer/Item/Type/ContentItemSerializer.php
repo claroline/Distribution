@@ -23,11 +23,18 @@ class ContentItemSerializer
 
         if (1 === preg_match('#^text\/[^/]+$#', $contentItem->getQuestion()->getMimeType())) {
             $serialized['data'] = $contentItem->getData();
+        } elseif (1 === preg_match('#^resource\/[^/]+$#', $contentItem->getQuestion()->getMimeType())) {
+            $serialized['resource'] = json_decode($contentItem->getData(), true);
         } else {
             $serialized['url'] = $contentItem->getData();
         }
 
         return $serialized;
+    }
+
+    public function getName()
+    {
+        return 'exo_question_content_item';
     }
 
     /**
@@ -46,6 +53,10 @@ class ContentItemSerializer
         }
         $this->sipe('url', 'setData', $data, $contentItem);
         $this->sipe('data', 'setData', $data, $contentItem);
+
+        if (isset($data['resource'])) {
+            $contentItem->setData(json_encode($data['resource']));
+        }
 
         return $contentItem;
     }

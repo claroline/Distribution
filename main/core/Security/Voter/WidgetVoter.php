@@ -14,16 +14,12 @@ namespace Claroline\CoreBundle\Security\Voter;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * This voter is involved in access decisions for WidgetInstances.
- *
- * @DI\Service
- * @DI\Tag("security.voter")
  */
 class WidgetVoter implements VoterInterface
 {
@@ -31,13 +27,6 @@ class WidgetVoter implements VoterInterface
     private $translator;
     private $wm;
 
-    /**
-     * @DI\InjectParams({
-     *     "em"           = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "translator"   = @DI\Inject("translator"),
-     *     "wm"           = @DI\Inject("claroline.manager.workspace_manager")
-     * })
-     */
     public function __construct(
         EntityManager $em,
         TranslatorInterface $translator,
@@ -72,7 +61,7 @@ class WidgetVoter implements VoterInterface
             foreach ($grantedAdminTools as $grantedAdminTool) {
                 $allowedTools[] = $grantedAdminTool->getName();
             }
-            if (!in_array('desktop_and_home', $allowedTools)) {
+            if (!in_array('home', $allowedTools)) {
                 return VoterInterface::ACCESS_DENIED;
             }
 

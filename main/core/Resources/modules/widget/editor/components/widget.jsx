@@ -20,7 +20,7 @@ import {
   computeStyles,
   computeTitleStyles
 } from '#/main/core/widget/utils'
-import {WidgetContent} from '#/main/core/widget/content/components/content'
+import {WidgetContent} from '#/main/core/widget/content/containers/content'
 import {MODAL_WIDGET_CONTENT} from '#/main/core/widget/content/modals/creation'
 import {MODAL_CONTENT_PARAMETERS} from '#/main/core/widget/content/modals/parameters'
 
@@ -180,7 +180,7 @@ const WidgetEditor = props =>
               }}
               deleteContent={(content) => {
                 const widgets = cloneDeep(props.widget)
-                const contentIndex = widgets.contents.findIndex(widget => widget.id === content.id)
+                const contentIndex = widgets.contents.findIndex(widget => widget && widget.id === content.id)
                 // removes the content to delete and replace by null
                 widgets.contents[contentIndex] = null
                 props.update(widgets)

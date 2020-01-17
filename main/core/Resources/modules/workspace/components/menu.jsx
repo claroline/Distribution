@@ -17,6 +17,52 @@ import {route as workspaceRoute} from '#/main/core/workspace/routing'
 import {getActions} from '#/main/core/workspace/utils'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
+const WorkspaceShortcuts = props =>
+  <Toolbar
+    id="app-menu-shortcuts"
+    className="app-menu-shortcuts"
+    buttonName="btn btn-link"
+    tooltip="bottom"
+    actions={props.shortcuts}
+    onClick={props.autoClose}
+  />
+
+const WorkspaceProgression = props =>
+  <section className="app-menu-status">
+    <h2 className="sr-only">
+      {trans('my_progression')}
+    </h2>
+
+    <LiquidGauge
+      id="workspace-progression"
+      type="user"
+      value={get(props.userEvaluation, 'progression', 0)}
+      displayValue={(value) => number(value) + '%'}
+      width={70}
+      height={70}
+    />
+
+    <div className="app-menu-status-info">
+      <h3 className="h4">
+        {!isEmpty(props.roles) ?
+          props.roles.map(role => trans(role.translationKey)).join(', ') :
+          trans('guest')
+        }
+      </h3>
+
+      {trans('Vous n\'avez pas terminé toutes les activités disponibles.')}
+    </div>
+  </section>
+
+WorkspaceProgression.propTypes = {
+  roles: T.arrayOf(T.shape({
+    translationKey: T.string.isRequired
+  })),
+  userEvaluation: T.shape({
+
+  })
+}
+
 const WorkspaceMenu = (props) => {
   let workspaceActions
   if (!isEmpty(props.workspace)) {
@@ -54,41 +100,15 @@ const WorkspaceMenu = (props) => {
       actions={workspaceActions}
     >
       {get(props.workspace, 'display.showProgression') &&
-        <section className="app-menu-progression">
-          <h2 className="sr-only">
-            {trans('my_progression')}
-          </h2>
-
-          <LiquidGauge
-            id="workspace-progression"
-            type="user"
-            value={50}
-            displayValue={(value) => number(value) + '%'}
-            width={70}
-            height={70}
-          />
-
-          <div className="app-menu-progression-info">
-            <h3 className="h4">
-              {!isEmpty(workspaceRoles) ?
-                workspaceRoles.map(role => trans(role.translationKey)).join(', ') :
-                trans('guest')
-              }
-            </h3>
-
-            {trans('Vous n\'avez pas terminé toutes les activités disponibles.')}
-          </div>
-        </section>
+        <WorkspaceProgression
+          roles={workspaceRoles}
+          userEvaluation={props.userEvaluation}
+        />
       }
 
       {!isEmpty(props.shortcuts) &&
-        <Toolbar
-          id={`shortcuts-${get(props.workspace, 'id')}`}
-          className="app-menu-shortcuts"
-          buttonName="btn btn-link"
-          tooltip="bottom"
-          toolbar={props.shortcuts.join(' ')}
-          actions={workspaceActions.then(actions => {
+        <WorkspaceShortcuts
+          shortcuts={workspaceActions.then(actions => {
             return props.shortcuts
               .map(shortcut => {
                 if ('tool' === shortcut.type) {
@@ -133,6 +153,9 @@ WorkspaceMenu.propTypes = {
   currentUser: T.shape(
     UserTypes.propTypes
   ),
+  userEvaluation: T.shape({
+
+  }),
   shortcuts: T.arrayOf(T.shape({
     type: T.oneOf(['tool', 'action']).isRequired,
     name: T.string.isRequired
@@ -142,12 +165,12 @@ WorkspaceMenu.propTypes = {
     name: T.string.isRequired
   })),
   changeSection: T.func.isRequired,
-  startWalkthrough: T.func.isRequired,
   update: T.func.isRequired
 }
 
 WorkspaceMenu.defaultProps = {
-  workspace: {}
+  workspace: {},
+  shortcuts: []
 }
 
 export {

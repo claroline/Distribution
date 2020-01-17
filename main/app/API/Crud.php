@@ -7,6 +7,7 @@ use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AppBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
@@ -24,6 +25,9 @@ class Crud
     const PROPERTY_SET = 'set';
     /** @var string */
     const NO_VALIDATE = 'no_validate';
+    // TODO : remove me. only for retro compatibility it should be always the case
+    // but I don't know if it will break things if I do it now
+    const THROW_EXCEPTION = 'throw_exception';
 
     /** @var ObjectManager */
     private $om;
@@ -73,6 +77,8 @@ class Crud
      * @param array  $options - additional creation options
      *
      * @return object|array
+     *
+     * @throws InvalidDataException
      */
     public function create($class, $data, array $options = [])
     {
@@ -81,7 +87,12 @@ class Crud
             $errors = $this->validate($class, $data, ValidatorProvider::CREATE, $options);
 
             if (count($errors) > 0) {
-                return $errors; // todo : it should throw an Exception otherwise it makes return inconsistent
+                // TODO : it should always throw exception
+                if (in_array(self::THROW_EXCEPTION, $options)) {
+                    throw new InvalidDataException(sprintf('%s is not valid', $class), $errors);
+                } else {
+                    return $errors;
+                }
             }
         }
 
@@ -109,7 +120,9 @@ class Crud
      * @param mixed  $data    - the serialized data of the object to create
      * @param array  $options - additional update options
      *
-     * @return object|array
+     * @return array|object
+     *
+     * @throws InvalidDataException
      */
     public function update($class, $data, array $options = [])
     {
@@ -118,7 +131,12 @@ class Crud
             $errors = $this->validate($class, $data, ValidatorProvider::UPDATE);
 
             if (count($errors) > 0) {
-                return $errors; // todo : it should throw an Exception otherwise it makes return inconsistent
+                // TODO : it should always throw exception
+                if (in_array(self::THROW_EXCEPTION, $options)) {
+                    throw new InvalidDataException(sprintf('%s is not valid', $class), $errors);
+                } else {
+                    return $errors;
+                }
             }
         }
 
@@ -131,11 +149,13 @@ class Crud
         }
 
         $object = $this->serializer->deserialize($data, $oldObject, $options);
-
         if ($this->dispatch('update', 'pre', [$object, $options, $oldData])) {
-            $this->om->save($object);
+            $this->om->persist($object);
             $this->dispatch('update', 'post', [$object, $options, $oldData]);
+            $this->om->flush();
         }
+
+        $this->dispatch('update', 'end', [$object, $options, $oldData]);
 
         return $object;
     }
@@ -153,10 +173,12 @@ class Crud
         if ($this->dispatch('delete', 'pre', [$object, $options])) {
             if (!in_array(Options::SOFT_DELETE, $options)) {
                 $this->om->remove($object);
-                $this->om->flush();
             }
+
             $this->dispatch('delete', 'post', [$object, $options]);
         }
+
+        $this->om->flush();
     }
 
     /**
@@ -185,24 +207,33 @@ class Crud
      *
      * @return object
      */
-    public function copy($object, array $options = [])
+    public function copy($object, array $options = [], array $extra = [])
     {
         $this->checkPermission('COPY', $object, [], true);
         $class = get_class($object);
         $new = new $class();
 
+        //default option for copy
+        $options[] = [Options::REFRESH_UUID];
+        $serializer = $this->serializer->get($object);
+
+        if (method_exists($serializer, 'getCopyOptions')) {
+            $options = array_merge($options, $serializer->getCopyOptions());
+        }
+
         $this->serializer->deserialize(
-          $this->serializer->serialize($object),
-          $new
+          $this->serializer->serialize($object, $options),
+          $new,
+          $options
         );
 
         $this->om->persist($new);
 
         //first event is the pre one
-        if ($this->dispatch('copy', 'pre', [$object, $options, $new])) {
+        if ($this->dispatch('copy', 'pre', [$object, $options, $new, $extra])) {
             //second event is the post one
             //we could use only one event afaik
-            $this->dispatch('copy', 'post', [$object, $options, $new]);
+            $this->dispatch('copy', 'post', [$object, $options, $new, $extra]);
         }
 
         $this->om->flush();
@@ -265,6 +296,7 @@ class Crud
                 $this->dispatch('patch', 'post', [$object, $options, $property, $element, $action]);
             }
         }
+        $this->dispatch('patch', 'post_collection', [$object, $options, $property, $elements, $action]);
     }
 
     /**
@@ -336,7 +368,17 @@ class Crud
         $serializedName = $name.'_'.strtolower(str_replace('\\', '_', $className));
         /** @var CrudEvent $specific */
         $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
+        $isAllowed = $specific->isAllowed();
 
-        return $generic->isAllowed() && $specific->isAllowed();
+        if ($this->serializer->has(get_class($args[0]))) {
+            $serializer = $this->serializer->get(get_class($args[0]));
+
+            if (method_exists($serializer, 'getName')) {
+                $shortName = 'crud.'.$when.'.'.$action.'.'.$serializer->getName();
+                $specific = $this->dispatcher->dispatch($shortName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
+            }
+        }
+
+        return $generic->isAllowed() && $specific->isAllowed() && $isAllowed;
     }
 }

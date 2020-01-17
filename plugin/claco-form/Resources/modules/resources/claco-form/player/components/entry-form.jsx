@@ -7,6 +7,7 @@ import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'
 
 import {withRouter} from '#/main/app/router'
+import {Alert} from '#/main/app/alert/components/alert'
 import {selectors as configSelectors} from '#/main/app/config/store'
 import {selectors as securitySelectors} from '#/main/app/security/store'
 import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
@@ -110,7 +111,7 @@ class EntryFormComponent extends Component {
     let template = this.props.template
     template = template.replace('%clacoform_entry_title%', '<span class="clacoform-field" id="clacoform-field-title"></span>')
     this.props.fields.forEach(f => {
-      template = template.replace(`%field_${f.autoId}%`, `<span class="clacoform-field" id="clacoform-field-${f.id}"></span>`)
+      template = template.replace(`%field_${f.id}%`, `<span class="clacoform-field" id="clacoform-field-${f.id}"></span>`)
     })
 
     this.setState({template: template})
@@ -176,14 +177,63 @@ class EntryFormComponent extends Component {
     }))
   }
 
+  renderCategories() {
+    if (this.props.canEdit || this.props.isManager || this.props.isKeywordsEnabled) {
+      return (
+        <FormSections level={3}>
+          {(this.props.canEdit || this.props.isManager) &&
+            <FormSection
+              id="entry-categories"
+              className="embedded-list-section"
+              icon="fa fa-fw fa-table"
+              title={trans('categories')}
+            >
+              <EntryFormData
+                data={this.props.entry.categories}
+                choices={this.props.categories}
+                onAdd={(category) => this.props.addCategory(category)}
+                onRemove={(category) => this.props.removeCategory(category.id)}
+              />
+            </FormSection>
+          }
+          {this.props.isKeywordsEnabled &&
+            <FormSection
+              id="entry-keywords"
+              className="embedded-list-section"
+              icon="fa fa-fw fa-font"
+              title={trans('keywords', {}, 'clacoform')}
+            >
+              <EntryFormData
+                data={this.props.entry.keywords}
+                choices={this.props.keywords}
+                allowNew={this.props.isNewKeywordsEnabled}
+                onAdd={(keyword) => this.props.addKeyword(keyword)}
+                onRemove={(keyword) => this.props.removeKeyword(keyword.id)}
+              />
+            </FormSection>
+          }
+        </FormSections>
+      )
+    }
+
+    return null
+  }
+
   render() {
+    if (this.props.isNew && !this.props.canAddEntry) {
+      return (
+        <Alert type="warning">
+          {trans('entry_creation_not_allowed', {}, 'clacoform')}
+        </Alert>
+      )
+    }
+
     const fields = this.getFields()
 
     return (
       <Fragment>
         {this.props.entry && (this.props.useTemplate && this.props.template) &&
           <Form
-            className="panel panel-default"
             pendingChanges={this.props.pendingChanges}
             errors={!isEmpty(this.props.errors)}
             validating={this.props.validating}
@@ -197,28 +247,32 @@ class EntryFormComponent extends Component {
               exact: true
             }}
           >
-            <div className="panel-body">
-              {parse(this.state.template, {
-                replace: (element) => {
-                  if (element.attribs && element.attribs.class === 'clacoform-field' && element.attribs.id) {
-                    // this is a field, replace it with a form input
-                    // get the field ID and retrieve it
-                    const id = element.attribs.id.replace('clacoform-field-', '')
-                    const field = fields.find(f => f.id === id)
-                    if (field) {
-                      return (
-                        <DataInput
-                          id={`field-${field.id}`}
-                          {...field}
-                        />
-                      )
+            <div className="panel panel-default">
+              <div className="panel-body">
+                {parse(this.state.template, {
+                  replace: (element) => {
+                    if (element.attribs && element.attribs.class === 'clacoform-field' && element.attribs.id) {
+                      // this is a field, replace it with a form input
+                      // get the field ID and retrieve it
+                      const id = element.attribs.id.replace('clacoform-field-', '')
+                      const field = fields.find(f => f.id === id)
+                      if (field) {
+                        return (
+                          <DataInput
+                            id={`field-${field.id}`}
+                            {...field}
+                          />
+                        )
+                      }
                     }
-                  }
 
-                  return element
-                }
-              })}
+                    return element
+                  }
+                })}
+              </div>
             </div>
+
+            {this.renderCategories()}
           </Form>
         }
 
@@ -237,43 +291,9 @@ class EntryFormComponent extends Component {
               target: this.props.entry.id ? `${this.props.path}/entries/${this.props.entry.id}` : this.props.path,
               exact: true
             }}
-          />
-        }
-
-        {(this.props.canEdit || this.props.isManager || this.props.isKeywordsEnabled) &&
-          <FormSections level={3}>
-            {(this.props.canEdit || this.props.isManager) &&
-              <FormSection
-                id="entry-categories"
-                className="embedded-list-section"
-                icon="fa fa-fw fa-table"
-                title={trans('categories')}
-              >
-                <EntryFormData
-                  data={this.props.entry.categories}
-                  choices={this.props.categories}
-                  onAdd={(category) => this.props.addCategory(category)}
-                  onRemove={(category) => this.props.removeCategory(category.id)}
-                />
-              </FormSection>
-            }
-            {this.props.isKeywordsEnabled &&
-              <FormSection
-                id="entry-keywords"
-                className="embedded-list-section"
-                icon="fa fa-fw fa-font"
-                title={trans('keywords', {}, 'clacoform')}
-              >
-                <EntryFormData
-                  data={this.props.entry.keywords}
-                  choices={this.props.keywords}
-                  allowNew={this.props.isNewKeywordsEnabled}
-                  onAdd={(keyword) => this.props.addKeyword(keyword)}
-                  onRemove={(keyword) => this.props.removeKeyword(keyword.id)}
-                />
-              </FormSection>
-            }
-          </FormSections>
+          >
+            {this.renderCategories()}
+          </FormData>
         }
       </Fragment>
     )
@@ -287,6 +307,7 @@ EntryFormComponent.propTypes = {
   impersonated: T.bool.isRequired,
   config: T.object,
   canEdit: T.bool.isRequired,
+  canAddEntry: T.bool.isRequired,
   clacoFormId: T.string.isRequired,
   fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   template: T.string,
@@ -321,6 +342,7 @@ const EntryForm = withRouter(connect(
     config: configSelectors.config(state),
     path: resourceSelectors.path(state),
 
+    canAddEntry: selectors.canAddEntry(state),
     canEdit: hasPermission('edit', resourceSelectors.resourceNode(state)),
     clacoFormId: selectors.clacoForm(state).id,
     fields: selectors.visibleFields(state),
@@ -344,7 +366,10 @@ const EntryForm = withRouter(connect(
     saveForm(entry, isNew, navigate, path) {
       if (isNew) {
         dispatch(formActions.saveForm(selectors.STORE_NAME+'.entries.current', ['apiv2_clacoformentry_create'])).then(
-          (data) => navigate(`${path}/entries/${data.id}`),
+          (data) => {
+            navigate(`${path}/entries/${data.id}`)
+            dispatch(actions.addCreatedEntry(data))
+          },
           () => true
         )
       } else {

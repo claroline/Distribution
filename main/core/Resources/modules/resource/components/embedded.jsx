@@ -31,16 +31,9 @@ class ResourceEmbedded extends Component {
     if (this.props.resourceNode.id !== prevProps.resourceNode.id) {
       // remove old app
       unmount(this.mountNode)
-      this.props.onResourceClose(prevProps.resourceNode.id)
 
       setTimeout(this.mountResource, 0)
     }
-  }
-
-  componentWillUnmount() {
-    this.props.onResourceClose(this.props.resourceNode.id)
-    // remove old app
-    unmount(this.mountNode)
   }
 
   mountResource() {
@@ -119,7 +112,6 @@ ResourceEmbedded.propTypes = {
     end: T.func,
     close: T.func
   }),
-  onResourceClose: T.func.isRequired,
 
   // from store (to build the embedded store)
   currentUser: T.object,
@@ -128,8 +120,7 @@ ResourceEmbedded.propTypes = {
 }
 
 ResourceEmbedded.defaultProps = {
-  lifecycle: {},
-  onResourceClose: () => true
+  lifecycle: {}
 }
 
 export {

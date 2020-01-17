@@ -13,14 +13,9 @@ namespace Claroline\ClacoFormBundle\Security\Voter;
 
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\CoreBundle\Security\Voter\AbstractVoter;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
-/**
- * @DI\Service
- * @DI\Tag("security.voter")
- */
 class EntryVoter extends AbstractVoter
 {
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
@@ -50,6 +45,14 @@ class EntryVoter extends AbstractVoter
             ($clacoForm->isEditionEnabled() && 'anon.' !== $user && $entry->getUser()->getUuid() === $token->getUser()->getUuid())
         ) {
             return VoterInterface::ACCESS_GRANTED;
+        } elseif ($clacoForm->isEditionEnabled() && 'anon.' !== $user) {
+            $entryUsers = $entry->getEntryUsers();
+
+            foreach ($entryUsers as $entryUser) {
+                if ($entryUser->isShared() && $entryUser->getUser()->getUuid() === $token->getUser()->getUuid()) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+            }
         }
 
         return VoterInterface::ACCESS_DENIED;

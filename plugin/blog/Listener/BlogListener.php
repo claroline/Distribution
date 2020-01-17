@@ -3,7 +3,7 @@
 namespace Icap\BlogBundle\Listener;
 
 use Claroline\AppBundle\API\Options;
-use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
+use Claroline\CoreBundle\Entity\AbstractEvaluation;
 use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\ImportObjectEvent;
@@ -86,8 +86,7 @@ class BlogListener
           'authors' => $postManager->getAuthors($blog),
           'archives' => $postManager->getArchives($blog),
           'tags' => $blogManager->getTags($blog, $postsData),
-          'blog' => $this->container->get('claroline.api.serializer')->serialize($blog),
-          'pdfEnabled' => $this->container->get('claroline.config.platform_config_handler')->getParameter('is_pdf_export_active'),
+          'blog' => $this->container->get('Claroline\AppBundle\API\SerializerProvider')->serialize($blog),
         ]);
 
         $event->stopPropagation();
@@ -123,7 +122,7 @@ class BlogListener
     {
         $data = $event->getData();
         $blog = $event->getObject();
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
 
         foreach ($data['_data']['posts'] as $postData) {
             /** @var Post $post */
@@ -176,7 +175,7 @@ class BlogListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        $entityManager = $this->container->get('claroline.persistence.object_manager');
+        $entityManager = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $postManager = $this->container->get('Icap\BlogBundle\Manager\PostManager');
         /** @var \Icap\BlogBundle\Entity\Blog $blog */
         $blog = $event->getResource();
@@ -233,7 +232,7 @@ class BlogListener
      */
     public function onGenerateResourceTracking(GenericDataEvent $event)
     {
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $resourceEvalManager = $this->container->get('claroline.manager.resource_evaluation_manager');
         $data = $event->getData();
         $node = $data['resourceNode'];
@@ -252,7 +251,7 @@ class BlogListener
             $om->startFlushSuite();
             $tracking = $resourceEvalManager->getResourceUserEvaluation($node, $user);
             $tracking->setDate($logs[0]->getDateLog());
-            $status = AbstractResourceEvaluation::STATUS_UNKNOWN;
+            $status = AbstractEvaluation::STATUS_UNKNOWN;
             $nbAttempts = 0;
             $nbOpenings = 0;
 
@@ -261,15 +260,15 @@ class BlogListener
                     case 'resource-read':
                         ++$nbOpenings;
 
-                        if (AbstractResourceEvaluation::STATUS_UNKNOWN === $status) {
-                            $status = AbstractResourceEvaluation::STATUS_OPENED;
+                        if (AbstractEvaluation::STATUS_UNKNOWN === $status) {
+                            $status = AbstractEvaluation::STATUS_OPENED;
                         }
                         break;
                     case 'resource-icap_blog-post_create':
                     case 'resource-icap_blog-post_update':
                     case 'resource-icap_blog-comment_create':
                         ++$nbAttempts;
-                        $status = AbstractResourceEvaluation::STATUS_PARTICIPATED;
+                        $status = AbstractEvaluation::STATUS_PARTICIPATED;
                         break;
                 }
             }

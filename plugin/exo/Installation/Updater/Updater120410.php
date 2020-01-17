@@ -27,7 +27,7 @@ class Updater120410 extends Updater
         $this->log('Start migrating paper to update score info...');
 
         /** @var ObjectManager $om */
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
 
         // retrieve all papers
         $papers = $om
@@ -66,7 +66,7 @@ class Updater120410 extends Updater
     private function migrateStructure(Paper $paper)
     {
         /** @var ObjectManager $om */
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
 
         $this->log('Update paper score parameters...');
 
@@ -120,10 +120,10 @@ class Updater120410 extends Updater
     private function dumpTotal(Paper $paper)
     {
         /** @var PaperManager $paperManager */
-        $paperManager = $this->container->get('ujm_exo.manager.paper');
+        $paperManager = $this->container->get('UJM\ExoBundle\Manager\Attempt\PaperManager');
 
         /** @var ObjectManager $om */
-        $om = $this->container->get('claroline.persistence.object_manager');
+        $om = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager');
 
         if (empty($paper->getTotal())) {
             $this->log('Calculate and store paper total...');

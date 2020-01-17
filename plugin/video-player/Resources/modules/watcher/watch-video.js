@@ -17,8 +17,6 @@ function callback(el) {
     autoplay: autoplay,
     controls: !autoplay,
     preload: 'metadata',
-      //I don't know why yet, but displaying errors crashes everything in a widget
-    errorDisplay: false
-  }, () => {}
-  )
+    errorDisplay: true
+  })
 }

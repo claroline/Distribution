@@ -51,6 +51,7 @@ class SectionSerializer
             'help' => $section->getHelp(),
             'showAudio' => $section->getShowAudio(),
             'audioUrl' => $section->getAudioUrl(),
+            'audioDescription' => $section->getAudioDescription(),
         ];
 
         return $serialized;
@@ -65,7 +66,6 @@ class SectionSerializer
      */
     public function deserialize($data, Section $section, array $options = [])
     {
-        $this->sipe('id', 'setUuid', $data, $section);
         $this->sipe('type', 'setType', $data, $section);
         $this->sipe('title', 'setTitle', $data, $section);
         $this->sipe('start', 'setStart', $data, $section);
@@ -78,6 +78,7 @@ class SectionSerializer
         $this->sipe('help', 'setHelp', $data, $section);
         $this->sipe('showAudio', 'setShowAudio', $data, $section);
         $this->sipe('audioUrl', 'setAudioUrl', $data, $section);
+        $this->sipe('audioDescription', 'setAudioDescription', $data, $section);
 
         if (isset($data['meta']['resourceNode']['id']) && !$section->getResourceNode()) {
             $resourceNode = $this->resourceNodeRepo->findOneBy(['uuid' => $data['meta']['resourceNode']['id']]);

@@ -15,8 +15,12 @@ const RolesModal = withReducer(selectors.STORE_NAME, reducer)(
       selected: listSelect.selectedFull(listSelect.list(state, selectors.STORE_NAME))
     }),
     (dispatch) => ({
-      resetSelect() {
+      resetFilters(filters) {
+        dispatch(listActions.resetFilters(selectors.STORE_NAME, filters))
+      },
+      reset() {
         dispatch(listActions.resetSelect(selectors.STORE_NAME))
+        dispatch(listActions.invalidateData(selectors.STORE_NAME))
       }
     })
   )(RolesModalComponent)

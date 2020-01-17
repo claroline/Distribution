@@ -13,15 +13,12 @@ namespace Claroline\TagBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\TagBundle\Entity\Tag;
 use Claroline\TagBundle\Entity\TaggedObject;
 use Claroline\TagBundle\Repository\TaggedObjectRepository;
 use Claroline\TagBundle\Repository\TagRepository;
-use JMS\DiExtraBundle\Annotation as DI;
 
-/**
- * @DI\Service("claroline.manager.tag_manager")
- */
 class TagManager
 {
     /** @var ObjectManager */
@@ -33,12 +30,11 @@ class TagManager
     /** @var TagRepository */
     private $tagRepo;
 
+    /** @var UserRepository */
+    private $userRepo;
+
     /**
      * TagManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
-     * })
      *
      * @param ObjectManager $om
      */
@@ -48,6 +44,7 @@ class TagManager
         $this->om = $om;
         $this->taggedObjectRepo = $om->getRepository('ClarolineTagBundle:TaggedObject');
         $this->tagRepo = $om->getRepository('ClarolineTagBundle:Tag');
+        $this->userRepo = $om->getRepository(User::class);
     }
 
     public function persistTag(Tag $tag)
@@ -312,6 +309,13 @@ class TagManager
     public function getOneUserTagByName(User $user, $name)
     {
         return $this->tagRepo->findOneUserTagByName($user, $name);
+    }
+
+    public function getUserTagByNameAndUserId($name, $userId)
+    {
+        $user = $this->userRepo->findOneBy(['uuid' => $userId]);
+
+        return $user ? $this->getOneUserTagByName($user, $name) : null;
     }
 
     /******************************************

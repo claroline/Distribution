@@ -40,8 +40,8 @@ class Updater120500 extends Updater
     {
         $this->logger = $logger;
         $this->container = $container;
-        $this->om = $container->get('claroline.persistence.object_manager');
-        $this->configHandler = $container->get('claroline.config.platform_config_handler');
+        $this->om = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
+        $this->configHandler = $container->get('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $this->translator = $container->get('translator');
         $this->roleManager = $container->get('claroline.manager.role_manager');
         $this->workspaceManager = $container->get('claroline.manager.workspace_manager');
@@ -125,7 +125,7 @@ class Updater120500 extends Updater
 
         if (!$admin) {
             $conn = $this->container->get('doctrine.dbal.default_connection');
-            $sql = "DELETE FROM claro_ordered_tool WHERE name = '${toolName}'";
+            $sql = "DELETE ot FROM claro_ordered_tool AS ot LEFT JOIN claro_tools AS t ON (ot.tool_id = t.id) WHERE t.name = '${toolName}'";
 
             $this->log($sql);
             $stmt = $conn->prepare($sql);
@@ -142,15 +142,6 @@ class Updater120500 extends Updater
             $tool->setName($newName);
             $this->om->persist($tool);
             $this->om->flush();
-        }
-
-        if (!$admin) {
-            $conn = $this->container->get('doctrine.dbal.default_connection');
-            $sql = "UPDATE claro_ordered_tool SET name = '${newName}' WHERE name = '${oldName}'";
-
-            $this->log($sql);
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
         }
     }
 

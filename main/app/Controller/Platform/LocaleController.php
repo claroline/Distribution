@@ -12,12 +12,17 @@
 namespace Claroline\AppBundle\Controller\Platform;
 
 use Claroline\CoreBundle\Manager\LocaleManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * Manages platform locales.
+ *
+ * @EXT\Route("/locale")
+ */
 class LocaleController
 {
     /** @var LocaleManager */
@@ -27,11 +32,6 @@ class LocaleController
 
     /**
      * LocaleController constructor.
-     *
-     * @DI\InjectParams({
-     *     "localeManager" = @DI\Inject("claroline.manager.locale_manager"),
-     *     "tokenStorage"  = @DI\Inject("security.token_storage")
-     * })
      *
      * @param LocaleManager         $localeManager
      * @param TokenStorageInterface $tokenStorage
@@ -45,9 +45,24 @@ class LocaleController
     }
 
     /**
+     * List platform locales.
+     *
+     * @EXT\Route("/", name="apiv2_locale_list")
+     * @EXT\Method("GET")
+     *
+     * @return JsonResponse
+     */
+    public function listAction()
+    {
+        return new JsonResponse(
+            $this->localeManager->getLocales()
+        );
+    }
+
+    /**
      * Change locale.
      *
-     * @EXT\Route("/locale/{locale}", name="claroline_locale_change")
+     * @EXT\Route("/{locale}", name="claroline_locale_change")
      *
      * @param Request $request
      * @param string  $locale

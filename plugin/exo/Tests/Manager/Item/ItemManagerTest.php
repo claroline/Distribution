@@ -12,11 +12,11 @@ class ItemManagerTest extends TransactionalTestCase
      */
     private $manager;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->manager = $this->client->getContainer()->get('ujm_exo.manager.item');
+        $this->manager = $this->client->getContainer()->get('UJM\ExoBundle\Manager\Item\ItemManager');
     }
 
     public function testExport()

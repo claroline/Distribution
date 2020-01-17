@@ -17,7 +17,7 @@ class GroupRepositoryTest extends RepositoryTestCase
 {
     private static $repo;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$repo = self::getRepository('ClarolineCoreBundle:Group');
@@ -65,10 +65,5 @@ class GroupRepositoryTest extends RepositoryTestCase
     {
         $groups = self::$repo->findByRolesAndName([self::get('ROLE_1')], 'group_1');
         $this->assertEquals(1, count($groups));
-    }
-
-    public function testFindNames()
-    {
-        $this->assertEquals(5, count(self::$repo->findNames()));
     }
 }

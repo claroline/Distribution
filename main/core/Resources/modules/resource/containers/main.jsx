@@ -15,11 +15,16 @@ const ResourceMain = withRouter(
         path: selectors.path(state),
         resourceSlug: selectors.slug(state),
         resourceType: selectors.resourceType(state),
-        loaded: selectors.nodeLoaded(state)
+        embedded: selectors.embedded(state),
+        loaded: selectors.loaded(state),
+        notFound: selectors.notFound(state)
       }),
       (dispatch) => ({
-        open(resourceId) {
-          dispatch(actions.fetchNode(resourceId))
+        open(resourceSlug, embedded, loadApp) {
+          dispatch(actions.fetchResource(resourceSlug, embedded, loadApp))
+        },
+        close(resourceSlug, embedded) {
+          dispatch(actions.closeResource(resourceSlug, embedded))
         }
       })
     )(ResourceMainComponent)

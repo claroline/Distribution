@@ -5,7 +5,8 @@ import {trans} from '#/main/app/intl/translation'
 import {AgendaViewDay} from '#/plugin/agenda/tools/agenda/views/day/components/view'
 
 export default {
-  label: trans('Jour'),
+  autoload: true,
+  label: trans('agenda_day', {}, 'agenda'),
   component: AgendaViewDay,
 
   display: (referenceDate) => referenceDate.format('MMMM YYYY'),

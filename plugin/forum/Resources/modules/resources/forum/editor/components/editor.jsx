@@ -6,6 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 import {actions as formActions, selectors as formSelect} from '#/main/app/content/form/store'
+import {constants as listConst} from '#/main/app/content/list/constants'
 
 import {selectors as resourceSelectors} from '#/main/core/resource/store'
 
@@ -18,7 +19,6 @@ const EditorComponent = (props) =>
     level={2}
     name={selectors.FORM_NAME}
     title={trans('parameters')}
-    className="content-container"
     buttons={true}
     save={{
       type: CALLBACK_BUTTON,
@@ -67,7 +67,10 @@ const EditorComponent = (props) =>
             label: trans('subjects_list_display', {}, 'forum'),
             options: {
               noEmpty: true,
-              choices: constants.LIST_DISPLAY_MODES
+              inline: false,
+              choices: Object.keys(listConst.DISPLAY_MODES).reduce((acc, displayMode) => Object.assign(acc, {
+                [displayMode]: listConst.DISPLAY_MODES[displayMode].label
+              }), {})
             }
           }
         ]

@@ -1,5 +1,6 @@
 import React, {createElement, Component, Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
+import {Helmet} from 'react-helmet'
 
 import {theme} from '#/main/app/config'
 import {withReducer} from '#/main/app/store/components/withReducer'
@@ -16,9 +17,13 @@ const Tool = props => {
       <Fragment>
         {props.children}
 
-        {props.styles && props.styles.map(style =>
-          <link key={style} rel="stylesheet" type="text/css" href={theme(style)} />
-        )}
+        {0 !== props.styles.length &&
+          <Helmet>
+            {props.styles.map(style =>
+              <link key={style} rel="stylesheet" type="text/css" href={theme(style)} />
+            )}
+          </Helmet>
+        }
       </Fragment>
     )
   }
@@ -26,7 +31,7 @@ const Tool = props => {
   return (
     <ContentLoader
       size="lg"
-      description="Nous chargeons votre outil"
+      description="Nous chargeons votre outil..."
     />
   )
 }
@@ -35,6 +40,10 @@ Tool.propTypes = {
   loaded: T.bool.isRequired,
   styles: T.arrayOf(T.string),
   children: T.node
+}
+
+Tool.defaultProps = {
+  styles: []
 }
 
 class ToolMain extends Component {
@@ -50,25 +59,39 @@ class ToolMain extends Component {
   }
 
   componentDidMount() {
-    this.loadApp()
-    if (!this.props.loaded) {
-      this.props.open(this.props.toolName, this.props.toolContext)
-    }
+    this.loadApp().then(() => {
+      if (!this.props.loaded) {
+        this.props.open(this.props.toolName, this.props.toolContext)
+      }
+    })
   }
 
   componentDidUpdate(prevProps) {
+    let appPromise
     if (this.props.toolName && this.props.toolName !== prevProps.toolName) {
       if (this.pending) {
         this.pending.cancel()
         this.pending = null
       }
 
-      this.loadApp()
+      appPromise = this.loadApp()
+    } else {
+      appPromise = Promise.resolve(true)
     }
 
-    if (!this.props.loaded && this.props.loaded !== prevProps.loaded) {
-      this.props.open(this.props.toolName, this.props.toolContext)
-    }
+    appPromise.then(() => {
+      if (!this.props.loaded && this.props.loaded !== prevProps.loaded) {
+        this.props.open(this.props.toolName, this.props.toolContext)
+      }
+
+      if (this.props.toolName && prevProps.toolName && this.props.toolContext && prevProps.toolContext && (
+        this.props.toolName !== prevProps.toolName ||
+        this.props.toolContext.type !== prevProps.toolContext.type ||
+        (this.props.toolContext.data && prevProps.toolContext.data && this.props.toolContext.data.id !== prevProps.toolContext.data.id)
+      )) {
+        this.props.close(prevProps.toolName, prevProps.toolContext)
+      }
+    })
   }
 
   loadApp() {
@@ -97,13 +120,17 @@ class ToolMain extends Component {
                 styles: resolved.default.styles
               })
             }
-          }
+          },
+          // TODO : properly handle error
+          (error) => console.error(error) /* eslint-disable-line no-console */
         )
         .then(
           () => this.pending = null,
           () => this.pending = null
         )
     }
+
+    return this.pending.promise
   }
 
   componentWillUnmount() {
@@ -111,6 +138,7 @@ class ToolMain extends Component {
       this.pending.cancel()
       this.pending = null
     }
+    this.props.close(this.props.toolName, this.props.toolContext)
   }
 
   render() {
@@ -118,7 +146,7 @@ class ToolMain extends Component {
       return (
         <ContentLoader
           size="lg"
-          description="Nous chargeons votre outil"
+          description="Nous chargeons votre outil..."
         />
       )
     }
@@ -146,7 +174,8 @@ ToolMain.propTypes = {
     data: T.object
   }).isRequired,
   loaded: T.bool.isRequired,
-  open: T.func.isRequired
+  open: T.func.isRequired,
+  close: T.func.isRequired
 }
 
 ToolMain.defaultProps = {

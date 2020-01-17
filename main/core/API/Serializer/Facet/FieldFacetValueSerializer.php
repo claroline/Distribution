@@ -36,6 +36,11 @@ class FieldFacetValueSerializer
         $this->container = $container;
     }
 
+    public function getName()
+    {
+        return 'field_facet_value';
+    }
+
     /**
      * Serializes a FieldFacetValue entity for the JSON api.
      *
@@ -86,7 +91,7 @@ class FieldFacetValueSerializer
      */
     public function deserialize(array $data, FieldFacetValue $fieldFacetValue = null, array $options = [])
     {
-        $fieldFacet = $this->container->get('claroline.persistence.object_manager')
+        $fieldFacet = $this->container->get('Claroline\AppBundle\Persistence\ObjectManager')
             ->getRepository(FieldFacet::class)
             ->findOneByUuid($data['fieldFacet']['id']);
 

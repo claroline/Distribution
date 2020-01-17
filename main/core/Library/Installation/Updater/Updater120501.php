@@ -28,7 +28,7 @@ class Updater120501 extends Updater
         $this->logger = $logger;
         $this->container = $container;
         $this->conn = $container->get('doctrine.dbal.default_connection');
-        $this->om = $container->get('claroline.persistence.object_manager');
+        $this->om = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
     }
 
     public function postUpdate()
@@ -67,7 +67,7 @@ class Updater120501 extends Updater
             $this->om->flush();
         }
 
-        $sql = "DELETE FROM claro_ordered_tool WHERE name = '${toolName}'";
+        $sql = "DELETE ot FROM claro_ordered_tool AS ot LEFT JOIN claro_tools AS t ON (ot.tool_id = t.id) WHERE t.name = '${toolName}'";
 
         $this->log($sql);
         $stmt = $this->conn->prepare($sql);

@@ -23,14 +23,11 @@
 
 // Import claroline layout
 @import "mixins";
-// ATTENTION (advanced CSS) : walkthrough must always be included first
-// because it declare some classes which will be appended to existing ui component.
-// I need to keep those classes with a lower specificity than the real ui styles.
-@import "walkthrough/index";
 @import "scaffolding";
 @import "utilities";
 @import "type";
 @import "alert/index";
+@import "content/index";
 @import "data/index";
 @import "layout/index";
 @import "progression/index";

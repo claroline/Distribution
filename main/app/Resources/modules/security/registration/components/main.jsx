@@ -2,8 +2,9 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
-
-import {FormStepper} from '#/main/core/layout/form/components/form-stepper'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {Alert} from '#/main/app/alert/components/alert'
+import {FormStepper} from '#/main/app/content/form/components/stepper'
 
 import {Facet} from '#/main/app/security/registration/components/facet'
 import {Required} from '#/main/app/security/registration/components/required'
@@ -11,6 +12,8 @@ import {Optional} from '#/main/app/security/registration/components/optional'
 import {Organization} from '#/main/app/security/registration/components/organization'
 import {Workspace} from '#/main/app/security/registration/components/workspace'
 import {Registration} from '#/main/app/security/registration/components/registration'
+
+import {constants} from '#/main/app/security/registration/constants'
 
 class RegistrationMain extends Component {
   componentDidMount() {
@@ -22,7 +25,6 @@ class RegistrationMain extends Component {
 
     if (!this.props.options.allowWorkspace && this.props.defaultWorkspaces) {
       steps.push({
-        path: '/registration',
         title: 'Registration',
         component: Registration
       })
@@ -30,16 +32,13 @@ class RegistrationMain extends Component {
 
     steps = steps.concat([
       {
-        path: '/account',
-        title: 'Compte utilisateur',
+        title: trans('my_account'),
         component: Required
       }, {
-        path: '/options',
         title: 'Configuration',
         component: Optional
       }
     ], this.props.facets.map(facet => ({
-      path: `/${facet.id}`,
       title: facet.title,
       component: () => {
         const currentFacet = <Facet facet={facet}/>
@@ -50,36 +49,47 @@ class RegistrationMain extends Component {
 
     if (this.props.options.forceOrganizationCreation) {
       steps.push({
-        path: '/organization',
-        title: 'Organization',
+        title: trans('organization'),
         component: Organization
       })
     }
 
     if (this.props.options.allowWorkspace) {
       steps.push({
-        path: '/workspace',
-        title: 'Workspace',
+        title: trans('workspaces'),
         component: Workspace
       })
     }
 
     return (
       <FormStepper
-        path={this.props.path}
-        location={this.props.location}
         submit={{
+          type: CALLBACK_BUTTON,
           icon: 'fa fa-user-plus',
-          label: trans('registration_confirm'),
-          action: () => this.props.register(this.props.user, this.props.termOfService, (user) => {
+          label: trans('self-register', {}, 'actions'),
+          confirm: {
+            title: trans('registration'),
+            message: trans('register_confirm_message'),
+            button: trans('registration_confirm'),
+            additional: constants.REGISTRATION_MAIL_VALIDATION_NONE !== this.props.options.validation ? (
+              <div className="modal-body">
+                <Alert type="info">
+                  {trans('registration_mail_help')}
+                </Alert>
+
+                {constants.REGISTRATION_MAIL_VALIDATION_FULL === this.props.options.validation &&
+                  <Alert type="warning">
+                    {trans('registration_validation_help')}
+                  </Alert>
+                }
+              </div>
+            ) : undefined
+          },
+          callback: () => this.props.register(this.props.user, this.props.termOfService, (user) => {
             this.props.onRegister(user)
-            this.props.history.push('/login')
           })
         }}
         steps={steps}
-        redirect={[
-          {from: '/', exact: true, to: !this.props.options.allowWorkspace && this.props.defaultWorkspaces ? '/registration' : '/account'}
-        ]}
       />
     )
   }
@@ -107,6 +117,9 @@ RegistrationMain.propTypes = {
   register: T.func.isRequired,
   fetchRegistrationData: T.func.isRequired,
   options: T.shape({
+    autoLog: T.bool,
+    validation: T.bool,
+    localeLanguage: T.String,
     forceOrganizationCreation: T.bool,
     allowWorkspace: T.bool
   }).isRequired,

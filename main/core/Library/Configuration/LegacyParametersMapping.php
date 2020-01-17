@@ -11,12 +11,6 @@
 
 namespace Claroline\CoreBundle\Library\Configuration;
 
-use JMS\DiExtraBundle\Annotation as DI;
-
-/**
- * @DI\Service()
- * @DI\Tag("claroline.configuration.mapping.legacy")
- */
 class LegacyParametersMapping implements LegacyParametersMappingInterface
 {
     public function getMapping()
@@ -54,14 +48,8 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'session_db_dsn' => 'session.db_dsn',
             'session_db_user' => 'session.db_user',
             'session_db_password' => 'session.db_password',
-            'form_captcha' => 'security.form_captcha',
-            'form_honeypot' => 'security.form_honeypot',
-            'platform_limit_date' => 'security.platform_limit_date', //1 june 2019
-            'platform_init_date' => 'security.platform_init_date', //1 june 2014
             'account_duration' => 'security.account_duration',
             'username_regex' => 'registration.username_regex',
-            'anonymous_public_profile' => 'security.anonymous_public_profile',
-            'home_menu' => 'display.home_menu',
             'footer_login' => 'display.footer_login',
             'footer_workspaces' => 'display.footer_workspaces',
             'header_locale' => 'footer.show_locale',
@@ -87,7 +75,6 @@ class LegacyParametersMapping implements LegacyParametersMappingInterface
             'platform_url' => 'internet.platform_url',
             'mailer_from' => 'mailer.from',
             'default_workspace_tag' => 'workspace.default_tag',
-            'is_pdf_export_active' => 'pdf.active',
             'google_geocoding_client_id' => 'geolocation.google.geocoding_client_id',
             'google_geocoding_signature' => 'geolocation.google.geocoding_signature',
             'google_geocoding_key' => 'geolocation.google.geocoding_key',

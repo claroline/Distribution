@@ -7,10 +7,10 @@ services:
     Claroline\ForumBundle\Serializer\ForumSerializer:
         tags: [claroline.serializer]
         arguments:
-           - '@claroline.api.finder'
+           - '@Claroline\AppBundle\API\FinderProvider'
            - '@security.token_storage'
            - '@event_dispatcher'
-           - '@claroline.manager.forum_manager'
+           - '@Claroline\ForumBundle\Manager\Manager'
            - '@security.authorization_checker'
 
     claroline.serializer.forum:
@@ -21,7 +21,7 @@ services:
         tags: [claroline.serializer]
         arguments:
            - '@Claroline\CoreBundle\API\Serializer\MessageSerializer'
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'
            - '@claroline.serializer.forum_subject'
            - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
            - '@Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer'
@@ -33,13 +33,13 @@ services:
     Claroline\ForumBundle\Serializer\SubjectSerializer:
         tags: [claroline.serializer]
         arguments:
-           - '@claroline.api.finder'
-           - '@claroline.utilities.file'
+           - '@Claroline\AppBundle\API\FinderProvider'
+           - '@Claroline\CoreBundle\Library\Utilities\FileUtilities'
            - '@event_dispatcher'
            - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
-           - '@claroline.persistence.object_manager'
+           - '@Claroline\AppBundle\Persistence\ObjectManager'
            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
-           - '@claroline.manager.forum_manager'
+           - '@Claroline\ForumBundle\Manager\Manager'
 
     claroline.serializer.forum_subject:
          alias: Claroline\ForumBundle\Serializer\SubjectSerializer

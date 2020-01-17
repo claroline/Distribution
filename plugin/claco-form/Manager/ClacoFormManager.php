@@ -42,7 +42,6 @@ use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\MessageBundle\Manager\MessageManager;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Ramsey\Uuid\Uuid;
@@ -56,9 +55,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * @DI\Service("claroline.manager.claco_form_manager")
- */
 class ClacoFormManager
 {
     use LoggableTrait;
@@ -87,20 +83,6 @@ class ClacoFormManager
 
     /**
      * ClacoFormManager constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization"   = @DI\Inject("security.authorization_checker"),
-     *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
-     *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
-     *     "fileSystem"      = @DI\Inject("filesystem"),
-     *     "filesDir"        = @DI\Inject("%claroline.param.files_directory%"),
-     *     "messageManager"  = @DI\Inject("claroline.manager.message_manager"),
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "router"          = @DI\Inject("router"),
-     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
-     *     "translator"      = @DI\Inject("translator"),
-     *     "userManager"     = @DI\Inject("claroline.manager.user_manager")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param EventDispatcherInterface      $eventDispatcher
@@ -1027,6 +1009,29 @@ class ClacoFormManager
         return $data;
     }
 
+    public function refactorTemplateWithUuid(ClacoForm $clacoForm)
+    {
+        $template = $clacoForm->getTemplate();
+
+        if ($template) {
+            $matches = [];
+
+            if (preg_match_all('#%field_[0-9]+%#', $template, $matches) && 0 < count($matches)) {
+                foreach ($matches[0] as $match) {
+                    $id = trim($match, '%field_');
+                    $field = $this->fieldRepo->findOneBy(['id' => $id]);
+
+                    if ($field) {
+                        $template = str_replace($match, '%field_'.$field->getUuid().'%', $template);
+                    }
+                }
+            }
+            $clacoForm->setTemplate($template);
+            $this->om->persist($clacoForm);
+            $this->om->flush();
+        }
+    }
+
     public function copyClacoForm(ClacoForm $clacoForm, ClacoForm $newClacoForm)
     {
         $categoryLinks = [];
@@ -1058,6 +1063,14 @@ class ClacoFormManager
         }
         foreach ($entries as $entry) {
             $this->copyEntry($newClacoForm, $entry, $categoryLinks, $keywordLinks, $fieldLinks, $fieldFacetLinks);
+        }
+        $template = $clacoForm->getTemplate();
+
+        if ($template) {
+            foreach ($fieldLinks as $key => $value) {
+                $template = str_replace("%field_$key%", '%field_'.$value->getUuid().'%', $template);
+            }
+            $newClacoForm->setTemplate($template);
         }
 
         return $newClacoForm;
@@ -1105,6 +1118,11 @@ class ClacoFormManager
         $newField->setLocked($field->isLocked());
         $newField->setLockedEditionOnly($field->getLockedEditionOnly());
         $newField->setHidden($field->isHidden());
+        $newField->setDetails($field->getDetails());
+        $newField->setFileTypes($field->getFileTypes());
+        $newField->setHelp($field->getHelp());
+        $newField->setNbFilesMax($field->getNbFilesMax());
+        $newField->setOrder($field->getOrder());
 
         $fieldFacet = $field->getFieldFacet();
         $newFieldFacet = new FieldFacet();
@@ -1117,7 +1135,7 @@ class ClacoFormManager
         $links['fieldFacets'][$fieldFacet->getId()] = $newFieldFacet;
         $newField->setFieldFacet($newFieldFacet);
         $this->om->persist($newField);
-        $links['fields'][$field->getId()] = $newField;
+        $links['fields'][$field->getUuid()] = $newField;
 
         $fieldFacetChoices = $fieldFacet->getFieldFacetChoices()->toArray();
 
@@ -1211,7 +1229,7 @@ class ClacoFormManager
 
     private function copyFieldValue(Entry $newEntry, FieldValue $fieldValue, array $fieldLinks, array $fieldFacetLinks)
     {
-        $fieldId = $fieldValue->getField()->getId();
+        $fieldId = $fieldValue->getField()->getUuid();
         $fieldFacetValue = $fieldValue->getFieldFacetValue();
         $fieldFacetId = $fieldFacetValue->getFieldFacet()->getId();
 

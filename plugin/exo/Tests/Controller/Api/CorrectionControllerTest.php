@@ -30,11 +30,11 @@ class CorrectionControllerTest extends TransactionalTestCase
     /** @var Exercise */
     private $exercise;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->om = $this->client->getContainer()->get('claroline.persistence.object_manager');
+        $this->om = $this->client->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
         $this->paperGenerator = $this->client->getContainer()->get('ujm_exo.generator.paper');
         $this->persist = new Persister($this->om);
 

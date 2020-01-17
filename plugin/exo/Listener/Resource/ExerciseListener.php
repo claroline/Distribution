@@ -5,14 +5,11 @@ namespace UJM\ExoBundle\Listener\Resource;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use UJM\ExoBundle\Entity\Exercise;
@@ -23,8 +20,6 @@ use UJM\ExoBundle\Manager\ExerciseManager;
 
 /**
  * Listens to resource events dispatched by the core.
- *
- * @DI\Service("ujm_exo.listener.exercise")
  */
 class ExerciseListener
 {
@@ -57,18 +52,6 @@ class ExerciseListener
 
     /**
      * ExerciseListener constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization"       = @DI\Inject("security.authorization_checker"),
-     *     "exerciseManager"     = @DI\Inject("ujm_exo.manager.exercise"),
-     *     "paperManager"        = @DI\Inject("ujm_exo.manager.paper"),
-     *     "docimologyManager"   = @DI\Inject("ujm_exo.manager.docimology"),
-     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager"),
-     *     "templating"          = @DI\Inject("templating"),
-     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
-     *     "serializer"          = @DI\Inject("claroline.api.serializer")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param ExerciseManager               $exerciseManager
@@ -104,8 +87,6 @@ class ExerciseListener
 
     /**
      * Loads the Exercise resource.
-     *
-     * @DI\Observe("resource.ujm_exercise.load")
      *
      * @param LoadResourceEvent $event
      */
@@ -149,8 +130,6 @@ class ExerciseListener
     /**
      * Deletes an Exercise resource.
      *
-     * @DI\Observe("resource.ujm_exercise.delete")
-     *
      * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)
@@ -164,28 +143,6 @@ class ExerciseListener
             $event->enableSoftDelete();
         }
 
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("docimology_ujm_exercise")
-     *
-     * @param CustomActionResourceEvent $event
-     */
-    public function onDocimology(CustomActionResourceEvent $event)
-    {
-        /** @var Exercise $exercise */
-        $exercise = $event->getResource();
-
-        $content = $this->templating->render(
-            'UJMExoBundle:exercise:docimology.html.twig', [
-                '_resource' => $exercise,
-                'exercise' => $this->exerciseManager->serialize($exercise, [Transfer::MINIMAL]),
-                'statistics' => $this->docimologyManager->getStatistics($exercise, 100),
-            ]
-        );
-
-        $event->setResponse(new Response($content));
         $event->stopPropagation();
     }
 }

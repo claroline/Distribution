@@ -9,7 +9,7 @@ trait UpdatedAt
     /**
      * The last update date of the entity.
      *
-     * @ORM\Column(name="updatedAt", type="datetime")
+     * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
      *
      * @var \DateTime
      */
@@ -30,7 +30,7 @@ trait UpdatedAt
      *
      * @param \DateTime $updatedAt
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
     }

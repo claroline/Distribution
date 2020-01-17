@@ -15,16 +15,16 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
-use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Resource\CreateResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\ResourceActionEvent;
 use Claroline\CoreBundle\Exception\ResourceAccessException;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\CoreBundle\Listener\Log\LogListener;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
 use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
@@ -44,6 +44,9 @@ class DirectoryListener
     /** @var RightsManager */
     private $rightsManager;
 
+    /** @var ParametersSerializer */
+    private $parametersSerializer;
+
     /**
      * DirectoryListener constructor.
      *
@@ -51,8 +54,10 @@ class DirectoryListener
      * @param SerializerProvider    $serializer
      * @param Crud                  $crud
      * @param ResourceManager       $resourceManager
-     * @param RightsManager         $rightsManager
      * @param ResourceActionManager $actionManager
+     * @param RightsManager         $rightsManager
+     * @param LogListener           $logListener
+     * @param ParametersSerializer  $parametersSerializer
      */
     public function __construct(
         ObjectManager $om,
@@ -60,7 +65,9 @@ class DirectoryListener
         Crud $crud,
         ResourceManager $resourceManager,
         ResourceActionManager $actionManager,
-        RightsManager $rightsManager
+        RightsManager $rightsManager,
+        LogListener $logListener,
+        ParametersSerializer $parametersSerializer
     ) {
         $this->om = $om;
         $this->serializer = $serializer;
@@ -68,6 +75,8 @@ class DirectoryListener
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->actionManager = $actionManager;
+        $this->logListener = $logListener;
+        $this->parametersSerializer = $parametersSerializer;
     }
 
     /**
@@ -77,8 +86,15 @@ class DirectoryListener
      */
     public function onLoad(LoadResourceEvent $event)
     {
+        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
+        $storageLock = isset($parameters['restrictions']['storage']) &&
+            isset($parameters['restrictions']['max_storage_reached']) &&
+            $parameters['restrictions']['storage'] &&
+            $parameters['restrictions']['max_storage_reached'];
+
         $event->setData([
             'directory' => $this->serializer->serialize($event->getResource()),
+            'storageLock' => $storageLock,
         ]);
 
         $event->stopPropagation();
@@ -93,7 +109,7 @@ class DirectoryListener
     {
         $data = $event->getData();
         $parent = $event->getResourceNode();
-
+        $this->logListener->disable();
         $add = $this->actionManager->get($parent, 'add');
 
         // checks if the current user can add
@@ -129,7 +145,7 @@ class DirectoryListener
         } else {
             // todo : initialize default rights
         }
-
+        $this->logListener->enable();
         $this->crud->dispatch('create', 'post', [$resource, $options]);
         $this->om->persist($resource);
         $this->om->persist($resourceNode);
@@ -137,6 +153,8 @@ class DirectoryListener
         // todo : dispatch creation event
 
         $this->om->flush();
+
+        $this->crud->dispatch('create', 'post', [$resourceNode]);
 
         // todo : dispatch get/load action instead
         $event->setResponse(new JsonResponse(

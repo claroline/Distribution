@@ -26,6 +26,7 @@ use Claroline\CoreBundle\Entity\Workspace\Shortcuts;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
+use Claroline\CoreBundle\Manager\LogConnectManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolManager;
@@ -64,6 +65,8 @@ class WorkspaceController extends AbstractCrudController
     private $fileUtils;
     private $toolManager;
     private $tempFileManager;
+    /** @var LogConnectManager */
+    private $logConnectManager;
 
     /**
      * WorkspaceController constructor.
@@ -80,6 +83,7 @@ class WorkspaceController extends AbstractCrudController
      * @param ToolManager                   $toolManager
      * @param TempFileManager               $tempFileManager
      * @param string                        $logDir
+     * @param LogConnectManager             $logConnectManager
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
@@ -93,7 +97,8 @@ class WorkspaceController extends AbstractCrudController
         FileUtilities $fileUtils,
         TransferManager $importer,
         TempFileManager $tempFileManager,
-        $logDir
+        $logDir,
+        LogConnectManager $logConnectManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authorization = $authorization;
@@ -107,6 +112,7 @@ class WorkspaceController extends AbstractCrudController
         $this->logDir = $logDir;
         $this->fileUtils = $fileUtils;
         $this->tempFileManager = $tempFileManager;
+        $this->logConnectManager = $logConnectManager;
     }
 
     public function getName()
@@ -172,7 +178,7 @@ class WorkspaceController extends AbstractCrudController
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace',
-            array_merge($request->query->all(), ['hiddenFilters' => ['user' => $this->container->get('security.token_storage')->getToken()->getUser()->getId()]]),
+            array_merge($request->query->all(), ['hiddenFilters' => ['user' => $this->tokenStorage->getToken()->getUser()->getId()]]),
             $this->getOptions()['list']
         ));
     }
@@ -379,26 +385,91 @@ class WorkspaceController extends AbstractCrudController
                 );
             }
         }
+
         if (empty($errors)) {
-            parent::deleteBulkAction($request, Workspace::class);
-
-            return new JsonResponse('success', 200);
-        } else {
-            $validIds = [];
-            $ids = $request->query->get('ids');
-
-            foreach ($ids as $id) {
-                if (!isset($errors[$id])) {
-                    $validIds[] = $id;
-                }
-            }
-            if (count($validIds) > 0) {
-                $request->query->set('ids', $validIds);
-                parent::deleteBulkAction($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
-            }
-
-            return new JsonResponse(['errors' => $errors], 422);
+            return parent::deleteBulkAction($request, Workspace::class);
         }
+
+        $validIds = [];
+        $ids = $request->query->get('ids');
+
+        foreach ($ids as $id) {
+            if (!isset($errors[$id])) {
+                $validIds[] = $id;
+            }
+        }
+        if (count($validIds) > 0) {
+            $request->query->set('ids', $validIds);
+            parent::deleteBulkAction($request, Workspace::class);
+        }
+
+        return new JsonResponse(['errors' => $errors], 422);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Archive workspaces.",
+     *     queryString={
+     *         {"name": "ids", "type": "array", "description": "the list of workspace uuids."}
+     *     }
+     * )
+     * @Route("/archive", name="apiv2_workspace_archive")
+     * @Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function archiveBulkAction(Request $request)
+    {
+        $processed = [];
+
+        /** @var Workspace[] $workspaces */
+        $workspaces = parent::decodeIdsString($request, Workspace::class);
+        foreach ($workspaces as $workspace) {
+            if ($this->authorization->isGranted('EDIT', $workspace) && !$workspace->isModel() && !$workspace->isArchived()) {
+                $processed[] = $this->workspaceManager->archive($workspace);
+            }
+        }
+
+        $this->om->flush();
+
+        return new JsonResponse(array_map(function (Workspace $workspace) {
+            return $this->serializer->serialize($workspace);
+        }, $processed));
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Unarchive workspaces.",
+     *     queryString={
+     *         {"name": "ids", "type": "array", "description": "the list of workspace uuids."}
+     *     }
+     * )
+     * @Route("/unarchive", name="apiv2_workspace_unarchive")
+     * @Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function unarchiveBulkAction(Request $request)
+    {
+        $processed = [];
+
+        /** @var Workspace[] $workspaces */
+        $workspaces = parent::decodeIdsString($request, Workspace::class);
+        foreach ($workspaces as $workspace) {
+            if ($this->authorization->isGranted('EDIT', $workspace) && !$workspace->isModel() && $workspace->isArchived()) {
+                $processed[] = $this->workspaceManager->unarchive($workspace);
+            }
+        }
+
+        $this->om->flush();
+
+        return new JsonResponse(array_map(function (Workspace $workspace) {
+            return $this->serializer->serialize($workspace);
+        }, $processed));
     }
 
     /**
@@ -624,6 +695,39 @@ class WorkspaceController extends AbstractCrudController
         }, $workspace->getShortcuts()->toArray()));
 
         return new JsonResponse($shortcuts);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Dispatches all actions that has to be done when closing a workspace.",
+     *     parameters={
+     *         {"name": "id", "type": {"string"}, "description": "The workspace uuid"}
+     *     }
+     * )
+     * @Route(
+     *     "/{slug}/close",
+     *     name="apiv2_workspace_close"
+     * )
+     * @Method("PUT")
+     * @ParamConverter(
+     *     "workspace",
+     *     class = "ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"slug": "slug"}}
+     * )
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
+     *
+     * @param Workspace $workspace
+     * @param User      $user
+     *
+     * @return JsonResponse
+     */
+    public function closeAction(Workspace $workspace, User $user = null)
+    {
+        if ($user) {
+            $this->logConnectManager->computeWorkspaceDuration($user, $workspace);
+        }
+
+        return new JsonResponse();
     }
 
     public function getClass()

@@ -12,6 +12,7 @@
 namespace Innova\PathBundle\Controller\API;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -19,9 +20,9 @@ use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Innova\PathBundle\Entity\Path\Path;
+use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Entity\UserProgression;
 use Innova\PathBundle\Manager\UserProgressionManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,18 +50,10 @@ class PathTrackingController
     private $userProgressionManager;
 
     private $userProgressionRepo;
+    private $resourceUserEvaluationRepo;
 
     /**
      * PathTrackingController constructor.
-     *
-     * @DI\InjectParams({
-     *     "authorization"          = @DI\Inject("security.authorization_checker"),
-     *     "finder"                 = @DI\Inject("claroline.api.finder"),
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "serializer"             = @DI\Inject("claroline.api.serializer"),
-     *     "toolManager"            = @DI\Inject("claroline.manager.tool_manager"),
-     *     "userProgressionManager" = @DI\Inject("innova_path.manager.user_progression")
-     * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param FinderProvider                $finder
@@ -84,6 +77,7 @@ class PathTrackingController
         $this->userProgressionManager = $userProgressionManager;
 
         $this->userProgressionRepo = $om->getRepository(UserProgression::class);
+        $this->resourceUserEvaluationRepo = $om->getRepository(ResourceUserEvaluation::class);
     }
 
     /**
@@ -111,6 +105,8 @@ class PathTrackingController
         if (!$tool || !$this->authorization->isGranted('OPEN', $tool)) {
             throw new AccessDeniedException();
         }
+
+        /** @var Path[] $paths */
         $paths = $this->finder->fetch(
             Path::class,
             ['workspace' => $workspace->getUuid()]
@@ -118,12 +114,29 @@ class PathTrackingController
         $data = [];
 
         foreach ($paths as $path) {
+            // Fetches all users who have to do the path
+            $resourceEvals = $this->resourceUserEvaluationRepo->findBy(['resourceNode' => $path->getResourceNode(), 'required' => true]);
+            $unstartedUsers = [];
+
+            foreach ($resourceEvals as $resourceEval) {
+                $user = $resourceEval->getUser();
+                $unstartedUsers[$user->getUuid()] = [
+                    'id' => $user->getUuid(),
+                    'username' => $user->getUsername(),
+                    'firstName' => $user->getFirstName(),
+                    'lastName' => $user->getLastName(),
+                    'name' => $user->getFirstName().' '.$user->getLastName(),
+                ];
+            }
+
             // Reverse steps to proceed the latest steps first as we will only keep the most advanced step the users have done
+            /** @var Step[] $steps */
             $steps = array_reverse($path->getSteps()->toArray());
             $stepsData = [];
             $usersDone = [];
 
             foreach ($steps as $step) {
+                /** @var UserProgression[] $progressions */
                 $progressions = $this->userProgressionRepo->findBy(['step' => $step]);
                 $stepUsers = [];
 
@@ -141,25 +154,24 @@ class PathTrackingController
                                 'name' => $user->getFirstName().' '.$user->getLastName(),
                             ];
                             $usersDone[$userId] = true;
+
+                            if (isset($unstartedUsers[$userId])) {
+                                unset($unstartedUsers[$userId]);
+                            }
                         }
                     }
                 }
+
                 $stepsData[] = [
-                    'step' => [
-                        'id' => $step->getUuid(),
-                        'title' => $step->getTitle(),
-                    ],
+                    'step' => $this->serializer->serialize($step, [Options::SERIALIZE_MINIMAL]),
                     'users' => $stepUsers,
                 ];
             }
 
             $data[] = [
-                'path' => [
-                    'id' => $path->getResourceNode()->getUuid(),
-                    'name' => $path->getResourceNode()->getName(),
-                    'resourceId' => $path->getResourceNode()->getUuid(),
-                ],
+                'path' => $this->serializer->serialize($path->getResourceNode()),
                 'steps' => array_reverse($stepsData),
+                'unstartedUsers' => array_values($unstartedUsers),
             ];
         }
 

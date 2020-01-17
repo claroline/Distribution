@@ -49,22 +49,23 @@ abstract class AbstractCrudController extends AbstractApiController
     abstract public function getName();
 
     /**
-     * @deprecated
-     * user setter injection instead
+     * @param ContainerInterface $container
+     *
+     * @deprecated use setter injection instead
      */
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
-        $this->finder = $container->get('claroline.api.finder');
-        $this->serializer = $container->get('claroline.api.serializer');
-        $this->crud = $container->get('claroline.api.crud');
-        $this->om = $container->get('claroline.persistence.object_manager');
+        $this->finder = $container->get('Claroline\AppBundle\API\FinderProvider');
+        $this->serializer = $container->get('Claroline\AppBundle\API\SerializerProvider');
+        $this->crud = $container->get('Claroline\AppBundle\API\Crud');
+        $this->om = $container->get('Claroline\AppBundle\Persistence\ObjectManager');
         $this->routerFinder = $container->get('Claroline\AppBundle\Routing\Finder');
         $this->routerDocumentator = $container->get('Claroline\AppBundle\Routing\Documentator');
         $this->options = $this->mergeOptions();
     }
 
-    //these are the injectors you whould use
+    //these are the injectors you should use
     public function setFinder(FinderProvider $finder)
     {
         $this->finder = $finder;
@@ -190,13 +191,21 @@ abstract class AbstractCrudController extends AbstractApiController
      *     }
      * )
      *
+     * @param string $class
+     * @param string $field
+     * @param mixed  $value
+     *
      * @return JsonResponse
      */
     public function existAction($class, $field, $value)
     {
         $objects = $this->om->getRepository($class)->findBy([$field => $value]);
 
-        return new JsonResponse(count($objects) > 0);
+        if (count($objects) > 0) {
+            return new JsonResponse(true);
+        }
+
+        return new JsonResponse(false, 204);
     }
 
     /**
@@ -241,14 +250,15 @@ abstract class AbstractCrudController extends AbstractApiController
      *         "$finder",
      *         {"name": "page", "type": "integer", "description": "The queried page."},
      *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
-     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
+     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."},
+     *         {"name": "columns", "type": "array", "description": "The list of columns to export."}
      *     }
      * )
      *
      * @param Request $request
      * @param string  $class
      *
-     * @return JsonResponse
+     * @return BinaryFileResponse
      */
     public function csvAction(Request $request, $class)
     {
@@ -262,33 +272,29 @@ abstract class AbstractCrudController extends AbstractApiController
         $hiddenFilters = isset($query['hiddenFilters']) ? $query['hiddenFilters'] : [];
         $query['hiddenFilters'] = array_merge($hiddenFilters, $this->getDefaultHiddenFilters());
 
-        $objects = $this->finder->fetch(
+        $data = $this->finder->search(
             $class,
             $query,
             $options
-        );
+        )['data'];
 
-        $data = array_map(function ($object) {
-            return $this->serializer->serialize($object);
-        }, $objects);
-
-        $firstRow = $data[0];
-
-        $arrayUtils = new ArrayUtils();
-        $titles = $arrayUtils->getPropertiesName($firstRow);
-
+        $titles = [];
         $formatted = [];
+        if (!empty($data[0])) {
+            $firstRow = $data[0];
+            //get the title list
+            $titles = !empty($query['columns']) ? $query['columns'] : ArrayUtils::getPropertiesName($firstRow);
 
-        foreach ($data as $el) {
-            $formattedData = [];
-            foreach ($titles as $title) {
-                $formattedData[$title] = $arrayUtils->has($el, $title) ?
-                      $arrayUtils->get($el, $title) : null;
-                $formattedData[$title] = !is_array($formattedData[$title]) ? $formattedData[$title] : json_encode($formattedData[$title]);
+            foreach ($data as $el) {
+                $formattedData = [];
+                foreach ($titles as $title) {
+                    $formattedData[$title] = ArrayUtils::has($el, $title) ?
+                        ArrayUtils::get($el, $title) : null;
+                    $formattedData[$title] = !is_array($formattedData[$title]) ? $formattedData[$title] : json_encode($formattedData[$title]);
+                }
+                $formatted[] = $formattedData;
             }
-            $formatted[] = $formattedData;
         }
-        //get the title list
 
         $tmpFile = tempnam(sys_get_temp_dir(), 'CSVCLARO').'.csv';
         $fp = fopen($tmpFile, 'w');
@@ -301,9 +307,9 @@ abstract class AbstractCrudController extends AbstractApiController
 
         fclose($fp);
 
-        $response = new BinaryFileResponse($tmpFile, 200, ['Content-Disposition' => "attachment; filename={$this->getName()}.csv"]);
-
-        return $response;
+        return new BinaryFileResponse($tmpFile, 200, [
+            'Content-Disposition' => "attachment; filename={$this->getName()}.csv",
+        ]);
     }
 
     /**
@@ -466,12 +472,11 @@ abstract class AbstractCrudController extends AbstractApiController
      *     description="Display the current informations",
      * )
      *
-     * @param Request $request
-     * @param string  $class
+     * @param string $class
      *
      * @return JsonResponse
      */
-    public function docAction(Request $request, $class)
+    public function docAction($class)
     {
         return new JsonResponse($this->routerDocumentator->documentClass($class));
     }
@@ -479,6 +484,8 @@ abstract class AbstractCrudController extends AbstractApiController
     /**
      * @param string     $class
      * @param string|int $id
+     *
+     * @return object|null
      */
     protected function find($class, $id)
     {
@@ -563,17 +570,11 @@ abstract class AbstractCrudController extends AbstractApiController
         return [];
     }
 
-    /**
-     * Should replace ApiMeta.
-     */
     public function getClass()
     {
         return null;
     }
 
-    /**
-     * Should replace ApiMeta.
-     */
     public function getIgnore()
     {
         return [];

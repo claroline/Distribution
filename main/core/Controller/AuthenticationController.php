@@ -18,9 +18,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Authenticator;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,8 +29,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Authentication/login controller.
- *
- * @DI\Tag("security.secure_service")
  */
 class AuthenticationController
 {
@@ -42,34 +38,17 @@ class AuthenticationController
     private $om;
     private $mailManager;
     private $translator;
-    private $formFactory;
     private $authenticator;
     private $router;
     private $ch;
     private $dispatcher;
 
-    /**
-     * @DI\InjectParams({
-     *     "request"        = @DI\Inject("request_stack"),
-     *     "userManager"    = @DI\Inject("claroline.manager.user_manager"),
-     *     "encoderFactory" = @DI\Inject("security.encoder_factory"),
-     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *     "translator"     = @DI\Inject("translator"),
-     *     "formFactory"    = @DI\Inject("form.factory"),
-     *     "authenticator"  = @DI\Inject("claroline.authenticator"),
-     *     "mailManager"    = @DI\Inject("claroline.manager.mail_manager"),
-     *     "router"         = @DI\Inject("router"),
-     *     "ch"             = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "dispatcher"     = @DI\Inject("claroline.event.event_dispatcher")
-     * })
-     */
     public function __construct(
         RequestStack $request,
         UserManager $userManager,
         EncoderFactory $encoderFactory,
         ObjectManager $om,
         TranslatorInterface $translator,
-        FormFactory $formFactory,
         Authenticator $authenticator,
         MailManager $mailManager,
         RouterInterface $router,
@@ -81,7 +60,6 @@ class AuthenticationController
         $this->encoderFactory = $encoderFactory;
         $this->om = $om;
         $this->translator = $translator;
-        $this->formFactory = $formFactory;
         $this->authenticator = $authenticator;
         $this->mailManager = $mailManager;
         $this->router = $router;
@@ -150,7 +128,7 @@ class AuthenticationController
 
         if ($data['password'] !== $data['confirm']) {
             $error = [
-              'error' => ['password' => 'password_value_missmatch'],
+              'error' => ['password' => 'password_value_mismatch'],
             ];
 
             return new JsonResponse($error, 400);
@@ -171,36 +149,33 @@ class AuthenticationController
      *     options={"expose"=true}
      * )
      * @EXT\Method("GET")
-     *
-     * @EXT\Template("ClarolineCoreBundle:authentication:reset_password.html.twig")
      */
     public function validateEmailAction($hash)
     {
         $this->userManager->validateEmailHash($hash);
 
-        $this->request->getSession()
-            ->getFlashBag()
-            ->add('success', $this->translator->trans('email_validated', [], 'platform'));
-
-        return new RedirectResponse($this->router->generate('claro_desktop_open'));
+        return new RedirectResponse(
+            $this->router->generate('claro_index')
+        );
     }
 
     /**
      * @EXT\Route(
-     *     "/send/email/validation/{hash}",
+     *     "/send/email/validation",
      *     name="claro_security_validate_email_send",
      *     options={"expose"=true}
      * )
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param User $currentUser
+     *
+     * @return JsonResponse
      */
-    public function sendEmailValidationAction($hash)
+    public function sendEmailValidationAction(User $currentUser)
     {
-        $this->mailManager->sendValidateEmail($hash);
-        $user = $this->userManager->getByEmailValidationHash($hash);
-        $this->request->getSession()
-            ->getFlashBag()
-            ->add('success', $this->translator->trans('email_sent', ['%email%' => $user->getEmail()], 'platform'));
+        $this->mailManager->sendValidateEmail($currentUser->getEmailValidationHash());
 
-        return new RedirectResponse($this->router->generate('claro_desktop_open'));
+        return new JsonResponse();
     }
 
     /**

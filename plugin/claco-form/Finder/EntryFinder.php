@@ -141,13 +141,25 @@ class EntryFinder extends AbstractFinder
                 $this->usedJoin['categories'] = true;
                 break;
             case 'my':
-                $qb->leftJoin('obj.user', 'u');
-                $qb->leftJoin('obj.entryUsers', 'eu');
-                $qb->leftJoin('eu.user', 'euu');
-                $qb->andWhere('u.id = :userId');
-                $qb->orWhere('(euu.id = :userId AND eu.shared = true)');
-                $qb->setParameter('userId', $currentUser->getId());
-                $this->usedJoin['user'] = true;
+                if ($isAnon) {
+                    $qb->leftJoin('obj.user', 'u');
+                    $qb->andWhere('u.id = :userId');
+                    $qb->setParameter('userId', -1);
+                    $this->usedJoin['user'] = true;
+                } else {
+                    $qb->leftJoin('obj.user', 'u');
+                    $qb->leftJoin('obj.entryUsers', 'eu');
+                    $qb->leftJoin('eu.user', 'euu');
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->eq('u.id', ':userId'),
+                        $qb->expr()->andX(
+                            $qb->expr()->eq('euu.id', ':userId'),
+                            $qb->expr()->eq('eu.shared', true)
+                        )
+                    ));
+                    $qb->setParameter('userId', $currentUser->getId());
+                    $this->usedJoin['user'] = true;
+                }
                 break;
         }
         foreach ($searches as $filterName => $filterValue) {
@@ -209,6 +221,7 @@ class EntryFinder extends AbstractFinder
                     $this->usedJoin['keywords'] = true;
                     break;
                 default:
+                    $filterName = str_replace('values.', '', $filterName);
                     $field = $fieldRepo->findOneBy(['clacoForm' => $clacoForm, 'uuid' => $filterName]);
                     $this->filterField($qb, $filterName, $filterValue, $field);
             }

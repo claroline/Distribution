@@ -82,8 +82,13 @@ class BadgeClassSerializer
         $this->ruleSerializer = $ruleSerializer;
     }
 
+    public function getName()
+    {
+        return 'open_badge_badge';
+    }
+
     /**
-     * Serializes a Group entity.
+     * Serializes a Badge entity.
      *
      * @param BadgeClass $badge
      * @param array      $options
@@ -165,6 +170,7 @@ class BadgeClassSerializer
         $this->sipe('criteria', 'setCriteria', $data, $badge);
         $this->sipe('duration', 'setDurationValidation', $data, $badge);
         $this->sipe('issuingMode', 'setIssuingMode', $data, $badge);
+        $this->sipe('meta.enabled', 'setEnabled', $data, $badge);
 
         if (isset($data['issuer'])) {
             $badge->setIssuer($this->om->getObject($data['issuer'], Organization::class));
@@ -219,16 +225,30 @@ class BadgeClassSerializer
 
     private function deserializeRules(array $rules, BadgeClass $badge)
     {
+        $existingRules = $badge->getRules();
+
+        $ids = [];
         foreach ($rules as $rule) {
             if (!isset($rule['id'])) {
+                /** @var Rule $entity */
                 $entity = $this->ruleSerializer->deserialize($rule, new Rule());
             } else {
+                /** @var Rule $entity */
                 $entity = $this->om->getObject($rule, Rule::class);
                 $entity = $this->ruleSerializer->deserialize($rule, $entity);
             }
 
             $entity->setBadge($badge);
             $this->om->persist($entity);
+
+            $ids[] = $entity->getUuid();
+        }
+
+        // removes steps which no longer exists
+        foreach ($existingRules as $rule) {
+            if (!in_array($rule->getUuid(), $ids)) {
+                $rule->setBadge(null);
+            }
         }
     }
 
@@ -257,7 +277,7 @@ class BadgeClassSerializer
         ]);
         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
 
-        return $event->getResponse();
+        return $event->getResponse() ?? [];
     }
 
     private function serializePermissions(BadgeClass $badge)

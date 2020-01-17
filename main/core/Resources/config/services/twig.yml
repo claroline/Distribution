@@ -9,13 +9,23 @@ services:
        arguments:
           - '@claroline.manager.content_manager'
 
+    Claroline\CoreBundle\Twig\RoutingExtension:
+       arguments:
+          - '@Claroline\CoreBundle\Library\RoutingHelper'
+
+    Claroline\CoreBundle\Twig\LogTranslatorExtension:
+       arguments:
+          - '@Claroline\CoreBundle\Library\RoutingHelper'
+          - '@translator'
+          - '@templating'
+
     Claroline\CoreBundle\Twig\PcreExtension: ~
 
     Claroline\CoreBundle\Twig\ThemeExtension:
        arguments:
            - '@twig.extension.assets'
            - '@claroline.manager.theme_manager'
-           - '@claroline.config.platform_config_handler'
+           - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
            - '%kernel.root_dir%'
 
     Claroline\CoreBundle\Twig\WebpackExtension:

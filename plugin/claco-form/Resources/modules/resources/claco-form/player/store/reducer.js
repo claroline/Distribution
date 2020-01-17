@@ -31,24 +31,13 @@ import {
 
 const reducer = combineReducers({
   list: makeListReducer(selectors.STORE_NAME+'.entries.list', {}, {
-    data: makeReducer({}, {
-      [ENTRIES_UPDATE]: (state, action) => {
-        const newState = cloneDeep(state)
-
-        action.entries.forEach(entry => {
-          const index = newState.findIndex(e => e.id === entry.id)
-
-          if (index > -1) {
-            newState[index] = entry
-          }
-        })
-
-        return newState
-      }
-    }),
     invalidated: makeReducer(false, {
       [FORM_SUBMIT_SUCCESS+'/'+selectors.STORE_NAME+'.entries.current']: () => true,
-      [makeInstanceAction(RESOURCE_LOAD, selectors.STORE_NAME)]: () => true
+      [makeInstanceAction(RESOURCE_LOAD, selectors.STORE_NAME)]: () => true,
+      [ENTRIES_UPDATE]: () => true
+    }),
+    filters: makeReducer([], {
+      [makeInstanceAction(RESOURCE_LOAD, selectors.STORE_NAME)]: (state, action) => action.resourceData.clacoForm.list.filters || []
     })
   }),
   current: makeFormReducer(selectors.STORE_NAME+'.entries.current', {}, {
@@ -144,7 +133,7 @@ const reducer = combineReducers({
       return newEntryUser
     }
   }),
-  myEntriesCount: makeReducer({}, {
+  myEntriesCount: makeReducer(0, {
     [makeInstanceAction(RESOURCE_LOAD, selectors.STORE_NAME)]: (state, action) => action.resourceData.myEntriesCount || state,
     [ENTRY_CREATED]: (state) => {
       return state + 1
