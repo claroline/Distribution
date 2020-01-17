@@ -297,19 +297,34 @@ class ToolManager
 
     public function getUserDisplayedTools(User $user)
     {
-        $ots = $this->getDisplayedDesktopOrderedTools($user);
-        $configs = $this->getUserDesktopToolsConfiguration($user);
-        $data = [];
+        $tools = [];
 
-        foreach ($configs as $name => $display) {
-            foreach ($ots as $ot) {
-                if (ToolRole::FORCED === $display && $ot->getName() === $name) {
-                    $data[] = ['name' => $name, 'icon' => $ot->getClass()];
+        /** @var Tool[] $ots */
+        $ots = $this->getDisplayedDesktopOrderedTools($user);
+        // TODO : restore user tools config
+        //$configs = $this->getUserDesktopToolsConfiguration($user);
+
+        /** @var Role[] $roles */
+        $roles = $user->getEntityRoles();
+
+        foreach ($ots as $tool) {
+            foreach ($roles as $role) {
+                if (Role::PLATFORM_ROLE == $role->getType()) {
+                    if ('ROLE_ADMIN' === $role->getName()) {
+                        $tools[] = $tool;
+                        break;
+                    }
+
+                    $toolRole = $this->om->getRepository(ToolRole::class)->findOneBy(['role' => $role, 'tool' => $tool]);
+                    if ($toolRole && ToolRole::HIDDEN !== $toolRole->getDisplay()) {
+                        $tools[] = $tool;
+                        break;
+                    }
                 }
             }
         }
 
-        return $data;
+        return $tools;
     }
 
     /**
