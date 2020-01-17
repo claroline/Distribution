@@ -309,7 +309,7 @@ class ToolManager
 
         foreach ($ots as $tool) {
             foreach ($roles as $role) {
-                if (Role::PLATFORM_ROLE == $role->getType()) {
+                if (Role::PLATFORM_ROLE === $role->getType()) {
                     if ('ROLE_ADMIN' === $role->getName()) {
                         $tools[] = $tool;
                         break;
