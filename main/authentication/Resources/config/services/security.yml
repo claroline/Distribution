@@ -4,6 +4,20 @@ services:
         autoconfigure: false
         public: true #because controller
 
+    Claroline\AuthenticationBundle\Security\Authentication\IpAuthenticator:
+        calls:
+            - method: inject
+              arguments:
+                  - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
+                  - '@claroline.manager.ip_white_list_manager'
+
+    Claroline\AuthenticationBundle\Security\Authentication\ApiTokenAuthenticator:
+        calls:
+            - method: inject
+              arguments:
+                  - '@Claroline\AppBundle\Persistence\ObjectManager'
+
+    # OAuth
     Claroline\AuthenticationBundle\Security\Oauth\Hwi\ResourceOwnerFactory:
         arguments:
             - '@Claroline\AuthenticationBundle\Manager\OauthManager'

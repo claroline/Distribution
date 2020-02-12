@@ -32,13 +32,21 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
     {
         $config = new ConfigurationBuilder();
         $bundleClass = get_class($bundle);
+        $emptyConfigs = [
+            'LightSaml\SpBundle\LightSamlSpBundle'
+        ];
         $simpleConfigs = [
             'HWI\Bundle\OAuthBundle\HWIOAuthBundle' => 'hwi_oauth',
+            'LightSaml\SymfonyBridgeBundle\LightSamlSymfonyBridgeBundle' => 'light_saml_symfony_bridge',
         ];
 
-        if (isset($simpleConfigs[$bundleClass])) {
+        if (in_array($bundleClass, $emptyConfigs)) {
+            return $config;
+        } else if (isset($simpleConfigs[$bundleClass])) {
             return $config->addContainerResource($this->buildPath($simpleConfigs[$bundleClass]));
         }
+
+        return false;
     }
 
     private function buildPath($file, $folder = 'suggested')

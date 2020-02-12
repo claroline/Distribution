@@ -4,19 +4,6 @@ services:
         autoconfigure: true #change to true
         public: true #default should be false now
 
-    Claroline\CoreBundle\Security\Authentication\IpAuthenticator:
-        calls:
-          - method: inject
-            arguments:
-                - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
-                - '@claroline.manager.ip_white_list_manager'
-
-    Claroline\CoreBundle\Security\Authentication\ApiTokenAuthenticator:
-        calls:
-          - method: inject
-            arguments:
-                - '@Claroline\AppBundle\Persistence\ObjectManager'
-
     Claroline\CoreBundle\Library\Security\TokenUpdater:
         arguments:
             - '@security.token_storage'

@@ -1,10 +1,10 @@
 <?php
 
-namespace Claroline\CoreBundle\Security\Authentication;
+namespace Claroline\AuthenticationBundle\Security\Authentication;
 
+use Claroline\AuthenticationBundle\Security\Authentication\Token\IpToken;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\IPWhiteListManager;
-use Claroline\CoreBundle\Security\Authentication\Token\IpToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
