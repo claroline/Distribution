@@ -115,13 +115,6 @@ class LoginForm extends Component {
                   label: sso.label || trans('login_with_third_party_btn', {name: trans(sso.service, {}, 'oauth')})
                 }) : null
               )}
-
-              <Button
-                className="btn-link btn-block btn-emphasis"
-                type={URL_BUTTON}
-                target={['lightsaml_sp.login', {}]}
-                label="SAML"
-              />
             </div>
           }
         </div>
@@ -136,6 +129,13 @@ class LoginForm extends Component {
             target="/registration"
           />
         }
+
+        <Button
+          className="btn-link btn-block btn-emphasis"
+          type={URL_BUTTON}
+          target={['lightsaml_sp.login', {}]}
+          label="SAML"
+        />
       </Fragment>
     )
   }
