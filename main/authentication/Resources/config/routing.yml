@@ -2,6 +2,8 @@
 lightsaml_sp:
     resource: "@LightSamlSpBundle/Resources/config/routing.yml"
     prefix: saml
+    options:
+        expose: true
 
 # OAUTH
 hwi_oauth_redirect:

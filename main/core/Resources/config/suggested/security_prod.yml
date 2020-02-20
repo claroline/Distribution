@@ -22,9 +22,20 @@ security:
             anonymous: ~
             logout: true
             switch_user: { role: ROLE_ALLOWED_TO_SWITCH, parameter: _switch }
+
+            # Allows SAML authentication
+            light_saml_sp:
+                provider: user_db       # user provider name configured in step 9
+                user_creator: 'Claroline\AuthenticationBundle\Security\Saml\UserCreator'  # name of the user creator service created in step 10
+                login_path: /saml/login
+                check_path: /saml/login_check
+                default_target_path: /
+                require_previous_session: true
+
             # Allows IP authentication
             simple_preauth:
                 authenticator: Claroline\AuthenticationBundle\Security\Authentication\IpAuthenticator
+
             # Allows JSON authentication
             json_login:
                 check_path: /login
