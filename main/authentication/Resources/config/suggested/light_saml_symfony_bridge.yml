@@ -1,6 +1,6 @@
 light_saml_symfony_bridge:
     own:
-        entity_id: IDP-default_validation.portail.vd.ch
+        entity_id: https://test.vd.claroline.com/
         credentials:
             -
                 certificate: "%kernel.root_dir%/../saml.crt"
