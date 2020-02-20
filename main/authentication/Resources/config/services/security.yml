@@ -4,6 +4,17 @@ services:
         autoconfigure: false
         public: true #because controller
 
+    Claroline\AuthenticationBundle\Security\Saml\IdStore:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@lightsaml.system.time_provider'
+
+    Claroline\AuthenticationBundle\Security\Saml\UserCreator:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@lightsaml_sp.username_mapper.simple'
+
+    # Authenticators
     Claroline\AuthenticationBundle\Security\Authentication\IpAuthenticator:
         calls:
             - method: inject

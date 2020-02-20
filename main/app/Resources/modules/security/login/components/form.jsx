@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
 import {getSso} from '#/main/authentication/sso'
@@ -115,6 +115,13 @@ class LoginForm extends Component {
                   label: sso.label || trans('login_with_third_party_btn', {name: trans(sso.service, {}, 'oauth')})
                 }) : null
               )}
+
+              <Button
+                className="btn-link btn-block btn-emphasis"
+                type={URL_BUTTON}
+                target={['lightsaml_sp.login', {}]}
+                label="SAML"
+              />
             </div>
           }
         </div>
