@@ -10,6 +10,7 @@ light_saml_symfony_bridge:
         idp:
             files:
                 - "https://validation.portail.vd.ch/sso/saml2/jsp/exportmetadata.jsp?entityid=IDP-default_validation.portail.vd.ch&realm=/internet"
+                - "%kernel.root_dir%/../idp"
 
     store:
         id_state: 'Claroline\AuthenticationBundle\Security\Saml\IdStore'
