@@ -20,7 +20,9 @@ security:
         main:
             pattern: ^/
             anonymous: ~
-            logout: true
+            logout:
+                path:   /logout
+                target: /
             switch_user: { role: ROLE_ALLOWED_TO_SWITCH, parameter: _switch }
 
             # Allows SAML authentication
@@ -31,6 +33,8 @@ security:
                 check_path: /saml/login_check
                 default_target_path: /
                 require_previous_session: true
+                success_handler: Claroline\CoreBundle\Listener\AuthenticationSuccessListener
+                failure_handler: Claroline\CoreBundle\Listener\AuthenticationFailureHandler
 
             # Allows IP authentication
             simple_preauth:

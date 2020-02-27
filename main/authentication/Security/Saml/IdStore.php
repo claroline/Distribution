@@ -38,11 +38,13 @@ class IdStore implements IdStoreInterface
         if (null == $idEntry) {
             $idEntry = new IdEntry();
         }
+
         $idEntry->setEntityId($entityId)
             ->setId($id)
             ->setExpiryTime($expiryTime);
+
         $this->manager->persist($idEntry);
-        $this->manager->flush($idEntry);
+        $this->manager->flush();
     }
 
     /**
