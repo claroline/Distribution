@@ -4,6 +4,14 @@ services:
         autoconfigure: false
         public: true #because controller
 
+    Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider:
+        #factory: ['LightSaml\SymfonyBridgeBundle\Factory\OwnEntityDescriptorProviderFactory', 'build']
+        arguments:
+            - '%lightsaml.own.entity_id%'
+            - '@router'
+            - '%lightsaml.route.login_check%'
+            - '@lightsaml.own.credential_store'
+
     Claroline\AuthenticationBundle\Security\Saml\IdStore:
         arguments:
             - '@doctrine.orm.entity_manager'

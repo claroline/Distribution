@@ -1,6 +1,9 @@
 light_saml_symfony_bridge:
     own:
         entity_id: https://test.vd.claroline.com/
+        entity_descriptor_provider:
+            id: 'Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider'
+
         credentials:
             -
                 certificate: "%kernel.root_dir%/../saml.crt"
