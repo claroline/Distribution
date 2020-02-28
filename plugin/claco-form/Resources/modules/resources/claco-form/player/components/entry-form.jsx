@@ -111,7 +111,7 @@ class EntryFormComponent extends Component {
     let template = this.props.template
     template = template.replace('%clacoform_entry_title%', '<span class="clacoform-field" id="clacoform-field-title"></span>')
     this.props.fields.forEach(f => {
-      template = template.replace(`%field_${f.id}%`, `<span class="clacoform-field" id="clacoform-field-${f.id}"></span>`)
+      template = template.replace(`%field_${f.autoId}%`, `<span class="clacoform-field" id="clacoform-field-${f.autoId}"></span>`)
     })
 
     this.setState({template: template})
@@ -255,7 +255,7 @@ class EntryFormComponent extends Component {
                       // this is a field, replace it with a form input
                       // get the field ID and retrieve it
                       const id = element.attribs.id.replace('clacoform-field-', '')
-                      const field = fields.find(f => f.id === id)
+                      const field = fields.find(f => f.autoId === id)
                       if (field) {
                         return (
                           <DataInput
