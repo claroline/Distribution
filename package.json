@@ -18,6 +18,7 @@
     "invariant": "^2.2.1",
     "@fortawesome/fontawesome-free": "^5",
     "fullcalendar": "^3.0.0",
+    "html-react-parser": "^0.9.1",
     "jquery": "2.2.4",
     "jquery-option-tree": "git://github.com/jongilbraith/jquery-option-tree.git#502925496eea4becf88a0109fe51fc4af48b3691",
     "jquery-sortable": "0.9.13",
