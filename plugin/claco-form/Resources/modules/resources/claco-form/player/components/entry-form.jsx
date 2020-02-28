@@ -124,6 +124,7 @@ class EntryFormComponent extends Component {
       // title field
       {
         id: 'title',
+        autoId: 'title',
         type: 'string',
         label: trans('title'),
         required: true,
@@ -157,6 +158,7 @@ class EntryFormComponent extends Component {
 
       return {
         id: field.id,
+        autoId: field.autoId,
         type: field.type,
         label: field.name,
         required: field.required,
@@ -182,35 +184,35 @@ class EntryFormComponent extends Component {
       return (
         <FormSections level={3}>
           {(this.props.canEdit || this.props.isManager) &&
-          <FormSection
-            id="entry-categories"
-            className="embedded-list-section"
-            icon="fa fa-fw fa-table"
-            title={trans('categories')}
-          >
-            <EntryFormData
-              data={this.props.entry.categories}
-              choices={this.props.categories}
-              onAdd={(category) => this.props.addCategory(category)}
-              onRemove={(category) => this.props.removeCategory(category.id)}
-            />
-          </FormSection>
+            <FormSection
+              id="entry-categories"
+              className="embedded-list-section"
+              icon="fa fa-fw fa-table"
+              title={trans('categories')}
+            >
+              <EntryFormData
+                data={this.props.entry.categories}
+                choices={this.props.categories}
+                onAdd={(category) => this.props.addCategory(category)}
+                onRemove={(category) => this.props.removeCategory(category.id)}
+              />
+            </FormSection>
           }
           {this.props.isKeywordsEnabled &&
-          <FormSection
-            id="entry-keywords"
-            className="embedded-list-section"
-            icon="fa fa-fw fa-font"
-            title={trans('keywords', {}, 'clacoform')}
-          >
-            <EntryFormData
-              data={this.props.entry.keywords}
-              choices={this.props.keywords}
-              allowNew={this.props.isNewKeywordsEnabled}
-              onAdd={(keyword) => this.props.addKeyword(keyword)}
-              onRemove={(keyword) => this.props.removeKeyword(keyword.id)}
-            />
-          </FormSection>
+            <FormSection
+              id="entry-keywords"
+              className="embedded-list-section"
+              icon="fa fa-fw fa-font"
+              title={trans('keywords', {}, 'clacoform')}
+            >
+              <EntryFormData
+                data={this.props.entry.keywords}
+                choices={this.props.keywords}
+                allowNew={this.props.isNewKeywordsEnabled}
+                onAdd={(keyword) => this.props.addKeyword(keyword)}
+                onRemove={(keyword) => this.props.removeKeyword(keyword.id)}
+              />
+            </FormSection>
           }
         </FormSections>
       )
