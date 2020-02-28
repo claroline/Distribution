@@ -257,7 +257,7 @@ class EntryFormComponent extends Component {
                       // this is a field, replace it with a form input
                       // get the field ID and retrieve it
                       const id = element.attribs.id.replace('clacoform-field-', '')
-                      const field = fields.find(f => f.autoId === id)
+                      const field = fields.find(f => ('title' === id && f.autoId === id) || f.autoId === parseInt(id))
                       if (field) {
                         return (
                           <DataInput
