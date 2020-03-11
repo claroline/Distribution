@@ -134,12 +134,13 @@ class EvaluationManager
      * @param Workspace                   $workspace
      * @param User                        $user
      * @param ResourceUserEvaluation|null $currentRue
+     * @param \DateTime                   $date
      *
      * @return Evaluation|null
      *
      * @throws \Exception
      */
-    public function computeEvaluation(Workspace $workspace, User $user, ResourceUserEvaluation $currentRue = null)
+    public function computeEvaluation(Workspace $workspace, User $user, ResourceUserEvaluation $currentRue = null, $date = null)
     {
         $evaluation = $this->getEvaluation($workspace, $user);
 
@@ -204,7 +205,10 @@ class EvaluationManager
             $evaluation->setProgressionMax($progressionMax);
             $evaluation->setProgression($progression);
             $evaluation->setStatus($status);
-            $evaluation->setDate(new \DateTime());
+
+            if ($date) {
+                $evaluation->setDate($date);
+            }
 
             if ($scoreMax) {
                 $evaluation->setScore($score);
