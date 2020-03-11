@@ -236,34 +236,30 @@ class ResourceEvaluationManager
      */
     public function addDurationToResourceEvaluation(ResourceNode $node, User $user, $duration)
     {
-        $this->om->startFlushSuite();
-
         $resUserEval = $this->getResourceUserEvaluation($node, $user);
-        $evaluationDuration = is_null($resUserEval->getDuration()) ?
-            $this->computeDurationForResourceEvaluation($node, $user) :
-            $resUserEval->getDuration();
-        $evaluationDuration += $duration;
-        $resUserEval->setDuration($evaluationDuration);
-        $this->om->persist($resUserEval);
 
-        $this->om->endFlushSuite();
+        $evaluationDuration = $resUserEval->getDuration();
+        if (is_null($resUserEval->getDuration())) {
+            $evaluationDuration = $this->computeDuration($resUserEval);
+        }
+
+        $resUserEval->setDuration($evaluationDuration + $duration);
+
+        $this->om->persist($resUserEval);
+        $this->om->flush();
     }
 
     /**
-     * Compute duration for a resource user evaluation and set it no matter the current duration.
+     * Compute duration for a resource user evaluation.
      *
-     * @param ResourceNode $node
-     * @param User         $user
+     * @param ResourceUserEvaluation $resUserEval
      *
      * @return int
      */
-    public function computeDurationForResourceEvaluation(ResourceNode $node, User $user)
+    private function computeDuration(ResourceUserEvaluation $resUserEval)
     {
-        $this->om->startFlushSuite();
-
-        $resUserEval = $this->getResourceUserEvaluation($node, $user);
         /** @var LogConnectResource[] $resourceLogs */
-        $resourceLogs = $this->logConnectResource->findBy(['resource' => $node, 'user' => $user]);
+        $resourceLogs = $this->logConnectResource->findBy(['resource' => $resUserEval->getResourceNode(), 'user' => $resUserEval->getUser()]);
         $duration = 0;
 
         foreach ($resourceLogs as $log) {
@@ -271,10 +267,6 @@ class ResourceEvaluationManager
                 $duration += $log->getDuration();
             }
         }
-        $resUserEval->setDuration($duration);
-        $this->om->persist($resUserEval);
-
-        $this->om->endFlushSuite();
 
         return $duration;
     }
