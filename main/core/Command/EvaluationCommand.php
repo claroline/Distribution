@@ -48,7 +48,7 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
     {
         $container = $this->getContainer();
         /** @var ObjectManager $om */
-        $om = $container->get('doctrine.orm.entity_manager');
+        $om = $container->get('claroline.persistence.object_manager');
         /** @var EvaluationManager $manager */
         $manager = $container->get('claroline.manager.workspace.evaluation');
 
@@ -77,7 +77,7 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
     {
         $container = $this->getContainer();
         /** @var ObjectManager $om */
-        $om = $container->get('doctrine.orm.entity_manager');
+        $om = $container->get('claroline.persistence.object_manager');
         /** @var ResourceEvaluationManager $manager */
         $manager = $container->get('claroline.manager.resource_evaluation_manager');
 
