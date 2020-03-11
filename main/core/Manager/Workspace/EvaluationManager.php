@@ -539,6 +539,8 @@ class EvaluationManager
      */
     public function addDurationToWorkspaceEvaluation(Workspace $workspace, User $user, $duration)
     {
+        $this->om->startFlushSuite();
+
         $workspaceEval = $this->getEvaluation($workspace, $user);
 
         $evaluationDuration = $workspaceEval->getDuration();
@@ -550,6 +552,8 @@ class EvaluationManager
 
         $this->om->persist($workspaceEval);
         $this->om->flush();
+
+        $this->om->endFlushSuite();
     }
 
     /**
@@ -559,7 +563,7 @@ class EvaluationManager
      *
      * @return int
      */
-    private function computeDuration(Evaluation $workspaceEvaluation)
+    public function computeDuration(Evaluation $workspaceEvaluation)
     {
         /** @var LogConnectWorkspace[] $workspaceLogs */
         $workspaceLogs = $this->logConnectRepo->findBy(['workspace' => $workspaceEvaluation->getWorkspace(), 'user' => $workspaceEvaluation->getUser()]);
@@ -570,6 +574,11 @@ class EvaluationManager
                 $duration += $log->getDuration();
             }
         }
+
+        $workspaceEvaluation->setDuration($duration);
+
+        $this->om->persist($workspaceEvaluation);
+        $this->om->flush();
 
         return $duration;
     }

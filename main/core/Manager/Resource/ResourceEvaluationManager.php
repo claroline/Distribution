@@ -236,6 +236,8 @@ class ResourceEvaluationManager
      */
     public function addDurationToResourceEvaluation(ResourceNode $node, User $user, $duration)
     {
+        $this->om->startFlushSuite();
+
         $resUserEval = $this->getResourceUserEvaluation($node, $user);
 
         $evaluationDuration = $resUserEval->getDuration();
@@ -247,6 +249,8 @@ class ResourceEvaluationManager
 
         $this->om->persist($resUserEval);
         $this->om->flush();
+
+        $this->om->endFlushSuite();
     }
 
     /**
@@ -256,7 +260,7 @@ class ResourceEvaluationManager
      *
      * @return int
      */
-    private function computeDuration(ResourceUserEvaluation $resUserEval)
+    public function computeDuration(ResourceUserEvaluation $resUserEval)
     {
         /** @var LogConnectResource[] $resourceLogs */
         $resourceLogs = $this->logConnectResource->findBy(['resource' => $resUserEval->getResourceNode(), 'user' => $resUserEval->getUser()]);
@@ -267,6 +271,11 @@ class ResourceEvaluationManager
                 $duration += $log->getDuration();
             }
         }
+
+        $resUserEval->setDuration($duration);
+
+        $this->om->persist($resUserEval);
+        $this->om->flush();
 
         return $duration;
     }
