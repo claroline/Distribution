@@ -12,19 +12,11 @@
 namespace Claroline\CoreBundle\Command;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Command\AdminCliCommand;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
-use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Tool\OrderedTool;
-use Claroline\CoreBundle\Entity\Tool\Tool;
-use Claroline\CoreBundle\Entity\Tool\ToolMaskDecoder;
-use Claroline\CoreBundle\Entity\Tool\ToolRights;
 use Claroline\CoreBundle\Entity\Workspace\Evaluation;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Manager\Workspace\EvaluationManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -48,7 +40,7 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
     {
         $container = $this->getContainer();
         /** @var ObjectManager $om */
-        $om = $container->get('claroline.persistence.object_manager');
+        $om = $container->get(ObjectManager::class);
         /** @var EvaluationManager $manager */
         $manager = $container->get('claroline.manager.workspace.evaluation');
 
@@ -77,7 +69,7 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
     {
         $container = $this->getContainer();
         /** @var ObjectManager $om */
-        $om = $container->get('claroline.persistence.object_manager');
+        $om = $container->get(ObjectManager::class);
         /** @var ResourceEvaluationManager $manager */
         $manager = $container->get('claroline.manager.resource_evaluation_manager');
 
