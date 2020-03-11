@@ -155,6 +155,8 @@ class EvaluationManager
             ];
             $resources = $this->computeResourcesToDo($workspace, $user);
 
+            $score = 0;
+            $scoreMax = 0;
             $progressionMax = count($resources);
 
             // if there is a triggering resource evaluation checks if is part of the workspace requirements
@@ -165,10 +167,10 @@ class EvaluationManager
                 if (isset($resources[$currentResourceId])) {
                     if ($currentRue->getStatus()) {
                         ++$statusCount[$currentRue->getStatus()];
+                        $score += $currentRue->getScore() ?? 0;
+                        $scoreMax += $currentRue->getScoreMax() ?? 0;
                     }
                     unset($resources[$currentResourceId]);
-                } else {
-                    return $evaluation;
                 }
             }
 
@@ -177,6 +179,8 @@ class EvaluationManager
 
                 if ($resourceEval && $resourceEval->getStatus()) {
                     ++$statusCount[$resourceEval->getStatus()];
+                    $score += $currentRue->getScore() ?? 0;
+                    $scoreMax += $currentRue->getScoreMax() ?? 0;
                 }
             }
 
@@ -188,7 +192,7 @@ class EvaluationManager
 
             $status = AbstractEvaluation::STATUS_INCOMPLETE;
 
-            if (0 < count($statusCount[AbstractEvaluation::STATUS_FAILED])) {
+            if (0 !== count($statusCount[AbstractEvaluation::STATUS_FAILED])) {
                 // if there is one failed resource the workspace is considered as failed also
                 $status = AbstractEvaluation::STATUS_FAILED;
             } elseif ($progression === $progressionMax) {
@@ -200,6 +204,11 @@ class EvaluationManager
             $evaluation->setProgression($progression);
             $evaluation->setStatus($status);
             $evaluation->setDate(new \DateTime());
+
+            if ($scoreMax) {
+                $evaluation->setScore($score);
+                $evaluation->setScoreMax($scoreMax);
+            }
 
             $this->om->persist($evaluation);
             $this->om->flush();
