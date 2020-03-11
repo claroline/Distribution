@@ -155,6 +155,7 @@ class EvaluationManager
             ];
             $resources = $this->computeResourcesToDo($workspace, $user);
 
+            $duration = 0;
             $score = 0;
             $scoreMax = 0;
             $progressionMax = count($resources);
@@ -169,6 +170,7 @@ class EvaluationManager
                         ++$statusCount[$currentRue->getStatus()];
                         $score += $currentRue->getScore() ?? 0;
                         $scoreMax += $currentRue->getScoreMax() ?? 0;
+                        $duration += $currentRue->getDuration() ?? 0;
                     }
                     unset($resources[$currentResourceId]);
                 }
@@ -179,8 +181,9 @@ class EvaluationManager
 
                 if ($resourceEval && $resourceEval->getStatus()) {
                     ++$statusCount[$resourceEval->getStatus()];
-                    $score += $currentRue->getScore() ?? 0;
-                    $scoreMax += $currentRue->getScoreMax() ?? 0;
+                    $score += $resourceEval->getScore() ?? 0;
+                    $scoreMax += $resourceEval->getScoreMax() ?? 0;
+                    $duration += $resourceEval->getDuration() ?? 0;
                 }
             }
 
@@ -204,6 +207,7 @@ class EvaluationManager
             $evaluation->setProgression($progression);
             $evaluation->setStatus($status);
             $evaluation->setDate(new \DateTime());
+            $evaluation->setDuration($duration);
 
             if ($scoreMax) {
                 $evaluation->setScore($score);
