@@ -50,7 +50,9 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
         $output->writeln(sprintf('Computing workspace evaluations...'));
 
         foreach ($evaluations as $evaluation) {
-            $manager->computeEvaluation($evaluation->getWorkspace(), $evaluation->getUser());
+            if ($evaluation->getWorkspace() && $evaluation->getUser()) {
+                $manager->computeEvaluation($evaluation->getWorkspace(), $evaluation->getUser());
+            }
         }
 
         $output->writeln('Done');
