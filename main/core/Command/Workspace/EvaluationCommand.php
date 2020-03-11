@@ -32,9 +32,6 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
     {
         $this->setName('claroline:workspace:evaluation')
             ->setDescription('computes all workspace evaluations');
-        $this->setDefinition([
-            new InputArgument('tool', InputArgument::REQUIRED, 'The tool to open'),
-        ]);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -43,7 +40,7 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
         /** @var ObjectManager $om */
         $om = $container->get('doctrine.orm.entity_manager');
         /** @var EvaluationManager $manager */
-        $manager = $container->get(EvaluationManager::class);
+        $manager = $container->get('claroline.manager.workspace.evaluation');
 
         /** @var Evaluation[] $workspaces */
         $evaluations = $om->getRepository(Evaluation::class)->findAll();
