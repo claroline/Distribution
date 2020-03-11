@@ -30,6 +30,8 @@ class EvaluationCommand extends ContainerAwareCommand implements AdminCliCommand
 {
     protected function configure()
     {
+        parent::configure();
+
         $this->setName('claroline:workspace:evaluation')
             ->setDescription('computes all workspace evaluations');
     }

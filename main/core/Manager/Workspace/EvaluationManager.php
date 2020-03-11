@@ -195,7 +195,7 @@ class EvaluationManager
 
             $status = AbstractEvaluation::STATUS_INCOMPLETE;
 
-            if (0 !== count($statusCount[AbstractEvaluation::STATUS_FAILED])) {
+            if (0 !== $statusCount[AbstractEvaluation::STATUS_FAILED]) {
                 // if there is one failed resource the workspace is considered as failed also
                 $status = AbstractEvaluation::STATUS_FAILED;
             } elseif ($progression === $progressionMax) {
