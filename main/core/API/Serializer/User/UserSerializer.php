@@ -52,6 +52,12 @@ class UserSerializer extends GenericSerializer
     /** @var PublicFileSerializer */
     private $fileSerializer;
 
+    /** @var OrganizationSerializer */
+    private $organizationSerializer;
+
+    /** @var FieldFacetValueSerializer */
+    private $fieldFacetValueSerializer;
+
     /** @var ContainerInterface */
     private $container;
 
@@ -73,6 +79,8 @@ class UserSerializer extends GenericSerializer
      * @param PublicFileSerializer          $fileSerializer
      * @param ContainerInterface            $container
      * @param StrictDispatcher              $eventDispatcher
+     * @param OrganizationSerializer        $organizationSerializer
+     * @param FieldFacetValueSerializer     $fieldFacetValueSerializer
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
