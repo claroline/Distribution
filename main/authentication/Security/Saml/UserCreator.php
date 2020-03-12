@@ -64,6 +64,7 @@ class UserCreator implements UserCreatorInterface
                 'plainPassword' => uniqid(), // I cannot create a user without pass
             ], [Crud::THROW_EXCEPTION]);
         } catch (\Exception $e) {
+            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 50);
             die($e->getMessage());
         }
 

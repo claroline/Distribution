@@ -12,6 +12,7 @@ class ValidatorProvider
     const CREATE = 'create';
     /** @var string */
     const UPDATE = 'update';
+
     /** @var ObjectManager */
     private $om;
     /** @var SchemaProvider */
@@ -25,8 +26,8 @@ class ValidatorProvider
     private $validators = [];
 
     /**
-     * @param ObjectManager      $om
-     * @param SerializerProvider $serializer
+     * @param ObjectManager  $om
+     * @param SchemaProvider $schema
      */
     public function __construct(ObjectManager $om, SchemaProvider $schema)
     {
@@ -83,6 +84,7 @@ class ValidatorProvider
      * @param mixed  $data           - the data to validate
      * @param string $mode           - 'create', 'update'
      * @param bool   $throwException - if true an InvalidDataException is thrown instead of returning the errors
+     * @param array  $options
      *
      * @return array - the list of validation errors
      *
