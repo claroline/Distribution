@@ -32,7 +32,7 @@ security:
                 login_path: /saml/login
                 check_path: /saml/login_check
                 default_target_path: /
-                require_previous_session: true
+                require_previous_session: false
                 success_handler: Claroline\CoreBundle\Listener\AuthenticationSuccessListener
                 failure_handler: Claroline\CoreBundle\Listener\AuthenticationFailureHandler
 
@@ -50,6 +50,6 @@ security:
         allow_if_all_abstain: false
 
     access_control:
-        - { path: ^/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/connect, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/saml, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/connect, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/saml, roles: IS_AUTHENTICATED_ANONYMOUSLY }

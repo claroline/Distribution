@@ -7,6 +7,7 @@ use Claroline\CoreBundle\Entity\User;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\SpBundle\Security\User\UserCreatorInterface;
 use LightSaml\SpBundle\Security\User\UsernameMapperInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserCreator implements UserCreatorInterface
@@ -21,8 +22,9 @@ class UserCreator implements UserCreatorInterface
      * @param UsernameMapperInterface $usernameMapper
      * @param Crud                    $crud
      */
-    public function __construct(UsernameMapperInterface $usernameMapper, Crud $crud)
+    public function __construct(TokenStorageInterface $tokenStorage, UsernameMapperInterface $usernameMapper, Crud $crud)
     {
+        $this->tokenStorage = $tokenStorage;
         $this->usernameMapper = $usernameMapper;
         $this->crud = $crud;
     }
@@ -53,6 +55,9 @@ class UserCreator implements UserCreatorInterface
             ->getFirstAttributeStatement()
             ->getFirstAttributeByName('iam-lastname')
             ->getFirstAttributeValue();
+
+        var_dump($this->tokenStorage->getToken());
+        die();
 
         try {
             /** @var User $user */

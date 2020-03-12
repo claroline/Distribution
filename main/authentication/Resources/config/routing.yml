@@ -1,7 +1,7 @@
 # SAML
 lightsaml_sp:
     resource: "@LightSamlSpBundle/Resources/config/routing.yml"
-    prefix: saml
+    prefix: /saml
     options:
         expose: true
 
