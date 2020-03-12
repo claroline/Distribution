@@ -24,6 +24,7 @@ class UserCreator implements UserCreatorInterface
     public function __construct(UsernameMapperInterface $usernameMapper, Crud $crud)
     {
         $this->usernameMapper = $usernameMapper;
+        $this->crud = $crud;
     }
 
     /**
@@ -50,7 +51,7 @@ class UserCreator implements UserCreatorInterface
         $lastName = $response
             ->getFirstAssertion()
             ->getFirstAttributeStatement()
-            ->getFirstAttributeByName('iam-firstname')
+            ->getFirstAttributeByName('iam-lastname')
             ->getFirstAttributeValue();
 
         /** @var User $user */

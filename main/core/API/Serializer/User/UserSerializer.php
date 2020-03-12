@@ -46,6 +46,12 @@ class UserSerializer extends GenericSerializer
     private $facetManager;
     /** @var PublicFileSerializer */
     private $fileSerializer;
+    /** @var OrganizationSerializer */
+    private $organizationSerializer;
+
+    /** @var FieldFacetValueSerializer */
+    private $fieldFacetValueSerializer;
+
     /** @var ContainerInterface */
     private $container;
     /** @var StrictDispatcher */
