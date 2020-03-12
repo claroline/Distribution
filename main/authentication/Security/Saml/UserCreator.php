@@ -54,14 +54,18 @@ class UserCreator implements UserCreatorInterface
             ->getFirstAttributeByName('iam-lastname')
             ->getFirstAttributeValue();
 
-        /** @var User $user */
-        $user = $this->crud->create(User::class, [
-            'username' => $username,
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'plainPassword' => uniqid(), // I cannot create a user without pass
-        ], [Crud::THROW_EXCEPTION]);
+        try {
+            /** @var User $user */
+            $user = $this->crud->create(User::class, [
+                'username' => $username,
+                'firstName' => $firstName,
+                'lastName' => $lastName,
+                'email' => $email,
+                'plainPassword' => uniqid(), // I cannot create a user without pass
+            ], [Crud::THROW_EXCEPTION]);
+        } catch (\Exception $e) {
+            die($e->getMessage());
+        }
 
         return $user;
     }
