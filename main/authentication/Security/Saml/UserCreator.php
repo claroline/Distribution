@@ -2,9 +2,8 @@
 
 namespace Claroline\AuthenticationBundle\Security\Saml;
 
+use Claroline\AppBundle\API\Crud;
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\Common\Persistence\ObjectManager;
-use LightSaml\ClaimTypes;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\SpBundle\Security\User\UserCreatorInterface;
 use LightSaml\SpBundle\Security\User\UsernameMapperInterface;
@@ -12,19 +11,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserCreator implements UserCreatorInterface
 {
-    /** @var ObjectManager */
-    private $objectManager;
-
     /** @var UsernameMapperInterface */
     private $usernameMapper;
 
+    /** @var Crud */
+    private $crud;
+
     /**
-     * @param ObjectManager           $objectManager
      * @param UsernameMapperInterface $usernameMapper
+     * @param Crud                    $crud
      */
-    public function __construct($objectManager, $usernameMapper)
+    public function __construct(UsernameMapperInterface $usernameMapper, Crud $crud)
     {
-        $this->objectManager = $objectManager;
         $this->usernameMapper = $usernameMapper;
     }
 
@@ -37,15 +35,11 @@ class UserCreator implements UserCreatorInterface
     {
         $username = $this->usernameMapper->getUsername($response);
 
-        $user = new User();
-        $user->setUsername($username);
-
         $email = $response
             ->getFirstAssertion()
             ->getFirstAttributeStatement()
             ->getFirstAttributeByName('iam-email')
             ->getFirstAttributeValue();
-
 
         $firstName = $response
             ->getFirstAssertion()
@@ -53,12 +47,20 @@ class UserCreator implements UserCreatorInterface
             ->getFirstAttributeByName('iam-firstname')
             ->getFirstAttributeValue();
 
-        var_dump($email);
-        var_dump($firstName);
-        die();
+        $lastName = $response
+            ->getFirstAssertion()
+            ->getFirstAttributeStatement()
+            ->getFirstAttributeByName('iam-firstname')
+            ->getFirstAttributeValue();
 
-        $this->objectManager->persist($user);
-        $this->objectManager->flush();
+        /** @var User $user */
+        $user = $this->crud->create(User::class, [
+            'username' => $username,
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'email' => $email,
+            'plainPassword' => uniqid(), // I cannot create a user without pass
+        ], [Crud::THROW_EXCEPTION]);
 
         return $user;
     }
