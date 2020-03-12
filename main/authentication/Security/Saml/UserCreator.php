@@ -4,6 +4,7 @@ namespace Claroline\AuthenticationBundle\Security\Saml;
 
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
+use LightSaml\ClaimTypes;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\SpBundle\Security\User\UserCreatorInterface;
 use LightSaml\SpBundle\Security\User\UsernameMapperInterface;
@@ -38,6 +39,23 @@ class UserCreator implements UserCreatorInterface
 
         $user = new User();
         $user->setUsername($username);
+
+        $email = $response
+            ->getFirstAssertion()
+            ->getFirstAttributeStatement()
+            ->getFirstAttributeByName('iam-email')
+            ->getFirstAttributeValue();
+
+
+        $firstName = $response
+            ->getFirstAssertion()
+            ->getFirstAttributeStatement()
+            ->getFirstAttributeByName('iam-firstname')
+            ->getFirstAttributeValue();
+
+        var_dump($email);
+        var_dump($firstName);
+        die();
 
         $this->objectManager->persist($user);
         $this->objectManager->flush();
