@@ -179,9 +179,9 @@ class ValidatorProvider
                 $qb = $this->om->createQueryBuilder();
 
                 $qb->select('DISTINCT o')
-               ->from($class, 'o')
-               ->where("o.{$entityProp} LIKE :{$entityProp}")
-               ->setParameter($entityProp, $data[$dataProp]);
+                   ->from($class, 'o')
+                   ->where("o.{$entityProp} LIKE :{$entityProp}")
+                   ->setParameter($entityProp, $data[$dataProp]);
 
                 if (self::UPDATE === $mode && isset($data['id'])) {
                     $parameter = is_numeric($data['id']) ? 'id' : 'uuid';

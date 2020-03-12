@@ -84,9 +84,8 @@ class UserValidator implements ValidatorInterface
                 }
             }
 
-            $utils = new ArrayUtils();
             foreach ($required as $field) {
-                if (!$utils->has($data, 'profile.'.$field['id'])) {
+                if (!ArrayUtils::has($data, 'profile.'.$field['id'])) {
                     $errors[] = [
                         'path' => 'profile/'.$field['id'],
                         'message' => 'The field '.$field['label'].' is required',
