@@ -322,7 +322,7 @@ class DashboardController
         /** @var ResourceUserEvaluation[] $resourceUserEvaluations */
         $resourceUserEvaluations = $this->finder->searchEntities(ResourceUserEvaluation::class, [
             'filters' => ['workspace' => $workspace->getUuid(), 'user' => $user->getUuid()],
-            'sortBy' => '-date'
+            'sortBy' => '-date',
         ])['data'];
 
         $fileName = "progression-{$user->getFullName()}";
@@ -376,7 +376,7 @@ class DashboardController
                 /** @var ResourceEvaluation[] $resourceEvaluations */
                 $resourceEvaluations = $this->finder->searchEntities(ResourceEvaluation::class, [
                     'filters' => ['resourceUserEvaluation' => $resourceUserEvaluation],
-                    'sortBy' => '-date'
+                    'sortBy' => '-date',
                 ])['data'];
 
                 foreach ($resourceEvaluations as $resourceEvaluation) {
@@ -392,7 +392,6 @@ class DashboardController
                         $resourceEvaluation->getDuration(),
                     ], ';', '"');
                 }
-
             }
 
             fclose($handle);
