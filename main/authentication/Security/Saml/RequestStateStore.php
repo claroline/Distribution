@@ -79,6 +79,11 @@ class RequestStateStore implements RequestStateStoreInterface
      */
     public function clear()
     {
-        // I don't know what to do here
+        $requests = $this->om->getRepository(RequestStateEntry::class)->findAll();
+        foreach ($requests as $request) {
+            $this->om->remove($request);
+        }
+
+        $this->om->flush();
     }
 }

@@ -14,19 +14,19 @@ class Version20200325090126 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_saml_request_entry (
                 id VARCHAR(255) NOT NULL, 
-                parameters VARCHAR(255) DEFAULT NULL, 
+                parameters LONGTEXT DEFAULT NULL, 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE UTF8_unicode_ci ENGINE = InnoDB
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             DROP TABLE claro_saml_request_entry
-        ");
+        ');
     }
 }

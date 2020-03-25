@@ -20,7 +20,7 @@ class RequestStateEntry
     protected $id;
 
     /**
-     * @ORM\Column(nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      *
      * @var string
      */
