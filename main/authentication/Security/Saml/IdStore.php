@@ -39,7 +39,8 @@ class IdStore implements IdStoreInterface
             $idEntry = new IdEntry();
         }
 
-        $idEntry->setEntityId($entityId)
+        $idEntry
+            ->setEntityId($entityId)
             ->setId($id)
             ->setExpiryTime($expiryTime);
 

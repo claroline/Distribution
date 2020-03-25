@@ -15,4 +15,5 @@ light_saml_symfony_bridge:
                 - "https://validation.portail.vd.ch/sso/saml2/jsp/exportmetadata.jsp?entityid=IDP_mail_validation.portail.vd.ch&realm=/internet"
 
     store:
+        request: 'Claroline\AuthenticationBundle\Security\Saml\RequestStateStore'
         id_state: 'Claroline\AuthenticationBundle\Security\Saml\IdStore'
