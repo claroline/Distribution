@@ -68,19 +68,16 @@ class UserCreator implements UserCreatorInterface
         // but it's not already filled and I can't rewrite the whole process to test token existence.
         $this->setToken();
 
-        try {
-            /** @var User $user */
-            $user = $this->crud->create(User::class, [
-                'username' => $username,
-                'firstName' => $firstName,
-                'lastName' => $lastName,
-                'email' => $email,
-                'plainPassword' => uniqid(), // I cannot create a user without pass
-            ], [Crud::THROW_EXCEPTION]);
-        } catch (\Exception $e) {
-            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 50);
-            die($e->getMessage());
-        }
+        /** @var User $user */
+        $user = $this->crud->create(User::class, [
+            'username' => $username,
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'email' => $email,
+            'plainPassword' => uniqid(), // I cannot create a user without pass
+        ], [Crud::THROW_EXCEPTION]);
+
+        $this->tokenStorage->setToken(null);
 
         return $user;
     }
