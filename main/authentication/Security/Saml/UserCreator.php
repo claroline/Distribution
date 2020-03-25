@@ -3,6 +3,7 @@
 namespace Claroline\AuthenticationBundle\Security\Saml;
 
 use Claroline\AppBundle\API\Crud;
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\Entity\User;
 use LightSaml\Model\Protocol\Response;
 use LightSaml\SpBundle\Security\User\UserCreatorInterface;
@@ -78,7 +79,7 @@ class UserCreator implements UserCreatorInterface
             'restrictions' => [
                 'disabled' => false,
             ]
-        ], [Crud::THROW_EXCEPTION]);
+        ], [Crud::THROW_EXCEPTION, Options::NO_EMAIL]);
 
         $this->tokenStorage->setToken(null);
 
