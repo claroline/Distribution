@@ -13,7 +13,16 @@ services:
             - '@lightsaml.own.credential_store'
 
         arguments:
-            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@doctrine.orm.entity_manager'
+            - '@lightsaml.system.time_provider'
+
+    Claroline\AuthenticationBundle\Security\Saml\RequestStateStore:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    Claroline\AuthenticationBundle\Security\Saml\UserCreator:
+        arguments:
+            - '%secret%'
             - '@security.token_storage'
             - '@security.encoder_factory'
 
