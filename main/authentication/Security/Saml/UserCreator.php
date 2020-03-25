@@ -75,6 +75,9 @@ class UserCreator implements UserCreatorInterface
             'lastName' => $lastName,
             'email' => $email,
             'plainPassword' => uniqid(), // I cannot create a user without pass
+            'restrictions' => [
+                'disabled' => false,
+            ]
         ], [Crud::THROW_EXCEPTION]);
 
         $this->tokenStorage->setToken(null);
