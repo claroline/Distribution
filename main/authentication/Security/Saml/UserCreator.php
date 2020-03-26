@@ -76,9 +76,12 @@ class UserCreator implements UserCreatorInterface
             'lastName' => $lastName,
             'email' => $email,
             'plainPassword' => uniqid(), // I cannot create a user without pass
+            'meta' => [
+                'mailValidated' => true, // because we receive a trusted email
+            ],
             'restrictions' => [
                 'disabled' => false,
-            ]
+            ],
         ], [Crud::THROW_EXCEPTION, Options::NO_EMAIL]);
 
         $this->tokenStorage->setToken(null);
