@@ -4,28 +4,7 @@ services:
         autoconfigure: false
         public: true #because controller
 
-    Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider:
-        #factory: ['LightSaml\SymfonyBridgeBundle\Factory\OwnEntityDescriptorProviderFactory', 'build']
-        arguments:
-            - '%lightsaml.own.entity_id%'
-            - '@router'
-            - '%lightsaml.route.login_check%'
-            - '@lightsaml.own.credential_store'
-
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@lightsaml.system.time_provider'
-
-    Claroline\AuthenticationBundle\Security\Saml\RequestStateStore:
-        arguments:
-            - '@doctrine.orm.entity_manager'
-
-    Claroline\AuthenticationBundle\Security\Saml\UserCreator:
-        arguments:
-            - '%secret%'
-            - '@security.token_storage'
-            - '@security.encoder_factory'
-
+    # Authenticators
     Claroline\AuthenticationBundle\Security\Authentication\IpAuthenticator:
         calls:
             - method: inject
@@ -39,6 +18,35 @@ services:
               arguments:
                   - '@Claroline\AppBundle\Persistence\ObjectManager'
 
+    # SAML
+    Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider:
+        #factory: ['LightSaml\SymfonyBridgeBundle\Factory\OwnEntityDescriptorProviderFactory', 'build']
+        arguments:
+            - '%lightsaml.own.entity_id%'
+            - '@router'
+            - '%lightsaml.route.login_check%'
+            - '@lightsaml.own.credential_store'
+
+    Claroline\AuthenticationBundle\Security\Saml\Store\IdStore:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@lightsaml.system.time_provider'
+
+    Claroline\AuthenticationBundle\Security\Saml\Store\RequestStateStore:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    Claroline\AuthenticationBundle\Security\Saml\UserCreator:
+        arguments:
+            - '%secret%'
+            - '@security.token_storage'
+            - '@security.encoder_factory'
+
+    # Authenticators
+    Claroline\AuthenticationBundle\Security\Authentication\IpAuthenticator:
+        calls:
+            - [setContainer, ['@service_container']]
+
     # OAuth
     Claroline\AuthenticationBundle\Security\Oauth\Hwi\ResourceOwnerFactory:
         arguments:
@@ -46,15 +54,14 @@ services:
             - '@security.http_utils'
             - '@session'
 
-    Claroline\AuthenticationBundle\Security\Oauth\FailureHandler:
+    Claroline\AuthenticationBundle\Security\Oauth\AuthenticationFailureHandler:
         arguments:
             - '@router'
             - '@translator'
 
-    Claroline\AuthenticationBundle\Security\Oauth\LogoutSuccessHandler:
+    Claroline\AuthenticationBundle\Security\Oauth\LogoutHandler:
         arguments:
             - '@session'
-            - '@router'
             - '@Claroline\AuthenticationBundle\Security\Oauth\Hwi\ResourceOwnerFactory'
 
     Claroline\AuthenticationBundle\Security\Oauth\OauthUserProvider:

@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\AuthenticationBundle\Security\Saml;
+namespace Claroline\AuthenticationBundle\Security\Saml\Store;
 
 use Claroline\AuthenticationBundle\Entity\Saml\IdEntry;
 use Doctrine\Common\Persistence\ObjectManager;

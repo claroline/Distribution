@@ -134,13 +134,6 @@ class LoginForm extends Component {
             target="/registration"
           />
         }
-
-        <Button
-          className="btn-link btn-block btn-emphasis"
-          type={URL_BUTTON}
-          target={['lightsaml_sp.login', {}]}
-          label="SAML"
-        />
       </Fragment>
     )
   }

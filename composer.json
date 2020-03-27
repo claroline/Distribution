@@ -33,6 +33,7 @@
         "jdorn/sql-formatter": "1.2.17",
         "jms/security-extra-bundle": "1.6.1",
         "lightsaml/sp-bundle": "1.2.1",
+        "lightsaml/lightsaml-logout": "1.0.0",
         "meyfa/php-svg": "0.8.0",
         "postal/postal": "1.0",
         "psr/log": "1.0.2",
