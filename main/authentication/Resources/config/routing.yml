@@ -5,6 +5,9 @@ lightsaml_sp:
     options:
         expose: true
 
+lightsaml_sp.logout:
+    path: /saml/logout
+
 # OAUTH
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"

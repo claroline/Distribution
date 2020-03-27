@@ -27,6 +27,22 @@ class WindowsLiveResourceOwner extends HWIWindowsLiveResourceOwner
         ]);
     }
 
+    public function revokeToken($token)
+    {
+        if (!empty($this->options['revoke_token_url']) && true === $this->options['force_login']) {
+            $parameters = array(
+                'client_id' => $this->options['client_id'],
+                'client_secret' => $this->options['client_secret'],
+            );
+
+            $response = $this->httpRequest($this->normalizeUrl($this->options['revoke_token_url'], ['client_id' => $this->options['client_id']]), $parameters);
+
+            return 200 === $response->getStatusCode();
+        }
+
+        return false;
+    }
+
     public function logout($redirectUrl)
     {
         if (!empty($this->options['revoke_token_url']) && $this->options['force_login'] === true) {
