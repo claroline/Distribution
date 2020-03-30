@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
-import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {FormData} from '#/main/app/content/form/containers/data'
 
 import {getSso} from '#/main/authentication/sso'
@@ -138,7 +138,6 @@ class LoginForm extends Component {
     )
   }
 }
-
 
 LoginForm.propTypes = {
   sso: T.arrayOf(T.shape({

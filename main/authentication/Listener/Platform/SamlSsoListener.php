@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use LightSaml\Model\Metadata\EntityDescriptor;
 use LightSaml\SymfonyBridgeBundle\Bridge\Container\BuildContainer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SamlSsoListener
 {

@@ -12,10 +12,12 @@ class IdStore implements IdStoreInterface
     /** @var ObjectManager */
     private $manager;
 
-    /** @var  TimeProviderInterface */
+    /** @var TimeProviderInterface */
     private $timeProvider;
 
     /**
+     * IdStore constructor.
+     *
      * @param ObjectManager         $manager
      * @param TimeProviderInterface $timeProvider
      */
@@ -34,8 +36,12 @@ class IdStore implements IdStoreInterface
      */
     public function set($entityId, $id, \DateTime $expiryTime)
     {
-        $idEntry = $this->manager->find(IdEntry::class, ['entityId'=>$entityId, 'id'=>$id]);
-        if (null == $idEntry) {
+        $idEntry = $this->manager->find(IdEntry::class, [
+            'entityId' => $entityId,
+            'id' => $id,
+        ]);
+
+        if (empty($idEntry)) {
             $idEntry = new IdEntry();
         }
 

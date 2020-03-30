@@ -52,8 +52,8 @@ class LogoutHandler implements LogoutHandlerInterface
     /**
      * Send logout to SAML idp.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param Request        $request
+     * @param Response       $response
      * @param TokenInterface $token
      */
     public function logout(Request $request, Response $response, TokenInterface $token)
@@ -78,14 +78,13 @@ class LogoutHandler implements LogoutHandlerInterface
                 // back from IdP after all other SP have been disconnected
                 $status = $samlRequest->getStatus();
                 $code = $status->getStatusCode() ? $status->getStatusCode()->getValue() : null;
-                if ($code === SamlConstants::STATUS_PARTIAL_LOGOUT || $code === SamlConstants::STATUS_SUCCESS) {
+                if (SamlConstants::STATUS_PARTIAL_LOGOUT === $code || SamlConstants::STATUS_SUCCESS === $code) {
                     // OK, logout
                     $session = $request->getSession();
                     $session->invalidate();
                 }
 
                 // TODO: handle errors from IdP
-
             } elseif ($samlRequest instanceof LogoutRequest) {
                 // logout request from IdP, initiated by another SP
                 $this->sendLogoutResponse($samlRequest);
@@ -98,7 +97,7 @@ class LogoutHandler implements LogoutHandlerInterface
     }
 
     /**
-     * Send a logout request to the IdP
+     * Send a logout request to the IdP.
      *
      * @return Response
      */
@@ -128,43 +127,47 @@ class LogoutHandler implements LogoutHandlerInterface
         /* @var $builder BuildContainer */
 
         $sessions = $builder->getStoreContainer()->getSsoStateStore()->get()->getSsoSessions();
-        $session = $sessions[count($sessions) - 1];
-        /* @var $session SsoSessionState */
+        if (!empty($sessions)) {
+            $session = $sessions[count($sessions) - 1];
+            /* @var $session SsoSessionState */
 
-        $idp = $builder->getPartyContainer()->getIdpEntityDescriptorStore()->get(0);
-        /* @var $idp EntityDescriptor */
+            $idp = $builder->getPartyContainer()->getIdpEntityDescriptorStore()->get(0);
+            /* @var $idp EntityDescriptor */
 
-        $slo = $idp->getFirstIdpSsoDescriptor()->getFirstSingleLogoutService();
-        /* @var $slo SingleLogoutService */
+            $slo = $idp->getFirstIdpSsoDescriptor()->getFirstSingleLogoutService();
+            /* @var $slo SingleLogoutService */
 
-        $logoutRequest = new LogoutRequest();
-        $logoutRequest
-            ->setSessionIndex($session->getSessionIndex())
-            ->setNameID(new NameID(
-                $session->getNameId(), $session->getNameIdFormat()
-            ))
-            ->setDestination($slo->getLocation())
-            ->setID(\LightSaml\Helper::generateID())
-            ->setIssueInstant(new \DateTime())
-            /* here, the SP entity id is a container parameter, change it as you wish */
-            ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
-        ;
+            $logoutRequest = new LogoutRequest();
+            $logoutRequest
+                ->setSessionIndex($session->getSessionIndex())
+                ->setNameID(new NameID(
+                    $session->getNameId(), $session->getNameIdFormat()
+                ))
+                ->setDestination($slo->getLocation())
+                ->setID(\LightSaml\Helper::generateID())
+                ->setIssueInstant(new \DateTime())
+                /* here, the SP entity id is a container parameter, change it as you wish */
+                ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
+            ;
 
-        $context = new MessageContext();
-        $context->setBindingType($slo->getBinding());
-        $context->setMessage($logoutRequest);
+            $context = new MessageContext();
+            $context->setBindingType($slo->getBinding());
+            $context->setMessage($logoutRequest);
 
-        $bindingFactory = $this->container->get('lightsaml.service.binding_factory');
-        /* @var $bindingFactory BindingFactory */
-        $binding = $bindingFactory->create($slo->getBinding());
-        /* @var $binding AbstractBinding */
-        $response = $binding->send($context);
+            $bindingFactory = $this->container->get('lightsaml.service.binding_factory');
+            /* @var $bindingFactory BindingFactory */
+            $binding = $bindingFactory->create($slo->getBinding());
+            /* @var $binding AbstractBinding */
+            $response = $binding->send($context);
 
-        return $response;
+            return $response;
+        }
+
+        return null;
     }
 
     /**
-     * Send a Success response to a logout request from the IdP
+     * Send a Success response to a logout request from the IdP.
      *
      * @param SamlMessage $samlRequest
      *

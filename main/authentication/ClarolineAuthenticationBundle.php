@@ -28,7 +28,7 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
         parent::build($container);
 
         $container->addCompilerPass(new OauthConfigPass());
-        $container->addCompilerPass(new SamlConfigPass(), PassConfig::TYPE_AFTER_REMOVING);
+        $container->addCompilerPass(new SamlConfigPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 100);
     }
 
     public function suggestConfigurationFor(Bundle $bundle, $environment)
@@ -36,7 +36,7 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
         $config = new ConfigurationBuilder();
         $bundleClass = get_class($bundle);
         $emptyConfigs = [
-            'LightSaml\SpBundle\LightSamlSpBundle'
+            'LightSaml\SpBundle\LightSamlSpBundle',
         ];
         $simpleConfigs = [
             'HWI\Bundle\OAuthBundle\HWIOAuthBundle' => 'hwi_oauth',
@@ -45,7 +45,7 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
 
         if (in_array($bundleClass, $emptyConfigs)) {
             return $config;
-        } else if (isset($simpleConfigs[$bundleClass])) {
+        } elseif (isset($simpleConfigs[$bundleClass])) {
             return $config->addContainerResource($this->buildPath($simpleConfigs[$bundleClass]));
         }
 
