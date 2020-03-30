@@ -32,11 +32,12 @@ class SamlConfigPass implements CompilerPassInterface
         // I need to reconfigure LightSaml to inject config form platform_options.json
         // There should be a better approach as I c/c code from base bundle and config in .yml is partially incorrect
         // maybe I should replace stores and make them handles it
-        $this->configureOwnEntityDescriptor($container);
+        //$this->configureOwnEntityDescriptor($container);
         $this->configureOwnCredentials($container);
 
         $this->configureParty($container);
         $this->configureCredentialStore($container);
+        $this->configureServiceCredentialResolver($container);
     }
 
     private function configureOwnEntityDescriptor(ContainerBuilder $container)
@@ -50,6 +51,12 @@ class SamlConfigPass implements CompilerPassInterface
             ->addArgument(null)
             ->addArgument(new Reference('lightsaml.own.credential_store'))
         ;
+    }
+
+    private function configureServiceCredentialResolver(ContainerBuilder $container)
+    {
+        $definition = $container->getDefinition('lightsaml.service.credential_resolver');
+        $definition->setFactory([new Reference('lightsaml.service.credential_resolver_factory'), 'build']);
     }
 
     private function configureCredentialStore(ContainerBuilder $container)
