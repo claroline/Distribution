@@ -26,6 +26,7 @@ class SamlConfigPass implements CompilerPassInterface
         $configHandler = $container->get(PlatformConfigurationHandler::class);
 
         $container->setParameter('entity_id', $configHandler->getParameter('external_authentication.saml.entity_id'));
+        $container->setParameter('lightsaml.own.entity_id', $configHandler->getParameter('external_authentication.saml.entity_id'));
         $container->setParameter('credentials', $configHandler->getParameter('external_authentication.saml.credentials'));
         $container->setParameter('idp', $configHandler->getParameter('external_authentication.saml.idp'));
 
