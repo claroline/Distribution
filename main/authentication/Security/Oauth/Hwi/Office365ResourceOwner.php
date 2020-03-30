@@ -14,7 +14,6 @@ namespace Claroline\AuthenticationBundle\Security\Oauth\Hwi;
 use Buzz\Client\ClientInterface as HttpClientInterface;
 use HWI\Bundle\OAuthBundle\OAuth\RequestDataStorageInterface;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\GenericOAuth2ResourceOwner;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Http\HttpUtils;

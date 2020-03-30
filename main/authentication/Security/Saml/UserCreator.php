@@ -64,7 +64,6 @@ class UserCreator implements UserCreatorInterface
             ->getFirstAttributeByName('iam-lastname')
             ->getFirstAttributeValue();
 
-
         // FIXME : I need a token to be able to start user creation process
         // but it's not already filled and I can't rewrite the whole process to test token existence.
         $this->setToken();
