@@ -63,8 +63,12 @@ class IdStore implements IdStoreInterface
     public function has($entityId, $id)
     {
         /** @var IdEntry $idEntry */
-        $idEntry = $this->manager->find(IdEntry::class, ['entityId'=>$entityId, 'id'=>$id]);
-        if (null == $idEntry) {
+        $idEntry = $this->manager->find(IdEntry::class, [
+            'entityId' => $entityId,
+            'id' => $id,
+        ]);
+
+        if (empty($idEntry)) {
             return false;
         }
         if ($idEntry->getExpiryTime()->getTimestamp() < $this->timeProvider->getTimestamp()) {

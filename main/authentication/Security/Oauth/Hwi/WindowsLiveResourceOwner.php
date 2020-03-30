@@ -12,7 +12,6 @@
 namespace Claroline\AuthenticationBundle\Security\Oauth\Hwi;
 
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\WindowsLiveResourceOwner as HWIWindowsLiveResourceOwner;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WindowsLiveResourceOwner extends HWIWindowsLiveResourceOwner
