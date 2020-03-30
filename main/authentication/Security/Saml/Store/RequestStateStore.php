@@ -13,7 +13,9 @@ class RequestStateStore implements RequestStateStoreInterface
     private $om;
 
     /**
-     * @param ObjectManager         $manager
+     * RequestStateStore constructor.
+     *
+     * @param ObjectManager $manager
      */
     public function __construct(ObjectManager $manager)
     {
@@ -74,9 +76,6 @@ class RequestStateStore implements RequestStateStoreInterface
         return true;
     }
 
-    /**
-     * @return void
-     */
     public function clear()
     {
         $requests = $this->om->getRepository(RequestStateEntry::class)->findAll();

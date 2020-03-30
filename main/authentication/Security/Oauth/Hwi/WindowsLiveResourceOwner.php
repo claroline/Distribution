@@ -30,10 +30,10 @@ class WindowsLiveResourceOwner extends HWIWindowsLiveResourceOwner
     public function revokeToken($token)
     {
         if (!empty($this->options['revoke_token_url']) && true === $this->options['force_login']) {
-            $parameters = array(
+            $parameters = [
                 'client_id' => $this->options['client_id'],
                 'client_secret' => $this->options['client_secret'],
-            );
+            ];
 
             $response = $this->httpRequest($this->normalizeUrl($this->options['revoke_token_url'], ['client_id' => $this->options['client_id']]), $parameters);
 
@@ -41,20 +41,5 @@ class WindowsLiveResourceOwner extends HWIWindowsLiveResourceOwner
         }
 
         return false;
-    }
-
-    public function logout($redirectUrl)
-    {
-        if (!empty($this->options['revoke_token_url']) && $this->options['force_login'] === true) {
-            $redirectUrl = $this->normalizeUrl(
-                $this->options['revoke_token_url'],
-                [
-                    'client_id' => $this->options['client_id'],
-                    'redirect_uri' => $redirectUrl,
-                ]
-            );
-        }
-
-        return new RedirectResponse($redirectUrl);
     }
 }

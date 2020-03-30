@@ -9,18 +9,17 @@ parameters:
 
 light_saml_symfony_bridge:
     own:
-        entity_id: '%entity_id%'
+        entity_id: "%entity_id%"
         entity_descriptor_provider:
-            id: 'Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider'
-
-        credentials: '%credentials%'
+            id: Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider
+        credentials: "%credentials%"
     party:
         idp:
-            files: '%idp%'
+            files: "%idp%"
 
     store:
-        request: 'Claroline\AuthenticationBundle\Security\Saml\Store\RequestStateStore'
-        id_state: 'Claroline\AuthenticationBundle\Security\Saml\Store\IdStore'
+        request: Claroline\AuthenticationBundle\Security\Saml\Store\RequestStateStore
+        id_state: Claroline\AuthenticationBundle\Security\Saml\Store\IdStore
 
 security:
     firewalls:

@@ -11,6 +11,7 @@
 
 namespace Claroline\AuthenticationBundle\Security\Saml;
 
+use LightSaml\Credential\X509Certificate;
 use LightSaml\Credential\X509Credential;
 use LightSaml\Model\Metadata\AssertionConsumerService;
 use LightSaml\Model\Metadata\EntityDescriptor;
@@ -22,7 +23,6 @@ use LightSaml\Model\Metadata\SingleSignOnService;
 use LightSaml\Model\Metadata\SpSsoDescriptor;
 use LightSaml\Provider\EntityDescriptor\EntityDescriptorProviderInterface;
 use LightSaml\SamlConstants;
-use LightSaml\Credential\X509Certificate;
 use LightSaml\Store\Credential\CredentialStoreInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -83,7 +83,6 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
         // we don't use Claroline as IDP for know so there is no SSO declared
         //$this->ssoUrl = $ssoRouteName ? $router->generate($ssoRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
         $this->ssoBindings = [SamlConstants::BINDING_SAML2_HTTP_POST, SamlConstants::BINDING_SAML2_HTTP_REDIRECT];
-
     }
 
     /**
