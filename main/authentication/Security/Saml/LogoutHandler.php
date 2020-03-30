@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use LightSaml\Binding\AbstractBinding;
 use LightSaml\Binding\BindingFactory;
 use LightSaml\Context\Profile\MessageContext;
+use LightSaml\Helper;
 use LightSaml\Model\Assertion\Issuer;
 use LightSaml\Model\Assertion\NameID;
 use LightSaml\Model\Metadata\EntityDescriptor;
@@ -144,7 +145,7 @@ class LogoutHandler implements LogoutHandlerInterface
                     $session->getNameId(), $session->getNameIdFormat()
                 ))
                 ->setDestination($slo->getLocation())
-                ->setID(\LightSaml\Helper::generateID())
+                ->setID(Helper::generateID())
                 ->setIssueInstant(new \DateTime())
                 /* here, the SP entity id is a container parameter, change it as you wish */
                 ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
@@ -207,7 +208,7 @@ class LogoutHandler implements LogoutHandlerInterface
             ))
             ->setDestination($slo->getLocation())
             ->setInResponseTo($samlRequest->getID())
-            ->setID(\LightSaml\Helper::generateID())
+            ->setID(Helper::generateID())
             ->setIssueInstant(new \DateTime())
             /* here, the SP entity id is a container parameter, change it as you wish */
             ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
