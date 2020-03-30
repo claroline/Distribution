@@ -11,6 +11,7 @@
 
 namespace Claroline\AuthenticationBundle\Security\Saml;
 
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use LightSaml\Binding\AbstractBinding;
 use LightSaml\Binding\BindingFactory;
 use LightSaml\Context\Profile\MessageContext;
@@ -34,12 +35,16 @@ use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 
 class LogoutHandler implements LogoutHandlerInterface
 {
+    /** @var PlatformConfigurationHandler */
+    private $config;
+
     /** @var ContainerInterface */
     private $container;
 
-    public function setContainer($container)
+    public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->config = $container->get(PlatformConfigurationHandler::class);
 
         return $this;
     }
@@ -53,40 +58,42 @@ class LogoutHandler implements LogoutHandlerInterface
      */
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
-        $bindingFactory = new BindingFactory();
-        $bindingType = $bindingFactory->detectBindingType($request);
-        if (null === $bindingType) {
-            // no SAML request: initiate logout
-            $this->sendLogoutRequest();
-        }
+        if ($this->config->getParameter('external_authentication.saml.active')) {
+            $bindingFactory = new BindingFactory();
+            $bindingType = $bindingFactory->detectBindingType($request);
+            if (null === $bindingType) {
+                // no SAML request: initiate logout
+                $this->sendLogoutRequest();
+            }
 
-        $messageContext = new MessageContext();
-        $binding = $bindingFactory->create($bindingType);
-        /* @var $binding AbstractBinding */
+            $messageContext = new MessageContext();
+            $binding = $bindingFactory->create($bindingType);
+            /* @var $binding AbstractBinding */
 
-        $binding->receive($request, $messageContext);
+            $binding->receive($request, $messageContext);
 
-        $samlRequest = $messageContext->getMessage();
+            $samlRequest = $messageContext->getMessage();
 
-        if ($samlRequest instanceof LogoutResponse) {
-            // back from IdP after all other SP have been disconnected
-            $status = $samlRequest->getStatus();
-            $code = $status->getStatusCode() ? $status->getStatusCode()->getValue() : null;
-            if ($code === SamlConstants::STATUS_PARTIAL_LOGOUT || $code === SamlConstants::STATUS_SUCCESS) {
-                // OK, logout
+            if ($samlRequest instanceof LogoutResponse) {
+                // back from IdP after all other SP have been disconnected
+                $status = $samlRequest->getStatus();
+                $code = $status->getStatusCode() ? $status->getStatusCode()->getValue() : null;
+                if ($code === SamlConstants::STATUS_PARTIAL_LOGOUT || $code === SamlConstants::STATUS_SUCCESS) {
+                    // OK, logout
+                    $session = $request->getSession();
+                    $session->invalidate();
+                }
+
+                // TODO: handle errors from IdP
+
+            } elseif ($samlRequest instanceof LogoutRequest) {
+                // logout request from IdP, initiated by another SP
+                $this->sendLogoutResponse($samlRequest);
+
+                // clean session
                 $session = $request->getSession();
                 $session->invalidate();
             }
-
-            // TODO: handle errors from IdP
-
-        } elseif ($samlRequest instanceof LogoutRequest) {
-            // logout request from IdP, initiated by another SP
-            $this->sendLogoutResponse($samlRequest);
-
-            // clean session
-            $session = $request->getSession();
-            $session->invalidate();
         }
     }
 
