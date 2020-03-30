@@ -32,10 +32,24 @@ class SamlConfigPass implements CompilerPassInterface
         // I need to reconfigure LightSaml to inject config form platform_options.json
         // There should be a better approach as I c/c code from base bundle and config in .yml is partially incorrect
         // maybe I should replace stores and make them handles it
+        $this->configureOwnEntityDescriptor($container);
         $this->configureOwnCredentials($container);
 
         $this->configureParty($container);
         $this->configureCredentialStore($container);
+    }
+
+    private function configureOwnEntityDescriptor(ContainerBuilder $container)
+    {
+        $definition = $container->getDefinition('lightsaml.own.entity_descriptor_provider');
+        $definition->setFactory(['LightSaml\SymfonyBridgeBundle\Factory\OwnEntityDescriptorProviderFactory', 'build']);
+        $definition
+            ->addArgument('%lightsaml.own.entity_id%')
+            ->addArgument(new Reference('router'))
+            ->addArgument('%lightsaml.route.login_check%')
+            ->addArgument(null)
+            ->addArgument(new Reference('lightsaml.own.credential_store'))
+        ;
     }
 
     private function configureCredentialStore(ContainerBuilder $container)
