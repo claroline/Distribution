@@ -22,7 +22,7 @@ services:
     Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider:
         #factory: ['LightSaml\SymfonyBridgeBundle\Factory\OwnEntityDescriptorProviderFactory', 'build']
         arguments:
-            - '%lightsaml.own.entity_id%'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@router'
             - '%lightsaml.route.login_check%'
             - '@lightsaml.own.credential_store'
