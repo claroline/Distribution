@@ -111,10 +111,10 @@ class Office365ResourceOwner extends GenericOAuth2ResourceOwner
     public function revokeToken($token)
     {
         if (!empty($this->options['revoke_token_url']) && true === $this->options['force_login']) {
-            $parameters = array(
+            $parameters = [
                 'client_id' => $this->options['client_id'],
                 'client_secret' => $this->options['client_secret'],
-            );
+            ];
 
             $response = $this->httpRequest($this->normalizeUrl($this->options['revoke_token_url'], ['access_token' => $token]), $parameters);
 
