@@ -61,7 +61,7 @@ class LogoutHandler implements LogoutHandlerInterface
         if ($this->config->getParameter('external_authentication.saml.active')) {
             $bindingFactory = new BindingFactory();
             $bindingType = $bindingFactory->detectBindingType($request);
-            if (null === $bindingType) {
+            if (empty($bindingType)) {
                 // no SAML request: initiate logout
                 $this->sendLogoutRequest();
             }
