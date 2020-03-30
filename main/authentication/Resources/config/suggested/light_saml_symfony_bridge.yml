@@ -15,7 +15,7 @@ light_saml_symfony_bridge:
         credentials: "%credentials%"
     party:
         idp:
-            files: "%idp%"
+            files: "%idp%" # It's filled from platform_options.json by SamlConfigPass
 
     store:
         request: Claroline\AuthenticationBundle\Security\Saml\Store\RequestStateStore

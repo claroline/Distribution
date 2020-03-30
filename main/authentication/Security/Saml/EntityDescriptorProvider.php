@@ -11,6 +11,7 @@
 
 namespace Claroline\AuthenticationBundle\Security\Saml;
 
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use LightSaml\Credential\X509Certificate;
 use LightSaml\Credential\X509Credential;
 use LightSaml\Model\Metadata\AssertionConsumerService;
@@ -65,13 +66,13 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
     /** @var EntityDescriptor */
     private $entityDescriptor;
 
-    public function __construct($entityId, RouterInterface $router, $acsRouteName, CredentialStoreInterface $ownCredentialStore)
+    public function __construct(PlatformConfigurationHandler $config, RouterInterface $router, $acsRouteName, CredentialStoreInterface $ownCredentialStore)
     {
-        $this->entityId = $entityId;
+        $this->entityId = $config->getParameter('external_authentication.saml.entity_id');
         $this->use = [KeyDescriptor::USE_ENCRYPTION, KeyDescriptor::USE_SIGNING];
 
         /** @var X509Credential[] $arrOwnCredentials */
-        $arrOwnCredentials = $ownCredentialStore->getByEntityId($entityId);
+        $arrOwnCredentials = $ownCredentialStore->getByEntityId($this->entityId);
         $this->ownCertificate = $arrOwnCredentials[0]->getCertificate();
 
         $this->acsUrl = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_URL) : null;

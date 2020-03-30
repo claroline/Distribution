@@ -28,7 +28,7 @@ class ClarolineAuthenticationBundle extends DistributionPluginBundle implements 
         parent::build($container);
 
         $container->addCompilerPass(new OauthConfigPass());
-        $container->addCompilerPass(new SamlConfigPass(), PassConfig::TYPE_OPTIMIZE, -1);
+        $container->addCompilerPass(new SamlConfigPass()/*, PassConfig::TYPE_BEFORE_OPTIMIZATION, 100*/);
     }
 
     public function suggestConfigurationFor(Bundle $bundle, $environment)
