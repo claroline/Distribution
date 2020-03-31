@@ -3,7 +3,7 @@ import React from 'react'
 import {Button} from '#/main/app/action/components/button'
 import {SSO_BUTTON} from '#/main/authentication/buttons/sso'
 
-import {constants} from '#/main/authentication/sso/saml/constants'
+import {constants} from '#/plugin/saml/sso/saml/constants'
 
 const SamlButton = props =>
   <Button

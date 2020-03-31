@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\AuthenticationBundle\Listener\Platform;
+namespace Claroline\SamlBundle\Listener\Platform;
 
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;

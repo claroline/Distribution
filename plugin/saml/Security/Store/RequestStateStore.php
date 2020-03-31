@@ -1,8 +1,8 @@
 <?php
 
-namespace Claroline\AuthenticationBundle\Security\Saml\Store;
+namespace Claroline\SamlBundle\Security\Store;
 
-use Claroline\AuthenticationBundle\Entity\Saml\RequestStateEntry;
+use Claroline\SamlBundle\Entity\RequestStateEntry;
 use Doctrine\Common\Persistence\ObjectManager;
 use LightSaml\State\Request\RequestState;
 use LightSaml\Store\Request\RequestStateStoreInterface;

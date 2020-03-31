@@ -18,35 +18,6 @@ services:
               arguments:
                   - '@Claroline\AppBundle\Persistence\ObjectManager'
 
-    # SAML
-    Claroline\AuthenticationBundle\Security\Saml\EntityDescriptorProvider:
-        #factory: ['LightSaml\SymfonyBridgeBundle\Factory\OwnEntityDescriptorProviderFactory', 'build']
-        arguments:
-            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
-            - '@router'
-            - '%lightsaml.route.login_check%'
-            - '@lightsaml.own.credential_store'
-
-    Claroline\AuthenticationBundle\Security\Saml\Store\IdStore:
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@lightsaml.system.time_provider'
-
-    Claroline\AuthenticationBundle\Security\Saml\Store\RequestStateStore:
-        arguments:
-            - '@doctrine.orm.entity_manager'
-
-    Claroline\AuthenticationBundle\Security\Saml\UserCreator:
-        arguments:
-            - '%secret%'
-            - '@security.token_storage'
-            - '@lightsaml_sp.username_mapper.simple'
-            - '@Claroline\AppBundle\API\Crud'
-
-    Claroline\AuthenticationBundle\Security\Saml\LogoutHandler:
-        calls:
-            - [setContainer, ['@service_container']]
-
     # OAuth
     Claroline\AuthenticationBundle\Security\Oauth\Hwi\ResourceOwnerFactory:
         arguments:

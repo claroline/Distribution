@@ -9,7 +9,7 @@
  * Date: 12/6/16
  */
 
-namespace Claroline\AuthenticationBundle\Security\Saml;
+namespace Claroline\SamlBundle\Security;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use LightSaml\Binding\AbstractBinding;

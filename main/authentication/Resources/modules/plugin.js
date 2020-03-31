@@ -24,8 +24,6 @@ registry.add('ClarolineAuthenticationBundle', {
     'twitter'     : () => { return import(/* webpackChunkName: "authentication-sso-twitter" */      '#/main/authentication/sso/twitter') },
     'windows_live': () => { return import(/* webpackChunkName: "authentication-sso-windows_live" */ '#/main/authentication/sso/windows_live') },
     // generic
-    'generic'     : () => { return import(/* webpackChunkName: "authentication-sso-generic" */      '#/main/authentication/sso/generic') },
-    // saml
-    'saml'        : () => { return import(/* webpackChunkName: "authentication-sso-saml" */         '#/main/authentication/sso/saml') }
+    'generic'     : () => { return import(/* webpackChunkName: "authentication-sso-generic" */      '#/main/authentication/sso/generic') }
   }
 })

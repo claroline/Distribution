@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\AuthenticationBundle\Security\Saml;
+namespace Claroline\SamlBundle\Security;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
