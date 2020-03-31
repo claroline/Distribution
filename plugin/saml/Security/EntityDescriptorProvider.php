@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Claroline\AuthenticationBundle\Security\Saml;
+namespace Claroline\SamlBundle\Security;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use LightSaml\Credential\X509Certificate;

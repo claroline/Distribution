@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\AuthenticationBundle\Entity\Saml;
+namespace Claroline\SamlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

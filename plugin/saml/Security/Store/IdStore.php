@@ -1,8 +1,8 @@
 <?php
 
-namespace Claroline\AuthenticationBundle\Security\Saml\Store;
+namespace Claroline\SamlBundle\Security\Store;
 
-use Claroline\AuthenticationBundle\Entity\Saml\IdEntry;
+use Claroline\SamlBundle\Entity\IdEntry;
 use Doctrine\Common\Persistence\ObjectManager;
 use LightSaml\Provider\TimeProvider\TimeProviderInterface;
 use LightSaml\Store\Id\IdStoreInterface;

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\AuthenticationBundle\DependencyInjection\Compiler;
+namespace Claroline\SamlBundle\DependencyInjection\Compiler;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -65,18 +65,20 @@ class SamlConfigPass implements CompilerPassInterface
         // adds credentials from platform_options.json
         $entityId = $configHandler->getParameter('external_authentication.saml.entity_id');
         $credentials = $configHandler->getParameter('external_authentication.saml.credentials');
-        foreach ($credentials as $id => $data) {
-            $definition = new Definition(
-                'LightSaml\Store\Credential\X509FileCredentialStore',
-                [
-                    $entityId,
-                    $data['certificate'],
-                    $data['key'],
-                    $data['password'],
-                ]
-            );
-            $definition->addTag('lightsaml.own_credential_store');
-            $container->setDefinition('lightsaml.own.credential_store.'.$entityId.'.'.$id, $definition);
+        if (!empty($credentials)) {
+            foreach ($credentials as $id => $data) {
+                $definition = new Definition(
+                    'LightSaml\Store\Credential\X509FileCredentialStore',
+                    [
+                        $entityId,
+                        $data['certificate'],
+                        $data['key'],
+                        $data['password'],
+                    ]
+                );
+                $definition->addTag('lightsaml.own_credential_store');
+                $container->setDefinition('lightsaml.own.credential_store.'.$entityId.'.'.$id, $definition);
+            }
         }
     }
 

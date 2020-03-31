@@ -11,7 +11,6 @@
 
 namespace Claroline\AuthenticationBundle\Configuration;
 
-use Claroline\AuthenticationBundle\Model\Oauth\OauthConfiguration;
 use Claroline\CoreBundle\Library\Configuration\LegacyParametersMappingInterface;
 
 class LegacyParametersMapping implements LegacyParametersMappingInterface

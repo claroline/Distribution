@@ -11,7 +11,6 @@
 
 namespace Claroline\AuthenticationBundle\Configuration;
 
-use Claroline\AuthenticationBundle\Model\Oauth\OauthConfiguration;
 use Claroline\CoreBundle\Library\Configuration\ParameterProviderInterface;
 
 class PlatformDefaults implements ParameterProviderInterface
@@ -19,20 +18,7 @@ class PlatformDefaults implements ParameterProviderInterface
     public function getDefaultParameters()
     {
         $parameters = [
-            'external_authentication' => [
-                'saml' => [
-                    'active' => false,
-                    'entity_id' => 'claroline', // the sp name
-                    'credentials' => [ // because LightSaml services checks if their is credentials
-                        [
-                            "certificate" => "%kernel.root_dir%/../saml.crt",
-                            "key" => "%kernel.root_dir%/../saml.pem",
-                            "password" => null
-                        ],
-                    ], // the app certificates and secrets
-                    'idp' => [], // the list of IDPs metadata files (either URL or local files are allowed)
-                ]
-            ],
+            'external_authentication' => [],
         ];
 
         foreach (OauthConfiguration::resourceOwners() as $resourceOwner) {
