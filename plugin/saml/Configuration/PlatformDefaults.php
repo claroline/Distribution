@@ -30,7 +30,7 @@ class PlatformDefaults implements ParameterProviderInterface
                         ],
                     ], // the app certificates and secrets
                     'idp' => [], // the list of IDPs metadata files (either URL or local files are allowed)
-                ]
+                ],
             ],
         ];
     }
