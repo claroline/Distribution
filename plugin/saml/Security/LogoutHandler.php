@@ -29,6 +29,7 @@ use LightSaml\SamlConstants;
 use LightSaml\State\Sso\SsoSessionState;
 use LightSaml\SymfonyBridgeBundle\Bridge\Container\BuildContainer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -84,16 +85,23 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
                         // OK, logout
                         $session = $request->getSession();
                         $session->invalidate();
+
+                        // redirect to wherever you want
+                        return new RedirectResponse(
+                            $this->container->get('router')->generate('claro_index')
+                        );
                     }
 
                     // TODO: handle errors from IdP
                 } elseif ($samlRequest instanceof LogoutRequest) {
                     // logout request from IdP, initiated by another SP
-                    $this->sendLogoutResponse($samlRequest);
+                    $response = $this->sendLogoutResponse($samlRequest);
 
                     // clean session
                     $session = $request->getSession();
                     $session->invalidate();
+
+                    return $response;
                 }
             }
         }
