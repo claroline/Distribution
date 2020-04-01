@@ -148,7 +148,7 @@ class LogoutHandler implements LogoutHandlerInterface
                 ->setID(Helper::generateID())
                 ->setIssueInstant(new \DateTime())
                 /* here, the SP entity id is a container parameter, change it as you wish */
-                ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
+                ->setIssuer(new Issuer($this->config->getParameter('saml.entity_id')))
             ;
 
             $context = new MessageContext();
@@ -211,7 +211,7 @@ class LogoutHandler implements LogoutHandlerInterface
             ->setID(Helper::generateID())
             ->setIssueInstant(new \DateTime())
             /* here, the SP entity id is a container parameter, change it as you wish */
-            ->setIssuer(new Issuer($this->container->getParameter('saml.entity_id')))
+            ->setIssuer(new Issuer($this->config->getParameter('saml.entity_id')))
         ;
 
         $context = new MessageContext();

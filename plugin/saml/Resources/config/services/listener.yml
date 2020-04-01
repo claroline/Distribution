@@ -4,7 +4,7 @@ services:
         autoconfigure: false
         public: true #because controller
 
-    Claroline\AuthenticationBundle\Listener\Platform\SamlSsoListener:
+    Claroline\SamlBundle\Listener\Platform\SamlSsoListener:
         arguments:
             - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@lightsaml.container.build'
