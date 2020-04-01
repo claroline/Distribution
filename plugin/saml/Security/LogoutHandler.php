@@ -33,8 +33,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
+use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
-class LogoutHandler implements LogoutHandlerInterface
+class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInterface*/
 {
     /** @var PlatformConfigurationHandler */
     private $config;
@@ -57,7 +58,8 @@ class LogoutHandler implements LogoutHandlerInterface
      * @param Response       $response
      * @param TokenInterface $token
      */
-    public function logout(Request $request, Response $response, TokenInterface $token)
+    public function onLogoutSuccess(Request $request)
+    //public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($this->config->getParameter('saml.active')) {
             $bindingFactory = new BindingFactory();
