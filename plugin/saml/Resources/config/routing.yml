@@ -4,6 +4,3 @@ lightsaml_sp:
     prefix: /saml
     options:
         expose: true
-
-lightsaml_sp.logout:
-    path: /saml/logout

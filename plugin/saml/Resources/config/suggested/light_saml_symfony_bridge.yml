@@ -1,8 +1,12 @@
 parameters:
     # config is filled with some platform options in ClarolineAuthenticationExtension
-    entity_id: 'claroline'
-    credentials: []
-    idp: []
+    entity_id: 'https://test.vd.claroline.com/'
+    credentials:
+        - certificate: "%kernel.root_dir%/../saml.crt"
+          key: "%kernel.root_dir%/../saml.pem"
+          password: ~
+    idp:
+        - "https://validation.portail.vd.ch/sso/saml2/jsp/exportmetadata.jsp?entityid=IDP_mail_validation.portail.vd.ch&realm=/internet"
 
 light_saml_symfony_bridge:
     own:
@@ -23,7 +27,6 @@ security:
         main:
             # Allows SAML authentication
             logout:
-                path: lightsaml_sp.logout
                 invalidate_session: false
                 handlers:
                     - Claroline\SamlBundle\Security\LogoutHandler
