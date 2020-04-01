@@ -25,7 +25,6 @@ use LightSaml\Model\Protocol\LogoutResponse;
 use LightSaml\Model\Protocol\SamlMessage;
 use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Protocol\StatusCode;
-use LightSaml\Provider\EntityDescriptor\EntityDescriptorProviderInterface;
 use LightSaml\SamlConstants;
 use LightSaml\State\Sso\SsoSessionState;
 use LightSaml\SymfonyBridgeBundle\Bridge\Container\BuildContainer;
@@ -34,14 +33,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
 class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInterface*/
 {
     /** @var PlatformConfigurationHandler */
     private $config;
-    /** @var EntityDescriptorProviderInterface */
+    /** @var EntityDescriptorProvider */
     private $entityDescriptorProvider;
 
     /** @var ContainerInterface */
@@ -162,7 +160,7 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
                 ->setID(Helper::generateID())
                 ->setIssueInstant(new \DateTime())
                 ->setIssuer(new Issuer($this->config->getParameter('saml.entity_id')))
-                ->setSignature($this->entityDescriptorProvider->get()->getSignature())
+                ->setSignature($this->entityDescriptorProvider->getOwnSignature())
             ;
 
             $context = new MessageContext();

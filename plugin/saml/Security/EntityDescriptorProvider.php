@@ -12,7 +12,7 @@
 namespace Claroline\SamlBundle\Security;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use LightSaml\Credential\X509Certificate;
+use LightSaml\Credential\CredentialInterface;
 use LightSaml\Credential\X509Credential;
 use LightSaml\Model\Metadata\AssertionConsumerService;
 use LightSaml\Model\Metadata\EntityDescriptor;
@@ -22,6 +22,7 @@ use LightSaml\Model\Metadata\RoleDescriptor;
 use LightSaml\Model\Metadata\SingleLogoutService;
 use LightSaml\Model\Metadata\SingleSignOnService;
 use LightSaml\Model\Metadata\SpSsoDescriptor;
+use LightSaml\Model\XmlDSig\SignatureWriter;
 use LightSaml\Provider\EntityDescriptor\EntityDescriptorProviderInterface;
 use LightSaml\SamlConstants;
 use LightSaml\Store\Credential\CredentialStoreInterface;
@@ -60,8 +61,8 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
     /** @var string[]|null */
     protected $use;
 
-    /** @var X509Certificate */
-    protected $ownCertificate;
+    /** @var CredentialInterface */
+    protected $ownCredential;
 
     /** @var EntityDescriptor */
     private $entityDescriptor;
@@ -73,7 +74,7 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
 
         /** @var X509Credential[] $arrOwnCredentials */
         $arrOwnCredentials = $ownCredentialStore->getByEntityId($this->entityId);
-        $this->ownCertificate = $arrOwnCredentials[0]->getCertificate();
+        $this->ownCredential = $arrOwnCredentials[0];
 
         $this->acsUrl = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
         $this->acsBindings = [SamlConstants::BINDING_SAML2_HTTP_POST];
@@ -84,6 +85,14 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
         // we don't use Claroline as IDP for know so there is no SSO declared
         //$this->ssoUrl = $ssoRouteName ? $router->generate($ssoRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
         $this->ssoBindings = [SamlConstants::BINDING_SAML2_HTTP_POST, SamlConstants::BINDING_SAML2_HTTP_REDIRECT];
+    }
+
+    public function getOwnSignature()
+    {
+        return new SignatureWriter(
+            $this->ownCredential->getCertificate(),
+            $this->ownCredential->getPrivateKey()
+        );
     }
 
     /**
@@ -186,13 +195,13 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
             foreach ($this->use as $use) {
                 $kd = new KeyDescriptor();
                 $kd->setUse($use);
-                $kd->setCertificate($this->ownCertificate);
+                $kd->setCertificate($this->ownCredential->getCertificate());
 
                 $descriptor->addKeyDescriptor($kd);
             }
         } else {
             $kd = new KeyDescriptor();
-            $kd->setCertificate($this->ownCertificate);
+            $kd->setCertificate($this->ownCredential->getCertificate());
 
             $descriptor->addKeyDescriptor($kd);
         }
