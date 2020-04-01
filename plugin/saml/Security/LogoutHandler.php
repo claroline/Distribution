@@ -60,8 +60,6 @@ class LogoutHandler implements LogoutHandlerInterface
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($this->config->getParameter('saml.active')) {
-            var_dump($request->getSession()->get('samlsso'));
-            die();
             $bindingFactory = new BindingFactory();
             $bindingType = $bindingFactory->detectBindingType($request);
             if (empty($bindingType)) {
@@ -149,7 +147,6 @@ class LogoutHandler implements LogoutHandlerInterface
                 ->setDestination($slo->getLocation())
                 ->setID(Helper::generateID())
                 ->setIssueInstant(new \DateTime())
-                /* here, the SP entity id is a container parameter, change it as you wish */
                 ->setIssuer(new Issuer($this->config->getParameter('saml.entity_id')))
             ;
 

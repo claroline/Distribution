@@ -23,6 +23,7 @@ security:
         main:
             # Allows SAML authentication
             logout:
+                invalidate_session: false
                 handlers:
                     - Claroline\SamlBundle\Security\LogoutHandler
 
