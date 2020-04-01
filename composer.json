@@ -152,7 +152,7 @@
             "Claroline\\SlideshowBundle\\ClarolineSlideshowBundle",
             "Claroline\\OpenBadgeBundle\\ClarolineOpenBadgeBundle",
             "Claroline\\AudioPlayerBundle\\ClarolineAudioPlayerBundle",
-            "Claroline\\AudioSamlBundle\\ClarolineSamlBundle"
+            "Claroline\\SamlBundle\\ClarolineSamlBundle"
         ]
     }
 }
