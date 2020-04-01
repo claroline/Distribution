@@ -32,10 +32,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
-class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInterface*/
+class LogoutHandler implements LogoutSuccessHandlerInterface
 {
     /** @var PlatformConfigurationHandler */
     private $config;
@@ -58,11 +57,10 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
      * Send logout to SAML idp.
      *
      * @param Request        $request
-     * @param Response       $response
-     * @param TokenInterface $token
+     *
+     * @return Response
      */
     public function onLogoutSuccess(Request $request)
-    //public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($this->config->getParameter('saml.active')) {
             $bindingFactory = new BindingFactory();
@@ -88,7 +86,6 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
                         $session = $request->getSession();
                         $session->invalidate();
 
-                        // redirect to wherever you want
                         return new RedirectResponse(
                             $this->container->get('router')->generate('claro_index')
                         );
@@ -107,6 +104,10 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
                 }
             }
         }
+
+        return new RedirectResponse(
+            $this->container->get('router')->generate('claro_index')
+        );
     }
 
     /**
