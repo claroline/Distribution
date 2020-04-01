@@ -25,6 +25,7 @@ use LightSaml\Model\Protocol\LogoutResponse;
 use LightSaml\Model\Protocol\SamlMessage;
 use LightSaml\Model\Protocol\Status;
 use LightSaml\Model\Protocol\StatusCode;
+use LightSaml\Provider\EntityDescriptor\EntityDescriptorProviderInterface;
 use LightSaml\SamlConstants;
 use LightSaml\State\Sso\SsoSessionState;
 use LightSaml\SymfonyBridgeBundle\Bridge\Container\BuildContainer;
@@ -40,6 +41,8 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
 {
     /** @var PlatformConfigurationHandler */
     private $config;
+    /** @var EntityDescriptorProviderInterface */
+    private $entityDescriptorProvider;
 
     /** @var ContainerInterface */
     private $container;
@@ -48,6 +51,7 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
     {
         $this->container = $container;
         $this->config = $container->get(PlatformConfigurationHandler::class);
+        $this->entityDescriptorProvider = $this->container->get('lightsaml.own.entity_descriptor_provider');
 
         return $this;
     }
@@ -158,6 +162,7 @@ class LogoutHandler implements LogoutSuccessHandlerInterface/*LogoutHandlerInter
                 ->setID(Helper::generateID())
                 ->setIssueInstant(new \DateTime())
                 ->setIssuer(new Issuer($this->config->getParameter('saml.entity_id')))
+                ->setSignature($this->entityDescriptorProvider->get()->getSignature())
             ;
 
             $context = new MessageContext();
