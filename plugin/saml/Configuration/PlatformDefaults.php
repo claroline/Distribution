@@ -18,19 +18,17 @@ class PlatformDefaults implements ParameterProviderInterface
     public function getDefaultParameters()
     {
         return [
-            'external_authentication' => [
-                'saml' => [
-                    'active' => false,
-                    'entity_id' => 'claroline', // the sp name
-                    'credentials' => [
-                        [
-                            'certificate' => '%kernel.root_dir%/../saml.crt',
-                            'key' => '%kernel.root_dir%/../saml.pem',
-                            'password' => null,
-                        ],
-                    ], // the app certificates and secrets
-                    'idp' => [], // the list of IDPs metadata files (either URL or local files are allowed)
-                ],
+            'saml' => [
+                'active' => false,
+                'entity_id' => 'claroline', // the sp name
+                'credentials' => [
+                    [
+                        'certificate' => '%kernel.root_dir%/../saml.crt',
+                        'key' => '%kernel.root_dir%/../saml.pem',
+                        'password' => null,
+                    ],
+                ], // the app certificates and secrets
+                'idp' => [], // the list of IDPs metadata files (either URL or local files are allowed)
             ],
         ];
     }

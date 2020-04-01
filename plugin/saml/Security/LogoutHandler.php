@@ -59,7 +59,7 @@ class LogoutHandler implements LogoutHandlerInterface
      */
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
-        if ($this->config->getParameter('external_authentication.saml.active')) {
+        if ($this->config->getParameter('saml.active')) {
             $bindingFactory = new BindingFactory();
             $bindingType = $bindingFactory->detectBindingType($request);
             if (empty($bindingType)) {

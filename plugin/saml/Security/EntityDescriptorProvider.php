@@ -68,7 +68,7 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
 
     public function __construct(PlatformConfigurationHandler $config, RouterInterface $router, $acsRouteName, CredentialStoreInterface $ownCredentialStore)
     {
-        $this->entityId = $config->getParameter('external_authentication.saml.entity_id');
+        $this->entityId = $config->getParameter('saml.entity_id');
         $this->use = [KeyDescriptor::USE_ENCRYPTION, KeyDescriptor::USE_SIGNING];
 
         /** @var X509Credential[] $arrOwnCredentials */

@@ -25,10 +25,10 @@ class SamlConfigPass implements CompilerPassInterface
         /** @var PlatformConfigurationHandler $configHandler */
         $configHandler = $container->get(PlatformConfigurationHandler::class);
 
-        $container->setParameter('entity_id', $configHandler->getParameter('external_authentication.saml.entity_id'));
-        $container->setParameter('lightsaml.own.entity_id', $configHandler->getParameter('external_authentication.saml.entity_id'));
-        $container->setParameter('credentials', $configHandler->getParameter('external_authentication.saml.credentials'));
-        $container->setParameter('idp', $configHandler->getParameter('external_authentication.saml.idp'));
+        $container->setParameter('entity_id', $configHandler->getParameter('saml.entity_id'));
+        $container->setParameter('lightsaml.own.entity_id', $configHandler->getParameter('saml.entity_id'));
+        $container->setParameter('credentials', $configHandler->getParameter('saml.credentials'));
+        $container->setParameter('idp', $configHandler->getParameter('saml.idp'));
 
         // I need to reconfigure LightSaml to inject config form platform_options.json
         // There should be a better approach as I c/c code from base bundle and config in .yml is partially incorrect
@@ -63,8 +63,8 @@ class SamlConfigPass implements CompilerPassInterface
         $configHandler = $container->get(PlatformConfigurationHandler::class);
 
         // adds credentials from platform_options.json
-        $entityId = $configHandler->getParameter('external_authentication.saml.entity_id');
-        $credentials = $configHandler->getParameter('external_authentication.saml.credentials');
+        $entityId = $configHandler->getParameter('saml.entity_id');
+        $credentials = $configHandler->getParameter('saml.credentials');
         if (!empty($credentials)) {
             foreach ($credentials as $id => $data) {
                 $definition = new Definition(
@@ -92,7 +92,7 @@ class SamlConfigPass implements CompilerPassInterface
         /** @var PlatformConfigurationHandler $configHandler */
         $configHandler = $container->get(PlatformConfigurationHandler::class);
 
-        $idpFiles = $configHandler->getParameter('external_authentication.saml.idp');
+        $idpFiles = $configHandler->getParameter('saml.idp');
         if (isset($idpFiles)) {
             $store = $container->getDefinition('lightsaml.party.idp_entity_descriptor_store');
             foreach ($idpFiles as $id => $file) {

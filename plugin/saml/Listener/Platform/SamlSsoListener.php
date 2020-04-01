@@ -34,7 +34,7 @@ class SamlSsoListener
      */
     public function onConfig(GenericDataEvent $event)
     {
-        if ($this->config->getParameter('external_authentication.saml.active')) {
+        if ($this->config->getParameter('saml.active')) {
             $parties = $this->idpContainer->getPartyContainer()->getIdpEntityDescriptorStore()->all();
 
             $event->setResponse([
