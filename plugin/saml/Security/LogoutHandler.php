@@ -60,6 +60,8 @@ class LogoutHandler implements LogoutHandlerInterface
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($this->config->getParameter('saml.active')) {
+            var_dump($request->getSession()->get('samlsso'));
+            die();
             $bindingFactory = new BindingFactory();
             $bindingType = $bindingFactory->detectBindingType($request);
             if (empty($bindingType)) {
