@@ -74,7 +74,9 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
 
         /** @var X509Credential[] $arrOwnCredentials */
         $arrOwnCredentials = $ownCredentialStore->getByEntityId($this->entityId);
-        $this->ownCredential = $arrOwnCredentials[0];
+        if (!empty($arrOwnCredentials)) {
+            $this->ownCredential = $arrOwnCredentials[0];
+        }
 
         $this->acsUrl = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
         $this->acsBindings = [SamlConstants::BINDING_SAML2_HTTP_POST];
