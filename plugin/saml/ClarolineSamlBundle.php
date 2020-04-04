@@ -25,10 +25,10 @@ class ClarolineSamlBundle extends DistributionPluginBundle implements Configurat
         return false;
     }
 
-    public function supports($environment)
+    /*public function supports($environment)
     {
         return 'test' !== $environment;
-    }
+    }*/
 
     public function build(ContainerBuilder $container)
     {
