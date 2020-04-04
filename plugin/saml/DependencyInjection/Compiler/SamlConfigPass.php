@@ -42,14 +42,18 @@ class SamlConfigPass implements CompilerPassInterface
 
     private function configureServiceCredentialResolver(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('lightsaml.service.credential_resolver');
-        $definition->setFactory([new Reference('lightsaml.service.credential_resolver_factory'), 'build']);
+        if ($container->hasDefinition('lightsaml.service.credential_resolver')) {
+            $definition = $container->getDefinition('lightsaml.service.credential_resolver');
+            $definition->setFactory([new Reference('lightsaml.service.credential_resolver_factory'), 'build']);
+        }
     }
 
     private function configureCredentialStore(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('lightsaml.credential.credential_store');
-        $definition->setFactory([new Reference('lightsaml.credential.credential_store_factory'), 'buildFromOwnCredentialStore']);
+        if ($container->hasDefinition('lightsaml.credential.credential_store')) {
+            $definition = $container->getDefinition('lightsaml.credential.credential_store');
+            $definition->setFactory([new Reference('lightsaml.credential.credential_store_factory'), 'buildFromOwnCredentialStore']);
+        }
     }
 
     /**
@@ -89,20 +93,22 @@ class SamlConfigPass implements CompilerPassInterface
      */
     private function configureParty(ContainerBuilder $container)
     {
-        /** @var PlatformConfigurationHandler $configHandler */
-        $configHandler = $container->get(PlatformConfigurationHandler::class);
+        if ($container->hasDefinition('lightsaml.party.idp_entity_descriptor_store')) {
+            /** @var PlatformConfigurationHandler $configHandler */
+            $configHandler = $container->get(PlatformConfigurationHandler::class);
 
-        $idpFiles = $configHandler->getParameter('saml.idp');
-        if (isset($idpFiles)) {
-            $store = $container->getDefinition('lightsaml.party.idp_entity_descriptor_store');
-            foreach ($idpFiles as $id => $file) {
-                $id = sprintf('lightsaml.party.idp_entity_descriptor_store.file.%s', $id);
+            $idpFiles = $configHandler->getParameter('saml.idp');
+            if (isset($idpFiles)) {
+                $store = $container->getDefinition('lightsaml.party.idp_entity_descriptor_store');
+                foreach ($idpFiles as $id => $file) {
+                    $id = sprintf('lightsaml.party.idp_entity_descriptor_store.file.%s', $id);
 
-                $container
-                    ->setDefinition($id, new ChildDefinition('lightsaml.party.idp_entity_descriptor_store.file'))
-                    ->replaceArgument(0, $file);
+                    $container
+                        ->setDefinition($id, new ChildDefinition('lightsaml.party.idp_entity_descriptor_store.file'))
+                        ->replaceArgument(0, $file);
 
-                $store->addMethodCall('add', [new Reference($id)]);
+                    $store->addMethodCall('add', [new Reference($id)]);
+                }
             }
         }
     }
