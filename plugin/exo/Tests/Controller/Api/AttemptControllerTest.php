@@ -81,7 +81,6 @@ class AttemptControllerTest extends TransactionalTestCase
     public function testAnonymousAttempt()
     {
         $this->request('POST', "/api/exercises/{$this->ex1->getUuid()}/attempts");
-        var_dump($this->client->getContainer()->get(BundleManager::class)->getActiveBundles());
         var_dump($this->client->getResponse()->getContent());
         die();
         $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
