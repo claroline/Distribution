@@ -6,6 +6,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
+use Claroline\KernelBundle\Manager\BundleManager;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Hint;
 use UJM\ExoBundle\Entity\Item\Item;
@@ -80,6 +81,7 @@ class AttemptControllerTest extends TransactionalTestCase
     public function testAnonymousAttempt()
     {
         $this->request('POST', "/api/exercises/{$this->ex1->getUuid()}/attempts");
+        var_dump($this->client->getContainer()->get(BundleManager::class)->getActiveBundles());
         var_dump($this->client->getResponse()->getContent());
         die();
         $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
