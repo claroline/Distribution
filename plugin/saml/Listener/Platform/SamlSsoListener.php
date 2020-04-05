@@ -36,12 +36,18 @@ class SamlSsoListener
     {
         if ($this->config->getParameter('saml.active')) {
             $parties = $this->idpContainer->getPartyContainer()->getIdpEntityDescriptorStore()->all();
+            $buttons = $this->config->getParameter('saml.buttons');
 
             $event->setResponse([
                 'sso' => array_map(function (EntityDescriptor $descriptor) {
+                    $buttonName = $descriptor->getEntityID();
+                    if (!empty($buttons[$descriptor->getEntityID()])) {
+                        $buttonName = $buttons[$descriptor->getEntityID()];
+                    }
+
                     return [
                         'service' => 'saml',
-                        'label' => $descriptor->getEntityID(),
+                        'label' => $buttonName,
                         'primary' => false,
                     ];
                 }, $parties),
