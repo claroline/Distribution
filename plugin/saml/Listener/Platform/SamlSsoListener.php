@@ -39,7 +39,7 @@ class SamlSsoListener
             $buttons = $this->config->getParameter('saml.buttons');
 
             $event->setResponse([
-                'sso' => array_map(function (EntityDescriptor $descriptor) {
+                'sso' => array_map(function (EntityDescriptor $descriptor) use ($buttons) {
                     $buttonName = $descriptor->getEntityID();
                     if (!empty($buttons[$descriptor->getEntityID()])) {
                         $buttonName = $buttons[$descriptor->getEntityID()];
