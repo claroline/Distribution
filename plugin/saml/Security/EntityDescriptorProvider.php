@@ -70,25 +70,23 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
     public function __construct(PlatformConfigurationHandler $config, RouterInterface $router, $acsRouteName, CredentialStoreInterface $ownCredentialStore)
     {
         $this->entityId = $config->getParameter('saml.entity_id');
-        if ($config->getParameter('saml.active')) {
-            $this->use = [KeyDescriptor::USE_ENCRYPTION, KeyDescriptor::USE_SIGNING];
+        $this->use = [KeyDescriptor::USE_ENCRYPTION, KeyDescriptor::USE_SIGNING];
 
-            /** @var X509Credential[] $arrOwnCredentials */
-            $arrOwnCredentials = $ownCredentialStore->getByEntityId($this->entityId);
-            if (!empty($arrOwnCredentials)) {
-                $this->ownCredential = $arrOwnCredentials[0];
-            }
-
-            $this->acsUrl = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
-            $this->acsBindings = [SamlConstants::BINDING_SAML2_HTTP_POST];
-
-            $this->logoutUrl = $router->generate('claro_security_logout', [], RouterInterface::ABSOLUTE_URL);
-            $this->logoutBindings = [SamlConstants::BINDING_SAML2_HTTP_POST];
-
-            // we don't use Claroline as IDP for know so there is no SSO declared
-            //$this->ssoUrl = $ssoRouteName ? $router->generate($ssoRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
-            $this->ssoBindings = [SamlConstants::BINDING_SAML2_HTTP_POST, SamlConstants::BINDING_SAML2_HTTP_REDIRECT];
+        /** @var X509Credential[] $arrOwnCredentials */
+        $arrOwnCredentials = $ownCredentialStore->getByEntityId($this->entityId);
+        if (!empty($arrOwnCredentials)) {
+            $this->ownCredential = $arrOwnCredentials[0];
         }
+
+        $this->acsUrl = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
+        $this->acsBindings = [SamlConstants::BINDING_SAML2_HTTP_POST];
+
+        $this->logoutUrl = $router->generate('claro_security_logout', [], RouterInterface::ABSOLUTE_URL);
+        $this->logoutBindings = [SamlConstants::BINDING_SAML2_HTTP_POST];
+
+        // we don't use Claroline as IDP for know so there is no SSO declared
+        //$this->ssoUrl = $ssoRouteName ? $router->generate($ssoRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
+        $this->ssoBindings = [SamlConstants::BINDING_SAML2_HTTP_POST, SamlConstants::BINDING_SAML2_HTTP_REDIRECT];
     }
 
     public function getOwnSignature()
