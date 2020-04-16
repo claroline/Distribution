@@ -78,7 +78,10 @@ class EntityDescriptorProvider implements EntityDescriptorProviderInterface
             $this->ownCredential = $arrOwnCredentials[0];
         }
 
-        $this->acsUrl = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
+        if ($config->getParameter('saml.active')) {
+            $this->acsUrl = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_URL) : null;
+        }
+
         $this->acsBindings = [SamlConstants::BINDING_SAML2_HTTP_POST];
 
         $this->logoutUrl = $router->generate('claro_security_logout', [], RouterInterface::ABSOLUTE_URL);

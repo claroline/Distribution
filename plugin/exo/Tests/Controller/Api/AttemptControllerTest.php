@@ -6,7 +6,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\KernelBundle\Manager\BundleManager;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Hint;
 use UJM\ExoBundle\Entity\Item\Item;
