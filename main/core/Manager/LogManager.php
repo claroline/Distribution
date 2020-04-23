@@ -103,7 +103,7 @@ class LogManager
      *
      * @return bool|resource
      */
-    public function exportLogsToCsv($query)
+    public function exportLogsToCsv($query, $fileName = null)
     {
         // Initialize variables
         $query['limit'] = self::CSV_LOG_BATCH;
@@ -112,7 +112,7 @@ class LogManager
         $total = 0;
 
         // Prepare CSV file
-        $handle = fopen('php://output', 'w+');
+        $handle = fopen($fileName ?? 'php://output', 'w+');
         fputcsv($handle, [
             $this->translator->trans('date', [], 'platform'),
             $this->translator->trans('action', [], 'platform'),
