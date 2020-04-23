@@ -22,6 +22,11 @@ class LogsFetcherCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
 
+    private $params = [
+        'from' => 'from',
+        'filePath' => 'filePath',
+    ];
+
     protected function configure()
     {
         parent::configure();
