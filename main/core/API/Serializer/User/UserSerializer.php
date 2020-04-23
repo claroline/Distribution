@@ -48,18 +48,12 @@ class UserSerializer extends GenericSerializer
     private $fileSerializer;
     /** @var OrganizationSerializer */
     private $organizationSerializer;
-
     /** @var FieldFacetValueSerializer */
     private $fieldFacetValueSerializer;
-
     /** @var ContainerInterface */
     private $container;
     /** @var StrictDispatcher */
     private $eventDispatcher;
-    /** @var OrganizationSerializer */
-    private $organizationSerializer;
-    /** @var FieldFacetValueSerializer */
-    private $fieldFacetValueSerializer;
 
     private $organizationRepo;
     /** @var RoleRepository */
