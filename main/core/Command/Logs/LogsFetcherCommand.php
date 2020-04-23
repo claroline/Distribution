@@ -47,7 +47,7 @@ class LogsFetcherCommand extends ContainerAwareCommand
         $logManager = $this->getContainer()->get('claroline.log.manager');
         $logManager->exportLogsToCsv([
             'filters' => [
-                'dateLog' => $input->getArgument('from') ?? null
+                'dateLog' => $input->getArgument('from') ?? null,
             ],
         ], $input->getArgument('filePath'));
 
