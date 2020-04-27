@@ -25,11 +25,6 @@ class ClarolineSamlBundle extends DistributionPluginBundle implements Configurat
         return false;
     }
 
-    /*public function supports($environment)
-    {
-        return 'test' !== $environment;
-    }*/
-
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
@@ -44,8 +39,14 @@ class ClarolineSamlBundle extends DistributionPluginBundle implements Configurat
         $emptyConfigs = [
             'LightSaml\SpBundle\LightSamlSpBundle',
         ];
+
+        $bridgeConfig = 'light_saml_symfony_bridge';
+        if ('test' === $environment) {
+            $bridgeConfig = 'light_saml_symfony_bridge_test';
+        }
+
         $simpleConfigs = [
-            'LightSaml\SymfonyBridgeBundle\LightSamlSymfonyBridgeBundle' => 'light_saml_symfony_bridge',
+            'LightSaml\SymfonyBridgeBundle\LightSamlSymfonyBridgeBundle' => $bridgeConfig,
         ];
 
         if (in_array($bundleClass, $emptyConfigs)) {
