@@ -14,7 +14,7 @@
     "html2pdf.js": "^0.9.1",
     "invariant": "^2.2.4",
     "@fortawesome/fontawesome-free": "^5",
-    "jquery": "2.2.4",
+    "jquery": "3.5.0",
     "jsplumb": "^2.2.11",
     "lodash": "^4.17.11",
     "mathjax": "2.7.4",
