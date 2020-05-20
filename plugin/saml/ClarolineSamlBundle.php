@@ -41,9 +41,9 @@ class ClarolineSamlBundle extends DistributionPluginBundle implements Configurat
         ];
 
         $bridgeConfig = 'light_saml_symfony_bridge';
-        if ('test' === $environment) {
+        /*if ('test' === $environment) {
             $bridgeConfig = 'light_saml_symfony_bridge_test';
-        }
+        }*/
 
         $simpleConfigs = [
             'LightSaml\SymfonyBridgeBundle\LightSamlSymfonyBridgeBundle' => $bridgeConfig,
