@@ -13,7 +13,6 @@ const UserTab = connect(
     listQueryString: listSelectors.queryString(listSelectors.list(state, selectors.LIST_NAME)),
     contextData: toolSelectors.contextData(state),
     canCreate: communitySelectors.canCreate(state),
-    canRegister: communitySelectors.canRegister(state),
     defaultRole: communitySelectors.defaultRole(state),
     limitReached: selectors.limitReached(state)
   }),
@@ -21,7 +20,7 @@ const UserTab = connect(
     open(id = null, defaultRole) {
       dispatch(actions.open(selectors.FORM_NAME, id, {
         organization: null, // retrieve it with axel stuff
-        roles: [defaultRole]
+        roles: defaultRole ? [defaultRole] : []
       }))
     },
     addUsersToRoles(roles, users) {

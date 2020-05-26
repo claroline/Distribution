@@ -22,7 +22,7 @@ const UserTab = props =>
       target: `${props.path}/users`
     }]}
     subtitle={trans('users')}
-    toolbar="register create | more"
+    primaryAction="register create"
     actions={[
       {
         name: 'register',
@@ -30,7 +30,7 @@ const UserTab = props =>
         label: trans('register_users'),
         icon: 'fa fa-plus',
         primary: true,
-        displayed: props.canRegister,
+        displayed: 'workspace' === props.contextType && props.canCreate,
 
         // select users to register
         modal: [MODAL_USERS, {
@@ -57,10 +57,11 @@ const UserTab = props =>
       }, {
         name: 'create',
         type: LINK_BUTTON,
-        label: trans('create_user'),
-        icon: 'fa fa-pencil',
+        label: trans('create_user', {}, 'actions'),
+        icon: 'fa fa-plus',
         target: `${props.path}/users/form`,
-        displayed: props.canCreate && !props.limitReached
+        displayed: 'desktop' === props.contextType && props.canCreate && !props.limitReached,
+        primary: true
       }, {
         name: 'export',
         type: URL_BUTTON,
@@ -90,12 +91,12 @@ const UserTab = props =>
 
 UserTab.propTypes = {
   path: T.string.isRequired,
+  contextType: T.string,
   contextData: T.object,
   listQueryString: T.string,
   limitReached: T.bool.isRequired,
 
   canCreate: T.bool.isRequired,
-  canRegister: T.bool.isRequired,
   defaultRole: T.object, // for user creation
   addUsersToRoles: T.func.isRequired,
   open: T.func.isRequired
