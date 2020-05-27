@@ -26,6 +26,7 @@ services:
             - '@Claroline\AuthenticationBundle\Manager\OauthManager'
             - '@security.http_utils'
             - '@session'
+            - '@guzzle_client.hwi_oauth.methods_client'
 
     Claroline\AuthenticationBundle\Security\Oauth\AuthenticationFailureHandler:
         arguments:
