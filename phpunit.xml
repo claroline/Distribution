@@ -46,7 +46,7 @@
             <directory>main/core/Tests/Unit/Persistence/</directory>
             <directory>plugin/badge/Tests/Unit/Rule/Constraints</directory>
             <directory>main/core/Tests/Database/</directory>
-            <directory>main/authentication/Tests/</directory>
+            <!--<directory>main/authentication/Tests/</directory>-->
         </testsuite>
     </testsuites>
 
@@ -61,5 +61,4 @@
             </exclude>
         </whitelist>
     </filter>
-
 </phpunit>
