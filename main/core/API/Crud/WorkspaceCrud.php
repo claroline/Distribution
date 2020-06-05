@@ -3,7 +3,6 @@
 namespace Claroline\CoreBundle\API\Crud;
 
 use Claroline\AppBundle\API\Crud;
-use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Event\Crud\CopyEvent;
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
@@ -108,7 +107,6 @@ class WorkspaceCrud
     public function preCreate(CreateEvent $event)
     {
         $workspace = $this->manager->createWorkspace($event->getObject());
-        $options = $event->getOptions();
 
         $user = $this->tokenStorage->getToken() ?
             $this->tokenStorage->getToken()->getUser() :
@@ -124,18 +122,6 @@ class WorkspaceCrud
                 $this->organizationManager->getDefault();
             $workspace->addOrganization($organization);
         }
-
-        //this is for workspace creation: TODO remove that because it's very confusing
-        //make a search on LIGHT_COPY you'll find what will probably need a change
-        if (in_array(Options::LIGHT_COPY, $options)) {
-            $this->om->flush();
-
-            return $workspace;
-        }
-
-        //is this part ever fired anymore ? I don't know
-
-        $workspace = $this->manager->copy($model, $workspace, false);
 
         $this->om->flush();
 
