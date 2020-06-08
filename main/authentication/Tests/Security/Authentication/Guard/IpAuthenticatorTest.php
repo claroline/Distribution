@@ -2,7 +2,6 @@
 
 namespace Claroline\AuthenticationBundle\Tests\Tests\Functional;
 
-use Claroline\AuthenticationBundle\Security\Authentication\Guard\ApiTokenAuthenticator;
 use Claroline\AuthenticationBundle\Security\Authentication\Guard\IpAuthenticator;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
