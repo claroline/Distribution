@@ -78,7 +78,7 @@ class LogFinder extends AbstractFinder
                     }
 
                     $qb
-                        ->join('user.roles', 'roles')
+                        ->join('doer.roles', 'roles')
                         ->andWhere('roles.id IN (:roleIds)')
                         ->setParameter('roleIds', $filterValue);
 
