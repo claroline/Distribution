@@ -51,12 +51,9 @@ actions.addGroups = (id, groups) => ({
   }
 })
 
-actions.fetchStatistics = (id, year) => {
-  console.log(id)
-  return ({
-    [API_REQUEST]: {
-      url: ['apiv2_role_analytics', {id: id, year: year}],
-      success: (data, dispatch) => true
-    }
-  })
-}
+actions.fetchStatistics = (id, year) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_role_analytics', {id: id, year: year}],
+    success: (data, dispatch) => true
+  }
+})

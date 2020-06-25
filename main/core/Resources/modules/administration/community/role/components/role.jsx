@@ -67,6 +67,12 @@ class RoleInfo extends Component {
   }
 
   render() {
+    let ellapsedDays = 365
+    if (this.state.current === moment().year()) {
+      // current period
+      ellapsedDays = moment().diff(moment([this.state.current, '01, 01']), 'days') + 1
+    }
+
     return (
       <Fragment>
         <div className="row" style={{display: 'flex', alignItems: 'center'}}>
@@ -111,7 +117,7 @@ class RoleInfo extends Component {
                 </TooltipOverlay>
               </small>
               {!this.state.loaded ? '? ' : this.state.count.connections + ' '}
-              ({!this.state.loaded ? '?' : Math.ceil(this.state.count.connections / 365)} {trans('per_day_short')})
+              ({!this.state.loaded ? '?' : Math.ceil(this.state.count.connections / ellapsedDays)} {trans('per_day_short')})
             </h1>
           </div>
 
@@ -126,7 +132,7 @@ class RoleInfo extends Component {
                 </TooltipOverlay>
               </small>
               {!this.state.loaded ? '? ' : this.state.count.actions + ' '}
-              ({!this.state.loaded ? '?' : Math.ceil(this.state.count.actions / 365)} {trans('per_day_short')})
+              ({!this.state.loaded ? '?' : Math.ceil(this.state.count.actions / ellapsedDays)} {trans('per_day_short')})
             </h1>
           </div>
         </div>
