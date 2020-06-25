@@ -299,7 +299,7 @@ class UserRepository extends ServiceEntityRepository implements UserProviderInte
      *
      * @return int
      */
-    public function countUsersByRole(Role $role, $restrictionRoleNames = null, $organizations = null)
+    public function countUsersByRole(Role $role, $restrictionRoleNames = null, $organizations = null, $dateCreated = null)
     {
         $qb = $this->createQueryBuilder('user')
             ->select('COUNT(DISTINCT user.id)')
@@ -312,6 +312,13 @@ class UserRepository extends ServiceEntityRepository implements UserProviderInte
             $qb->andWhere('user.id NOT IN (:userIds)')
                 ->setParameter('userIds', $this->findUserIdsInRoles($restrictionRoleNames));
         }
+
+        if ($dateCreated) {
+            $qb
+                ->andWhere('user.created <= :date')
+                ->setParameter('date', $dateCreated);
+        }
+
         if (null !== $organizations) {
             $qb->join('user.userOrganizationReferences', 'orgaRef')
                 ->andWhere('orgaRef.organization IN (:organizations)')

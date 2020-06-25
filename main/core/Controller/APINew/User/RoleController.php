@@ -138,7 +138,7 @@ class RoleController extends AbstractCrudController
         ]);
 
         return new JsonResponse([
-            'users' => $this->om->getRepository(User::class)->countUsersByRole($role, null, $organizations),
+            'users' => $this->om->getRepository(User::class)->countUsersByRole($role, null, $organizations, $year.'-12-31'),
             'connections' => array_reduce($connections, function (int $total, array $connection) {
                 return $total + ($connection['total'] ?? 0);
             }, 0),

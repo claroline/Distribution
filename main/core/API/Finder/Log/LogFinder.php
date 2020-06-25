@@ -71,11 +71,17 @@ class LogFinder extends AbstractFinder
                     ));
                     $qb->setParameter('doer', '%'.strtoupper($filterValue).'%');
                     break;
-                case 'doerRole':
+                case 'doerRoles':
                     if (!$userJoin) {
                         $userJoin = true;
                         $qb->join('obj.doer', 'doer');
                     }
+
+                    $qb
+                        ->join('user.roles', 'roles')
+                        ->andWhere('roles.id IN (:roleIds)')
+                        ->setParameter('roleIds', $filterValue);
+
                     break;
                 case 'doerActive':
                     if (!$userJoin) {
