@@ -36,7 +36,7 @@ class RoleInfo extends Component {
       available: [
         moment().year(),
         moment().year() - 1,
-        moment().year() - 2,
+        moment().year() - 2
       ],
       count: {
         users: 20,

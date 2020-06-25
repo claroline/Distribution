@@ -15,7 +15,7 @@ actions.open = (formName, id = null) => (dispatch) => {
       [API_REQUEST]: {
         url: ['apiv2_role_get', {id}],
         silent: true,
-        success: (response, dispatch) => {
+        success: (response) => {
           dispatch(formActions.resetForm(formName, response, false))
         }
       }
@@ -53,7 +53,6 @@ actions.addGroups = (id, groups) => ({
 
 actions.fetchStatistics = (id, year) => ({
   [API_REQUEST]: {
-    url: ['apiv2_role_analytics', {id: id, year: year}],
-    success: (data, dispatch) => true
+    url: ['apiv2_role_analytics', {id: id, year: year}]
   }
 })

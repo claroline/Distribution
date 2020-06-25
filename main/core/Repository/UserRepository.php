@@ -306,6 +306,7 @@ class UserRepository extends ServiceEntityRepository implements UserProviderInte
             ->leftJoin('user.roles', 'roles')
             ->andWhere('roles.id = :roleId')
             ->andWhere('user.isEnabled = :enabled')
+            ->andWhere('user.isRemoved = false')
             ->setParameter('roleId', $role->getId())
             ->setParameter('enabled', true);
         if (!empty($restrictionRoleNames)) {
