@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        public: true
+        autowire: true
+
+    claroline.library.testing.persister:
+        - '@Claroline\AppBundle\Persistence\ObjectManager'
+        - '@service_container' # FIXME avoid container injection -> service locator or direct per-dependency constructor arg

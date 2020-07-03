@@ -12,7 +12,6 @@
 namespace Claroline\InstallationBundle\Fixtures;
 
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;

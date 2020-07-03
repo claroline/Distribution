@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\AuthenticationBundle\Tests\Tests\Functional;
+namespace Claroline\AuthenticationBundle\Tests\Security\Authentication\Guard;
 
 use Claroline\AuthenticationBundle\Security\Authentication\Guard\IpAuthenticator;
 use Claroline\CoreBundle\Entity\User;
