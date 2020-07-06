@@ -67,7 +67,7 @@ class Update1205Command extends ContainerAwareCommand
                 ['Claroline\CoreBundle\Entity\Workspace\Workspace', 'Claroline\CoreBundle\Entity\Tab\HomeTab'],
             ],
             //open can be id
-            '\/workspaces\/([0-9]+)\/open\/tool\('.$endOfUrl.'*)' => [
+            '\/workspaces\/([0-9]+)\/open\/tool\/('.$endOfUrl.'*)' => [
                 '#/desktop/workspaces/open/:slug0',
                 ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
             ],
