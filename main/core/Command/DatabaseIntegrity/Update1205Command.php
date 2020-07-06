@@ -31,7 +31,8 @@ class Update1205Command extends ContainerAwareCommand
                 new InputArgument('base_path', InputArgument::OPTIONAL, 'The value'),
             ])
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'If not force, command goes dry run')
-            ->addOption('show-text', 's', InputOption::VALUE_NONE, 'Show the replaced texts');
+            ->addOption('show-text', 's', InputOption::VALUE_NONE, 'Show the replaced texts')
+            ->addOption('count', 'c', InputOption::VALUE_NONE, 'Count number of same urls in the same text');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -122,7 +123,7 @@ class Update1205Command extends ContainerAwareCommand
                         $this->log('Updating '.$i.'/'.count($data));
                         $func = 'get'.ucfirst($property);
                         $text = $entity->$func();
-                        $text = $this->replace($regex, $replacement, $text, $prefix, $input->getOption('show-text'));
+                        $text = $this->replace($regex, $replacement, $text, $prefix, $input->getOption('show-text'), $input->getOption('count'));
                         $func = 'set'.ucfirst($property);
 
                         if ($input->getOption('force')) {
@@ -142,7 +143,7 @@ class Update1205Command extends ContainerAwareCommand
         }
     }
 
-    public function replace($regex, $replacement, $text, $prefix = '', $show = false)
+    public function replace($regex, $replacement, $text, $prefix = '', $show = false, $count = false)
     {
         /** @var ObjectManager $om */
         $om = $this->getContainer()->get('Claroline\AppBundle\Persistence\ObjectManager');
@@ -151,24 +152,28 @@ class Update1205Command extends ContainerAwareCommand
 
         $newText = $text;
         if (!empty($matches)) {
-            foreach ($matches[0] as $pathIndex => $fullPath) {
-                $this->log('Found path : '.$fullPath);
+            if ($count && count($matches[0]) > 1) {
+                $this->log('FOUND : '. count($matches[0]));
+            } else {
+                foreach ($matches[0] as $pathIndex => $fullPath) {
+                    $this->log('Found path : '.$fullPath);
 
-                $newPath = $replacement[0];
-                foreach ($replacement[1] as $pos => $class) {
-                    $id = trim($matches[$pos + 1][$pathIndex]);
+                    $newPath = $replacement[0];
+                    foreach ($replacement[1] as $pos => $class) {
+                        $id = trim($matches[$pos + 1][$pathIndex]);
 
-                    $this->log('Finding resource of class '.$class.' with identifier '.$id);
-                    $object = $om->find($class, $id);
-                    if ($object) {
-                        $newPath = str_replace(':slug'.$pos, $object->getSlug(), $newPath);
-                    } else {
-                        $this->error('Could not find object... skipping');
-                        break 2; // go to next path, don't try any other replacement
+                        $this->log('Finding resource of class '.$class.' with identifier '.$id);
+                        $object = $om->find($class, $id);
+                        if ($object) {
+                            $newPath = str_replace(':slug'.$pos, $object->getSlug(), $newPath);
+                        } else {
+                            $this->error('Could not find object... skipping');
+                            break 2; // go to next path, don't try any other replacement
+                        }
                     }
-                }
 
-                $newText = str_replace($fullPath, $newPath, $newText);
+                    $newText = str_replace($fullPath, $newPath, $newText);
+                }
             }
         }
 
