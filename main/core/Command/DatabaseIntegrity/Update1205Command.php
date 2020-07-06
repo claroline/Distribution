@@ -120,13 +120,13 @@ class Update1205Command extends ContainerAwareCommand
                     $i = 0;
 
                     foreach ($data as $entity) {
-                        $this->log('Updating '.$i.'/'.count($data));
                         $func = 'get'.ucfirst($property);
                         $text = $entity->$func();
                         $text = $this->replace($regex, $replacement, $text, $prefix, $input->getOption('show-text'), $input->getOption('count'));
                         $func = 'set'.ucfirst($property);
 
                         if ($input->getOption('force')) {
+                            $this->log('Updating '.$i.'/'.count($data));
                             $entity->$func($text);
                             $em->persist($entity);
                         }
