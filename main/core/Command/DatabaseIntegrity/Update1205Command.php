@@ -152,8 +152,10 @@ class Update1205Command extends ContainerAwareCommand
 
         $newText = $text;
         if (!empty($matches)) {
-            if ($count && count($matches[0]) > 1) {
-                $this->log('FOUND : '. count($matches[0]));
+            if ($count) {
+                if (count($matches[0]) > 1) {
+                    $this->log('FOUND : '. count($matches[0]));
+                }
             } else {
                 foreach ($matches[0] as $pathIndex => $fullPath) {
                     $this->log('Found path : '.$fullPath);
