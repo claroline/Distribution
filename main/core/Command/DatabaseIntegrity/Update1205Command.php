@@ -57,7 +57,7 @@ class Update1205Command extends ContainerAwareCommand
             'Claroline\ForumBundle\Entity\Message' => ['content'],
         ];
 
-        $endOfUrl = '[^\/^"^\'^#^&^<^>]';
+        $endOfUrl = '[^\/^\"^\'^#^&^<^>]';
 
         //this is the list of regexes we'll need to use
         $regexes = [
@@ -114,7 +114,7 @@ class Update1205Command extends ContainerAwareCommand
 
                     $rsm = new ResultSetMappingBuilder($em);
                     $rsm->addRootEntityFromClassMetadata($class, '');
-                    $query = $em->createNativeQuery("SELECT * FROM $tableName WHERE $columnName RLIKE '$regex'", $rsm);
+                    $query = $em->createNativeQuery("SELECT * FROM $tableName WHERE $columnName RLIKE \"$regex\"", $rsm);
                     $data = $query->getResult();
                     $this->log(count($data).' results...');
                     $i = 0;
