@@ -57,7 +57,7 @@ class Update1205Command extends ContainerAwareCommand
             'Claroline\ForumBundle\Entity\Message' => ['content'],
         ];
 
-        $endOfUrl = `[^\/^"^'^#^&^<^>]`;
+        $endOfUrl = '[^\/^"^\'^#^&^<^>]';
 
         //this is the list of regexes we'll need to use
         $regexes = [
