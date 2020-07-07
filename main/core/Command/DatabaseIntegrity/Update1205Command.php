@@ -170,7 +170,7 @@ class Update1205Command extends ContainerAwareCommand
                             if ($object) {
                                 $toReplace[$pos] = $object;
 
-                                if (empty($toReplace[0]) && method_exists($object, 'getWorkspace')) {
+                                if (empty($toReplace[0]) && method_exists($object, 'getWorkspace') && !empty($object->getWorkspace())) {
                                     $toReplace[0] = $object->getWorkspace();
                                 }
                             }
