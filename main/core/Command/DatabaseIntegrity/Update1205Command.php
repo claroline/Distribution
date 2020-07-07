@@ -168,7 +168,7 @@ class Update1205Command extends ContainerAwareCommand
                             $this->log('Finding resource of class '.$class.' with identifier '.$id);
                             $object = $om->find($class, $id);
                             if ($object) {
-                                $toReplace[$pos] = $object->getSlug();
+                                $toReplace[$pos] = $object;
 
                                 if (empty($toReplace[0]) && method_exists($object, 'getWorkspace')) {
                                     $toReplace[0] = $object->getWorkspace();
