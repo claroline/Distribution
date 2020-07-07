@@ -163,7 +163,7 @@ class Update1205Command extends ContainerAwareCommand
 
                     $toReplace = [];
                     foreach ($replacement[1] as $pos => $class) {
-                        if ($class) {
+                        if ($class && !empty($matches[$pos + 1])) {
                             $id = trim($matches[$pos + 1][$pathIndex]);
 
                             $this->log('Finding resource of class '.$class.' with identifier '.$id);
