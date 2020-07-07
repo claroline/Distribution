@@ -58,7 +58,7 @@ class Update1205Command extends ContainerAwareCommand
         ];
 
         //$endOfUrl = '[^\/^\"^\'^#^&^<^>]';
-        $uuid = '[0-9A-Za-z_\-\.]';
+        $uuid = '[0-9A-Za-z_\\-\\.]';
 
         //this is the list of regexes we'll need to use
         $regexes = [
