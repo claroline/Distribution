@@ -57,17 +57,18 @@ class Update1205Command extends ContainerAwareCommand
             'Claroline\ForumBundle\Entity\Message' => ['content'],
         ];
 
-        $endOfUrl = '[^\/^\"^\'^#^&^<^>]';
+        //$endOfUrl = '[^\/^\"^\'^#^&^<^>]';
+        $uuid = '[0-9A-Za-z_\-\.]';
 
         //this is the list of regexes we'll need to use
         $regexes = [
             // home tabs
-            '\/workspaces\/([0-9]+)\/open\/tool\/home#\/tab\/('.$endOfUrl.'+)' => [
+            '\/workspaces\/([0-9]+)\/open\/tool\/home#\/tab\/('.$uuid.'+)' => [
                 '#/desktop/workspaces/open/:slug0/home/:slug1',
                 ['Claroline\CoreBundle\Entity\Workspace\Workspace', 'Claroline\CoreBundle\Entity\Tab\HomeTab'],
             ],
             //open can be id
-            '\/workspaces\/([0-9]+)\/open\/tool\/('.$endOfUrl.'*)' => [
+            '\/workspaces\/([0-9]+)\/open\/tool\/('.$uuid.'*)' => [
                 '#/desktop/workspaces/open/:slug0',
                 ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
             ],
@@ -77,22 +78,22 @@ class Update1205Command extends ContainerAwareCommand
                 ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
             ],
             //open can be uuid or id (resource type then id)
-            '\/resource\/open\/([A-Za-z_\-]+)\/('.$endOfUrl.'+)' => [
+            '\/resource\/open\/([A-Za-z_\-]+)\/('.$uuid.'+)' => [
                 '#/desktop/workspaces/open/:slug0/resources/:slug1',
                 [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //open can be uuid or id
-            '\/resource\/open\/('.$endOfUrl.'+)' => [
+            '\/resource\/open\/('.$uuid.'+)' => [
                 '#/desktop/workspaces/open/:slug0/resources/:slug1',
                 ['Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //show is type then id or uuid
-            '\/resources\/show\/([A-Za-z_\-]+)\/('.$endOfUrl.'+)' => [
+            '\/resources\/show\/([A-Za-z_\-]+)\/('.$uuid.'+)' => [
                 '#/desktop/workspaces/open/:slug0/resources/:slug1',
                 [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //show is type then id or uuid
-            '\/resources\/show\/('.$endOfUrl.'+)' => [
+            '\/resources\/show\/('.$uuid.'+)' => [
                 '#/desktop/workspaces/open/:slug0/resources/:slug1',
                 [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
