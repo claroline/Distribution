@@ -64,8 +64,8 @@ class Update1205Command extends ContainerAwareCommand
         $regexes = [
             // home tabs
             '\/workspaces\/([0-9]+)\/open\/tool\/home#\/tab\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug0/home/:slug1',
-                ['Claroline\CoreBundle\Entity\Workspace\Workspace', 'Claroline\CoreBundle\Entity\Tab\HomeTab'],
+                '#/desktop/workspaces/open/:slug1/home/:slug0',
+                ['Claroline\CoreBundle\Entity\Tab\HomeTab', null],
             ],
             //open can be id
             '\/workspaces\/([0-9]+)\/open\/tool\/('.$uuid.'*)' => [
@@ -79,23 +79,23 @@ class Update1205Command extends ContainerAwareCommand
             ],
             //open can be uuid or id (resource type then id)
             '\/resource\/open\/([A-Za-z_\-]+)\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug0/resources/:slug1',
-                [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+                '#/desktop/workspaces/open/:slug1/resources/:slug0',
+                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
             ],
             //open can be uuid or id
             '\/resource\/open\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug0/resources/:slug1',
-                ['Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+                '#/desktop/workspaces/open/:slug1/resources/:slug0',
+                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
             ],
             //show is type then id or uuid
             '\/resources\/show\/([A-Za-z_\-]+)\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug0/resources/:slug1',
-                [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+                '#/desktop/workspaces/open/:slug1/resources/:slug0',
+                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
             ],
             //show is type then id or uuid
             '\/resources\/show\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug0/resources/:slug1',
-                [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+                '#/desktop/workspaces/open/:slug1/resources/:slug0',
+                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
             ],
         ];
 
@@ -172,8 +172,8 @@ class Update1205Command extends ContainerAwareCommand
                             if ($object) {
                                 $toReplace[$pos] = $object;
 
-                                if (empty($toReplace[0]) && method_exists($object, 'getWorkspace') && !empty($object->getWorkspace())) {
-                                    $toReplace[0] = $object->getWorkspace();
+                                if (method_exists($object, 'getWorkspace') && !empty($object->getWorkspace())) {
+                                    $toReplace[] = $object->getWorkspace();
                                 }
                             }
                         }
