@@ -76,25 +76,25 @@ class Update1205Command extends ContainerAwareCommand
                 '#/desktop/workspaces/open/:slug0',
                 ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
             ],
+            //open can be uuid or id (resource type then id)
+            '\/resource\/open\/([^\/]+)\/('.$endOfUrl.'*)' => [
+                '#/desktop/workspaces/open/:slug0/resources/:slug1',
+                [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+            ],
             //open can be uuid or id
             '\/resource\/open\/([^\/^"^#^&^<^>]+)' => [
                 '#/desktop/workspaces/open/:slug0/resources/:slug1',
                 ['Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
-            //open can be uuid or id (resource type then id)
-            '\/resource\/open\/([^\/]+)\/('.$endOfUrl.'*)' => [
+            //show is type then id or uuid
+            '\/resources\/show\/([^\/]*)\/('.$endOfUrl.'*)' => [
                 '#/desktop/workspaces/open/:slug0/resources/:slug1',
-                ['Claroline\CoreBundle\Entity\Workspace\Workspace', 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+                [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //show is type then id or uuid
             '\/resources\/show\/(^\/^"^#^&^<^>]+)' => [
                 '#/desktop/workspaces/open/:slug0/resources/:slug1',
-                ['Claroline\CoreBundle\Entity\Workspace\Workspace', 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
-            ],
-            //show is type then id or uuid
-            '\/resources\/show\/([^\/]*)\/('.$endOfUrl.'*)' => [
-                '#/desktop/workspaces/open/:slug0/resources/:slug1',
-                ['Claroline\CoreBundle\Entity\Workspace\Workspace', 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+                [null, 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
         ];
 
@@ -160,21 +160,33 @@ class Update1205Command extends ContainerAwareCommand
                 foreach ($matches[0] as $pathIndex => $fullPath) {
                     $this->log('Found path : '.$fullPath);
 
-                    $newPath = $replacement[0];
+                    $toReplace = [];
                     foreach ($replacement[1] as $pos => $class) {
-                        $id = trim($matches[$pos + 1][$pathIndex]);
+                        if ($class) {
+                            $id = trim($matches[$pos + 1][$pathIndex]);
 
-                        $this->log('Finding resource of class '.$class.' with identifier '.$id);
-                        $object = $om->find($class, $id);
-                        if ($object) {
-                            $newPath = str_replace(':slug'.$pos, $object->getSlug(), $newPath);
-                        } else {
-                            $this->error('Could not find object... skipping');
-                            break 2; // go to next path, don't try any other replacement
+                            $this->log('Finding resource of class '.$class.' with identifier '.$id);
+                            $object = $om->find($class, $id);
+                            if ($object) {
+                                $toReplace[$pos] = $object->getSlug();
+
+                                if (empty($toReplace[0]) && method_exists($object, 'getWorkspace')) {
+                                    $toReplace[0] = $object->getWorkspace();
+                                }
+                            }
                         }
                     }
 
-                    $newText = str_replace($fullPath, $newPath, $newText);
+                    if (count($toReplace) === count($replacement[1])) {
+                        $newPath = $replacement[0];
+                        foreach ($toReplace as $pos => $replace) {
+                            $newPath = str_replace(':slug'.$pos, $replace->getSlug(), $newPath);
+                        }
+
+                        $newText = str_replace($fullPath, $newPath, $newText);
+                    } else {
+                        $this->error('Could not find some route objects... skipping');
+                    }
                 }
             }
         }
