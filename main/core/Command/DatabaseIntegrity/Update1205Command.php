@@ -58,7 +58,7 @@ class Update1205Command extends ContainerAwareCommand
         ];
 
         //$endOfUrl = '[^\/^\"^\'^#^&^<^>]';
-        $uuid = '[0-9A-Za-z_\\-\\.]';
+        $uuid = '[0-9A-Za-z_\-\.]';
 
         //this is the list of regexes we'll need to use
         $regexes = [
@@ -115,7 +115,8 @@ class Update1205Command extends ContainerAwareCommand
 
                     $rsm = new ResultSetMappingBuilder($em);
                     $rsm->addRootEntityFromClassMetadata($class, '');
-                    $query = $em->createNativeQuery("SELECT * FROM $tableName WHERE $columnName RLIKE \"$regex\"", $rsm);
+                    $sqlRegex = addslashes($regex);
+                    $query = $em->createNativeQuery("SELECT * FROM $tableName WHERE $columnName RLIKE '$sqlRegex'", $rsm);
                     $data = $query->getResult();
                     $this->log(count($data).' results...');
                     $i = 0;
