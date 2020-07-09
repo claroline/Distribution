@@ -26,7 +26,7 @@ class Update1205Command extends ContainerAwareCommand
 {
     private $consoleLogger;
 
-    private const ENTITIES = [
+    const ENTITIES = [
         'Claroline\CoreBundle\Entity\Content' => ['content'],
         'Claroline\CoreBundle\Entity\Resource\Revision' => ['content'],
         'Claroline\AgendaBundle\Entity\Event' => ['description'],
@@ -136,7 +136,7 @@ class Update1205Command extends ContainerAwareCommand
 
         $newText = $text;
         if (!empty($matches)) {
-            $this->log('FOUND : '. count($matches[0]));
+            $this->log('FOUND : '.count($matches[0]));
             foreach ($matches[0] as $pathIndex => $fullPath) {
                 $this->log('Found path : '.$fullPath);
 
