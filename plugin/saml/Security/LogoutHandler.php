@@ -62,7 +62,7 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
      */
     public function onLogoutSuccess(Request $request)
     {
-        if ($this->config->getParameter('saml.active')) {
+        if ($this->config->getParameter('saml.active') && $this->config->getParameter('saml.logout')) {
             $bindingFactory = new BindingFactory();
             $bindingType = $bindingFactory->detectBindingType($request);
             if (empty($bindingType)) {
@@ -73,8 +73,8 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
                 }
             } else {
                 $messageContext = new MessageContext();
-                $binding = $bindingFactory->create($bindingType);
                 /* @var $binding AbstractBinding */
+                $binding = $bindingFactory->create($bindingType);
 
                 $binding->receive($request, $messageContext);
 
@@ -140,19 +140,19 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
         //    <SessionIndex>_677952a2-7fb3-4e7a-b439-326366e677db</SessionIndex>
         //  </LogoutRequest>
 
-        $builder = $this->container->get('lightsaml.container.build');
         /* @var $builder BuildContainer */
+        $builder = $this->container->get('lightsaml.container.build');
 
         $sessions = $builder->getStoreContainer()->getSsoStateStore()->get()->getSsoSessions();
         if (!empty($sessions)) {
-            $session = $sessions[count($sessions) - 1];
             /* @var $session SsoSessionState */
+            $session = $sessions[count($sessions) - 1];
 
-            $idp = $builder->getPartyContainer()->getIdpEntityDescriptorStore()->get(0);
             /* @var $idp EntityDescriptor */
+            $idp = $builder->getPartyContainer()->getIdpEntityDescriptorStore()->get(0);
 
-            $slo = $idp->getFirstIdpSsoDescriptor()->getFirstSingleLogoutService();
             /* @var $slo SingleLogoutService */
+            $slo = $idp->getFirstIdpSsoDescriptor()->getFirstSingleLogoutService();
 
             $logoutRequest = new LogoutRequest();
             $logoutRequest
@@ -171,10 +171,10 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
             $context->setBindingType($slo->getBinding());
             $context->setMessage($logoutRequest);
 
-            $bindingFactory = $this->container->get('lightsaml.service.binding_factory');
             /* @var $bindingFactory BindingFactory */
-            $binding = $bindingFactory->create($slo->getBinding());
+            $bindingFactory = $this->container->get('lightsaml.service.binding_factory');
             /* @var $binding AbstractBinding */
+            $binding = $bindingFactory->create($slo->getBinding());
             $response = $binding->send($context);
 
             return $response;
@@ -207,14 +207,14 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
         //    </samlp:Status>
         //  </samlp:LogoutResponse>
 
-        $builder = $this->container->get('lightsaml.container.build');
         /* @var $builder BuildContainer */
+        $builder = $this->container->get('lightsaml.container.build');
 
-        $idp = $builder->getPartyContainer()->getIdpEntityDescriptorStore()->get(0);
         /* @var $idp EntityDescriptor */
+        $idp = $builder->getPartyContainer()->getIdpEntityDescriptorStore()->get(0);
 
-        $slo = $idp->getFirstIdpSsoDescriptor()->getFirstSingleLogoutService();
         /* @var $slo SingleLogoutService */
+        $slo = $idp->getFirstIdpSsoDescriptor()->getFirstSingleLogoutService();
 
         $message = new LogoutResponse();
         $message

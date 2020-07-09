@@ -20,6 +20,7 @@ class PlatformDefaults implements ParameterProviderInterface
         return [
             'saml' => [
                 'active' => false,
+                'logout' => true,
                 'entity_id' => 'claroline', // the sp name
                 'credentials' => [], // the app certificates and secrets
                 'idp' => [], // the list of IDPs metadata files (either URL or local files are allowed)
