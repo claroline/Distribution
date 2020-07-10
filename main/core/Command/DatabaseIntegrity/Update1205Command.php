@@ -95,6 +95,10 @@ class Update1205Command extends ContainerAwareCommand
                 ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Tab\HomeTab']
             ],
             // ws resource manager
+            '\/workspaces/(?<ws>[0-9]+)/open/tool/resource_manager#resources/(?<obj>'.$uuid.'+)' => [
+                '#/desktop/workspaces/open/:ws/resources/:obj',
+                ['ws' => 'Claroline\CoreBundle\Entity\Workspace\Workspace', 'obj' => 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
+            ],
             '\/workspaces/(?<ws>[0-9]+)/open/tool/resource_manager#/(?<obj>'.$uuid.'+)' => [
                 '#/desktop/workspaces/open/:ws/resources/:obj',
                 ['ws' => 'Claroline\CoreBundle\Entity\Workspace\Workspace', 'obj' => 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
