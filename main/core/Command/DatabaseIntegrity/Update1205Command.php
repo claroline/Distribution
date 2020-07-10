@@ -60,7 +60,7 @@ class Update1205Command extends ContainerAwareCommand
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
         $this->log('Updating routes in database rich text');
-        $prefix = $input->getArgument('base_path');
+        $prefix = $input->getArgument('base_path') ?? '';
 
         if ($input->getOption('fix')) {
             $this->fix($input->getOption('fix'), $prefix, $input->getOption('show-text'), $input->getOption('force'));
@@ -166,6 +166,8 @@ class Update1205Command extends ContainerAwareCommand
                     $newText = str_replace($fullPath, $newPath, $newText);
                 } else {
                     $this->error('Could not find some route objects... skipping');
+
+                    return null;
                 }
             }
         }
@@ -203,7 +205,7 @@ class Update1205Command extends ContainerAwareCommand
                         if (!empty($matches) && 1 < count($matches[0])) {
                             $text = $this->replace($regex, $replacement, $result['content'], $prefix, $showText);
 
-                            if ($force) {
+                            if ($text && $force) {
                                 $this->log('Updating '.$i.'/'.count($data));
 
                                 // do the update in the current data base to correct converted routes
