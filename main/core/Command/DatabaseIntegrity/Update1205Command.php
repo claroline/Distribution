@@ -198,13 +198,17 @@ class Update1205Command extends ContainerAwareCommand
                     // we search in the backup DB, because current DB has already been processed
                     $data = $this->search($conn, $class, $property, $regex);
                     foreach ($data as $i => $result) {
-                        $text = $this->replace($regex, $replacement, $result['content'], $prefix, $showText);
+                        $matches = [];
+                        preg_match_all('!'.$prefix.$regex.'!', $result['content'], $matches);
+                        if (!empty($matches) && 1 < count($matches[0])) {
+                            $text = $this->replace($regex, $replacement, $result['content'], $prefix, $showText);
 
-                        if ($force) {
-                            $this->log('Updating '.$i.'/'.count($data));
+                            if ($force) {
+                                $this->log('Updating '.$i.'/'.count($data));
 
-                            // do the update in the current data base to correct converted routes
-                            $this->update($em->getConnection(), $class, $property, ['id' => $result['id'], 'content' => $text]);
+                                // do the update in the current data base to correct converted routes
+                                $this->update($em->getConnection(), $class, $property, ['id' => $result['id'], 'content' => $text]);
+                            }
                         }
                     }
                 }
