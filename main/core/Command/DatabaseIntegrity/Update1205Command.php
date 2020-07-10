@@ -90,39 +90,44 @@ class Update1205Command extends ContainerAwareCommand
 
         return [
             // home tabs
-            '\/workspaces\/([0-9]+)\/open\/tool\/home#\/tab\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug1/home/:slug0',
-                ['Claroline\CoreBundle\Entity\Tab\HomeTab', null],
+            '\/workspaces\/(?<ws>[0-9]+)\/open\/tool\/home#\/tab\/(?<obj>'.$uuid.'+)' => [
+                '#/desktop/workspaces/open/:ws/home/:obj',
+                ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Tab\HomeTab']
+            ],
+            // ws resource manager
+            '\/workspaces/(?<ws>[0-9]+)/open/tool/resource_manager#/(?<obj>'.$uuid.'+)' => [
+                '#/desktop/workspaces/open/:ws/resources/:obj',
+                ['ws' => 'Claroline\CoreBundle\Entity\Workspace\Workspace', 'obj' => 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //open can be id
-            '\/workspaces\/([0-9]+)\/open\/tool\/('.$uuid.'*)' => [
-                '#/desktop/workspaces/open/:slug0',
-                ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
+            '\/workspaces\/(?<ws>[0-9]+)\/open\/tool\/(?<obj>'.$uuid.'*)' => [
+                '#/desktop/workspaces/open/:ws/:obj',
+                ['ws' => 'Claroline\CoreBundle\Entity\Workspace\Workspace'],
             ],
             //open can be id
-            '\/workspaces\/([0-9]+)\/open' => [
-                '#/desktop/workspaces/open/:slug0',
-                ['Claroline\CoreBundle\Entity\Workspace\Workspace'],
+            '\/workspaces\/(?<ws>[0-9]+)\/open' => [
+                '#/desktop/workspaces/open/:ws',
+                ['ws' => 'Claroline\CoreBundle\Entity\Workspace\Workspace'],
             ],
             //open can be uuid or id (resource type then id)
-            '\/resource\/open\/([A-Za-z_\-]+)\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug1/resources/:slug0',
-                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
+            '\/resource\/open\/([A-Za-z_\-]+)\/(?<obj>'.$uuid.'+)' => [
+                '#/desktop/workspaces/open/:ws/resources/:obj',
+                ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //open can be uuid or id
-            '\/resource\/open\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug1/resources/:slug0',
-                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
+            '\/resource\/open\/(?<obj>'.$uuid.'+)' => [
+                '#/desktop/workspaces/open/:ws/resources/:obj',
+                ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //show is type then id or uuid
-            '\/resources\/show\/([A-Za-z_\-]+)\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug1/resources/:slug0',
-                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
+            '\/resources\/show\/([A-Za-z_\-]+)\/(?<obj>'.$uuid.'+)' => [
+                '#/desktop/workspaces/open/:ws/resources/:obj',
+                ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
             //show is type then id or uuid
-            '\/resources\/show\/('.$uuid.'+)' => [
-                '#/desktop/workspaces/open/:slug1/resources/:slug0',
-                ['Claroline\CoreBundle\Entity\Resource\ResourceNode', null],
+            '\/resources\/show\/(?<obj>'.$uuid.'+)' => [
+                '#/desktop/workspaces/open/:ws/resources/:obj',
+                ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Resource\ResourceNode'],
             ],
         ];
     }
@@ -141,17 +146,17 @@ class Update1205Command extends ContainerAwareCommand
                 $this->log('Found path : '.$fullPath);
 
                 $toReplace = [];
-                foreach ($replacement[1] as $pos => $class) {
-                    if ($class && !empty($matches[$pos + 1])) {
-                        $id = trim($matches[$pos + 1][$pathIndex]);
+                foreach ($replacement[1] as $name => $class) {
+                    if ($class && !empty($matches[$name])) {
+                        $id = trim($matches[$name][$pathIndex]);
 
                         $this->log('Finding resource of class '.$class.' with identifier '.$id);
                         $object = $om->find($class, $id);
                         if ($object) {
-                            $toReplace[$pos] = $object;
+                            $toReplace[$name] = $object;
 
                             if (method_exists($object, 'getWorkspace') && !empty($object->getWorkspace())) {
-                                $toReplace[] = $object->getWorkspace();
+                                $toReplace['ws'] = $object->getWorkspace();
                             }
                         }
                     }
@@ -159,8 +164,8 @@ class Update1205Command extends ContainerAwareCommand
 
                 if (count($toReplace) === count($replacement[1])) {
                     $newPath = $replacement[0];
-                    foreach ($toReplace as $pos => $replace) {
-                        $newPath = str_replace(':slug'.$pos, $replace->getSlug(), $newPath);
+                    foreach ($toReplace as $name => $replace) {
+                        $newPath = str_replace(':'.$name, $replace->getSlug(), $newPath);
                     }
 
                     $newText = str_replace($fullPath, $newPath, $newText);
