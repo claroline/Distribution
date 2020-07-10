@@ -92,7 +92,7 @@ class Update1205Command extends ContainerAwareCommand
             // home tabs
             '\/workspaces\/(?<ws>[0-9]+)\/open\/tool\/home#\/tab\/(?<obj>'.$uuid.'+)' => [
                 '#/desktop/workspaces/open/:ws/home/:obj',
-                ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Tab\HomeTab']
+                ['ws' => null, 'obj' => 'Claroline\CoreBundle\Entity\Tab\HomeTab'],
             ],
             // ws resource manager
             '\/workspaces/(?<ws>[0-9]+)/open/tool/resource_manager#resources/(?<obj>'.$uuid.'+)' => [
