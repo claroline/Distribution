@@ -214,7 +214,7 @@ class Update1205Command extends ContainerAwareCommand
                                 $this->log('Updating '.$i.'/'.count($data));
 
                                 // do the update in the current data base to correct converted routes
-                                $this->update($em->getConnection(), $class, $property, ['id' => $result['id'], 'content' => $text]);
+                                $this->update($em->getConnection(), $class, $property, ['id' => $result['id'], 'content' => $result['content']]);
                             }
                         }
                     }
