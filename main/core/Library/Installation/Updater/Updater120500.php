@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
 use Claroline\InstallationBundle\Updater\Updater;
+use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -137,11 +138,15 @@ class Updater120500 extends Updater
     {
         $this->log(sprintf('Renaming `%s` tool into `%s`...', $oldName, $newName));
 
-        $tool = $this->om->getRepository($admin ? 'ClarolineCoreBundle:Tool\AdminTool' : 'ClarolineCoreBundle:Tool\Tool')->findOneBy(['name' => $oldName]);
-        if (!empty($tool)) {
-            $tool->setName($newName);
-            $this->om->persist($tool);
-            $this->om->flush();
+        /** @var Connection $conn */
+        $conn = $this->container->get('doctrine.dbal.default_connection');
+
+        $tableName = $admin ? 'claro_admin_tool' : 'claro_tool';
+        $result = $conn->query("SELECT id, name FROM $tableName WHERE name = '$oldName'")->fetch();
+        if (!empty($result)) {
+            $conn->exec("
+                UPDATE $tableName SET `name` = '$newName' WHERE `name` = '$oldName'
+            ");
         }
     }
 
