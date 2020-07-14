@@ -130,6 +130,7 @@ class Updater120000 extends Updater
             LEFT JOIN claro_home_tab_temp tab
             ON config.home_tab_id = tab.id
             SET
+                config.is_visible = 1,
                 config.name = tab.name,
                 config.longTitle = tab.name,
                 config.centerTitle = false
@@ -481,10 +482,10 @@ class Updater120000 extends Updater
                     $filters = "[{\"property\": \"parent\", \"value\": $dirId}]";
 
                     $sql = "
-                    UPDATE claro_widget_list
-                    SET filters = '{$filters}'
-                    WHERE widgetInstance_id = {$row['id']}
-                ";
+                        UPDATE claro_widget_list
+                        SET filters = '{$filters}'
+                        WHERE widgetInstance_id = {$row['id']}
+                    ";
 
                     $stmt = $this->conn->prepare($sql);
                     $stmt->execute();
@@ -503,24 +504,20 @@ class Updater120000 extends Updater
         $this->restoreListsWidgets();
         $this->restoreWidgetResourcesListConfig();
 
-        if (0 === $this->om->count(WidgetInstanceConfig::class)) {
-            $this->log('Copying WidgetInstanceConfigs');
+        $this->log('Copying WidgetInstanceConfigs');
 
-            $sql = '
-                INSERT INTO claro_widget_instance_config (widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked)
-                SELECT DISTINCT instance.id, temp.workspace_id, temp.widget_order, temp.type, temp.is_visible, temp.is_locked from claro_widget_home_tab_config_temp temp
-                JOIN claro_widget_display_config_temp config on temp.widget_instance_id = config.widget_instance_id
-                JOIN claro_widget_instance instance on instance.id = config.id
-            ';
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
+        $sql = '
+            INSERT INTO claro_widget_instance_config (widget_instance_id, workspace_id, widget_order, type, is_visible, is_locked)
+            SELECT DISTINCT instance.id, temp.workspace_id, temp.widget_order, temp.type, temp.is_visible, temp.is_locked from claro_widget_home_tab_config_temp temp
+            JOIN claro_widget_display_config_temp config on temp.widget_instance_id = config.widget_instance_id
+            JOIN claro_widget_instance instance on instance.id = config.id
+        ';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
 
-            $sql = 'UPDATE claro_widget_instance_config set widget_order = 0';
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-        } else {
-            $this->log('WidgetInstanceConfigs already copied');
-        }
+        $sql = 'UPDATE claro_widget_instance_config set widget_order = 0';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
     }
 
     private function checkDesktopTabs()
