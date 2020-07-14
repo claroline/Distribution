@@ -141,7 +141,7 @@ class Updater120500 extends Updater
         /** @var Connection $conn */
         $conn = $this->container->get('doctrine.dbal.default_connection');
 
-        $tableName = $admin ? 'claro_admin_tool' : 'claro_tool';
+        $tableName = $admin ? 'claro_admin_tools' : 'claro_tools';
         $result = $conn->query("SELECT id, name FROM $tableName WHERE name = '$oldName'")->fetch();
         if (!empty($result)) {
             $conn->exec("
