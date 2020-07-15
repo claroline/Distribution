@@ -14,8 +14,10 @@ namespace Claroline\ThemeBundle\Twig;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\ThemeBundle\Manager\ThemeManager;
 use Symfony\Bridge\Twig\Extension\AssetExtension;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class ThemeExtension extends \Twig_Extension
+class ThemeExtension extends AbstractExtension
 {
     /** @var AssetExtension */
     private $assetExtension;
@@ -56,7 +58,7 @@ class ThemeExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'themeAsset' => new \Twig_SimpleFunction('themeAsset', [$this, 'themeAsset']),
+            'themeAsset' => new TwigFunction('themeAsset', [$this, 'themeAsset']),
         ];
     }
 

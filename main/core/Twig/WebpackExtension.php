@@ -12,8 +12,10 @@
 namespace Claroline\CoreBundle\Twig;
 
 use Symfony\Bridge\Twig\Extension\AssetExtension;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class WebpackExtension extends \Twig_Extension
+class WebpackExtension extends AbstractExtension
 {
     private $assetExtension;
     private $environment;
@@ -37,7 +39,7 @@ class WebpackExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'hotAsset' => new \Twig_SimpleFunction('hotAsset', [$this, 'hotAsset']),
+            'hotAsset' => new TwigFunction('hotAsset', [$this, 'hotAsset']),
         ];
     }
 

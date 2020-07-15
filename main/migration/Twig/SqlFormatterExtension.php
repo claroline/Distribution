@@ -12,11 +12,13 @@
 namespace Claroline\MigrationBundle\Twig;
 
 use Claroline\MigrationBundle\Generator\SqlFormatter as Formatter;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Adds a 'formatSql' function to the Twig environment.
  */
-class SqlFormatterExtension extends \Twig_Extension
+class SqlFormatterExtension extends AbstractExtension
 {
     /**
      * Constructor. Sets the formatting options of the SQL formatter.
@@ -51,7 +53,7 @@ class SqlFormatterExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'formatSql' => new \Twig_SimpleFunction('formatSql', array($this, 'formatSql')),
+            'formatSql' => new TwigFunction('formatSql', array($this, 'formatSql')),
         );
     }
 

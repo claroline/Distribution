@@ -18,14 +18,12 @@ use Claroline\CoreBundle\Manager\PluginManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Repository for AbstractResource entities. The methods of this class may return
  * entities either as objects or as as arrays (see their respective documentation).
  */
-class ResourceNodeRepository extends MaterializedPathRepository implements ContainerAwareInterface
+class ResourceNodeRepository extends MaterializedPathRepository
 {
     /** @var ResourceQueryBuilder */
     private $builder;
