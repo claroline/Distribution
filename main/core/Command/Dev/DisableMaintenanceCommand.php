@@ -20,8 +20,7 @@ class DisableMaintenanceCommand extends Command
 {
     protected function configure()
     {
-        $this->setName('claroline:maintenance:disable')
-            ->setDescription('Disable maintenance mode');
+        $this->setDescription('Disable maintenance mode');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
