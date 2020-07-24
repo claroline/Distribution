@@ -44,4 +44,10 @@ class OrderedToolVoter extends AbstractVoter
     {
         return OrderedTool::class;
     }
+
+    public function getSupportedActions()
+    {
+        //atm, null means "everything is supported... implement this later"
+        return null;
+    }
 }
