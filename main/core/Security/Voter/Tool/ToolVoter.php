@@ -52,6 +52,7 @@ class ToolVoter extends AbstractVoter
             return VoterInterface::ACCESS_GRANTED;
         }
 
+        $decision = VoterInterface::ACCESS_ABSTAIN;
         $decoder = $this->maskManager->getMaskDecoderByToolAndName($object, $attributes[0]);
         if ($decoder) {
             $roles = array_map(function (Role $role) {
@@ -61,13 +62,13 @@ class ToolVoter extends AbstractVoter
             $mask = $this->rightsRepository->findMaximumRights($roles, $object);
 
             if ($mask & $decoder->getValue()) {
-                return VoterInterface::ACCESS_GRANTED;
+                $decision = VoterInterface::ACCESS_GRANTED;
+            } else {
+                $decision = VoterInterface::ACCESS_DENIED;
             }
-
-            return VoterInterface::ACCESS_DENIED;
         }
 
-        return VoterInterface::ACCESS_ABSTAIN;
+        return $decision;
     }
 
     public function getClass()
