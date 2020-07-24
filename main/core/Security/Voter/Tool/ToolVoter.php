@@ -72,10 +72,4 @@ class ToolVoter extends AbstractVoter
     {
         return Tool::class;
     }
-
-    public function getSupportedActions()
-    {
-        //atm, null means "everything is supported... implement this later"
-        return null;
-    }
 }
