@@ -10,7 +10,7 @@
 
 namespace Claroline\CoreBundle\Repository\Tool;
 
-use Claroline\CoreBundle\Entity\Tool\OrderedTool;
+use Claroline\CoreBundle\Entity\Tool\Tool;
 use Doctrine\ORM\EntityRepository;
 
 class ToolRightsRepository extends EntityRepository
@@ -19,12 +19,12 @@ class ToolRightsRepository extends EntityRepository
      * Returns the maximum rights on a given resource for a set of roles.
      * Used by the ResourceVoter.
      *
-     * @param string[]    $roles
-     * @param OrderedTool $orderedTool
+     * @param string[] $roles
+     * @param Tool     $tool
      *
      * @return int
      */
-    public function findMaximumRights(array $roles, OrderedTool $orderedTool)
+    public function findMaximumRights(array $roles, Tool $tool)
     {
         //add the role anonymous for everyone !
         if (!in_array('ROLE_ANONYMOUS', $roles)) {
@@ -36,13 +36,14 @@ class ToolRightsRepository extends EntityRepository
             FROM Claroline\CoreBundle\Entity\Tool\ToolRights AS tr
             JOIN tr.role AS role
             JOIN tr.orderedTool AS ot
+            JOIN ot.tool AS t
             WHERE ';
 
         $index = 0;
 
         foreach ($roles as $key => $role) {
             $dql .= 0 !== $index ? ' OR ' : '';
-            $dql .= "ot.id = {$orderedTool->getId()} AND role.name = :role{$key}";
+            $dql .= "t.id = {$tool->getId()} AND role.name = :role{$key}";
             ++$index;
         }
 
