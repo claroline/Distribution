@@ -33,21 +33,32 @@ class ToolRightsRepository extends EntityRepository
             $roles[] = 'ROLE_ANONYMOUS';
         }
 
-        $results = $this->_em
-            ->createQuery('
-                SELECT tr.mask
-                FROM Claroline\CoreBundle\Entity\Tool\ToolRights AS tr
-                JOIN tr.role AS role
-                JOIN tr.orderedTool AS ot
-                JOIN ot.tool AS t
-                WHERE t.id = :toolId
-                  AND ot.workspace = :workspace
-                  AND role.name IN (:roles)
-            ')
-            ->setParameter('workspace', $workspace)
+        $dql = '
+            SELECT tr.mask
+            FROM Claroline\CoreBundle\Entity\Tool\ToolRights AS tr
+            JOIN tr.role AS role
+            JOIN tr.orderedTool AS ot
+            JOIN ot.tool AS t
+            WHERE t.id = :toolId
+              AND role.name IN (:roles)
+        ';
+
+        if (!empty($workspace)) {
+            $dql .= ' AND ot.workspace = :workspace';
+        } else {
+            $dql .= ' AND ot.workspace IS NULL';
+        }
+
+        $query = $this->_em
+            ->createQuery($dql)
             ->setParameter('toolId', $tool->getId())
-            ->setParameter('roles', $roles)
-            ->getResult();
+            ->setParameter('roles', $roles);
+
+        if (!empty($workspace)) {
+            $query->setParameter('workspace', $workspace);
+        }
+
+        $results = $query->getResult();
 
         $mask = 0;
         foreach ($results as $result) {
