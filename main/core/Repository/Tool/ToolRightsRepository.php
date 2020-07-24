@@ -31,31 +31,21 @@ class ToolRightsRepository extends EntityRepository
             $roles[] = 'ROLE_ANONYMOUS';
         }
 
-        $dql = '
-            SELECT tr.mask
-            FROM Claroline\CoreBundle\Entity\Tool\ToolRights AS tr
-            JOIN tr.role AS role
-            JOIN tr.orderedTool AS ot
-            JOIN ot.tool AS t
-            WHERE ';
+        $results = $this->_em
+            ->createQuery('
+                SELECT tr.mask
+                FROM Claroline\CoreBundle\Entity\Tool\ToolRights AS tr
+                JOIN tr.role AS role
+                JOIN tr.orderedTool AS ot
+                JOIN ot.tool AS t
+                WHERE t.id = :toolId
+                  AND role.name IN (:roles)
+            ')
+            ->setParameter('toolId', $tool->getId())
+            ->setParameter('roles', $roles)
+            ->getResult();
 
-        $index = 0;
-
-        foreach ($roles as $key => $role) {
-            $dql .= 0 !== $index ? ' OR ' : '';
-            $dql .= "t.id = {$tool->getId()} AND role.name = :role{$key}";
-            ++$index;
-        }
-
-        $query = $this->_em->createQuery($dql);
-
-        foreach ($roles as $key => $role) {
-            $query->setParameter("role{$key}", $role);
-        }
-
-        $results = $query->getResult();
         $mask = 0;
-
         foreach ($results as $result) {
             $mask |= $result['mask'];
         }
