@@ -52,23 +52,20 @@ class ToolVoter extends AbstractVoter
             return VoterInterface::ACCESS_GRANTED;
         }
 
-        $decision = VoterInterface::ACCESS_ABSTAIN;
         $decoder = $this->maskManager->getMaskDecoderByToolAndName($object, $attributes[0]);
         if ($decoder) {
-            $roles = array_map(function (Role $role) {
+            $mask = $this->rightsRepository->findMaximumRights(array_map(function (Role $role) {
                 return $role->getRole();
-            }, $token->getRoles());
-
-            $mask = $this->rightsRepository->findMaximumRights($roles, $object);
+            }, $token->getRoles()), $object);
 
             if ($mask & $decoder->getValue()) {
-                $decision = VoterInterface::ACCESS_GRANTED;
-            } else {
-                $decision = VoterInterface::ACCESS_DENIED;
+                return VoterInterface::ACCESS_GRANTED;
             }
+
+            return VoterInterface::ACCESS_DENIED;
         }
 
-        return $decision;
+        return VoterInterface::ACCESS_ABSTAIN;
     }
 
     public function getClass()
