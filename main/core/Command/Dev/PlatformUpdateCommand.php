@@ -116,6 +116,7 @@ class PlatformUpdateCommand extends Command
 
         if (!$input->getOption('no_create_database')) {
             $databaseCreator = new CreateDatabaseDoctrineCommand();
+            $databaseCreator->setApplication($this->getApplication());
             $databaseCreator->run(new ArrayInput([]), $output);
         }
 
