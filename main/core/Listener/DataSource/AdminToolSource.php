@@ -5,7 +5,7 @@ namespace Claroline\CoreBundle\Listener\DataSource;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Event\DataSource\GetDataEvent;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class AdminToolSource
 {

@@ -18,7 +18,7 @@ use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Manager\ResourceManager as ResManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ResourceManager implements ToolImporterInterface
 {
