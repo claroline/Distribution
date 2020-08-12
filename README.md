@@ -11,5 +11,5 @@ management system. It is intended to be installed within the
 [claroline/Claroline](http://github.com/claroline/Claroline) application and
 provides:
 
-1. the core bundles and components needed to get a working platform;
+1. the core bundles and components needed to get a working platform.
 2. the plugin bundles officially supported by the Claroline Consortium.
