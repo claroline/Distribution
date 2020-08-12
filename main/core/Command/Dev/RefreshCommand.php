@@ -23,6 +23,8 @@ class RefreshCommand extends Command
     public function __construct(Refresher $refresher)
     {
         $this->refresher = $refresher;
+
+        parent::__construct();
     }
 
     protected function configure()

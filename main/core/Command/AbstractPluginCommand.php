@@ -56,7 +56,7 @@ abstract class AbstractPluginCommand extends Command
         }
 
         $detector = new Detector();
-        $bundles = $detector->detectBundles($kernel->getRootDir().'/../vendor');
+        $bundles = $detector->detectBundles($kernel->getProjectDir().'/vendor');
 
         foreach ($bundles as $bundleFqcn) {
             $parts = explode('\\', $bundleFqcn);

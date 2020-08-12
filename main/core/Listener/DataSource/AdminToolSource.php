@@ -5,23 +5,23 @@ namespace Claroline\CoreBundle\Listener\DataSource;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Event\DataSource\GetDataEvent;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 class AdminToolSource
 {
     /** @var FinderProvider */
     private $finder;
 
-    /** @var TokenStorage */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
 
     /**
      * AdminToolSource constructor.
      *
-     * @param FinderProvider $finder
-     * @param TokenStorage   $tokenStorage
+     * @param FinderProvider        $finder
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(FinderProvider $finder, TokenStorage $tokenStorage)
+    public function __construct(FinderProvider $finder, TokenStorageInterface $tokenStorage)
     {
         $this->finder = $finder;
         $this->tokenStorage = $tokenStorage;

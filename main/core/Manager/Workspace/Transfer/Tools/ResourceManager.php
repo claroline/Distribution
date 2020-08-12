@@ -18,7 +18,7 @@ use Claroline\CoreBundle\Event\ExportObjectEvent;
 use Claroline\CoreBundle\Event\ImportObjectEvent;
 use Claroline\CoreBundle\Manager\ResourceManager as ResManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 class ResourceManager implements ToolImporterInterface
 {
@@ -32,7 +32,7 @@ class ResourceManager implements ToolImporterInterface
     private $finder;
     /** @var Crud */
     private $crud;
-    /** @var TokenStorage */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
     /** @var UserManager */
     private $userManager;
@@ -44,14 +44,14 @@ class ResourceManager implements ToolImporterInterface
     /**
      * WorkspaceSerializer constructor.
      *
-     * @param SerializerProvider $serializer
-     * @param UserManager        $userManager
-     * @param FinderProvider     $finder
-     * @param Crud               $crud
-     * @param TokenStorage       $tokenStorage
-     * @param ResManager         $resourceManager
-     * @param ObjectManager      $om
-     * @param StrictDispatcher   $eventDispatcher
+     * @param SerializerProvider    $serializer
+     * @param UserManager           $userManager
+     * @param FinderProvider        $finder
+     * @param Crud                  $crud
+     * @param TokenStorageInterface $tokenStorage
+     * @param ResManager            $resourceManager
+     * @param ObjectManager         $om
+     * @param StrictDispatcher      $eventDispatcher
      */
     public function __construct(
         SerializerProvider $serializer,

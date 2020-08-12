@@ -22,7 +22,7 @@ use Claroline\CoreBundle\Listener\Log\LogListener;
 use Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 
 class TransferManager
 {
@@ -41,7 +41,7 @@ class TransferManager
     private $finder;
     /** @var Crud */
     private $crud;
-    /** @var TokenStorage */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
     /** @var OrderedToolTransfer */
     private $ots;
@@ -53,16 +53,16 @@ class TransferManager
     /**
      * TransferManager constructor.
      *
-     * @param ObjectManager       $om
-     * @param StrictDispatcher    $dispatcher
-     * @param TempFileManager     $tempFileManager
-     * @param SerializerProvider  $serializer
-     * @param OrderedToolTransfer $ots
-     * @param FinderProvider      $finder
-     * @param Crud                $crud
-     * @param TokenStorage        $tokenStorage
-     * @param FileUtilities       $fileUts
-     * @param LogListener         $logListener
+     * @param ObjectManager         $om
+     * @param StrictDispatcher      $dispatcher
+     * @param TempFileManager       $tempFileManager
+     * @param SerializerProvider    $serializer
+     * @param OrderedToolTransfer   $ots
+     * @param FinderProvider        $finder
+     * @param Crud                  $crud
+     * @param TokenStorageInterface $tokenStorage
+     * @param FileUtilities         $fileUts
+     * @param LogListener           $logListener
      */
     public function __construct(
       ObjectManager $om,
@@ -72,7 +72,7 @@ class TransferManager
       OrderedToolTransfer $ots,
       FinderProvider $finder,
       Crud $crud,
-      TokenStorage $tokenStorage,
+      TokenStorageInterface $tokenStorage,
       FileUtilities $fileUts,
       LogListener $logListener
     ) {
