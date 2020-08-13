@@ -20,6 +20,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BuildThemesCommand extends ContainerAwareCommand
 {
+    private $themeBuilder;
+    private $themeManager;
+
+    public function __construct(ThemeBuilderManager $themeBuilder, ThemeManager $themeManager)
+    {
+        $this->themeBuilder = $themeBuilder;
+        $this->themeManager = $themeManager;
+
+        parent::__construct();
+    }
+
     protected function configure()
     {
         $this
@@ -31,28 +42,23 @@ class BuildThemesCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var ThemeManager $themeManager */
-        $themeManager = $this->getContainer()->get('claroline.manager.theme_manager');
-        /** @var ThemeBuilderManager $builder */
-        $builder = $this->getContainer()->get('claroline.manager.theme_builder');
-
         $output->writeln('Rebuilding themes...');
 
         // Get themes to build (either a single theme or all themes)
         $themeName = $input->getOption('theme');
         if (!empty($themeName)) {
-            $theme = $themeManager->getThemeByName($themeName);
+            $theme = $this->themeManager->getThemeByName($themeName);
             if (!empty($theme)) {
-                $themesToRebuild = [$themeManager->getThemeByName($themeName)];
+                $themesToRebuild = [$this->themeManager->getThemeByName($themeName)];
             } else {
                 $output->writeln('Can not find theme "'.$themeName.'".');
             }
         } else {
-            $themesToRebuild = $themeManager->all();
+            $themesToRebuild = $this->themeManager->all();
         }
 
         if (!empty($themesToRebuild)) {
-            $logs = $builder->rebuild(
+            $logs = $this->themeBuilder->rebuild(
                 $themesToRebuild,
                 !$input->getOption('no-cache')
             );
