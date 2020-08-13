@@ -14,14 +14,14 @@ namespace Claroline\CoreBundle\Repository\Tool;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Manager\PluginManager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 class AdministrationToolRepository extends ServiceEntityRepository
 {
     /** @var array */
     private $bundles;
 
-    public function __construct(RegistryInterface $registry, PluginManager $manager)
+    public function __construct(ManagerRegistry $registry, PluginManager $manager)
     {
         $this->bundles = $manager->getEnabled(true);
 

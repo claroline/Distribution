@@ -17,14 +17,14 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 class LogRepository extends ServiceEntityRepository
 {
     /** @var LogFinder */
     private $finder;
 
-    public function __construct(RegistryInterface $registry, LogFinder $finder)
+    public function __construct(ManagerRegistry $registry, LogFinder $finder)
     {
         $this->finder = $finder;
 

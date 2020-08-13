@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\PluginManager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 class ToolRepository extends ServiceEntityRepository
 {
@@ -25,10 +25,10 @@ class ToolRepository extends ServiceEntityRepository
     /**
      * ToolRepository constructor.
      *
-     * @param RegistryInterface $registry
-     * @param PluginManager     $manager
+     * @param ManagerRegistry $registry
+     * @param PluginManager   $manager
      */
-    public function __construct(RegistryInterface $registry, PluginManager $manager)
+    public function __construct(ManagerRegistry $registry, PluginManager $manager)
     {
         $this->bundles = $manager->getEnabled(true);
 

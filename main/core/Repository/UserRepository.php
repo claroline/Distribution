@@ -18,7 +18,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -36,10 +36,10 @@ class UserRepository extends ServiceEntityRepository implements UserProviderInte
     /**
      * UserRepository constructor.
      *
-     * @param RegistryInterface            $registry
+     * @param ManagerRegistry              $registry
      * @param PlatformConfigurationHandler $platformConfigHandler
      */
-    public function __construct(RegistryInterface $registry, PlatformConfigurationHandler $platformConfigHandler)
+    public function __construct(ManagerRegistry $registry, PlatformConfigurationHandler $platformConfigHandler)
     {
         $this->platformConfigHandler = $platformConfigHandler;
 
