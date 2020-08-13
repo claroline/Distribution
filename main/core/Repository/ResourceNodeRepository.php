@@ -14,6 +14,11 @@ namespace Claroline\CoreBundle\Repository;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\PluginManager;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -22,14 +27,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Repository for AbstractResource entities. The methods of this class may return
  * entities either as objects or as as arrays (see their respective documentation).
  */
-class ResourceNodeRepository extends MaterializedPathRepository implements ContainerAwareInterface
+class ResourceNodeRepository extends MaterializedPathRepository implements ServiceEntityRepositoryInterface
 {
     /** @var ResourceQueryBuilder */
     private $builder;
 
-    public function setContainer(ContainerInterface $container = null)
+    public function __construct(ManagerRegistry $managerRegistry, PluginManager $pluginManager)
     {
-        $this->builder = new ResourceQueryBuilder($container->get('claroline.manager.plugin_manager')->getEnabled(true));
+        $this->builder = new ResourceQueryBuilder($pluginManager->getEnabled(true));
+        $em = $managerRegistry->getManager();
+
+        parent::__construct($em, $em->getClassMetadata(ResourceNode::class));
     }
 
     public function search(string $search, int $nbResults)

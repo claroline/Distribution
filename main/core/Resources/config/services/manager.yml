@@ -103,6 +103,7 @@ services:
           - '@Claroline\CoreBundle\Library\Utilities\ClaroUtilities'
           - '@Claroline\AppBundle\API\Crud'
           - '@claroline.manager.temp_file'
+          - '@Claroline\CoreBundle\Repository\ResourceNodeRepository'
 
     claroline.manager.resource_manager:
         alias: Claroline\CoreBundle\Manager\ResourceManager
