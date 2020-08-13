@@ -76,7 +76,6 @@ class ResourceManager
      * @param ClaroUtilities                $ut
      * @param Crud                          $crud
      * @param TempFileManager               $tempManager
-     * @param ResourceNodeRepository        $resourceNodeRepo
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -85,8 +84,7 @@ class ResourceManager
         ObjectManager $om,
         ClaroUtilities $ut,
         Crud $crud,
-        TempFileManager $tempManager,
-        ResourceNodeRepository $resourceNodeRepo
+        TempFileManager $tempManager
     ) {
         $this->authorization = $authorization;
         $this->om = $om;
@@ -95,9 +93,9 @@ class ResourceManager
         $this->ut = $ut;
         $this->crud = $crud;
         $this->tempManager = $tempManager;
-        $this->resourceNodeRepo = $resourceNodeRepo;
 
         $this->resourceTypeRepo = $om->getRepository(ResourceType::class);
+        $this->resourceNodeRepo = $om->getRepository(ResourceNode::class);
         $this->roleRepo = $om->getRepository(Role::class);
     }
 
