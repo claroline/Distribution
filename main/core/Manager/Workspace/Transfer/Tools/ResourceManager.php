@@ -58,7 +58,7 @@ class ResourceManager implements ToolImporterInterface
         UserManager $userManager,
         FinderProvider $finder,
         Crud $crud,
-        TokenStorage $tokenStorage,
+        TokenStorageInterface $tokenStorage,
         ResManager $resourceManager,
         ObjectManager $om,
         StrictDispatcher $eventDispatcher
