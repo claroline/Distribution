@@ -12,8 +12,8 @@
 namespace Claroline\InstallationBundle\Fixtures;
 
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 /**
@@ -25,10 +25,10 @@ class FixtureLoader
     private $executor;
 
     /**
-     * Constructor.
+     * FixtureLoader constructor.
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-     * @param \Doctrine\Common\DataFixtures\Executor\ORMExecutor        $executor
+     * @param ContainerInterface $container
+     * @param ORMExecutor $executor
      */
     public function __construct(ContainerInterface $container, ORMExecutor $executor)
     {
