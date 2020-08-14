@@ -34,7 +34,7 @@ class PlatformInstallCommand extends Command
          * - Empty previous-installed.json
          */
         $kernel = $this->getApplication()->getKernel();
-        $rootDir = $kernel->getProjectDir().'/app'; // Similar to Kernel::getRootDir() (deprecated)
+        $rootDir = $kernel->getProjectDir().'/app';
         $previous = $rootDir.'/config/previous-installed.json';
         @unlink($previous);
         file_put_contents($previous, '[]');

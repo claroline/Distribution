@@ -85,7 +85,7 @@ class DatabaseWriter
         $this->em = $em;
         $this->mm = $mm;
         $this->fileSystem = $fileSystem;
-        $this->kernelRootDir = $kernel->getRootDir();
+        $this->kernelRootDir = $kernel->getProjectDir().'/app';
         $this->toolManager = $toolManager;
         $this->toolMaskManager = $toolMaskManager;
         $this->iconSetManager = $iconSetManager;

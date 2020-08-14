@@ -51,9 +51,9 @@ class OperationExecutor
         $this->versionManager = $versionManager;
         $this->baseInstaller = $baseInstaller;
         $this->pluginInstaller = $pluginInstaller;
-        $this->previousRepoFile = $this->kernel->getRootDir().'/config/previous-installed.json';
-        $this->installedRepoFile = $this->kernel->getRootDir().'/../vendor/composer/installed.json';
-        $this->bundleFile = $this->kernel->getRootDir().'/config/bundles.ini';
+        $this->previousRepoFile = $this->kernel->getProjectDir().'/app/config/previous-installed.json';
+        $this->installedRepoFile = $this->kernel->getProjectDir().'/vendor/composer/installed.json';
+        $this->bundleFile = $this->kernel->getProjectDir().'/app/config/bundles.ini';
         $this->detector = new Detector();
         $this->versionManager = $versionManager;
         $this->om = $om;
@@ -333,7 +333,7 @@ class OperationExecutor
     //Composer\Package\PackageInterface but the use causes some issue
     private function buildOperation($type, $package)
     {
-        $vendorDir = $this->kernel->getRootDir().'/../vendor';
+        $vendorDir = $this->kernel->getProjectDir().'/vendor';
         $targetDir = $package->getTargetDir() ?: '';
         $packageDir = empty($targetDir) ?
             $package->getPrettyName() :
