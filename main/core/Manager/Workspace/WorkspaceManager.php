@@ -529,6 +529,11 @@ class WorkspaceManager
             $user = $workspaceCopy->getCreator();
             $user->addRole($managerRole);
             $this->om->persist($user);
+            
+            if ($user->getUuid() === $this->container->get('security.token_storage')->getToken()->getUser()->getUuid()) {
+                $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+                $this->container->get('security.token_storage')->setToken($token);
+            }
         }
 
         $root = $this->resourceManager->getWorkspaceRoot($workspaceCopy);
