@@ -28,7 +28,7 @@ use LightSaml\Model\Protocol\StatusCode;
 use LightSaml\SamlConstants;
 use LightSaml\State\Sso\SsoSessionState;
 use LightSaml\SymfonyBridgeBundle\Bridge\Container\BuildContainer;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,21 +36,12 @@ use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
 class LogoutHandler implements LogoutSuccessHandlerInterface
 {
-    /** @var PlatformConfigurationHandler */
-    private $config;
-    /** @var EntityDescriptorProvider */
-    private $entityDescriptorProvider;
-
     /** @var ContainerInterface */
     private $container;
 
-    public function setContainer(ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config = $container->get(PlatformConfigurationHandler::class);
-        $this->entityDescriptorProvider = $this->container->get('lightsaml.own.entity_descriptor_provider');
-
-        return $this;
     }
 
     /**
@@ -62,7 +53,7 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
      */
     public function onLogoutSuccess(Request $request)
     {
-        if ($this->config->getParameter('saml.active')) {
+        if ($this->container->get(PlatformConfigurationHandler::class)->getParameter('saml.active')) {
             $bindingFactory = new BindingFactory();
             $bindingType = $bindingFactory->detectBindingType($request);
             if (empty($bindingType)) {
@@ -163,8 +154,8 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
                 ->setDestination($slo->getLocation())
                 ->setID(Helper::generateID())
                 ->setIssueInstant(new \DateTime())
-                ->setIssuer(new Issuer($this->config->getParameter('saml.entity_id')))
-                ->setSignature($this->entityDescriptorProvider->getOwnSignature())
+                ->setIssuer(new Issuer($this->container->get(PlatformConfigurationHandler::class)->getParameter('saml.entity_id')))
+                ->setSignature($this->container->get('lightsaml.own.entity_descriptor_provider')->getOwnSignature())
             ;
 
             $context = new MessageContext();
@@ -227,7 +218,7 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
             ->setID(Helper::generateID())
             ->setIssueInstant(new \DateTime())
             /* here, the SP entity id is a container parameter, change it as you wish */
-            ->setIssuer(new Issuer($this->config->getParameter('saml.entity_id')))
+            ->setIssuer(new Issuer($this->container->get(PlatformConfigurationHandler::class)->getParameter('saml.entity_id')))
         ;
 
         $context = new MessageContext();
