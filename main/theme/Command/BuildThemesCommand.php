@@ -13,12 +13,12 @@ namespace Claroline\ThemeBundle\Command;
 
 use Claroline\ThemeBundle\Manager\ThemeBuilderManager;
 use Claroline\ThemeBundle\Manager\ThemeManager;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BuildThemesCommand extends ContainerAwareCommand
+class BuildThemesCommand extends Command
 {
     private $themeBuilder;
     private $themeManager;
@@ -34,7 +34,6 @@ class BuildThemesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('claroline:theme:build')
             ->setDescription('Build themes which are installed in the platform')
             ->addOption('theme',    't',  InputOption::VALUE_OPTIONAL, 'Theme name. Rebuild only this theme.')
             ->addOption('no-cache', 'c', InputOption::VALUE_NONE,     'Rebuild themes without using cache.');

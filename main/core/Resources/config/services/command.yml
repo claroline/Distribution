@@ -190,3 +190,109 @@ services:
             - '@Claroline\AppBundle\Persistence\ObjectManager'
         tags:
             - { name: 'console.command', command: 'claroline:clean:files' }
+
+    # Task
+
+    Claroline\CoreBundle\Command\Task\ExecuteScheduledTasksCommand:
+        arguments:
+            - '@claroline.manager.scheduled_task_manager'
+            - '@event_dispatcher'
+        tags:
+            - { name: 'console.command', command: 'claroline:tasks:execute' }
+
+    # Tracking
+
+    Claroline\CoreBundle\Command\Tracking\GenerateResourceTrackingCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@event_dispatcher'
+        tags:
+            - { name: 'console.command', command: 'claroline:tracking:generate' }
+
+    # User
+
+    Claroline\CoreBundle\Command\User\CreateCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\API\Crud'
+        tags:
+            - { name: 'console.command', command: 'claroline:user:create' }
+
+    # Workspace
+
+    Claroline\CoreBundle\Command\Workspace\ArchiveCommand:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\CoreBundle\Manager\Workspace\WorkspaceManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:archive' }
+
+    Claroline\CoreBundle\Command\Workspace\BuildDefaultsCommand:
+        arguments:
+            - '@Claroline\CoreBundle\Manager\Workspace\WorkspaceManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:build-default' }
+
+    Claroline\CoreBundle\Command\Workspace\ExportCommand:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@Claroline\CoreBundle\Manager\Workspace\TransferManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:export' }
+
+    Claroline\CoreBundle\Command\Workspace\ImportCommand:
+        arguments:
+            - '@Claroline\AppBundle\API\Crud'
+            - '@Claroline\CoreBundle\Library\Utilities\FileUtilities'
+            - '@Claroline\AppBundle\API\SerializerProvider'
+            - '@Claroline\CoreBundle\Manager\Workspace\TransferManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:import' }
+
+    Claroline\CoreBundle\Command\Workspace\OpenToolCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@doctrine.orm.entity_manager'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:open-tool' }
+
+    Claroline\CoreBundle\Command\Workspace\RemoveCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\CoreBundle\Manager\Workspace\WorkspaceManager'
+            - '@Claroline\AppBundle\API\FinderProvider'
+            - '@Claroline\AppBundle\API\Crud'
+            - '@Claroline\CoreBundle\Listener\Log\LogListener'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:remove' }
+
+    # Common
+
+    Claroline\CoreBundle\Command\ComputeStorageCommand:
+        arguments:
+            - '@Claroline\CoreBundle\Manager\FileManager'
+            - '@Claroline\CoreBundle\API\Serializer\ParametersSerializer'
+            - '@Claroline\AppBundle\API\FinderProvider'
+            - '@Claroline\AppBundle\API\Crud'
+            - '@Claroline\CoreBundle\Listener\Log\LogListener'
+        tags:
+            - { name: 'console.command', command: 'claroline:storage:compute' }
+
+    Claroline\CoreBundle\Command\EvaluationCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\CoreBundle\Manager\Workspace\EvaluationManager'
+            - '@Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:evaluation:compute' }
+
+    Claroline\CoreBundle\Command\UpdateRichTextCommand:
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        tags:
+            - { name: 'console.command', command: 'claroline:rich_texts:update' }
+
+
+
+

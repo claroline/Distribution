@@ -26,7 +26,7 @@ class GenerateCommand extends AbstractCommand
             InputOption::VALUE_REQUIRED,
             'The bundle output if you want migrations to be generated somewhere else'
         );
-        $this->setName('claroline:migration:generate')
+        $this
             ->setDescription('Creates migration classes on a per bundle basis.')
             ->setHelp(<<<EOT
 The <info>%command.name%</info> command generates migration classes for a

@@ -1,4 +1,5 @@
 services:
+
     Claroline\ThemeBundle\Command\CreateThemeCommand:
         arguments:
             - '@claroline.manager.theme_manager'
@@ -6,9 +7,8 @@ services:
             - { name: 'console.command', command: 'claroline:theme:create' }
 
     Claroline\ThemeBundle\Command\BuildThemesCommand:
-      arguments:
-        - '@claroline.manager.theme_builder'
-        - '@claroline.manager.theme_manager'
-      tags:
-        - { name: 'console.command', command: 'claroline:theme:build' }
-
+        arguments:
+            - '@claroline.manager.theme_builder'
+            - '@claroline.manager.theme_manager'
+        tags:
+            - { name: 'console.command', command: 'claroline:theme:build' }
