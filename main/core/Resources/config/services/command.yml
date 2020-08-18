@@ -136,3 +136,57 @@ services:
         tags:
             - { name: 'console.command', command: 'claroline:plugin:uninstall' }
 
+    # Import
+
+    Claroline\CoreBundle\Command\Import\RegisterUserToWorkspaceFromCsvCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@claroline.manager.role_manager'
+            - '@Claroline\AppBundle\API\FinderProvider'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:register' }
+
+    # Logs
+
+    Claroline\CoreBundle\Command\Logs\LogConnectionComputeCommand:
+        arguments:
+            - '@claroline.manager.log_connect'
+        tags:
+            - { name: 'console.command', command: 'claroline:connection:duration' }
+
+    Claroline\CoreBundle\Command\Logs\LogsArchiverCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\Manager\DatabaseManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:logs:archive' }
+
+    Claroline\CoreBundle\Command\Logs\LogsFetcherCommand:
+        arguments:
+            - '@Claroline\CoreBundle\Manager\LogManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:logs:fetch' }
+
+    # Removal
+
+    Claroline\CoreBundle\Command\Removal\EmptyWorkspaceByDateCommand:
+        arguments:
+            - '@Claroline\CoreBundle\API\Finder\Workspace\WorkspaceFinder'
+            - '@Claroline\CoreBundle\Manager\RoleManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:empty-by-date' }
+
+    Claroline\CoreBundle\Command\Removal\EmptyWorkspaceCommand:
+        arguments:
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\CoreBundle\Manager\Workspace\WorkspaceManager'
+            - '@Claroline\CoreBundle\Manager\RoleManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:workspace:empty' }
+
+    Claroline\CoreBundle\Command\Removal\RemoveFilesFromUnusedWorkspaceCommand:
+        arguments:
+            - '%claroline.param.files_directory%'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+        tags:
+            - { name: 'console.command', command: 'claroline:clean:files' }

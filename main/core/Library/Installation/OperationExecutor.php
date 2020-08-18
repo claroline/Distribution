@@ -101,6 +101,7 @@ class OperationExecutor
     {
         $this->log('Building install/update operations list...');
         $current = $this->versionManager->openRepository($this->installedRepoFile);
+        $operations = [];
 
         foreach ($current->getCanonicalPackages() as $currentPackage) {
             $extra = $currentPackage->getExtra();

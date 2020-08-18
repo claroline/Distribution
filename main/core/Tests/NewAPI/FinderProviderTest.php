@@ -10,8 +10,6 @@ class FinderProviderTest extends TransactionalTestCase
 {
     /** @var SerializerProvider */
     private $provider;
-    /** @var mixed[] */
-    private $serializers;
 
     protected function setUp(): void
     {
