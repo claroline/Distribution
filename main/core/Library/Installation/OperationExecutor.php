@@ -42,6 +42,7 @@ class OperationExecutor
 
     public function __construct(
         KernelInterface $kernel,
+        $bundleFile,
         InstallationManager $baseInstaller,
         Installer $pluginInstaller,
         ObjectManager $om,
@@ -53,7 +54,7 @@ class OperationExecutor
         $this->pluginInstaller = $pluginInstaller;
         $this->previousRepoFile = $this->kernel->getRootDir().'/config/previous-installed.json';
         $this->installedRepoFile = $this->kernel->getRootDir().'/../vendor/composer/installed.json';
-        $this->bundleFile = $this->kernel->getRootDir().'/config/bundles.ini';
+        $this->bundleFile = $bundleFile;
         $this->detector = new Detector();
         $this->versionManager = $versionManager;
         $this->om = $om;

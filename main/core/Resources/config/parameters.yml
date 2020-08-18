@@ -2,13 +2,13 @@
 parameters:
     # Project base paths
     claroline.param.root_directory:         "%kernel.root_dir%/.."
-    claroline.param.config_directory:       "%kernel.root_dir%/config"
     claroline.param.vendor_directory:       "%claroline.param.root_directory%/vendor"
     claroline.param.web_directory:          "%claroline.param.root_directory%/web"
 
     # File paths
     claroline.param.uploads_directory:      "%claroline.param.web_directory%/uploads"
     claroline.param.files_directory:        "%claroline.param.root_directory%/files"
+    claroline.param.config_directory:       "%claroline.param.files_directory%/config"
     claroline.param.archive_directory:      "%claroline.param.files_directory%/archives"
     claroline.param.public_files_directory: "%claroline.param.files_directory%/data"
     claroline.param.icon_sets_directory:    "%claroline.param.public_files_directory%/icon_sets"
@@ -21,6 +21,7 @@ parameters:
     claroline.param.workspace_log_dir: "%claroline.param.log_dir%/workspace"
 
     # Configuration provider
+    claroline.param.bundle_file:                   "%claroline.param.config_directory%/bundles.ini"
     claroline.param.platform_config_handler_class: "Claroline\\CoreBundle\\Library\\Configuration\\PlatformConfigurationHandler"
     claroline.param.platform_options:              "%claroline.param.config_directory%/platform_options.json"
 
@@ -28,8 +29,8 @@ parameters:
     claroline.param.workspace.default: "%claroline.param.vendor_directory%/claroline/distribution/main/core/Resources/config/workspace.zip"
 
     # IP config files (should be stored in DB)
-    claroline.param.ip_white_list_file:       "%kernel.root_dir%/config/ip_white_list.yml"
-    claroline.param.ip_range_white_list_file: "%kernel.root_dir%/config/white_list_ip_range.yml"
+    claroline.param.ip_white_list_file:       "%claroline.param.config_directory%/ip_white_list.yml"
+    claroline.param.ip_range_white_list_file: "%claroline.param.config_directory%/white_list_ip_range.yml"
 
     # Core plugin API descriptors
     claroline.api.sample.dir:      "%claroline.param.vendor_directory%/claroline/distribution/main/core/Resources/samples"

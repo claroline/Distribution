@@ -134,6 +134,7 @@ services:
     Claroline\CoreBundle\Manager\PluginManager:
         arguments:
           - '%kernel.root_dir%'
+          - '%claroline.param.bundle_file%'
           - '@Claroline\AppBundle\Persistence\ObjectManager'
           - '@kernel'
 
