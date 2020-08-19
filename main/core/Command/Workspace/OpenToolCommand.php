@@ -34,6 +34,8 @@ class OpenToolCommand extends Command implements AdminCliCommand
     {
         $this->om = $om;
         $this->em = $em;
+
+        parent::__construct();
     }
 
     protected function configure()

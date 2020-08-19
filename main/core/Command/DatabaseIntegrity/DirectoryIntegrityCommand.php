@@ -35,7 +35,9 @@ class DirectoryIntegrityCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($code = $input->getOption('workspace')) {
+        $code = $input->getOption('workspace');
+
+        if ($code) {
             $workspace = $this->om->getRepository(Workspace::class)->findOneByCode($code);
             $dirType = $this->om->getRepository(ResourceType::class)->findOneByName('directory');
 

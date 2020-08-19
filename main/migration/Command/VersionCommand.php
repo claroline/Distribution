@@ -31,7 +31,7 @@ class VersionCommand extends AbstractCommand
     {
         parent::configure();
 
-        $this->setName('claroline:migration:version')
+        $this
             ->setDescription('Displays information about the migration status of a bundle.')
             ->setHelp(
                 <<<'EOT'

@@ -27,7 +27,7 @@ class ApiDumperCommand extends Command
     public function __construct(Finder $finder, Documentator $documentator)
     {
         $this->finder = $finder;
-        $this->documentor = $documentator;
+        $this->documentator = $documentator;
 
         parent::__construct();
     }
@@ -45,7 +45,7 @@ class ApiDumperCommand extends Command
         $data = [];
 
         foreach ($this->finder->getHandledClasses() as $class) {
-            $data[$class] = $this->documentor->documentClass($class);
+            $data[$class] = $this->documentator->documentClass($class);
         }
 
         switch ($format) {
