@@ -48,7 +48,6 @@ const HolePopover = props => {
   }
 
   left -= 180 // half size of the popover
-  top  += 25 // take into account the form group label
 
   return (
     <KeywordsPopover

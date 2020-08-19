@@ -65,6 +65,10 @@
   }
 }
 
+.cloze-field {
+  position: relative; // to constrain hole popover
+}
+
 .cloze-hole {
   line-height: @input-height-small;
   display: inline-flex;
@@ -73,6 +77,7 @@
 
   .form-control {
     width: auto; // remove bootstrap default 100%
+    min-width: 120px;
     max-width: 200px;
   }
 }
