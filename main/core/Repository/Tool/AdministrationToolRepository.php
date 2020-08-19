@@ -42,8 +42,6 @@ class AdministrationToolRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array $roles
-     *
      * @return AdminTool[]
      */
     public function findByRoles(array $roles)

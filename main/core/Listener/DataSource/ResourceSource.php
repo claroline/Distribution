@@ -23,10 +23,6 @@ class ResourceSource
 
     /**
      * ResourceSource constructor.
-     *
-     * @param ObjectManager         $om
-     * @param FinderProvider        $finder
-     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         ObjectManager $om,
@@ -38,9 +34,6 @@ class ResourceSource
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param GetDataEvent $event
-     */
     public function getData(GetDataEvent $event)
     {
         $options = $event->getOptions();

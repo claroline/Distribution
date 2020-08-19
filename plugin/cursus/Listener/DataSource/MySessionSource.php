@@ -17,9 +17,6 @@ class MySessionSource
 
     /**
      * MySessionSource constructor.
-     *
-     * @param FinderProvider        $finder
-     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         FinderProvider $finder,
@@ -29,9 +26,6 @@ class MySessionSource
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param GetDataEvent $event
-     */
     public function getData(GetDataEvent $event)
     {
         $options = $event->getOptions();

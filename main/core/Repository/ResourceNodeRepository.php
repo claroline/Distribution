@@ -16,12 +16,8 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\PluginManager;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Repository for AbstractResource entities. The methods of this class may return
@@ -81,8 +77,6 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Servi
 
     /**
      * Returns the root directory of a workspace.
-     *
-     * @param Workspace $workspace
      *
      * @return ResourceNode
      */

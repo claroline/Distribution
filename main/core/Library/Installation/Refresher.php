@@ -28,8 +28,6 @@ class Refresher
 
     /**
      * Refresher constructor.
-     *
-     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {

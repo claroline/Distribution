@@ -52,17 +52,6 @@ class TransferManager
 
     /**
      * TransferManager constructor.
-     *
-     * @param ObjectManager         $om
-     * @param StrictDispatcher      $dispatcher
-     * @param TempFileManager       $tempFileManager
-     * @param SerializerProvider    $serializer
-     * @param OrderedToolTransfer   $ots
-     * @param FinderProvider        $finder
-     * @param Crud                  $crud
-     * @param TokenStorageInterface $tokenStorage
-     * @param FileUtilities         $fileUts
-     * @param LogListener           $logListener
      */
     public function __construct(
       ObjectManager $om,
@@ -89,8 +78,7 @@ class TransferManager
     }
 
     /**
-     * @param array     $data      - the serialized data of the object to create
-     * @param Workspace $workspace
+     * @param array $data - the serialized data of the object to create
      *
      * @return object
      */
@@ -189,10 +177,7 @@ class TransferManager
     /**
      * Deserializes Workspace data into entities.
      *
-     * @param array     $data
-     * @param Workspace $workspace
-     * @param array     $options
-     * @param FileBag   $bag
+     * @param FileBag $bag
      *
      * @return Workspace
      */

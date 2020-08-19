@@ -42,14 +42,6 @@ class TeamSerializer
 
     /**
      * TeamSerializer constructor.
-     *
-     * @param ObjectManager          $om
-     * @param ResourceManager        $resourceManager
-     * @param TeamManager            $teamManager
-     * @param TokenStorageInterface  $tokenStorage
-     * @param ResourceNodeSerializer $resourceNodeSerializer
-     * @param RoleSerializer         $roleSerializer
-     * @param WorkspaceSerializer    $workspaceSerializer
      */
     public function __construct(
         ObjectManager $om,
@@ -78,8 +70,6 @@ class TeamSerializer
     }
 
     /**
-     * @param Team $team
-     *
      * @return array
      */
     public function serialize(Team $team)
@@ -111,7 +101,6 @@ class TeamSerializer
 
     /**
      * @param array $data
-     * @param Team  $team
      *
      * @return Team
      */

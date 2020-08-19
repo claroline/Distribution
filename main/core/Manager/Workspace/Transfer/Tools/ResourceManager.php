@@ -43,15 +43,6 @@ class ResourceManager implements ToolImporterInterface
 
     /**
      * WorkspaceSerializer constructor.
-     *
-     * @param SerializerProvider    $serializer
-     * @param UserManager           $userManager
-     * @param FinderProvider        $finder
-     * @param Crud                  $crud
-     * @param TokenStorageInterface $tokenStorage
-     * @param ResManager            $resourceManager
-     * @param ObjectManager         $om
-     * @param StrictDispatcher      $eventDispatcher
      */
     public function __construct(
         SerializerProvider $serializer,
@@ -73,12 +64,6 @@ class ResourceManager implements ToolImporterInterface
         $this->resourceManager = $resourceManager;
     }
 
-    /**
-     * @param Workspace $workspace
-     * @param array     $options
-     *
-     * @return array
-     */
     public function serialize(Workspace $workspace, array $options): array
     {
         /** @var ResourceNode $root */
@@ -240,7 +225,6 @@ class ResourceManager implements ToolImporterInterface
      *
      * @param string $action (create, copy, delete, patch, update)
      * @param string $when   (post, pre)
-     * @param array  $args
      *
      * @return bool
      *

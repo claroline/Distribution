@@ -30,12 +30,6 @@ class TeamListener
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
-    /**
-     * @param AuthorizationCheckerInterface $authorization
-     * @param SerializerProvider            $serializer
-     * @param TeamManager                   $teamManager
-     * @param TokenStorageInterface         $tokenStorage
-     */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         SerializerProvider $serializer,
@@ -48,9 +42,6 @@ class TeamListener
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param OpenToolEvent $event
-     */
     public function onWorkspaceToolOpen(OpenToolEvent $event)
     {
         $workspace = $event->getWorkspace();

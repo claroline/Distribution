@@ -24,9 +24,6 @@ class OrderedToolRepository extends ServiceEntityRepository
 
     /**
      * OrderedToolRepository constructor.
-     *
-     * @param ManagerRegistry $registry
-     * @param PluginManager     $manager
      */
     public function __construct(ManagerRegistry $registry, PluginManager $manager)
     {
@@ -50,8 +47,7 @@ class OrderedToolRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string         $name
-     * @param Workspace|null $workspace
+     * @param string $name
      *
      * @return OrderedTool
      */
@@ -73,8 +69,6 @@ class OrderedToolRepository extends ServiceEntityRepository
 
     /**
      * Returns all the workspace ordered tools.
-     *
-     * @param Workspace $workspace
      *
      * @return OrderedTool[]
      */
@@ -100,9 +94,6 @@ class OrderedToolRepository extends ServiceEntityRepository
 
     /**
      * Returns the workspace ordered tools accessible to some given roles.
-     *
-     * @param Workspace $workspace
-     * @param array     $roles
      *
      * @return OrderedTool[]
      */

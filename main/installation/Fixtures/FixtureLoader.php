@@ -26,9 +26,6 @@ class FixtureLoader
 
     /**
      * FixtureLoader constructor.
-     *
-     * @param ContainerInterface $container
-     * @param ORMExecutor $executor
      */
     public function __construct(ContainerInterface $container, ORMExecutor $executor)
     {
@@ -41,8 +38,7 @@ class FixtureLoader
      * "DataFixtures/ORM" or "DataFixtures" directory within the bundle. Note
      * that fixtures are always appended (no purge/truncation).
      *
-     * @param BundleInterface $bundle
-     * @param string          $fixturesDirectory
+     * @param string $fixturesDirectory
      *
      * @return bool True if some fixtures have been found and executed, false otherwise
      */

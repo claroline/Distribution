@@ -27,11 +27,6 @@ class ToolSource
 
     /**
      * ToolSource constructor.
-     *
-     * @param FinderProvider        $finder
-     * @param SerializerProvider    $serializer
-     * @param TokenStorageInterface $tokenStorage
-     * @param WorkspaceManager      $workspaceManager
      */
     public function __construct(
         FinderProvider $finder,
@@ -45,9 +40,6 @@ class ToolSource
         $this->workspaceManager = $workspaceManager;
     }
 
-    /**
-     * @param GetDataEvent $event
-     */
     public function getData(GetDataEvent $event)
     {
         $options = $event->getOptions();

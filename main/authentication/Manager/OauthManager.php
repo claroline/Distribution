@@ -51,15 +51,6 @@ class OauthManager
     /** @var OauthUserRepository */
     private $oauthUserRepository;
 
-    /**
-     * @param EntityManager                $entityManager
-     * @param CacheManager                 $cacheManager
-     * @param PlatformConfigurationHandler $platformConfigHandler
-     * @param TokenStorageInterface        $tokenStorage
-     * @param UserManager                  $userManager
-     * @param RegistrationManager          $registrationManager
-     * @param Authenticator                $authenticator
-     */
     public function __construct(
         EntityManager $entityManager,
         CacheManager $cacheManager,
@@ -79,9 +70,6 @@ class OauthManager
         $this->oauthUserRepository = $entityManager->getRepository(OauthUser::class);
     }
 
-    /**
-     * @param RefreshCacheEvent $event
-     */
     public function refreshCache(RefreshCacheEvent $event)
     {
         foreach (OauthConfiguration::resourceOwners() as $resourceOwner) {

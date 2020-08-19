@@ -49,7 +49,7 @@ class LogsFetcherCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var LogManager $logManager */
+        /* @var LogManager $logManager */
         $this->logManager->exportLogsToCsv([
             'filters' => [
                 'dateLog' => $input->getArgument('from') ?? null,

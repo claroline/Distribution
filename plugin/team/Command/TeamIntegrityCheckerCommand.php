@@ -13,7 +13,6 @@ namespace Claroline\TeamBundle\Command;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\TeamBundle\Manager\TeamManager;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

@@ -17,9 +17,6 @@ class AdminToolSource
 
     /**
      * AdminToolSource constructor.
-     *
-     * @param FinderProvider        $finder
-     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(FinderProvider $finder, TokenStorageInterface $tokenStorage)
     {
@@ -27,9 +24,6 @@ class AdminToolSource
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param GetDataEvent $event
-     */
     public function getData(GetDataEvent $event)
     {
         $options = $event->getOptions();

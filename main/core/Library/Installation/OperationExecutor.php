@@ -73,17 +73,12 @@ class OperationExecutor
 
     /**
      * Overrides the default bundle detector (test purposes).
-     *
-     * @param Detector $detector
      */
     public function setBundleDetector(Detector $detector)
     {
         $this->detector = $detector;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;

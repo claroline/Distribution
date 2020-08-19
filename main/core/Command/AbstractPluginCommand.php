@@ -16,7 +16,6 @@ use Claroline\BundleRecorder\Detector\Detector;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
 use Claroline\CoreBundle\Library\PluginBundle;
 use Psr\Log\LogLevel;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -94,8 +93,6 @@ abstract class AbstractPluginCommand extends Command
      *
      * Clears the cache in production environment (mandatory after plugin
      * installation/uninstallation)
-     *
-     * @param OutputInterface $output
      */
     protected function resetCache(OutputInterface $output)
     {
@@ -117,8 +114,6 @@ abstract class AbstractPluginCommand extends Command
      * @todo Remove ?
      *
      * Refreshes the asset folder (mandatory after plugin installation/uninstallation)
-     *
-     * @param OutputInterface $output
      */
     protected function installAssets(OutputInterface $output)
     {

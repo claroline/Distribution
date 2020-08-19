@@ -26,7 +26,7 @@ class SqlFormatterExtension extends AbstractExtension
     public function __construct()
     {
         Formatter::$tab = '    ';
-        Formatter::setKeywordFormattingOptions(array(
+        Formatter::setKeywordFormattingOptions([
             'SELECT' => Formatter::KEYWORD_NEWLINE,
             'FROM' => Formatter::KEYWORD_NEWLINE,
             'WHERE' => Formatter::KEYWORD_NEWLINE,
@@ -36,7 +36,7 @@ class SqlFormatterExtension extends AbstractExtension
             'REFERENCES' => Formatter::KEYWORD_NEWLINE,
             'ON DELETE CASCADE' => Formatter::KEYWORD_NEWLINE,
             'ON DELETE SET NULL' => Formatter::KEYWORD_NEWLINE,
-        ));
+        ]);
     }
 
     /**
@@ -52,9 +52,9 @@ class SqlFormatterExtension extends AbstractExtension
      */
     public function getFunctions()
     {
-        return array(
-            'formatSql' => new TwigFunction('formatSql', array($this, 'formatSql')),
-        );
+        return [
+            'formatSql' => new TwigFunction('formatSql', [$this, 'formatSql']),
+        ];
     }
 
     /**
@@ -75,7 +75,7 @@ class SqlFormatterExtension extends AbstractExtension
         }
 
         $sql = explode("\n", Formatter::format($sql, false));
-        $indentedLines = array();
+        $indentedLines = [];
 
         foreach ($sql as $line) {
             $indentedLines[] = $indent.str_replace('"', '\"', $line);

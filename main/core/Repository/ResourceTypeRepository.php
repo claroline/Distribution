@@ -110,8 +110,6 @@ class ResourceTypeRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array $excludedTypeNames
-     *
      * @return array
      */
     public function findTypeNamesNotIn(array $excludedTypeNames)
@@ -137,9 +135,6 @@ class ResourceTypeRepository extends ServiceEntityRepository
 
     /**
      * Returns enabled resource types by their names.
-     *
-     * @param array $names
-     * @param bool  $enabled
      *
      * @return ResourceType[]
      */

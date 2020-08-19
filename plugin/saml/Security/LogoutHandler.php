@@ -47,8 +47,6 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
     /**
      * Send logout to SAML idp.
      *
-     * @param Request $request
-     *
      * @return Response
      */
     public function onLogoutSuccess(Request $request)
@@ -176,8 +174,6 @@ class LogoutHandler implements LogoutSuccessHandlerInterface
 
     /**
      * Send a Success response to a logout request from the IdP.
-     *
-     * @param SamlMessage $samlRequest
      *
      * @return Response
      */

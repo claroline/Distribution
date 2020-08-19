@@ -34,8 +34,7 @@ class LogRepository extends ServiceEntityRepository
     /**
      * Fetches data for line chart.
      *
-     * @param array $filters
-     * @param bool  $unique
+     * @param bool $unique
      *
      * @return array
      */
@@ -354,8 +353,7 @@ class LogRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param array        $range
+     * @param array $range
      *
      * @return QueryBuilder
      */
@@ -381,8 +379,7 @@ class LogRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param string       $userSearch
+     * @param string $userSearch
      *
      * @return QueryBuilder
      */
@@ -417,8 +414,7 @@ class LogRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param string       $userSearch
+     * @param string $userSearch
      *
      * @return QueryBuilder
      */
@@ -536,9 +532,6 @@ class LogRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param User         $owner
-     *
      * @return QueryBuilder
      */
     public function addOwnerFilterToQueryBuilder(QueryBuilder $queryBuilder, User $owner)
@@ -551,8 +544,7 @@ class LogRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param int          $otherElementId
+     * @param int $otherElementId
      *
      * @return QueryBuilder
      */

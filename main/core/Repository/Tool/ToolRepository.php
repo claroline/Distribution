@@ -24,9 +24,6 @@ class ToolRepository extends ServiceEntityRepository
 
     /**
      * ToolRepository constructor.
-     *
-     * @param ManagerRegistry $registry
-     * @param PluginManager   $manager
      */
     public function __construct(ManagerRegistry $registry, PluginManager $manager)
     {
@@ -37,8 +34,6 @@ class ToolRepository extends ServiceEntityRepository
 
     /**
      * Returns the non-visible tools in a workspace.
-     *
-     * @param Workspace $workspace
      *
      * @return Tool[]
      */
@@ -70,8 +65,6 @@ class ToolRepository extends ServiceEntityRepository
 
     /**
      * Returns the number of tools visible in a workspace.
-     *
-     * @param Workspace $workspace
      *
      * @return int
      */

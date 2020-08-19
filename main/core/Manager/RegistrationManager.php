@@ -29,10 +29,6 @@ class RegistrationManager
     /** @var AuthenticationSuccessListener */
     private $authenticationHandler;
 
-    /**
-     * @param TokenStorageInterface         $tokenStorage
-     * @param AuthenticationSuccessListener $authenticationHandler
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationSuccessListener $authenticationHandler
