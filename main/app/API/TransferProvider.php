@@ -373,6 +373,8 @@ class TransferProvider
      * Returns a list of available actions for a given format (mime type).
      *
      * @param string $format
+     * @param array  $options
+     * @param array  $extra
      *
      * @return array
      */
@@ -393,9 +395,11 @@ class TransferProvider
     /**
      * Returns an adapter for a given mime type.
      *
-     * @param string $mimeType
+     * @param string $mimeTypes
      *
      * @return AdapterInterface
+     *
+     * @throws \Exception
      */
     public function getAdapter($mimeTypes)
     {
@@ -409,7 +413,7 @@ class TransferProvider
             }
         }
 
-        throw new \Exception('No adapter found for mime type '.$mimeType);
+        throw new \Exception('No adapter found for mime type '.$mimeTypes);
     }
 
     private function formatCsvOutput($data)

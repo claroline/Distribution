@@ -434,7 +434,7 @@ class UserSerializer
 
         if (isset($data['mainOrganization'])) {
             /** @var Organization $organization */
-            $organization = $this->om->getObject($data['mainOrganization'], Organization::class, ['code']);
+            $organization = $this->om->getObject($data['mainOrganization'], Organization::class, ['id', 'code', 'name', 'email']);
 
             if ($organization) {
                 $user->addOrganization($organization);
@@ -488,7 +488,7 @@ class UserSerializer
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $groupData) {
                 /** @var Group $group */
-                $group = $this->om->getObject($groupData, Group::class, ['name']);
+                $group = $this->om->getObject($groupData, Group::class, ['id', 'name']);
 
                 if ($group && $group->getId()) {
                     $user->addGroup($group);
