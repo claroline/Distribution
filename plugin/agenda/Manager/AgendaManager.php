@@ -186,8 +186,6 @@ class AgendaManager
     }
 
     /**
-     * @param array $events
-     *
      * @return string view in ics format
      */
     private function writeCalendar(array $events)
@@ -221,9 +219,6 @@ class AgendaManager
     /**
      * Find every Event for a given user and the replace him by another.
      *
-     * @param User $from
-     * @param User $to
-     *
      * @return int
      */
     public function replaceEventUser(User $from, User $to)
@@ -243,9 +238,6 @@ class AgendaManager
 
     /**
      * Find every EventInvitation for a given user and the replace him by another.
-     *
-     * @param User $from
-     * @param User $to
      *
      * @return int
      */

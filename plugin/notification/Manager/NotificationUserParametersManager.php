@@ -137,9 +137,6 @@ class NotificationUserParametersManager
     /**
      * Find all content for a given user and the replace him by another.
      *
-     * @param User $from
-     * @param User $to
-     *
      * @return int
      */
     public function replaceUser(User $from, User $to)

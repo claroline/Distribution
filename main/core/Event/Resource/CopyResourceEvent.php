@@ -42,8 +42,7 @@ class CopyResourceEvent extends Event
     /**
      * CopyResourceEvent constructor.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\AbstractResource $resource
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode     $copiedNode
+     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $copiedNode
      */
     public function __construct(AbstractResource $resource, AbstractResource $copy)
     {
@@ -85,8 +84,6 @@ class CopyResourceEvent extends Event
 
     /**
      * Sets the copy of the original resource.
-     *
-     * @param \Claroline\CoreBundle\Entity\Resource\AbstractResource $copy
      */
     public function setCopy(AbstractResource $copy)
     {

@@ -22,9 +22,6 @@ class UploadFileEvent extends Event
     /** @var PublicFile */
     private $file;
 
-    /**
-     * @param PublicFile $file
-     **/
     public function __construct(PublicFile $file)
     {
         $this->file = $file;

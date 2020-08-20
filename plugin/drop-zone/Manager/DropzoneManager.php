@@ -85,15 +85,7 @@ class DropzoneManager
     /**
      * DropzoneManager constructor.
      *
-     * @param Crud                         $crud
-     * @param SerializerProvider           $serializer
-     * @param Filesystem                   $fileSystem
-     * @param string                       $filesDir
-     * @param ObjectManager                $om
-     * @param ResourceEvaluationManager    $resourceEvalManager
-     * @param PlatformConfigurationHandler $configHandler
-     * @param EventDispatcherInterface     $eventDispatcher
-     * @param RoleManager                  $roleManager
+     * @param string $filesDir
      */
     public function __construct(
         Crud $crud,
@@ -127,8 +119,6 @@ class DropzoneManager
     /**
      * Serializes a Dropzone entity.
      *
-     * @param Dropzone $dropzone
-     *
      * @return array
      */
     public function serialize(Dropzone $dropzone)
@@ -138,8 +128,6 @@ class DropzoneManager
 
     /**
      * Serializes a Drop entity.
-     *
-     * @param Drop $drop
      *
      * @return array
      */
@@ -151,8 +139,6 @@ class DropzoneManager
     /**
      * Serializes a Document entity.
      *
-     * @param Document $document
-     *
      * @return array
      */
     public function serializeDocument(Document $document)
@@ -162,8 +148,6 @@ class DropzoneManager
 
     /**
      * Serializes a Correction entity.
-     *
-     * @param Correction $correction
      *
      * @return array
      */
@@ -175,8 +159,6 @@ class DropzoneManager
     /**
      * Serializes a Tool entity.
      *
-     * @param DropzoneTool $tool
-     *
      * @return array
      */
     public function serializeTool(DropzoneTool $tool)
@@ -187,8 +169,6 @@ class DropzoneManager
     /**
      * Serializes a Revision entity.
      *
-     * @param Revision $revision
-     *
      * @return array
      */
     public function serializeRevision(Revision $revision)
@@ -198,9 +178,6 @@ class DropzoneManager
 
     /**
      * Updates a Dropzone.
-     *
-     * @param Dropzone $dropzone
-     * @param array    $data
      *
      * @return Dropzone
      */
@@ -219,8 +196,6 @@ class DropzoneManager
 
     /**
      * Deletes a Dropzone.
-     *
-     * @param Dropzone $dropzone
      */
     public function delete(Dropzone $dropzone)
     {
@@ -238,8 +213,6 @@ class DropzoneManager
 
     /**
      * Sets Dropzone drop type to default.
-     *
-     * @param Dropzone $dropzone
      */
     public function setDefaultDropType(Dropzone $dropzone)
     {
@@ -251,8 +224,6 @@ class DropzoneManager
     /**
      * Gets all drops for given Dropzone.
      *
-     * @param Dropzone $dropzone
-     *
      * @return array
      */
     public function getAllDrops(Dropzone $dropzone)
@@ -263,9 +234,7 @@ class DropzoneManager
     /**
      * Gets user drop or creates one.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param bool     $withCreation
+     * @param bool $withCreation
      *
      * @return Drop
      */
@@ -298,10 +267,7 @@ class DropzoneManager
     /**
      * Gets team drop or creates one.
      *
-     * @param Dropzone $dropzone
-     * @param Team     $team
-     * @param User     $user
-     * @param bool     $withCreation
+     * @param bool $withCreation
      *
      * @return Drop
      */
@@ -353,9 +319,6 @@ class DropzoneManager
     /**
      * Gets Team drops or create one.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     *
      * @return array
      */
     public function getTeamDrops(Dropzone $dropzone, User $user)
@@ -367,8 +330,6 @@ class DropzoneManager
 
     /**
      * Deletes a Drop.
-     *
-     * @param Drop $drop
      */
     public function deleteDrop(Drop $drop)
     {
@@ -384,9 +345,6 @@ class DropzoneManager
 
     /**
      * Retrieves teamId of user.
-     *
-     * @param Dropzone $dropzone
-     * @param User     $user
      *
      * @return string|null
      */
@@ -415,8 +373,6 @@ class DropzoneManager
     /**
      * Creates a Document.
      *
-     * @param Drop     $drop
-     * @param User     $user
      * @param int      $documentType
      * @param mixed    $documentData
      * @param Revision $revision
@@ -452,9 +408,6 @@ class DropzoneManager
     /**
      * Creates Files Documents.
      *
-     * @param Drop     $drop
-     * @param User     $user
-     * @param array    $files
      * @param Revision $revision
      * @param bool     $isManager
      *
@@ -494,8 +447,6 @@ class DropzoneManager
 
     /**
      * Deletes a Document.
-     *
-     * @param Document $document
      */
     public function deleteDocument(Document $document)
     {
@@ -514,9 +465,6 @@ class DropzoneManager
 
     /**
      * Terminates a drop.
-     *
-     * @param Drop $drop
-     * @param User $user
      */
     public function submitDrop(Drop $drop, User $user)
     {
@@ -539,9 +487,6 @@ class DropzoneManager
 
     /**
      * Creates a revision for drop.
-     *
-     * @param Drop $drop
-     * @param User $user
      */
     public function submitDropForRevision(Drop $drop, User $user)
     {
@@ -564,8 +509,6 @@ class DropzoneManager
 
     /**
      * Computes Drop score from submitted Corrections.
-     *
-     * @param Drop $drop
      *
      * @return Drop
      */
@@ -592,8 +535,6 @@ class DropzoneManager
     /**
      * Unlocks Drop.
      *
-     * @param Drop $drop
-     *
      * @return Drop
      */
     public function unlockDrop(Drop $drop)
@@ -611,8 +552,6 @@ class DropzoneManager
 
     /**
      * Unlocks Drop user.
-     *
-     * @param Drop $drop
      *
      * @return Drop
      */
@@ -643,8 +582,6 @@ class DropzoneManager
     /**
      * Cancels Drop submission.
      *
-     * @param Drop $drop
-     *
      * @return Drop
      */
     public function cancelDropSubmission(Drop $drop)
@@ -660,8 +597,6 @@ class DropzoneManager
 
     /**
      * Closes all unfinished drops.
-     *
-     * @param Dropzone $dropzone
      */
     public function closeAllUnfinishedDrops(Dropzone $dropzone)
     {
@@ -685,9 +620,6 @@ class DropzoneManager
 
     /**
      * Updates a Correction.
-     *
-     * @param array $data
-     * @param User  $user
      *
      * @return Correction
      */
@@ -718,9 +650,6 @@ class DropzoneManager
 
     /**
      * Submits a Correction.
-     *
-     * @param Correction $correction
-     * @param User       $user
      *
      * @return Correction
      */
@@ -766,8 +695,6 @@ class DropzoneManager
     /**
      * Switch Correction validation.
      *
-     * @param Correction $correction
-     *
      * @return Correction
      */
     public function switchCorrectionValidation(Correction $correction)
@@ -788,8 +715,6 @@ class DropzoneManager
 
     /**
      * Deletes a Correction.
-     *
-     * @param Correction $correction
      */
     public function deleteCorrection(Correction $correction)
     {
@@ -809,8 +734,7 @@ class DropzoneManager
     /**
      * Denies a Correction.
      *
-     * @param Correction $correction
-     * @param string     $comment
+     * @param string $comment
      *
      * @return Correction
      */
@@ -828,8 +752,6 @@ class DropzoneManager
 
     /**
      * Computes Correction score from criteria grades.
-     *
-     * @param Correction $correction
      *
      * @return Correction
      */
@@ -880,8 +802,6 @@ class DropzoneManager
     /**
      * Updates a Tool.
      *
-     * @param array $data
-     *
      * @return Tool
      */
     public function saveTool(array $data)
@@ -895,8 +815,6 @@ class DropzoneManager
 
     /**
      * Deletes a Tool.
-     *
-     * @param DropzoneTool $tool
      */
     public function deleteTool(DropzoneTool $tool)
     {
@@ -906,9 +824,6 @@ class DropzoneManager
 
     /**
      * Gets unifnished drops from teams list.
-     *
-     * @param Dropzone $dropzone
-     * @param array    $teamsIds
      *
      * @return array
      */
@@ -920,9 +835,8 @@ class DropzoneManager
     /**
      * Gets user|team drop if it is finished.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param string   $teamId
+     * @param User   $user
+     * @param string $teamId
      *
      * @return array
      */
@@ -954,9 +868,8 @@ class DropzoneManager
     /**
      * Gets drops corrected by user|team.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param string   $teamId
+     * @param User   $user
+     * @param string $teamId
      *
      * @return array
      */
@@ -983,9 +896,8 @@ class DropzoneManager
     /**
      * Gets drops corrected by user|team but that are not finished.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param string   $teamId
+     * @param User   $user
+     * @param string $teamId
      *
      * @return array
      */
@@ -1012,11 +924,10 @@ class DropzoneManager
     /**
      * Gets a drop for peer evaluation.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param string   $teamId
-     * @param string   $teamName
-     * @param bool     $withCreation
+     * @param User   $user
+     * @param string $teamId
+     * @param string $teamName
+     * @param bool   $withCreation
      *
      * @return Drop | null
      */
@@ -1053,10 +964,9 @@ class DropzoneManager
     /**
      * Gets available drop for peer evaluation.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     * @param string   $teamId
-     * @param string   $teamName
+     * @param User   $user
+     * @param string $teamId
+     * @param string $teamName
      *
      * @return Drop | null
      */
@@ -1110,9 +1020,6 @@ class DropzoneManager
     /**
      * Executes a Tool on a Document.
      *
-     * @param DropzoneTool $tool
-     * @param Document     $document
-     *
      * @return Document
      */
     public function executeTool(DropzoneTool $tool, Document $document)
@@ -1150,10 +1057,8 @@ class DropzoneManager
     /**
      * Associates data generated by a Tool to a Document.
      *
-     * @param DropzoneTool $tool
-     * @param Document     $document
-     * @param string       $idDocument
-     * @param string       $reportUrl
+     * @param string $idDocument
+     * @param string $reportUrl
      */
     public function createToolDocument(DropzoneTool $tool, Document $document, $idDocument = null, $reportUrl = null)
     {
@@ -1169,9 +1074,7 @@ class DropzoneManager
     /**
      * Computes Complete status for a user.
      *
-     * @param Dropzone $dropzone
-     * @param array    $users
-     * @param Drop     $drop
+     * @param Drop $drop
      */
     public function checkCompletion(Dropzone $dropzone, array $users, Drop $drop = null)
     {
@@ -1216,8 +1119,6 @@ class DropzoneManager
 
     /**
      * Computes Success status for a Drop.
-     *
-     * @param Drop $drop
      */
     public function checkSuccess(Drop $drop)
     {
@@ -1277,9 +1178,6 @@ class DropzoneManager
     /**
      * Retrieves ResourceUserEvaluation for a Dropzone and an user or creates one.
      *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     *
      * @return ResourceUserEvaluation
      */
     public function getResourceUserEvaluation(Dropzone $dropzone, User $user)
@@ -1290,9 +1188,7 @@ class DropzoneManager
     /**
      * Updates progression of ResourceEvaluation for drop.
      *
-     * @param Dropzone $dropzone
-     * @param Drop     $drop
-     * @param int      $progression
+     * @param int $progression
      *
      * @return ResourceUserEvaluation
      */
@@ -1325,8 +1221,6 @@ class DropzoneManager
     /**
      * Retrieves all corrections made for a Dropzone.
      *
-     * @param Dropzone $dropzone
-     *
      * @return array
      */
     public function getAllCorrectionsData(Dropzone $dropzone)
@@ -1348,8 +1242,6 @@ class DropzoneManager
     }
 
     /**
-     * @param array $drops
-     *
      * @return string
      */
     public function generateArchiveForDrops(array $drops)
@@ -1410,9 +1302,6 @@ class DropzoneManager
     /**
      * Copy a Dropzone resource.
      *
-     * @param Dropzone $dropzone
-     * @param Dropzone $newDropzone
-     *
      * @return Dropzone
      */
     public function copyDropzone(Dropzone $dropzone, Dropzone $newDropzone)
@@ -1463,9 +1352,6 @@ class DropzoneManager
     /**
      * Find all content for a given user and the replace him by another.
      *
-     * @param User $from
-     * @param User $to
-     *
      * @return int
      */
     public function replaceDropUser(User $from, User $to)
@@ -1485,9 +1371,6 @@ class DropzoneManager
 
     /**
      * Find all content for a given user and the replace him by another.
-     *
-     * @param User $from
-     * @param User $to
      *
      * @return int
      */
@@ -1509,9 +1392,6 @@ class DropzoneManager
     /**
      * Find all content for a given user and the replace him by another.
      *
-     * @param User $from
-     * @param User $to
-     *
      * @return int
      */
     public function replaceDocumentUser(User $from, User $to)
@@ -1532,9 +1412,8 @@ class DropzoneManager
     /**
      * Fetches all drops and corrections and updates their score depending on new score max.
      *
-     * @param Dropzone $dropzone
-     * @param float    $oldScoreMax
-     * @param float    $newScoreMax
+     * @param float $oldScoreMax
+     * @param float $newScoreMax
      */
     public function updateScoreByScoreMax(Dropzone $dropzone, $oldScoreMax, $newScoreMax)
     {

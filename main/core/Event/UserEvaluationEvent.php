@@ -24,8 +24,6 @@ class UserEvaluationEvent extends Event
 
     /**
      * ResourceEvaluationEvent constructor.
-     *
-     * @param AbstractUserEvaluation $evaluation
      */
     public function __construct(AbstractUserEvaluation $evaluation)
     {

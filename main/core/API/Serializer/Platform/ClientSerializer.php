@@ -52,16 +52,7 @@ class ClientSerializer
     /**
      * ClientSerializer constructor.
      *
-     * @param string                       $env
-     * @param EventDispatcherInterface     $eventDispatcher
-     * @param TokenStorageInterface        $tokenStorage
-     * @param RequestStack                 $requestStack
-     * @param ObjectManager                $om
-     * @param PlatformConfigurationHandler $config
-     * @param PlatformManager              $platformManager
-     * @param VersionManager               $versionManager
-     * @param PluginManager                $pluginManager
-     * @param ResourceTypeSerializer       $resourceTypeSerializer
+     * @param string $env
      */
     public function __construct(
         $env,

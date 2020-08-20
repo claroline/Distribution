@@ -17,7 +17,7 @@ class RichTextFormatEvent extends Event
 {
     private $text;
 
-    public function __construct($text, &$_data = array(), &$_files = array())
+    public function __construct($text, &$_data = [], &$_files = [])
     {
         $this->text = $text;
         $this->_data = $_data;

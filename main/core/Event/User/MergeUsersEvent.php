@@ -21,10 +21,6 @@ class MergeUsersEvent extends Event
 
     /**
      * MergeUsersEvent constructor.
-     *
-     * @param User  $kept
-     * @param User  $removed
-     * @param array $messages
      */
     public function __construct(
         User $kept,

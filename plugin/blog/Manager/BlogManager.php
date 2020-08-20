@@ -44,10 +44,6 @@ class BlogManager
     }
 
     /**
-     * @param Workspace $workspace
-     * @param array     $files
-     * @param Blog      $object
-     *
      * @return array
      */
     public function exportBlog(Workspace $workspace, array &$files, Blog $object)
@@ -139,9 +135,7 @@ class BlogManager
     }
 
     /**
-     * @param array  $data
      * @param string $rootPath
-     * @param User   $owner
      *
      * @return Blog
      */
@@ -271,7 +265,6 @@ class BlogManager
 
     /**
      * @param string $email
-     * @param User   $owner
      *
      * @return User|null
      */
@@ -466,9 +459,6 @@ class BlogManager
 
     /**
      * Find all member for a given user and the replace him by another.
-     *
-     * @param User $from
-     * @param User $to
      */
     public function replaceMemberAuthor(User $from, User $to)
     {

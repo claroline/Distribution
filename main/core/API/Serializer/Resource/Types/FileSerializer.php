@@ -26,9 +26,7 @@ class FileSerializer
     /**
      * ResourceNodeManager constructor.
      *
-     * @param RouterInterface          $router
-     * @param string                   $filesDir
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param string $filesDir
      */
     public function __construct(
         RouterInterface $router,

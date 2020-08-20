@@ -59,9 +59,7 @@ class StrictDispatcher
             "Claroline\CoreBundle\Event\\{$shortEventClassName}Event";
 
         if (!class_exists($className)) {
-            throw new MissingEventClassException(
-                "No event class matches the short name '{$shortEventClassName}' (looked for '{$className})"
-            );
+            throw new MissingEventClassException("No event class matches the short name '{$shortEventClassName}' (looked for '{$className})");
         }
 
         $rEvent = new \ReflectionClass($className);

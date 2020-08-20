@@ -48,8 +48,6 @@ class GetDataEvent extends Event implements MandatoryEventInterface, DataConveyo
     /**
      * GetDataEvent constructor.
      *
-     * @param string    $context
-     * @param array     $options
      * @param User      $user
      * @param Workspace $workspace
      */

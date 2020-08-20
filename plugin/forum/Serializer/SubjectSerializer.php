@@ -70,14 +70,6 @@ class SubjectSerializer
 
     /**
      * SubjectSerializer constructor.
-     *
-     * @param FinderProvider           $finder
-     * @param FileUtilities            $fileUt
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param PublicFileSerializer     $fileSerializer
-     * @param ObjectManager            $om
-     * @param UserSerializer           $userSerializer
-     * @param ForumManager             $manager
      */
     public function __construct(
         FinderProvider $finder,
@@ -101,9 +93,6 @@ class SubjectSerializer
 
     /**
      * Serializes a Subject entity.
-     *
-     * @param Subject $subject
-     * @param array   $options
      *
      * @return array
      */
@@ -146,9 +135,7 @@ class SubjectSerializer
     /**
      * Deserializes data into a Subject entity.
      *
-     * @param array   $data
-     * @param Subject $subject
-     * @param array   $options
+     * @param array $data
      *
      * @return Subject
      */
@@ -253,10 +240,6 @@ class SubjectSerializer
 
     /**
      * Deserializes Item tags.
-     *
-     * @param Subject $subject
-     * @param array   $tags
-     * @param array   $options
      */
     private function deserializeTags(Subject $subject, array $tags = [], array $options = [])
     {

@@ -56,12 +56,7 @@ class SearchObjectsEvent extends Event
     /**
      * SearchObjectEvent constructor.
      *
-     * @param QueryBuilder $queryBuilder
-     * @param string       $objectClass
-     * @param array        $filters
-     * @param array        $sortBy
-     * @param int          $page
-     * @param int          $limit
+     * @param array $sortBy
      */
     public function __construct(
         QueryBuilder $queryBuilder,
@@ -109,8 +104,6 @@ class SearchObjectsEvent extends Event
 
     /**
      * Set filters.
-     *
-     * @param array $filters
      */
     public function setFilters(array $filters)
     {

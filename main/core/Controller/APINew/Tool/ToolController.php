@@ -64,16 +64,6 @@ class ToolController extends AbstractApiController
 
     /**
      * ToolController constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param ObjectManager                 $om
-     * @param EventDispatcherInterface      $eventDispatcher
-     * @param Crud                          $crud
-     * @param SerializerProvider            $serializer
-     * @param ToolManager                   $toolManager
-     * @param ToolRightsManager             $rightsManager
-     * @param ToolMaskDecoderManager        $maskManager
-     * @param LogConnectManager             $logConnectManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -103,10 +93,9 @@ class ToolController extends AbstractApiController
      * @EXT\Route("/configure/{name}/{context}/{contextId}", name="apiv2_tool_configure")
      * @EXT\Method("PUT")
      *
-     * @param Request $request
-     * @param string  $name
-     * @param string  $context
-     * @param string  $contextId
+     * @param string $name
+     * @param string $context
+     * @param string $contextId
      *
      * @return JsonResponse
      */
@@ -184,10 +173,9 @@ class ToolController extends AbstractApiController
      * @EXT\Route("/rights/{name}/{context}/{contextId}", name="apiv2_tool_update_rights")
      * @EXT\Method("PUT")
      *
-     * @param string  $name
-     * @param string  $context
-     * @param string  $contextId
-     * @param Request $request
+     * @param string $name
+     * @param string $context
+     * @param string $contextId
      *
      * @return JsonResponse
      */

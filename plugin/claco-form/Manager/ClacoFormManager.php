@@ -108,15 +108,7 @@ class ClacoFormManager
     /**
      * ClacoFormManager constructor.
      *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param EventDispatcherInterface      $eventDispatcher
-     * @param Filesystem                    $fileSystem
-     * @param string                        $filesDir
-     * @param MessageManager                $messageManager
-     * @param ObjectManager                 $om
-     * @param RouterInterface               $router
-     * @param TokenStorageInterface         $tokenStorage
-     * @param TranslatorInterface           $translator
+     * @param string $filesDir
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -1320,8 +1312,6 @@ class ClacoFormManager
     }
 
     /**
-     * @param ClacoForm $clacoForm
-     *
      * @return Entry[]|ArrayCollection
      */
     public function getAllEntries(ClacoForm $clacoForm)
@@ -1605,9 +1595,6 @@ class ClacoFormManager
     /**
      * Find all content for a given user and replace him by another.
      *
-     * @param User $from
-     * @param User $to
-     *
      * @return int
      */
     public function replaceCategoryManager(User $from, User $to)
@@ -1629,9 +1616,6 @@ class ClacoFormManager
     /**
      * Find all content for a given user and replace him by another.
      *
-     * @param User $from
-     * @param User $to
-     *
      * @return int
      */
     public function replaceCommentUser(User $from, User $to)
@@ -1651,9 +1635,6 @@ class ClacoFormManager
 
     /**
      * Find all content for a given user and replace him by another.
-     *
-     * @param User $from
-     * @param User $to
      *
      * @return int
      */
@@ -1675,9 +1656,6 @@ class ClacoFormManager
 
     /**
      * Find all content for a given user and replace him by another.
-     *
-     * @param User $from
-     * @param User $to
      *
      * @return int
      */
@@ -1709,10 +1687,6 @@ class ClacoFormManager
 
     /**
      * Creates an entries from data from a csv.
-     *
-     * @param ClacoForm $clacoForm
-     * @param User      $user
-     * @param array     $data
      *
      * @return int
      */

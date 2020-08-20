@@ -118,8 +118,6 @@ abstract class LogGenericEvent extends Event implements RestrictionnableInterfac
     /**
      * Sets receiver's data.
      *
-     * @param User $receiver
-     *
      * @return $this
      */
     public function setReceiver(User $receiver)
@@ -245,8 +243,6 @@ abstract class LogGenericEvent extends Event implements RestrictionnableInterfac
 
     /**
      * Used when the doer isn't the logged user.
-     *
-     * @param User $doer
      */
     public function setDoer(User $doer)
     {

@@ -38,8 +38,6 @@ class OpenToolEvent extends Event implements DataConveyorEventInterface
     /**
      * Sets data to return in the api.
      * NB. It MUST contain serialized structures.
-     *
-     * @param array $data
      */
     public function setData(array $data)
     {

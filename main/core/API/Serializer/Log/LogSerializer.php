@@ -31,12 +31,6 @@ class LogSerializer
 
     /**
      * LogSerializer constructor.
-     *
-     * @param TranslatorInterface      $translator
-     * @param EventDispatcherInterface $dispatcher
-     * @param UserSerializer           $userSerializer
-     * @param WorkspaceSerializer      $workspaceSerializer
-     * @param ResourceNodeSerializer   $resourceSerializer
      */
     public function __construct(
         TranslatorInterface $translator,
@@ -64,9 +58,6 @@ class LogSerializer
 
     /**
      * Serializes a Log entity.
-     *
-     * @param Log   $log
-     * @param array $options
      *
      * @return array
      */
@@ -99,7 +90,7 @@ class LogSerializer
         }
 
         /** @var LogCreateDelegateViewEvent $event */
-        $event = $this->dispatcher->dispatch(new LogCreateDelegateViewEvent($log),$eventName);
+        $event = $this->dispatcher->dispatch(new LogCreateDelegateViewEvent($log), $eventName);
         $description = $this->processContent($event->getResponseContent());
 
         $serialized = [

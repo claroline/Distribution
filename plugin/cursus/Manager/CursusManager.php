@@ -79,16 +79,6 @@ class CursusManager
     private $sessionQueueRepo;
     private $workspaceRepo;
 
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param MailManager              $mailManager
-     * @param ObjectManager            $om
-     * @param RoleManager              $roleManager
-     * @param UrlGeneratorInterface    $router
-     * @param TemplateManager          $templateManager
-     * @param TokenStorageInterface    $tokenStorage
-     * @param WorkspaceManager         $workspaceManager
-     */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         MailManager $mailManager,
@@ -123,9 +113,6 @@ class CursusManager
     /**
      * Creates Cursus for each Course and add them as children of given Cursus.
      *
-     * @param Cursus $parent
-     * @param array  $courses
-     *
      * @return Cursus
      */
     public function addCoursesToCursus(Cursus $parent, array $courses)
@@ -158,9 +145,7 @@ class CursusManager
     /**
      * Adds users to a cursus.
      *
-     * @param Cursus $cursus
-     * @param array  $users
-     * @param int    $type
+     * @param int $type
      *
      * @return array
      */
@@ -203,9 +188,7 @@ class CursusManager
     /**
      * Adds groups to a cursus.
      *
-     * @param Cursus $cursus
-     * @param array  $groups
-     * @param int    $type
+     * @param int $type
      *
      * @return array
      */
@@ -248,9 +231,7 @@ class CursusManager
     /**
      * Adds users to a session.
      *
-     * @param CourseSession $session
-     * @param array         $users
-     * @param int           $type
+     * @param int $type
      *
      * @return array
      */
@@ -301,9 +282,7 @@ class CursusManager
     /**
      * Adds groups to a session.
      *
-     * @param CourseSession $session
-     * @param array         $groups
-     * @param int           $type
+     * @param int $type
      *
      * @return array
      */
@@ -345,9 +324,6 @@ class CursusManager
     /**
      * Adds users to a session event.
      *
-     * @param SessionEvent $event
-     * @param array        $users
-     *
      * @return array
      */
     public function addUsersToSessionEvent(SessionEvent $event, array $users)
@@ -380,9 +356,7 @@ class CursusManager
     /**
      * Registers an user to default session of a course if allowed.
      *
-     * @param Course $course
-     * @param User   $user
-     * @param bool   $skipValidation
+     * @param bool $skipValidation
      *
      * @return CourseRegistrationQueue|CourseSessionUser|CourseSessionRegistrationQueue|null
      */
@@ -427,9 +401,7 @@ class CursusManager
     /**
      * Registers an user to a session if allowed.
      *
-     * @param CourseSession $session
-     * @param User          $user
-     * @param bool          $skipValidation
+     * @param bool $skipValidation
      *
      * @return CourseSessionUser|CourseSessionRegistrationQueue
      */
@@ -468,9 +440,6 @@ class CursusManager
 
     /**
      * Registers an user to a session event.
-     *
-     * @param SessionEvent $event
-     * @param User         $user
      */
     public function registerUserToSessionEvent(SessionEvent $event, User $user)
     {
@@ -482,8 +451,6 @@ class CursusManager
     /**
      * Creates a queue for course and user.
      *
-     * @param Course    $course
-     * @param User      $user
      * @param int       $mask
      * @param \DateTime $date
      *
@@ -512,10 +479,8 @@ class CursusManager
     /**
      * Creates a queue for session and user.
      *
-     * @param CourseSession $session
-     * @param User          $user
-     * @param int           $mask
-     * @param \DateTime     $date
+     * @param int       $mask
+     * @param \DateTime $date
      *
      * @return CourseSessionRegistrationQueue
      */
@@ -542,9 +507,7 @@ class CursusManager
     /**
      * Validates user registration to session.
      *
-     * @param CourseSessionRegistrationQueue $queue
-     * @param User                           $user
-     * @param int                            $type
+     * @param int $type
      */
     public function validateSessionQueueByType(CourseSessionRegistrationQueue $queue, User $user, $type)
     {
@@ -598,8 +561,6 @@ class CursusManager
 
     /**
      * Registers user to session from session queue.
-     *
-     * @param CourseSessionRegistrationQueue $queue
      */
     public function validateSessionQueue(CourseSessionRegistrationQueue $queue)
     {
@@ -616,8 +577,6 @@ class CursusManager
 
     /**
      * Deletes list of entities.
-     *
-     * @param array $entities
      */
     public function deleteEntities(array $entities)
     {
@@ -631,8 +590,6 @@ class CursusManager
 
     /**
      * Generates a workspace from CourseSession.
-     *
-     * @param CourseSession $session
      *
      * @return Workspace
      */
@@ -668,9 +625,8 @@ class CursusManager
     /**
      * Gets/generates workspace role for session depending on given role name and type.
      *
-     * @param Workspace $workspace
-     * @param string    $roleName
-     * @param string    $type
+     * @param string $roleName
+     * @param string $type
      *
      * @return \Claroline\CoreBundle\Entity\Role
      */
@@ -712,9 +668,7 @@ class CursusManager
     /**
      * Sets all sessions from a course (excepted given one) as non-default.
      *
-     * @param Course             $course
-     * @param CourseSession|null $session
-     * @param bool               $noFlush
+     * @param bool $noFlush
      */
     public function resetDefaultSessionByCourse(Course $course, CourseSession $session = null, $noFlush = true)
     {
@@ -734,8 +688,7 @@ class CursusManager
     /**
      * Checks user limit of a session to know if there is still place for the given number of users.
      *
-     * @param CourseSession $session
-     * @param int           $count
+     * @param int $count
      *
      * @return bool
      */
@@ -766,8 +719,7 @@ class CursusManager
     /**
      * Checks user limit of a session event to know if there is still place for the given number of users.
      *
-     * @param SessionEvent $event
-     * @param int          $count
+     * @param int $count
      *
      * @return bool
      */
@@ -787,10 +739,6 @@ class CursusManager
 
     /**
      * Generates and sends session certificate for given users.
-     *
-     * @param CourseSession $session
-     * @param array         $users
-     * @param Template|null $template
      */
     public function generateSessionCertificates(CourseSession $session, array $users, Template $template = null)
     {
@@ -905,9 +853,6 @@ class CursusManager
 
     /**
      * Generates certificates for all session learners.
-     *
-     * @param CourseSession $session
-     * @param Template|null $template
      */
     public function generateAllSessionCertificates(CourseSession $session, Template $template = null)
     {
@@ -939,10 +884,6 @@ class CursusManager
 
     /**
      * Generates and sends session event certificate for given users.
-     *
-     * @param SessionEvent  $event
-     * @param array         $users
-     * @param Template|null $template
      */
     public function generateEventCertificates(SessionEvent $event, array $users, Template $template = null)
     {
@@ -1042,9 +983,6 @@ class CursusManager
 
     /**
      * Generates certificates for all session event users.
-     *
-     * @param SessionEvent  $event
-     * @param Template|null $template
      */
     public function generateAllEventCertificates(SessionEvent $event, Template $template = null)
     {
@@ -1061,9 +999,6 @@ class CursusManager
 
     /**
      * Sends invitation to all session learners.
-     *
-     * @param CourseSession $session
-     * @param Template|null $template
      */
     public function inviteAllSessionLearners(CourseSession $session, Template $template = null)
     {
@@ -1095,10 +1030,6 @@ class CursusManager
 
     /**
      * Sends invitation to session to given users.
-     *
-     * @param CourseSession $session
-     * @param array         $users
-     * @param Template|null $template
      */
     public function sendSessionInvitation(CourseSession $session, array $users, Template $template = null)
     {
@@ -1148,9 +1079,6 @@ class CursusManager
 
     /**
      * Sends invitation to all session event users.
-     *
-     * @param SessionEvent  $event
-     * @param Template|null $template
      */
     public function inviteAllSessionEventUsers(SessionEvent $event, Template $template = null)
     {
@@ -1167,10 +1095,6 @@ class CursusManager
 
     /**
      * Sends invitation to session event to given users.
-     *
-     * @param SessionEvent  $event
-     * @param array         $users
-     * @param Template|null $template
      */
     public function sendEventInvitation(SessionEvent $event, array $users, Template $template = null)
     {

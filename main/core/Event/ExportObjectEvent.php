@@ -22,9 +22,7 @@ class ExportObjectEvent extends Event
     /**
      * ExportObjectEvent constructor.
      *
-     * @param mixed   $object
-     * @param FileBag $fileBag
-     * @param array   $data
+     * @param mixed $object
      */
     public function __construct(
         $object,

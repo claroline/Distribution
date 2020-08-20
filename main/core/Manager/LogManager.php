@@ -28,7 +28,7 @@ class LogManager
     /** @var ObjectManager */
     private $om;
 
-    /** @var LogRepository $logRepository */
+    /** @var LogRepository */
     private $logRepository;
 
     /** @var FinderProvider */
@@ -45,12 +45,6 @@ class LogManager
 
     /**
      * LogManager constructor.
-     *
-     * @param ObjectManager            $objectManager
-     * @param FinderProvider           $finder
-     * @param TranslatorInterface      $translator
-     * @param ClaroUtilities           $ut
-     * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
         ObjectManager $objectManager,
@@ -177,8 +171,6 @@ class LogManager
     /**
      * Returns users' actions with their corresponding chart data.
      *
-     * @param array $finderParams
-     *
      * @return array
      */
     public function getUserActionsList(array $finderParams = [])
@@ -249,8 +241,6 @@ class LogManager
     /**
      * Exports users' actions for a given query.
      *
-     * @param array $finderParams
-     *
      * @return bool|resource
      */
     public function exportUserActionToCsv(array $finderParams = [])
@@ -292,10 +282,6 @@ class LogManager
 
     /**
      * Formats raw data to the appropriate charts format.
-     *
-     * @param array          $data
-     * @param \DateTime|null $minDate
-     * @param \DateTime|null $maxDate
      *
      * @return array
      */

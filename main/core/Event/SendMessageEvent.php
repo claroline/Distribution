@@ -29,7 +29,7 @@ class SendMessageEvent extends Event
         $content,
         $object,
         AbstractRoleSubject $receiver = null,
-        array $users = array(),
+        array $users = [],
         $withMail = true
     ) {
         $this->sender = $sender;

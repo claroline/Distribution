@@ -42,11 +42,6 @@ class AdministrationController
 
     /**
      * AdministrationController constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param TokenStorageInterface         $tokenStorage
-     * @param EventDispatcherInterface      $eventDispatcher
-     * @param ToolManager                   $toolManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,

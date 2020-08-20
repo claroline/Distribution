@@ -68,17 +68,6 @@ class WorkspaceController
 
     /**
      * WorkspaceController constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param ObjectManager                 $om
-     * @param EventDispatcherInterface      $eventDispatcher
-     * @param TokenStorageInterface         $tokenStorage
-     * @param SerializerProvider            $serializer
-     * @param ToolManager                   $toolManager
-     * @param TranslatorInterface           $translator
-     * @param WorkspaceManager              $manager
-     * @param WorkspaceRestrictionsManager  $restrictionsManager
-     * @param EvaluationManager             $evaluationManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -108,9 +97,8 @@ class WorkspaceController
      * @EXT\Route("/{slug}", name="claro_workspace_open")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      *
-     * @param string  $slug
-     * @param User    $user
-     * @param Request $request
+     * @param string $slug
+     * @param User   $user
      *
      * @throws AccessDeniedException
      *
@@ -192,8 +180,7 @@ class WorkspaceController
      *      options={"mapping": {"id": "uuid"}}
      * )
      *
-     * @param Workspace $workspace
-     * @param string    $toolName
+     * @param string $toolName
      *
      * @return Response
      */
@@ -228,9 +215,6 @@ class WorkspaceController
      *     class="ClarolineCoreBundle:Workspace\Workspace",
      *     options={"mapping": {"id": "uuid"}}
      * )
-     *
-     * @param Workspace $workspace
-     * @param Request   $request
      *
      * @return JsonResponse
      */

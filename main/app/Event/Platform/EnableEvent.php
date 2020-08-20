@@ -21,9 +21,6 @@ class EnableEvent extends Event
     /** @var string */
     private $cancellationMessage = null;
 
-    /**
-     * @return bool
-     */
     public function isCanceled(): bool
     {
         return $this->canceled;

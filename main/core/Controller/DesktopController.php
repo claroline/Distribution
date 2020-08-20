@@ -55,12 +55,6 @@ class DesktopController
 
     /**
      * DesktopController constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param EventDispatcherInterface      $eventDispatcher
-     * @param ParametersSerializer          $parametersSerializer
-     * @param SerializerProvider            $serializer
-     * @param ToolManager                   $toolManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -147,8 +141,6 @@ class DesktopController
      *
      * @EXT\Route("/tools", name="claro_desktop_tools")
      * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
-     *
-     * @param User|null $currentUser
      *
      * @return JsonResponse
      */

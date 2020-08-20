@@ -24,8 +24,6 @@ class OpenWorkspaceEvent extends Event
 
     /**
      * OpenWorkspaceEvent constructor.
-     *
-     * @param Workspace $workspace
      */
     public function __construct(Workspace $workspace)
     {

@@ -32,8 +32,6 @@ class SectionManager
     protected $eventDispatcher;
 
     /**
-     * @param ObjectManager     $om
-     * @param SectionSerializer $sectionSerializer
      * @param $eventDispatcher
      */
     public function __construct(
@@ -182,9 +180,6 @@ class SectionManager
 
     /**
      * Find all content for a given user and the replace him by another.
-     *
-     * @param User $from
-     * @param User $to
      *
      * @return int
      */

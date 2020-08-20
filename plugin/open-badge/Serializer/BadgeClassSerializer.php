@@ -91,9 +91,6 @@ class BadgeClassSerializer
     /**
      * Serializes a Badge entity.
      *
-     * @param BadgeClass $badge
-     * @param array      $options
-     *
      * @return array
      */
     public function serialize(BadgeClass $badge, array $options = [])
@@ -161,7 +158,6 @@ class BadgeClassSerializer
      *
      * @param array      $data
      * @param BadgeClass $badge
-     * @param array      $options
      *
      * @return BadgeClass
      */

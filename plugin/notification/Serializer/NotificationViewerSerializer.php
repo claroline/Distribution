@@ -28,12 +28,6 @@ class NotificationViewerSerializer
 
     /**
      * NotificationViewerSerializer constructor.
-     *
-     * @param NotificationSerializer       $notificationSerializer
-     * @param PlatformConfigurationHandler $configHandler
-     * @param EventDispatcherInterface     $eventDispatcher
-     * @param UserSerializer               $userSerializer
-     * @param ObjectManager                $om
      */
     public function __construct(
         NotificationSerializer $notificationSerializer,

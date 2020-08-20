@@ -50,14 +50,6 @@ class LogListener
 
     /**
      * LogListener constructor.
-     *
-     * @param ObjectManager                $om
-     * @param TokenStorageInterface        $tokenStorage
-     * @param RequestStack                 $requestStack
-     * @param ContainerInterface           $container
-     * @param RoleManager                  $roleManager
-     * @param PlatformConfigurationHandler $ch
-     * @param LogConnectManager            $logConnectManager
      */
     public function __construct(
         ObjectManager $om,
@@ -228,8 +220,6 @@ class LogListener
     /**
      * Is a repeat if the session contains a same logSignature for the same action category.
      *
-     * @param LogGenericEvent $event
-     *
      * @return bool
      */
     public function isARepeat(LogGenericEvent $event)
@@ -326,9 +316,6 @@ class LogListener
         }
     }
 
-    /**
-     * @param LogGenericEvent $event
-     */
     public function onLog(LogGenericEvent $event)
     {
         $log = null;
@@ -351,9 +338,6 @@ class LogListener
         }
     }
 
-    /**
-     * @param LogCreateDelegateViewEvent $event
-     */
     public function onLogListItem(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
@@ -365,9 +349,6 @@ class LogListener
         $event->stopPropagation();
     }
 
-    /**
-     * @param LogCreateDelegateViewEvent $event
-     */
     public function onLogDetails(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
@@ -398,9 +379,6 @@ class LogListener
      * Checks if a tool has been opened between 2 resources opening.
      * If it is the case, the resource opening will not be labelled as a repeat even if it is the same resource.
      * The same is checked between 2 tools opening.
-     *
-     * @param SessionInterface $session
-     * @param LogGenericEvent  $event
      *
      * @return bool
      */

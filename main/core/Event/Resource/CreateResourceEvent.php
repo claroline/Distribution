@@ -25,8 +25,6 @@ class CreateResourceEvent extends Event
 
     /**
      * CreateResourceEvent constructor.
-     *
-     * @param AbstractResource $resource
      */
     public function __construct(AbstractResource $resource)
     {

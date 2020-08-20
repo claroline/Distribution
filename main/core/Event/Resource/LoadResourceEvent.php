@@ -37,8 +37,7 @@ class LoadResourceEvent extends Event implements MandatoryEventInterface, DataCo
     /**
      * LoadResourceEvent constructor.
      *
-     * @param AbstractResource $resource
-     * @param bool             $embedded
+     * @param bool $embedded
      */
     public function __construct(AbstractResource $resource, $embedded = false)
     {
@@ -74,8 +73,6 @@ class LoadResourceEvent extends Event implements MandatoryEventInterface, DataCo
     /**
      * Sets data to return in the api.
      * NB. It MUST contain serialized structures.
-     *
-     * @param array $data
      */
     public function setData(array $data)
     {
