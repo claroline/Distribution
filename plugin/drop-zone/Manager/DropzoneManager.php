@@ -212,7 +212,7 @@ class DropzoneManager
         $uow->computeChangeSets();
         $changeSet = $uow->getEntityChangeSet($dropzone);
 
-        $this->eventDispatcher->dispatch('log', new LogDropzoneConfigureEvent($dropzone, $changeSet));
+        $this->eventDispatcher->dispatch(new LogDropzoneConfigureEvent($dropzone, $changeSet), 'log');
 
         return $dropzone;
     }
@@ -289,7 +289,7 @@ class DropzoneManager
             );
             $this->om->endFlushSuite();
 
-            $this->eventDispatcher->dispatch('log', new LogDropStartEvent($dropzone, $drop));
+            $this->eventDispatcher->dispatch(new LogDropStartEvent($dropzone, $drop), 'log');
         }
 
         return $drop;
@@ -332,7 +332,7 @@ class DropzoneManager
                 $this->om->persist($drop);
                 $this->om->endFlushSuite();
 
-                $this->eventDispatcher->dispatch('log', new LogDropStartEvent($dropzone, $drop));
+                $this->eventDispatcher->dispatch(new LogDropStartEvent($dropzone, $drop), 'log');
             } elseif (!$drop->hasUser($user)) {
                 $this->om->startFlushSuite();
                 $drop->addUser($user);
@@ -444,7 +444,7 @@ class DropzoneManager
         $this->om->persist($document);
         $this->om->flush();
 
-        $this->eventDispatcher->dispatch('log', new LogDocumentCreateEvent($drop->getDropzone(), $drop, $document));
+        $this->eventDispatcher->dispatch(new LogDocumentCreateEvent($drop->getDropzone(), $drop, $document), 'log');
 
         return $document;
     }
@@ -486,7 +486,7 @@ class DropzoneManager
 
         //tracking for each document, after flush
         foreach ($documentEntities as $entity) {
-            $this->eventDispatcher->dispatch('log', new LogDocumentCreateEvent($drop->getDropzone(), $drop, $entity));
+            $this->eventDispatcher->dispatch(new LogDocumentCreateEvent($drop->getDropzone(), $drop, $entity), 'log');
         }
 
         return $documents;
@@ -509,7 +509,7 @@ class DropzoneManager
         $this->om->remove($document);
         $this->om->flush();
 
-        $this->eventDispatcher->dispatch('log', new LogDocumentDeleteEvent($document->getDrop()->getDropzone(), $document->getDrop(), $document));
+        $this->eventDispatcher->dispatch(new LogDocumentDeleteEvent($document->getDrop()->getDropzone(), $document->getDrop(), $document), 'log');
     }
 
     /**
@@ -534,7 +534,7 @@ class DropzoneManager
 
         $this->om->endFlushSuite();
 
-        $this->eventDispatcher->dispatch('log', new LogDropEndEvent($drop->getDropzone(), $drop, $this->roleManager));
+        $this->eventDispatcher->dispatch(new LogDropEndEvent($drop->getDropzone(), $drop, $this->roleManager), 'log');
     }
 
     /**
@@ -708,9 +708,9 @@ class DropzoneManager
         $this->om->endFlushSuite();
 
         if ($isNew) {
-            $this->eventDispatcher->dispatch('log', new LogCorrectionStartEvent($dropzone, $correction->getDrop(), $correction));
+            $this->eventDispatcher->dispatch(new LogCorrectionStartEvent($dropzone, $correction->getDrop(), $correction), 'log');
         } else {
-            $this->eventDispatcher->dispatch('log', new LogCorrectionUpdateEvent($dropzone, $correction->getDrop(), $correction));
+            $this->eventDispatcher->dispatch(new LogCorrectionUpdateEvent($dropzone, $correction->getDrop(), $correction), 'log');
         }
 
         return $correction;
@@ -752,7 +752,7 @@ class DropzoneManager
                 }
                 break;
         }
-        $this->eventDispatcher->dispatch('log', new LogCorrectionEndEvent($dropzone, $correction->getDrop(), $correction));
+        $this->eventDispatcher->dispatch(new LogCorrectionEndEvent($dropzone, $correction->getDrop(), $correction), 'log');
         $this->om->forceFlush();
 
         $this->checkSuccess($drop);
@@ -781,7 +781,7 @@ class DropzoneManager
 
         $this->om->endFlushSuite();
 
-        $this->eventDispatcher->dispatch('log', new LogCorrectionValidationChangeEvent($correction->getDrop()->getDropzone(), $correction->getDrop(), $correction));
+        $this->eventDispatcher->dispatch(new LogCorrectionValidationChangeEvent($correction->getDrop()->getDropzone(), $correction->getDrop(), $correction), 'log');
 
         return $correction;
     }
@@ -803,7 +803,7 @@ class DropzoneManager
 
         $this->om->endFlushSuite();
 
-        $this->eventDispatcher->dispatch('log', new LogCorrectionDeleteEvent($correction->getDrop()->getDropzone(), $drop, $correction));
+        $this->eventDispatcher->dispatch(new LogCorrectionDeleteEvent($correction->getDrop()->getDropzone(), $drop, $correction), 'log');
     }
 
     /**
@@ -821,7 +821,7 @@ class DropzoneManager
         $this->om->persist($correction);
         $this->om->flush();
 
-        $this->eventDispatcher->dispatch('log', new LogCorrectionReportEvent($correction->getDrop()->getDropzone(), $correction->getDrop(), $correction, $this->roleManager));
+        $this->eventDispatcher->dispatch(new LogCorrectionReportEvent($correction->getDrop()->getDropzone(), $correction->getDrop(), $correction, $this->roleManager), 'log');
 
         return $correction;
     }
@@ -1266,7 +1266,7 @@ class DropzoneManager
                 );
             }
 
-            $this->eventDispatcher->dispatch('log', new LogDropEvaluateEvent($dropzone, $drop, $drop->getScore()));
+            $this->eventDispatcher->dispatch(new LogDropEvaluateEvent($dropzone, $drop, $drop->getScore()), 'log');
 
             //TODO user whose score is available must be notified by LogDropGradeAvailableEvent, when he has done his corrections AND his drop has been corrected
         }

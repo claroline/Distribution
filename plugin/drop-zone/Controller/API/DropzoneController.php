@@ -419,7 +419,7 @@ class DropzoneController
         $response->headers->set('Content-Type', $data['mimeType']);
         $response->headers->set('Connection', 'close');
 
-        $this->eventDispatcher->dispatch('log', new LogDocumentOpenEvent($document->getDrop()->getDropzone(), $document->getDrop(), $document));
+        $this->eventDispatcher->dispatch(new LogDocumentOpenEvent($document->getDrop()->getDropzone(), $document->getDrop(), $document), 'log');
 
         return $response->send();
     }

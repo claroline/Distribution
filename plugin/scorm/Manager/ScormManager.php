@@ -299,7 +299,7 @@ class ScormManager
                     $data['bestScore'] = $bestScore;
                     $data['bestStatus'] = $bestStatus;
                     $event = new LogScormResultEvent($sco->getScorm(), $user, $data);
-                    $this->eventDispatcher->dispatch('log', $event);
+                    $this->eventDispatcher->dispatch($event, 'log');
 
                     // Generate resource evaluation
                     $this->generateScormEvaluation(
@@ -387,7 +387,7 @@ class ScormManager
                     $data['result'] = $scoreRaw;
                     $data['resultMax'] = $scoreMax;
                     $event = new LogScormResultEvent($sco->getScorm(), $user, $data);
-                    $this->eventDispatcher->dispatch('log', $event);
+                    $this->eventDispatcher->dispatch($event, 'log');
 
                     // Generate resource evaluation
                     $this->generateScormEvaluation(

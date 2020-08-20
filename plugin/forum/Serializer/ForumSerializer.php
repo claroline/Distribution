@@ -168,8 +168,8 @@ class ForumSerializer
             ]);
 
             $this->eventDispatcher->dispatch(
-                'claroline_retrieve_used_tags_object_by_class_and_ids',
-                $event
+                $event,
+                'claroline_retrieve_used_tags_object_by_class_and_ids'
             );
 
             $tags = $event->getResponse() ?? [];

@@ -285,7 +285,7 @@ class BadgeClassSerializer
             'replace' => true,
         ]);
 
-        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+        $this->eventDispatcher->dispatch($event, 'claroline_tag_multiple_data');
     }
 
     private function serializeTags(BadgeClass $badge)
@@ -294,7 +294,7 @@ class BadgeClassSerializer
             'class' => BadgeClass::class,
             'ids' => [$badge->getUuid()],
         ]);
-        $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+        $this->eventDispatcher->dispatch($event, 'claroline_retrieve_used_tags_by_class_and_ids');
 
         return $event->getResponse() ?? [];
     }

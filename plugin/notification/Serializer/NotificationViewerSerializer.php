@@ -65,7 +65,7 @@ class NotificationViewerSerializer
         $event = new NotificationCreateDelegateViewEvent($viewer, $this->platformName);
 
         if ($this->eventDispatcher->hasListeners($eventName)) {
-            $this->eventDispatcher->dispatch($eventName, $event);
+            $this->eventDispatcher->dispatch($event, $eventName);
         }
 
         return [

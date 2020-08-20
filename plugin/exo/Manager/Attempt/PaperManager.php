@@ -128,7 +128,7 @@ class PaperManager
                 'resultMax' => $this->calculateTotal($paper),
             ]);
 
-            $this->eventDispatcher->dispatch('log', $event);
+            $this->eventDispatcher->dispatch($event, 'log');
         }
 
         return $fullyEvaluated;

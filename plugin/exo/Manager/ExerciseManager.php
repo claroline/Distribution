@@ -128,7 +128,7 @@ class ExerciseManager
 
         // Log exercise update
         $event = new LogExerciseUpdateEvent($exercise, (array) $this->serializer->serialize($exercise));
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
 
         return $exercise;
     }

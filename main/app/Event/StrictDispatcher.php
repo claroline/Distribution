@@ -71,7 +71,7 @@ class StrictDispatcher
             throw new MandatoryEventException("No listener is attached to the '{$eventName}' event");
         }
 
-        $this->eventDispatcher->dispatch($eventName, $event);
+        $this->eventDispatcher->dispatch($event, $eventName);
 
         if ($event instanceof DataConveyorEventInterface && !$event->isPopulated()) {
             throw new NotPopulatedEventException("Event object for '{$eventName}' was not populated as expected");

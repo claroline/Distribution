@@ -39,7 +39,7 @@ class CursusCrud
     public function postCreate(CreateEvent $event)
     {
         $event = new LogCursusCreateEvent($event->getObject());
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
     }
 
     /**
@@ -48,7 +48,7 @@ class CursusCrud
     public function postUpdate(UpdateEvent $event)
     {
         $event = new LogCursusEditEvent($event->getObject());
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
     }
 
     /**
@@ -57,6 +57,6 @@ class CursusCrud
     public function preDelete(DeleteEvent $event)
     {
         $event = new LogCursusDeleteEvent($event->getObject());
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
     }
 }

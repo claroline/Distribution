@@ -83,7 +83,7 @@ class ConnectionMessageManager
 
         // grab connection messages from everywhere
         $event = new GenericDataEvent();
-        $this->dispatcher->dispatch('platform.connection_messages.populate', $event);
+        $this->dispatcher->dispatch($event, 'platform.connection_messages.populate');
         // TODO : find a way to validate populated data. For now I just expect an array which looks like
         // the return of ConnectionMessageSerializer
         $extMessages = $event->getResponse() ?? [];

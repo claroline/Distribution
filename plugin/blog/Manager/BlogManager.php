@@ -91,7 +91,7 @@ class BlogManager
                 'class' => 'Icap\BlogBundle\Entity\Post',
                 'ids' => [$post->getUuid()],
             ]);
-            $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+            $this->eventDispatcher->dispatch($event, 'claroline_retrieve_used_tags_by_class_and_ids');
             $tags = $event->getResponse();
 
             $comments = [];
@@ -221,7 +221,7 @@ class BlogManager
                 ],
                 'replace' => true,
             ]);
-            $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+            $this->eventDispatcher->dispatch($event, 'claroline_tag_multiple_data');
 
             $commentsDatas = $postsData['comments'];
             $comments = new ArrayCollection();
@@ -450,8 +450,8 @@ class BlogManager
         ]);
 
         $this->eventDispatcher->dispatch(
-            'claroline_retrieve_used_tags_by_class_and_ids',
-            $event
+            $event,
+            'claroline_retrieve_used_tags_by_class_and_ids'
         );
         $tags = $event->getResponse();
 

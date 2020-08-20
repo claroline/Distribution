@@ -211,7 +211,7 @@ class AttemptManager
           'user' => $user ?
            ['username' => $user->getUsername(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName()] : 'anon',
         ]);
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
 
         return $paper;
     }
@@ -315,7 +315,7 @@ class AttemptManager
             $event = new LogExerciseEvent('resource-ujm_exercise-paper-end', $paper->getExercise(), [
                 'user' => $user ? ['username' => $user->getUsername(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName()] : 'anon',
             ]);
-            $this->eventDispatcher->dispatch('log', $event);
+            $this->eventDispatcher->dispatch($event, 'log');
         }
     }
 

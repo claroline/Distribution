@@ -218,7 +218,7 @@ class EvaluationManager
             $this->om->persist($evaluation);
             $this->om->flush();
 
-            $this->eventDispatcher->dispatch('workspace.evaluate', new UserEvaluationEvent($evaluation));
+            $this->eventDispatcher->dispatch(new UserEvaluationEvent($evaluation), 'workspace.evaluate');
         }
 
         return $evaluation;

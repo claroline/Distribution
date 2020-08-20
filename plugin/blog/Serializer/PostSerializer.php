@@ -231,7 +231,7 @@ class PostSerializer
             'class' => 'Icap\BlogBundle\Entity\Post',
             'ids' => [$post->getUuid()],
         ]);
-        $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+        $this->eventDispatcher->dispatch($event, 'claroline_retrieve_used_tags_by_class_and_ids');
 
         return is_array($event->getResponse()) ? implode(', ', $event->getResponse()) : null;
     }
@@ -259,6 +259,6 @@ class PostSerializer
             'replace' => true,
         ]);
 
-        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+        $this->eventDispatcher->dispatch($event, 'claroline_tag_multiple_data');
     }
 }

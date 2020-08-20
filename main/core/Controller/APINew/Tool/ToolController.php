@@ -132,7 +132,7 @@ class ToolController extends AbstractApiController
         }
 
         /** @var ConfigureToolEvent $event */
-        $event = $this->eventDispatcher->dispatch($context.'.'.$name.'.configure', new ConfigureToolEvent($data, $contextObject));
+        $event = $this->eventDispatcher->dispatch(new ConfigureToolEvent($data, $contextObject), $context.'.'.$name.'.configure');
 
         return new JsonResponse(array_merge($event->getData(), [
             'data' => $this->serializer->serialize($orderedTool),

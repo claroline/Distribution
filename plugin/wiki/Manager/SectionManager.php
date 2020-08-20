@@ -205,7 +205,7 @@ class SectionManager
 
     private function dispatch($event)
     {
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
     }
 
     private function restoreSection(Section $section)

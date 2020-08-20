@@ -146,7 +146,7 @@ class CursusManager
             }
             $this->om->persist($cursus);
 
-            $this->eventDispatcher->dispatch('log', new LogCursusCreateEvent($cursus));
+            $this->eventDispatcher->dispatch(new LogCursusCreateEvent($cursus), 'log');
 
             $results[] = $cursus;
         }
@@ -190,7 +190,7 @@ class CursusManager
 
                 $this->om->persist($cursusUser);
 
-                $this->eventDispatcher->dispatch('log', new LogCursusUserRegistrationEvent($cursusUser));
+                $this->eventDispatcher->dispatch(new LogCursusUserRegistrationEvent($cursusUser), 'log');
 
                 $results[] = $cursusUser;
             }
@@ -235,7 +235,7 @@ class CursusManager
 
                 $this->om->persist($cursusGroup);
 
-                $this->eventDispatcher->dispatch('log', new LogCursusGroupRegistrationEvent($cursusGroup));
+                $this->eventDispatcher->dispatch(new LogCursusGroupRegistrationEvent($cursusGroup), 'log');
 
                 $results[] = $cursusGroup;
             }
@@ -279,7 +279,7 @@ class CursusManager
                 }
                 $this->om->persist($sessionUser);
 
-                $this->eventDispatcher->dispatch('log', new LogSessionUserRegistrationEvent($sessionUser));
+                $this->eventDispatcher->dispatch(new LogSessionUserRegistrationEvent($sessionUser), 'log');
 
                 $results[] = $sessionUser;
             }
@@ -332,7 +332,7 @@ class CursusManager
                 }
                 $this->om->persist($sessionGroup);
 
-                $this->eventDispatcher->dispatch('log', new LogSessionGroupRegistrationEvent($sessionGroup));
+                $this->eventDispatcher->dispatch(new LogSessionGroupRegistrationEvent($sessionGroup), 'log');
 
                 $results[] = $sessionGroup;
             }
@@ -367,7 +367,7 @@ class CursusManager
                 $eventUser->setRegistrationDate($registrationDate);
                 $this->om->persist($eventUser);
 
-                $this->eventDispatcher->dispatch('log', new LogSessionEventUserRegistrationEvent($eventUser));
+                $this->eventDispatcher->dispatch(new LogSessionEventUserRegistrationEvent($eventUser), 'log');
 
                 $results[] = $eventUser;
             }
@@ -502,7 +502,7 @@ class CursusManager
         }
         $this->om->persist($queue);
 
-        $this->eventDispatcher->dispatch('log', new LogCourseQueueCreateEvent($queue));
+        $this->eventDispatcher->dispatch(new LogCourseQueueCreateEvent($queue), 'log');
 
         $this->om->endFlushSuite();
 
@@ -532,7 +532,7 @@ class CursusManager
         }
         $this->om->persist($queue);
 
-        $this->eventDispatcher->dispatch('log', new LogSessionQueueCreateEvent($queue));
+        $this->eventDispatcher->dispatch(new LogSessionQueueCreateEvent($queue), 'log');
 
         $this->om->endFlushSuite();
 
@@ -560,7 +560,7 @@ class CursusManager
                     $queue->setStatus($mask);
                     $this->om->persist($queue);
 
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueValidateEvent($queue));
+                    $this->eventDispatcher->dispatch(new LogSessionQueueValidateEvent($queue), 'log');
                     break;
                 case CourseSessionRegistrationQueue::WAITING_USER:
                     $mask -= CourseSessionRegistrationQueue::WAITING_USER;
@@ -568,7 +568,7 @@ class CursusManager
                     $queue->setStatus($mask);
                     $this->om->persist($queue);
 
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueUserValidateEvent($queue));
+                    $this->eventDispatcher->dispatch(new LogSessionQueueUserValidateEvent($queue), 'log');
                     break;
                 case CourseSessionRegistrationQueue::WAITING_VALIDATOR:
                     $mask -= CourseSessionRegistrationQueue::WAITING_VALIDATOR;
@@ -577,7 +577,7 @@ class CursusManager
                     $queue->setStatus($mask);
                     $this->om->persist($queue);
 
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueValidatorValidateEvent($queue));
+                    $this->eventDispatcher->dispatch(new LogSessionQueueValidatorValidateEvent($queue), 'log');
                     break;
                 case CourseSessionRegistrationQueue::WAITING_ORGANIZATION:
                     $mask -= CourseSessionRegistrationQueue::WAITING_ORGANIZATION;
@@ -586,7 +586,7 @@ class CursusManager
                     $queue->setStatus($mask);
                     $this->om->persist($queue);
 
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueOrganizationValidateEvent($queue));
+                    $this->eventDispatcher->dispatch(new LogSessionQueueOrganizationValidateEvent($queue), 'log');
                     break;
             }
             $this->om->endFlushSuite();

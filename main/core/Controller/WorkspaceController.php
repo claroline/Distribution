@@ -132,10 +132,10 @@ class WorkspaceController
         $isManager = $this->manager->isManager($workspace, $this->tokenStorage->getToken());
         $accessErrors = $this->restrictionsManager->getErrors($workspace, $user);
         if (empty($accessErrors) || $isManager) {
-            $this->eventDispatcher->dispatch('workspace.open', new OpenWorkspaceEvent($workspace));
+            $this->eventDispatcher->dispatch(new OpenWorkspaceEvent($workspace), 'workspace.open');
 
             // Log workspace opening
-            $this->eventDispatcher->dispatch('log', new LogWorkspaceEnterEvent($workspace));
+            $this->eventDispatcher->dispatch(new LogWorkspaceEnterEvent($workspace), 'log');
 
             // Get the list of enabled workspace tool
             if ($isManager) {
@@ -209,9 +209,9 @@ class WorkspaceController
         }
 
         /** @var OpenToolEvent $event */
-        $event = $this->eventDispatcher->dispatch('open_tool_workspace_'.$toolName, new OpenToolEvent($workspace));
+        $event = $this->eventDispatcher->dispatch(new OpenToolEvent($workspace), 'open_tool_workspace_'.$toolName);
 
-        $this->eventDispatcher->dispatch('log', new LogWorkspaceToolReadEvent($workspace, $toolName));
+        $this->eventDispatcher->dispatch(new LogWorkspaceToolReadEvent($workspace, $toolName), 'log');
 
         return new JsonResponse(array_merge($event->getData(), [
             'data' => $this->serializer->serialize($orderedTool),

@@ -135,7 +135,7 @@ class ResourceEvaluationManager
 
         $this->om->endFlushSuite();
 
-        $this->eventDispatcher->dispatch('resource_evaluation', new UserEvaluationEvent($resourceUserEvaluation));
+        $this->eventDispatcher->dispatch(new UserEvaluationEvent($resourceUserEvaluation), 'resource_evaluation');
 
         return $evaluation;
     }

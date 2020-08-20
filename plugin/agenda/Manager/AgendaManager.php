@@ -107,7 +107,7 @@ class AgendaManager
         );
 
         $dispatcher = $this->container->get('event_dispatcher');
-        $dispatcher->dispatch('claroline_message_sending_to_users', $message);
+        $dispatcher->dispatch($message, 'claroline_message_sending_to_users');
     }
 
     /**

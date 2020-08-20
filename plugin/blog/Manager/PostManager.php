@@ -192,7 +192,7 @@ class PostManager
             ],
             'replace' => true,
         ]);
-        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+        $this->eventDispatcher->dispatch($event, 'claroline_tag_multiple_data');
 
         $this->om->remove($post);
         $this->om->flush();
@@ -347,8 +347,8 @@ class PostManager
         ]);
 
         $this->eventDispatcher->dispatch(
-            'claroline_retrieve_used_tags_by_class_and_ids',
-            $event
+            $event,
+            'claroline_retrieve_used_tags_by_class_and_ids'
         );
         $tags = $event->getResponse();
 
@@ -376,6 +376,6 @@ class PostManager
             'replace' => true,
         ]);
 
-        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+        $this->eventDispatcher->dispatch($event, 'claroline_tag_multiple_data');
     }
 }

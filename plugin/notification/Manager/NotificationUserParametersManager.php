@@ -79,8 +79,8 @@ class NotificationUserParametersManager
         $allTypes = [];
 
         $this->ed->dispatch(
-            'icap_notification_user_parameters_event',
-            new NotificationUserParametersEvent($allTypes)
+            new NotificationUserParametersEvent($allTypes),
+            'icap_notification_user_parameters_event'
         );
 
         $visibleTypes = $parameters->getDisplayEnabledTypes();

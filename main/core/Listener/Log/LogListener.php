@@ -220,7 +220,7 @@ class LogListener
         $this->om->flush();
 
         $createLogEvent = new LogCreateEvent($log);
-        $this->container->get('event_dispatcher')->dispatch(LogCreateEvent::NAME, $createLogEvent);
+        $this->container->get('event_dispatcher')->dispatch($createLogEvent, LogCreateEvent::NAME);
 
         return $log;
     }

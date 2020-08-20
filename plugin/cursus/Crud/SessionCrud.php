@@ -39,7 +39,7 @@ class SessionCrud
     public function postCreate(CreateEvent $event)
     {
         $event = new LogSessionCreateEvent($event->getObject());
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
     }
 
     /**
@@ -48,7 +48,7 @@ class SessionCrud
     public function postUpdate(UpdateEvent $event)
     {
         $event = new LogSessionEditEvent($event->getObject());
-        $this->eventDispatcher->dispatch('log', $event);
+        $this->eventDispatcher->dispatch($event, 'log');
     }
 
     /**

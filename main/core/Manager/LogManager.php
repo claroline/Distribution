@@ -155,7 +155,7 @@ class LogManager
                 }
 
                 /** @var LogCreateDelegateViewEvent $event */
-                $event = $this->dispatcher->dispatch($eventName, new LogCreateDelegateViewEvent($log));
+                $event = $this->dispatcher->dispatch(new LogCreateDelegateViewEvent($log), $eventName);
                 $description = trim(preg_replace('/\s\s+/', ' ', $event->getResponseContent()));
 
                 fputcsv($handle, [

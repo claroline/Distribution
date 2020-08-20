@@ -73,8 +73,8 @@ class FileSerializer
         $additionalFileData = [];
 
         $fallBackEvent = $this->eventDispatcher->dispatch(
-            $this->generateEventName($file->getResourceNode(), 'load'),
-            new LoadFileEvent($file, $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName())
+            new LoadFileEvent($file, $this->filesDir.DIRECTORY_SEPARATOR.$file->getHashName()),
+            $this->generateEventName($file->getResourceNode(), 'load')
         );
 
         if ($fallBackEvent->isPopulated()) {
@@ -99,7 +99,7 @@ class FileSerializer
                 'resourceNode' => $file->getResourceNode(),
                 'data' => $data,
             ]);
-            $this->eventDispatcher->dispatch('resource.file.deserialize', $dataEvent);
+            $this->eventDispatcher->dispatch($dataEvent, 'resource.file.deserialize');
         }
     }
 
