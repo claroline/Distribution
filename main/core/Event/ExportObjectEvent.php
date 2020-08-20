@@ -6,7 +6,7 @@ use Claroline\AppBundle\API\Utils\ArrayUtils;
 use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ExportObjectEvent extends Event
 {

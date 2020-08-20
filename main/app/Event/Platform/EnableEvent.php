@@ -11,7 +11,7 @@
 
 namespace Claroline\AppBundle\Event\Platform;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class EnableEvent extends Event
 {

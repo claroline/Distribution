@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Event\Tool;
 
 use Claroline\AppBundle\Event\DataConveyorEventInterface;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class OpenToolEvent extends Event implements DataConveyorEventInterface
 {

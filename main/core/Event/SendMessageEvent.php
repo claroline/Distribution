@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Event;
 
 use Claroline\CoreBundle\Entity\AbstractRoleSubject;
 use Claroline\CoreBundle\Entity\User;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class SendMessageEvent extends Event
 {

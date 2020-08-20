@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Event;
 
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Event dispatched when an object is searched inside the app.

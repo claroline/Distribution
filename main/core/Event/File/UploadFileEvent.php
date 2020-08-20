@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Event\File;
 
 use Claroline\CoreBundle\Entity\File\PublicFile;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Upload File event.

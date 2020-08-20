@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\Log\Log;
 
 class LogCreateEvent extends Event

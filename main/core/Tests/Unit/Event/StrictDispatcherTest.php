@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Event;
 
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class StrictDispatcherTest extends MockeryTestCase
