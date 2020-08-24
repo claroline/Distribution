@@ -72,6 +72,13 @@ class AdditionalInstaller extends BaseInstaller implements ContainerAwareInterfa
             $updater->setLogger($this->logger);
             $updater->preUpdate();
         }
+
+        if (version_compare($currentVersion, '12.5.49', '<')) {
+            $updater = new Updater\Updater120549($this->container, $this->logger);
+
+            $updater->setLogger($this->logger);
+            $updater->preUpdate();
+        }
     }
 
     public function postUpdate($currentVersion, $targetVersion)
