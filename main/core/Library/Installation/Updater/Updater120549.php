@@ -35,7 +35,7 @@ class Updater120549 extends Updater
     private function migrateConfigFiles()
     {
         $this->log(sprintf('Move Claroline config file in "%s"', $this->newConfigDir));
-        
+
         $filesToMove = [
             'bundles.ini',
             'ip_white_list.yml',
