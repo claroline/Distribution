@@ -70,6 +70,7 @@ class WorkspaceCrud
         $this->logListener->disable();
         // Log action
         $this->om->startFlushSuite();
+        /** @var ResourceNode[] $roots */
         $roots = $this->om->getRepository(ResourceNode::class)->findBy(['workspace' => $workspace, 'parent' => null]);
 
         //in case 0 or multiple due to errors
@@ -79,6 +80,7 @@ class WorkspaceCrud
             if ($children) {
                 foreach ($children as $node) {
                     $this->resourceManager->delete($node);
+                    $node->setWorkspace(null);
                 }
             }
         }
@@ -115,7 +117,9 @@ class WorkspaceCrud
         $workspace->setWorkspaceModel($model);
 
         if ($user instanceof User) {
-            $workspace->setCreator($user);
+            if (empty($workspace->getCreator())) {
+                $workspace->setCreator($user);
+            }
 
             $organization = $user->getMainOrganization() ?
                 $user->getMainOrganization() :
