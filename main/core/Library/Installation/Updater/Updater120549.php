@@ -14,12 +14,15 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\DataSource;
 use Claroline\CoreBundle\Entity\Widget\Widget;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\InstallationBundle\Updater\Updater;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Updater120549 extends Updater
 {
+    /** @var PlatformConfigurationHandler */
+    private $config;
     /** @var Connection */
     private $connection;
     /** @var ObjectManager */
@@ -34,6 +37,7 @@ class Updater120549 extends Updater
         $this->logger = $logger;
         $this->connection = $container->get('doctrine.dbal.default_connection');
         $this->om = $container->get(ObjectManager::class);
+        $this->config = $container->get(PlatformConfigurationHandler::class);
 
         $this->oldConfigDir = $container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR;
         $this->newConfigDir = $container->getParameter('claroline.param.config_directory').DIRECTORY_SEPARATOR;
@@ -62,9 +66,12 @@ class Updater120549 extends Updater
 
         foreach ($filesToMove as $file) {
             if (file_exists($this->oldConfigDir.$file)) {
-                rename($this->oldConfigDir.$file, $this->newConfigDir.$file);
+                copy($this->oldConfigDir.$file, $this->newConfigDir.$file);
             }
         }
+
+        // reset in memory parameters
+        $this->config->loadParameters();
     }
 
     private function migrateResourceWidgets()

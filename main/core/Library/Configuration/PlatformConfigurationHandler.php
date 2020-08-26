@@ -31,7 +31,9 @@ class PlatformConfigurationHandler
         $this->parameters = [];
         $this->defaultConfigs = [];
         $this->configFile = $configFile;
-        $this->parameters = $this->mergeParameters();
+
+        $this->loadParameters();
+
         //just in case init went wrong
         $mapping = new LegacyParametersMapping();
         $this->mapping = $mapping->getMapping();
@@ -130,6 +132,11 @@ class PlatformConfigurationHandler
     public function getDefaultParameters()
     {
         return $this->parameters;
+    }
+
+    public function loadParameters()
+    {
+        $this->parameters = $this->mergeParameters();
     }
 
     protected function mergeParameters()
