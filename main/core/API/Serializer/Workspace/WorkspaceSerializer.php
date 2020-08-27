@@ -381,7 +381,7 @@ class WorkspaceSerializer
 
         if (isset($data['poster']) && isset($data['poster']['id'])) {
             /** @var PublicFile $poster */
-            $poster = $this->om->getObject($data['thumbnail'], PublicFile::class);
+            $poster = $this->om->getObject($data['poster'], PublicFile::class);
             $workspace->setPoster($data['poster']['url']);
             $this->fileUt->createFileUse($poster, Workspace::class, $workspace->getUuid());
         }

@@ -24,6 +24,14 @@ const WorkspacesTool = (props) =>
         target: `${props.path}/new`,
         primary: true,
         displayed: props.creatable
+      }, {
+        name: 'import-zip',
+        type: LINK_BUTTON,
+        icon: 'fa fa-fw fa-upload',
+        label: trans('import-zip', {}, 'actions'),
+        target: `${props.path}/new`,
+        primary: true,
+        displayed: props.creatable
       }
     ]}
     subtitle={

@@ -23,4 +23,9 @@ class FileBag
     {
         return $this->files[$key];
     }
+
+    public function has($key)
+    {
+        return array_key_exists($key, $this->files);
+    }
 }

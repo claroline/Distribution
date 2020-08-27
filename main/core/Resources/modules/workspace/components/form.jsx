@@ -60,6 +60,10 @@ const WorkspaceFormComponent = (props) =>
             },
             displayed: props.new,
             mode: 'standard'
+          }, {
+            name: 'archive',
+            type: 'file',
+            label: trans('archive')
           }
         ]
       }, {

@@ -344,6 +344,7 @@ services:
 
     Claroline\CoreBundle\Manager\Workspace\TransferManager:
         arguments:
+          - '@security.authorization_checker'
           - '@Claroline\AppBundle\Persistence\ObjectManager'
           - '@Claroline\AppBundle\Event\StrictDispatcher'
           - '@claroline.manager.temp_file'

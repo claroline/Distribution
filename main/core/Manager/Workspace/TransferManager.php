@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Manager\Workspace\Transfer\OrderedToolTransfer;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class TransferManager
 {
@@ -53,29 +54,32 @@ class TransferManager
     /**
      * TransferManager constructor.
      *
-     * @param ObjectManager       $om
-     * @param StrictDispatcher    $dispatcher
-     * @param TempFileManager     $tempFileManager
-     * @param SerializerProvider  $serializer
-     * @param OrderedToolTransfer $ots
-     * @param FinderProvider      $finder
-     * @param Crud                $crud
-     * @param TokenStorage        $tokenStorage
-     * @param FileUtilities       $fileUts
-     * @param LogListener         $logListener
+     * @param AuthorizationCheckerInterface $authorization
+     * @param ObjectManager                 $om
+     * @param StrictDispatcher              $dispatcher
+     * @param TempFileManager               $tempFileManager
+     * @param SerializerProvider            $serializer
+     * @param OrderedToolTransfer           $ots
+     * @param FinderProvider                $finder
+     * @param Crud                          $crud
+     * @param TokenStorage                  $tokenStorage
+     * @param FileUtilities                 $fileUts
+     * @param LogListener                   $logListener
      */
     public function __construct(
-      ObjectManager $om,
-      StrictDispatcher $dispatcher,
-      TempFileManager $tempFileManager,
-      SerializerProvider $serializer,
-      OrderedToolTransfer $ots,
-      FinderProvider $finder,
-      Crud $crud,
-      TokenStorage $tokenStorage,
-      FileUtilities $fileUts,
-      LogListener $logListener
+        AuthorizationCheckerInterface $authorization,
+        ObjectManager $om,
+        StrictDispatcher $dispatcher,
+        TempFileManager $tempFileManager,
+        SerializerProvider $serializer,
+        OrderedToolTransfer $ots,
+        FinderProvider $finder,
+        Crud $crud,
+        TokenStorage $tokenStorage,
+        FileUtilities $fileUts,
+        LogListener $logListener
     ) {
+        $this->authorization = $authorization;
         $this->om = $om;
         $this->dispatcher = $dispatcher;
         $this->tempFileManager = $tempFileManager;
@@ -199,6 +203,17 @@ class TransferManager
     public function deserialize(array $data, Workspace $workspace, array $options = [], FileBag $bag = null)
     {
         $this->logListener->disable();
+
+        if (!$bag) {
+            $bag = $this->getFileBag($data);
+        }
+
+        if ($bag->has('workspace.json')) {
+            // the condition is here because for ws copy we don't have this
+            $archiveData = json_decode(file_get_contents($bag->get('workspace.json')), true);
+            $data = $archiveData;
+        }
+
         $data = $this->replaceResourceIds($data);
 
         $defaultRole = $data['registration']['defaultRole'];
@@ -234,10 +249,6 @@ class TransferManager
         $data['root']['meta']['workspace']['id'] = $workspace->getUuid();
 
         $this->log('Get filebag');
-
-        if (!$bag) {
-            $bag = $this->getFileBag($data);
-        }
 
         $this->log('Pre import data update...');
 
