@@ -41,7 +41,7 @@ class ImportWorkspaceModelCommand extends ContainerAwareCommand implements Admin
             ->setDescription('Create a workspace from a zip archive (for debug purpose)')
             ->setDefinition([
                 new InputArgument('path', InputArgument::REQUIRED, 'The absolute path to the zip file.'),
-                new InputArgument('code', InputArgument::REQUIRED, 'The new workspace code.'),
+                new InputArgument('code', InputArgument::OPTIONAL, 'The new workspace code.'),
             ]);
     }
 
@@ -67,7 +67,9 @@ class ImportWorkspaceModelCommand extends ContainerAwareCommand implements Admin
         $zip->close();
 
         $data = json_decode($json, true);
-        $data['code'] = $input->getArgument('code');
+        if ($input->getArgument('code')) {
+            $data['code'] = $input->getArgument('code');
+        }
         $data['archive'] = $this->getContainer()->get('Claroline\AppBundle\API\SerializerProvider')->serialize($object);
         $workspace = new Workspace();
         $workspace->setCode($data['code']);
