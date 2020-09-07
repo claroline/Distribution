@@ -80,7 +80,6 @@ class WorkspaceCrud
             if ($children) {
                 foreach ($children as $node) {
                     $this->resourceManager->delete($node);
-                    $node->setWorkspace(null);
                 }
             }
         }

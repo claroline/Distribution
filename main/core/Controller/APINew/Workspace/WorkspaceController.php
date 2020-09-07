@@ -24,6 +24,7 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Shortcuts;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\LogConnectManager;
@@ -258,6 +259,8 @@ class WorkspaceController extends AbstractCrudController
      * @param string  $class
      *
      * @return JsonResponse
+     *
+     * @todo all of this should be handled by crud (this method should not be overridden)
      */
     public function createAction(Request $request, $class)
     {
@@ -354,8 +357,11 @@ class WorkspaceController extends AbstractCrudController
     public function exportAction(Workspace $workspace)
     {
         $pathArch = $this->importer->export($workspace);
+        $filename = TextNormalizer::toKey($workspace->getCode()).'.zip';
+
         $response = new BinaryFileResponse($pathArch);
         $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', "attachment; filename={$filename}");
 
         return $response;
     }
