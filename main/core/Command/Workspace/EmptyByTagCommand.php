@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Command\Workspace;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\TagBundle\Entity\TaggedObject;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -32,8 +33,8 @@ class EmptyByTagCommand extends ContainerAwareCommand
             ->setName('claroline:workspace:empty')
             ->setDescription('Empty workspaces')
             ->setDefinition([
-                new InputArgument('workspace_tag', InputArgument::REQUIRED, 'The workspace code'),
                 new InputArgument('role_key', InputArgument::REQUIRED, 'The role translation key'),
+                new InputArgument('except_tag', InputArgument::OPTIONAL, 'Do not empty workspace with this tag'),
             ])
             ->addOption('user', 'u', InputOption::VALUE_NONE, 'When set to true, remove users from the workspace')
             ->addOption('group', 'g', InputOption::VALUE_NONE, 'When set to true, remove groups from the workspace');
@@ -47,17 +48,24 @@ class EmptyByTagCommand extends ContainerAwareCommand
         $removeUsers = $input->getOption('user');
         $removeGroups = $input->getOption('group');
 
-        $tag = $input->getArgument('workspace_tag');
+        $tag = $input->getArgument('except_tag');
         // the role to remove
         $roleKey = $input->getArgument('role_key');
 
-        // find by tag (this make an hard dependency to TagBundle)
-        $workspaces = $om->getRepository(TaggedObject::class)->findTaggedWorkspaces($tag);
+        $workspaces = $om->getRepository(Workspace::class)->findAll();
 
-        $output->writeln(sprintf('Found %d workspaces with tag %s to empty', count($workspaces), $tag));
-
-        foreach ($workspaces as $workspace) {
+        $output->writeln(sprintf('Found %d workspaces to empty', count($workspaces)));
+        $om->startFlushSuite();
+        foreach ($workspaces as $i => $workspace) {
             $output->writeln(sprintf('Processing Workspace %s (%s)', $workspace->getName(), $workspace->getUuid()));
+
+            if ($tag) {
+                $taggedObj = $om->getRepository(TaggedObject::class)->findOneTaggedObjectByTagNameAndObject($tag, $workspace->getUuid(), Workspace::class);
+                if ($taggedObj) {
+                    $output->writeln(sprintf('Workspace has tag %s. Skip workspace.', $tag));
+                    continue;
+                }
+            }
 
             $role = $om->getRepository(Role::class)->findOneBy([
                 'workspace' => $workspace,
@@ -80,9 +88,12 @@ class EmptyByTagCommand extends ContainerAwareCommand
                     $output->writeln("Removing {$count} groups from role {$role->getTranslationKey()}");
                     $roleManager->emptyRole($role, RoleManager::EMPTY_GROUPS);
                 }
+            }
 
-                $om->endFlushSuite();
+            if (0 === $i % 100) {
+                $om->forceFlush();
             }
         }
+        $om->endFlushSuite();
     }
 }
