@@ -65,8 +65,10 @@ class Refresher
             $this->output->writeln('Dumping translations...');
         }
 
+        $translationTargetDir = $this->container->getParameter('claroline.param.public_directory').'/js';
+
         $cmdManager = $this->container->get('claroline.manager.command_manager');
-        $cmdManager->run(new ArrayInput(['command' => 'bazinga:js-translation:dump']), $this->output ?: new NullOutput());
+        $cmdManager->run(new ArrayInput(['command' => 'bazinga:js-translation:dump', 'target' => $translationTargetDir]), $this->output ?: new NullOutput());
 
         if ($this->output) {
             $this->output->writeln('Compiling javascripts...');
