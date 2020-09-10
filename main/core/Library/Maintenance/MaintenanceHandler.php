@@ -15,14 +15,18 @@ class MaintenanceHandler
 {
     public static function enableMaintenance()
     {
-        if (!file_exists($file = self::getFlagPath())) {
+        $file = self::getFlagPath();
+
+        if (!file_exists($file)) {
             touch($file);
         }
     }
 
     public static function disableMaintenance()
     {
-        if (file_exists($file = self::getFlagPath())) {
+        $file = self::getFlagPath();
+
+        if (file_exists($file)) {
             @unlink($file);
         }
     }
