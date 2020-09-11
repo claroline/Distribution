@@ -108,8 +108,19 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
 
             // Check if an account with the same email already exists
             try {
-                $this->loadUserByUsername($user['email']);
+                $u = $this->loadUserByUsername($user['email']);
                 $user['platformMail'] = $user['email'];
+
+                if ($this->platformConfigHandler->getParameter('authentication.direct_third_party')) {
+                    $username = !empty($email) ? $email : $id;
+                    $oauthUser = new OauthUser();
+                    $oauthUser->setUser($u);
+                    $oauthUser->setService($service);
+                    $oauthUser->setOauthId($id);
+                    
+                    $this->em->persist($oauthUser);
+                    $this->em->flush();
+                }
             } catch (UsernameNotFoundException $e) {
                 $user['platformMail'] = null;
             }
