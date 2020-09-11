@@ -108,24 +108,25 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
 
             // Check if an account with the same email already exists
             try {
-                $u = $this->loadUserByUsername($user['email']);
-                $user['platformMail'] = $user['email'];
+                $u = $this->loadUserByUsername($user['username']);
+                $user['platformMail'] = $u->getEmail();
 
                 if ($this->platformConfigHandler->getParameter('authentication.direct_third_party')) {
                     $username = !empty($email) ? $email : $id;
                     $oauthUser = new OauthUser();
                     $oauthUser->setUser($u);
-                    $oauthUser->setService($service);
-                    $oauthUser->setOauthId($id);
+                    $oauthUser->setService($resourceOwner->getName());
+                    $oauthUser->setOauthId($response->getUsername());
                     
                     $this->em->persist($oauthUser);
                     $this->em->flush();
-                }
+		}
             } catch (UsernameNotFoundException $e) {
                 $user['platformMail'] = null;
-            }
+            	$this->session->set('claroline.oauth.user', $user);
+	    }
 
-            $this->session->set('claroline.oauth.user', $user);
+
 
             $resourceOwnerArray = [
                 'name' => $resourceOwner->getName(),
@@ -161,6 +162,8 @@ class OauthUserProvider implements OAuthAwareUserProviderInterface, UserProvider
 
     private function createUsername($username)
     {
+	return $username;
+
         $username = preg_replace('/\s/', '.', strtolower(trim($username)));
         $user = $this->em->getRepository('ClarolineCoreBundle:User')->findByName($username);
 
