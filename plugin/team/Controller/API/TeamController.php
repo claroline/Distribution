@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * @EXT\Route("/team")
+ * @Rout("/team")
  */
 class TeamController extends AbstractCrudController
 {
@@ -86,7 +86,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/workspace/{workspace}/teams/list",
      *     name="apiv2_workspace_team_list"
      * )
@@ -116,7 +116,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/team/{team}/{role}/register",
      *     name="apiv2_team_register"
      * )
@@ -166,7 +166,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/team/{team}/{role}/unregister",
      *     name="apiv2_team_unregister"
      * )
@@ -200,7 +200,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/team/{team}/register",
      *     name="apiv2_team_self_register"
      * )
@@ -242,7 +242,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/team/{team}/unregister",
      *     name="apiv2_team_self_unregister"
      * )
@@ -271,7 +271,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/workspace/{workspace}/teams/create",
      *     name="apiv2_team_multiple_create"
      * )
@@ -298,7 +298,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/teams/fill",
      *     name="apiv2_team_fill"
      * )
@@ -328,7 +328,7 @@ class TeamController extends AbstractCrudController
     }
 
     /**
-     * @EXT\Route(
+     * @Rout(
      *     "/teams/empty",
      *     name="apiv2_team_empty"
      * )

@@ -1,3 +1,4 @@
+
 <?php
 
 // src/AppBundle/Routing/ExtraLoader.php
@@ -11,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route as RouteConfig;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 class ApiLoader extends Loader
@@ -196,7 +198,7 @@ class ApiLoader extends Loader
                 $defaults[$actionName][1] = 'GET';
 
                 foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
-                    if ($annotation instanceof RouteConfig) {
+                    if ($annotation instanceof Route) {
                         $defaults[$actionName][0] = $annotation->getPath();
                     }
 

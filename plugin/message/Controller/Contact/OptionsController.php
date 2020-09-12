@@ -16,7 +16,7 @@ use Claroline\MessageBundle\Entity\Contact\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
- * @EXT\Route("/contact_options")
+ * @Route("/contact_options")
  */
 class OptionsController extends AbstractCrudController
 {

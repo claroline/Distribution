@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * @EXT\Route("/icon")
+ * @Route("/icon")
  */
 class IconController
 {
@@ -25,7 +25,7 @@ class IconController
     }
 
     /**
-     * @EXT\Route("/system", name="apiv2_icon_system_list")
+     * @Route("/system", name="apiv2_icon_system_list")
      * @EXT\Method("GET")
      *
      * @return JsonResponse

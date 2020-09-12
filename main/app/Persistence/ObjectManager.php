@@ -12,8 +12,8 @@
 namespace Claroline\AppBundle\Persistence;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Doctrine\Common\Persistence\ObjectManager as ObjectManagerInterface;
-use Doctrine\Common\Persistence\ObjectManagerDecorator;
+use Doctrine\Persistence\ObjectManager as ObjectManagerInterface;
+use Doctrine\Persistence\ObjectManagerDecorator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\UnitOfWork;

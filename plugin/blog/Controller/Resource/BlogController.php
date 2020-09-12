@@ -14,12 +14,13 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @EXT\Route("/blog", options={"expose"=true})
+ * @Route("/blog", options={"expose"=true})
  */
 class BlogController
 {
@@ -67,7 +68,7 @@ class BlogController
     }
 
     /**
-     * @EXT\Route("/rss/{blogId}", name="icap_blog_rss")
+     * @Route("/rss/{blogId}", name="icap_blog_rss")
      */
     public function rssAction($blogId)
     {
@@ -123,7 +124,7 @@ class BlogController
     }
 
     /**
-     * @EXT\Route("/pdf/{blogId}", name="icap_blog_pdf")
+     * @Route("/pdf/{blogId}", name="icap_blog_pdf")
      */
     public function viewPdfAction($blogId)
     {
