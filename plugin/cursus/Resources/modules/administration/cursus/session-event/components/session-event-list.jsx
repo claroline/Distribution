@@ -23,12 +23,6 @@ const SessionEventList = {
       displayed: true,
       calculated: (sessionEvent) => sessionEvent.meta.session.name
     }, {
-      name: 'meta.set',
-      alias: 'eventSet',
-      type: 'string',
-      label: trans('session_event_set', {}, 'cursus'),
-      displayed: true
-    }, {
       name: 'restrictions.dates[0]',
       alias: 'startDate',
       type: 'date',

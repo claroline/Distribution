@@ -182,7 +182,7 @@ class SessionEventManager
                 }
             }
             $basicPlaceholders = [
-                'course_title' => $course->getTitle(),
+                'course_title' => $course->getName(),
                 'course_code' => $course->getCode(),
                 'course_description' => $course->getDescription(),
                 'session_name' => $session->getName(),
@@ -320,7 +320,7 @@ class SessionEventManager
             }
         }
         $basicPlaceholders = [
-            'course_title' => $course->getTitle(),
+            'course_title' => $course->getName(),
             'course_code' => $course->getCode(),
             'course_description' => $course->getDescription(),
             'session_name' => $session->getName(),

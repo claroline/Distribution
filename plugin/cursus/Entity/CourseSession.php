@@ -13,11 +13,12 @@ namespace Claroline\CursusBundle\Entity;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\CoreBundle\Entity\Organization\Location;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -31,20 +32,9 @@ class CourseSession extends AbstractCourseSession
     // TODO : location
     // TODO : secondary resources
 
-    const SESSION_NOT_STARTED = 0;
-    const SESSION_OPEN = 1;
-    const SESSION_CLOSED = 2;
     const REGISTRATION_AUTO = 0;
     const REGISTRATION_MANUAL = 1;
     const REGISTRATION_PUBLIC = 2;
-
-    /**
-     * @ORM\Column(name="session_name")
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $name;
 
     /**
      * @ORM\ManyToOne(
@@ -76,21 +66,6 @@ class CourseSession extends AbstractCourseSession
      * @var Role
      */
     protected $tutorRole;
-
-    /**
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CursusBundle\Entity\Cursus"
-     * )
-     * @ORM\JoinTable(name="claro_cursus_sessions")
-     *
-     * @var Cursus
-     */
-    protected $cursus;
-
-    /**
-     * @ORM\Column(name="session_status", type="integer")
-     */
-    protected $sessionStatus = self::SESSION_NOT_STARTED;
 
     /**
      * @ORM\Column(name="default_session", type="boolean")
@@ -146,6 +121,25 @@ class CourseSession extends AbstractCourseSession
     protected $type = 0;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode", orphanRemoval=true)
+     * @ORM\JoinTable(name="claro_cursusbundle_course_session_resources",
+     *      joinColumns={@ORM\JoinColumn(name="resource_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="session_id", referencedColumnName="id", unique=true)}
+     * )
+     *
+     * @var ArrayCollection|ResourceNode[]
+     */
+    protected $resources;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Organization\Location")
+     * @ORM\JoinColumn(name="location_id", nullable=true, onDelete="SET NULL")
+     *
+     * @var Location
+     */
+    protected $location;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CursusBundle\Entity\SessionEvent",
      *     mappedBy="session"
@@ -169,21 +163,11 @@ class CourseSession extends AbstractCourseSession
         $this->refreshUuid();
 
         $this->creationDate = new \DateTime();
-        $this->cursus = new ArrayCollection();
         $this->sessionUsers = new ArrayCollection();
         $this->sessionGroups = new ArrayCollection();
         $this->validators = new ArrayCollection();
+        $this->resources = new ArrayCollection();
         $this->events = new ArrayCollection();
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 
     /**
@@ -197,53 +181,6 @@ class CourseSession extends AbstractCourseSession
     public function setCourse(Course $course)
     {
         $this->course = $course;
-    }
-
-    public function getCursus()
-    {
-        return $this->cursus->toArray();
-    }
-
-    public function addCursu(Cursus $cursus)
-    {
-        if (!$this->cursus->contains($cursus)) {
-            $this->cursus->add($cursus);
-        }
-
-        return $this;
-    }
-
-    public function addCursus(Cursus $cursus)
-    {
-        if (!$this->cursus->contains($cursus)) {
-            $this->cursus->add($cursus);
-        }
-
-        return $this;
-    }
-
-    public function removeCursu(Cursus $cursus)
-    {
-        if ($this->cursus->contains($cursus)) {
-            $this->cursus->removeElement($cursus);
-        }
-
-        return $this;
-    }
-
-    public function emptyCursus()
-    {
-        $this->cursus->clear();
-    }
-
-    public function getSessionStatus()
-    {
-        return $this->sessionStatus;
-    }
-
-    public function setSessionStatus($sessionStatus)
-    {
-        $this->sessionStatus = $sessionStatus;
     }
 
     public function getLearnerRole()
@@ -345,7 +282,7 @@ class CourseSession extends AbstractCourseSession
 
     public function getCourseTitle()
     {
-        return $this->getCourse()->getTitle();
+        return $this->getCourse()->getName();
     }
 
     public function getFullNameWithCourse()
@@ -410,6 +347,43 @@ class CourseSession extends AbstractCourseSession
     public function hasValidation()
     {
         return parent::hasValidation() || 0 < count($this->getValidators());
+    }
+
+    public function getResources()
+    {
+        return $this->resources;
+    }
+
+    public function setResources(array $resources)
+    {
+        $this->resources = new ArrayCollection($resources);
+    }
+
+    public function addResource(ResourceNode $resource)
+    {
+        if (!$this->resources->contains($resource)) {
+            $this->resources->add($resource);
+        }
+    }
+
+    public function removeResource(ResourceNode $resource)
+    {
+        if ($this->resources->contains($resource)) {
+            $this->resources->removeElement($resource);
+        }
+    }
+
+    /**
+     * @return Location
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    public function setLocation(Location $location = null)
+    {
+        $this->location = $location;
     }
 
     /**

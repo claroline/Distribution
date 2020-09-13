@@ -1,16 +1,12 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
-
-import {selectors as formSelect} from '#/main/app/content/form/store/selectors'
-import {FormData} from '#/main/app/content/form/containers/data'
 
 import {trans} from '#/main/app/intl/translation'
+import {FormData} from '#/main/app/content/form/containers/data'
 
 import {constants} from '#/plugin/cursus/administration/cursus/constants'
-import {SessionEvent as SessionEventType} from '#/plugin/cursus/administration/cursus/prop-types'
 
-const SessionEventFormComponent = (props) =>
+const SessionEventForm = (props) =>
   <FormData
     {...props}
     sections={[
@@ -90,7 +86,7 @@ const SessionEventFormComponent = (props) =>
             options: {
               min: 0
             },
-            displayed: (sessionvent) => sessionvent.registration && constants.REGISTRATION_AUTO !== sessionvent.registration.registrationType
+            displayed: (event) => event.registration && constants.REGISTRATION_AUTO !== event.registration.registrationType
           }
         ]
       }
@@ -99,18 +95,10 @@ const SessionEventFormComponent = (props) =>
     {props.children}
   </FormData>
 
-SessionEventFormComponent.propTypes = {
-  new: T.bool.isRequired,
-  sessionEvent: T.shape(SessionEventType.propTypes).isRequired,
+SessionEventForm.propTypes = {
+  name: T.string.isRequired,
   children: T.any
 }
-
-const SessionEventForm = connect(
-  (state, ownProps) => ({
-    new: formSelect.isNew(formSelect.form(state, ownProps.name)),
-    sessionEvent: formSelect.data(formSelect.form(state, ownProps.name))
-  })
-)(SessionEventFormComponent)
 
 export {
   SessionEventForm

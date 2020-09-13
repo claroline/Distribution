@@ -27,7 +27,7 @@ class LogCursusUserUnregistrationEvent extends LogGenericEvent
         $details['firsName'] = $user->getFirstName();
         $details['lastName'] = $user->getLastName();
         $details['cursusId'] = $cursus->getUuid();
-        $details['cursusTitle'] = $cursus->getTitle();
+        $details['cursusTitle'] = $cursus->getName();
         $details['cursusCode'] = $cursus->getCode();
         $details['registrationDate'] = $cursusUser->getRegistrationDate()->format('d/m/Y H:i:s');
 

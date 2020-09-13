@@ -5,11 +5,11 @@
 
 import {registry} from '#/main/app/modals/registry'
 
-import {SessionEventFormModal} from '#/plugin/cursus/administration/modals/session-event-form/components/modal'
+import {EventFormModal} from '#/plugin/cursus/administration/modals/event-form/containers/modal'
 
 const MODAL_SESSION_EVENT_FORM = 'MODAL_SESSION_EVENT_FORM'
 
-registry.add(MODAL_SESSION_EVENT_FORM, SessionEventFormModal)
+registry.add(MODAL_SESSION_EVENT_FORM, EventFormModal)
 
 export {
   MODAL_SESSION_EVENT_FORM

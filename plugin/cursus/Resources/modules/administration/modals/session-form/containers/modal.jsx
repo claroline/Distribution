@@ -7,7 +7,7 @@ import {actions as formActions, selectors as formSelectors} from '#/main/app/con
 
 import {selectors, reducer} from '#/plugin/cursus/administration/modals/session-form/store'
 import {SessionFormModal as SessionFormModalComponent} from '#/plugin/cursus/administration/modals/session-form/components/modal'
-import {Session as SessionTypes} from '#/plugin/cursus/administration/cursus/prop-types'
+import {Session as SessionTypes} from '#/plugin/cursus/course/prop-types'
 
 const SessionFormModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(
@@ -15,6 +15,9 @@ const SessionFormModal = withReducer(selectors.STORE_NAME, reducer)(
       saveEnabled: formSelectors.saveEnabled(formSelectors.form(state, selectors.STORE_NAME))
     }),
     (dispatch) => ({
+      update(prop, value) {
+        dispatch(formActions.updateProp(selectors.STORE_NAME, prop, value))
+      },
       loadSession(session = null, course = null) {
         let formData
         if (session) {

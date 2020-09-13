@@ -9,8 +9,11 @@ import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ContentHtml} from '#/main/app/content/components/html'
 import {ContentTitle} from '#/main/app/content/components/title'
 import {ContentPlaceholder} from '#/main/app/content/components/placeholder'
-
+import {LocationCard} from '#/main/core/user/data/components/location-card'
+import {ResourceCard} from '#/main/core/resource/components/card'
 import {route as workspaceRoute} from '#/main/core/workspace/routing'
+import {route as resourceRoute} from '#/main/core/resource/routing'
+
 import {route} from '#/plugin/cursus/routing'
 import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
 import {CourseCard} from '#/plugin/cursus/course/components/card'
@@ -39,41 +42,60 @@ const CourseAbout = (props) => {
             <li className="list-group-item">
               {trans('max_participants', {}, 'cursus')}
               <span className="value">
-                {props.course.restrictions.users ?
-                  props.course.restrictions.users :
-                  trans('empty_value')
-                }
+                {getInfo(props.course, props.activeSession, 'restrictions.users') || trans('empty_value')}
               </span>
             </li>
 
             <li className="list-group-item">
               {trans('duration')}
               <span className="value">
-              {props.course.meta.duration ?
-                displayDuration(props.course.meta.duration * 3600 * 24, true) :
-                trans('empty_value')
-              }
-            </span>
+                {getInfo(props.course, props.activeSession, 'meta.duration') ?
+                  displayDuration(getInfo(props.course, props.activeSession, 'meta.duration') * 3600 * 24, true) :
+                  trans('empty_value')
+                }
+              </span>
             </li>
           </ul>
         </div>
+
+        <ContentTitle
+          level={4}
+          displayLevel={3}
+          title={trans('location')}
+        />
+
+        {isEmpty(get(props.activeSession, 'location')) &&
+          <div className="component-container">
+            <em className="text-muted">{trans('online_session', {}, 'cursus')}</em>
+          </div>
+        }
+
+        {!isEmpty(get(props.activeSession, 'location')) &&
+          <LocationCard
+            className="component-container"
+            size="xs"
+            orientation="row"
+            data={get(props.activeSession, 'location')}
+          />
+        }
 
         <Button
           className="btn btn-block btn-emphasis"
           type={MODAL_BUTTON}
           label={trans('self-register', {}, 'actions')}
           modal={[MODAL_COURSE_REGISTRATION, {
-            course: props.course
+            course: props.course,
+            session: props.activeSession
           }]}
           primary={true}
         />
 
-        {!isEmpty(props.course.workspace) &&
+        {!isEmpty(getInfo(props.course, props.activeSession, 'workspace')) &&
           <Button
             className="btn btn-block"
             type={LINK_BUTTON}
             label={trans('open-workspace', {}, 'actions')}
-            target={workspaceRoute(props.course.workspace)}
+            target={workspaceRoute(getInfo(props.course, props.activeSession, 'workspace'))}
           />
         }
       </div>
@@ -156,6 +178,30 @@ const CourseAbout = (props) => {
           </div>
         }
 
+        {props.activeSession && !isEmpty(props.activeSession.resources) &&
+          <ContentTitle
+            level={3}
+            displayLevel={2}
+            title="Liens utiles"
+          />
+        }
+
+        {props.activeSession && props.activeSession.resources.map((resource, index) =>
+          <ResourceCard
+            key={resource.id}
+            style={{marginBottom: index === props.activeSession.resources.length - 1 ? 20 : 5}}
+            orientation="row"
+            size="xs"
+            data={resource}
+            primaryAction={{
+              type: LINK_BUTTON,
+              target: resourceRoute(resource)
+            }}
+          />
+        )}
+
+        <hr />
+
         <ContentTitle
           level={3}
           displayLevel={2}
@@ -168,7 +214,7 @@ const CourseAbout = (props) => {
 
         {props.course.parent &&
           <CourseCard
-            style={{marginBottom: '5px'}}
+            style={{marginBottom: 20}}
             orientation="row"
             size="xs"
             data={props.course.parent}
@@ -187,10 +233,10 @@ const CourseAbout = (props) => {
           />
         }
 
-        {props.course.children.map(child =>
+        {props.course.children.map((child, index) =>
           <CourseCard
             key={child.id}
-            style={{marginBottom: '5px'}}
+            style={{marginBottom: index === props.course.children.length - 1 ? 20 : 5}}
             orientation="row"
             size="xs"
             data={child}
@@ -212,7 +258,7 @@ const CourseAbout = (props) => {
         {availableSessions.map((session, index) =>
           <SessionCard
             key={session.id}
-            style={{marginBottom: index === props.availableSessions.length - 1 ? 20 : 5}}
+            style={{marginBottom: index === availableSessions.length - 1 ? 20 : 5}}
             orientation="row"
             size="xs"
             data={session}

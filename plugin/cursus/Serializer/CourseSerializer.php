@@ -104,7 +104,7 @@ class CourseSerializer
         $serialized = [
             'id' => $course->getUuid(),
             'code' => $course->getCode(),
-            'name' => $course->getTitle(),
+            'name' => $course->getName(),
             'slug' => $course->getSlug(),
             'description' => $course->getDescription(),
             'poster' => $this->serializePoster($course),
@@ -164,7 +164,7 @@ class CourseSerializer
     {
         $this->sipe('id', 'setUuid', $data, $course);
         $this->sipe('code', 'setCode', $data, $course);
-        $this->sipe('name', 'setTitle', $data, $course);
+        $this->sipe('name', 'setName', $data, $course);
         $this->sipe('description', 'setDescription', $data, $course);
 
         $this->sipe('meta.tutorRoleName', 'setTutorRoleName', $data, $course);
@@ -302,7 +302,7 @@ class CourseSerializer
                     [
                         'class' => Course::class,
                         'id' => $course->getUuid(),
-                        'name' => $course->getTitle(),
+                        'name' => $course->getName(),
                     ],
                 ],
                 'replace' => true,

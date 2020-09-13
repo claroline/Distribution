@@ -15,24 +15,20 @@ const SessionList = {
       name: 'code',
       type: 'string',
       label: trans('code'),
-      displayed: false
-    /*}, {
+      sortable: false
+    }, {
+      name: 'location',
+      type: 'location',
+      label: trans('location'),
+      displayed: true
+    }, /*{
       name: 'course',
       alias: 'courseTitle',
       type: 'string',
       label: trans('course', {}, 'cursus'),
       displayed: true,
-      calculated: (session) => session.meta.course.title*/
-    // }, {
-    //   name: 'meta.sessionStatus',
-    //   alias: 'sessionStatus',
-    //   type: 'choice',
-    //   label: trans('status'),
-    //   displayed: true,
-    //   options: {
-    //     choices: constants.SESSION_STATUS
-    //   }
-    }, {
+      calculated: (session) => session.meta.course.title
+    },*/ {
       name: 'restrictions.dates[0]',
       alias: 'startDate',
       type: 'date',
@@ -48,7 +44,6 @@ const SessionList = {
       name: 'workspace',
       type: 'workspace',
       label: trans('workspace'),
-      displayed: true,
       sortable: false
     }, {
       name: 'restrictions.users',
@@ -59,8 +54,7 @@ const SessionList = {
     }, {
       name: 'meta.default',
       type: 'boolean',
-      label: trans('default'),
-      displayed: true
+      label: trans('default')
     }, {
       name: 'registration.publicRegistration',
       alias: 'publicRegistration',

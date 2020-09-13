@@ -31,7 +31,7 @@ class LogSessionUserRegistrationEvent extends LogGenericEvent
         $details['sessionName'] = $session->getName();
         $details['sessionCreationDate'] = $session->getCreationDate()->format('d/m/Y H:i:s');
         $details['courseId'] = $course->getUuid();
-        $details['courseTitle'] = $course->getTitle();
+        $details['courseTitle'] = $course->getName();
         $details['courseCode'] = $course->getCode();
         $details['registrationDate'] = $sessionUser->getRegistrationDate()->format('d/m/Y H:i:s');
         $details['type'] = $sessionUser->getUserType();

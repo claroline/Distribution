@@ -11,6 +11,8 @@
 
 namespace Claroline\CursusBundle\Entity;
 
+use Claroline\AppBundle\Entity\Identifier\Code;
+use Claroline\AppBundle\Entity\Meta\Description;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -22,19 +24,18 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AbstractCourseSession
 {
+    use Code;
+    use Description;
     use Poster;
     use Thumbnail;
 
     /**
-     * @ORM\Column(unique=true)
+     * @ORM\Column(name="course_name")
      * @Assert\NotBlank()
+     *
+     * @var string
      */
-    protected $code;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    protected $description;
+    protected $name;
 
     /**
      * @ORM\ManyToOne(
@@ -79,24 +80,14 @@ class AbstractCourseSession
      */
     protected $displayOrder = 500;
 
-    public function getCode()
+    public function getName()
     {
-        return $this->code;
+        return $this->name;
     }
 
-    public function setCode($code)
+    public function setName($name)
     {
-        $this->code = $code;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    public function setDescription($description)
-    {
-        $this->description = $description;
+        $this->name = $name;
     }
 
     public function getWorkspace()

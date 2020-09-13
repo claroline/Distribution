@@ -76,7 +76,7 @@ class SessionEventSerializer
                     'isEvent' => SessionEvent::TYPE_EVENT === $event->getType(),
                 ],
                 'restrictions' => [
-                    'maxUsers' => $event->getMaxUsers(),
+                    'users' => $event->getMaxUsers(),
                     'dates' => DateRangeNormalizer::normalize($event->getStartDate(), $event->getEndDate()),
                 ],
                 'registration' => [
@@ -104,7 +104,7 @@ class SessionEventSerializer
         $this->sipe('meta.type', 'setType', $data, $event);
         $this->sipe('meta.locationExtra', 'setLocationExtra', $data, $event);
 
-        $this->sipe('restrictions.maxUsers', 'setMaxUsers', $data, $event);
+        $this->sipe('restrictions.users', 'setMaxUsers', $data, $event);
 
         $this->sipe('registration.registrationType', 'setRegistrationType', $data, $event);
 

@@ -30,7 +30,13 @@ const SessionForm = (props) =>
             type: 'date-range',
             label: trans('access_dates'),
             required: true
-          }
+          }/*, {
+            name: 'meta.course',
+            type: 'course',
+            label: trans('course', {}, 'cursus'),
+            required: true,
+            disabled: true
+          }*/
         ]
       }, {
         icon: 'fa fa-fw fa-info',
@@ -45,11 +51,13 @@ const SessionForm = (props) =>
             type: 'boolean',
             label: trans('default_session', {}, 'cursus')
           }, {
-            name: 'meta.course.title',
-            type: 'string',
-            label: trans('course', {}, 'cursus'),
-            required: true,
-            disabled: true
+            name: 'location',
+            type: 'location',
+            label: trans('location')
+          }, {
+            name: 'resources',
+            type: 'resources',
+            label: trans('resources')
           }
         ]
       }, {
@@ -120,7 +128,7 @@ const SessionForm = (props) =>
             calculated: (course) => get(course, 'restrictions.users') || get(course, 'restrictions._restrictUsers'),
             onChange: (value) => {
               if (!value) {
-                props.update(props.name, 'restrictions.users', null)
+                props.update('restrictions.users', null)
               }
             },
             linked: [

@@ -28,7 +28,7 @@ import {
 } from '#/plugin/cursus/administration/cursus/prop-types'
 import {actions} from '#/plugin/cursus/administration/cursus/session/store'
 import {actions as sessionEventActions} from '#/plugin/cursus/administration/cursus/session-event/store'
-import {MODAL_SESSION_EVENT_FORM} from '#/plugin/cursus/administration/modals/session-event-form'
+import {MODAL_SESSION_EVENT_FORM} from '#/plugin/cursus/administration/modals/event-form'
 import {SessionForm} from '#/plugin/cursus/administration/cursus/session/components/form'
 import {CourseList} from '#/plugin/cursus/administration/cursus/course/components/course-list'
 import {SessionEventList} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-list'

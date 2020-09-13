@@ -29,11 +29,10 @@ class LogSessionQueueCreateEvent extends LogGenericEvent
         $details['firsName'] = $user->getFirstName();
         $details['lastName'] = $user->getLastName();
         $details['courseId'] = $course->getUuid();
-        $details['courseTitle'] = $course->getTitle();
+        $details['courseTitle'] = $course->getName();
         $details['courseCode'] = $course->getCode();
         $details['sessionId'] = $session->getUuid();
         $details['sessionName'] = $session->getName();
-        $details['sessionStatus'] = $session->getSessionStatus();
         $details['sessionType'] = $session->getType();
         $details['applicationDate'] = $queue->getApplicationDate();
 

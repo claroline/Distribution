@@ -36,10 +36,6 @@
           "type": "integer",
           "description": "The session type"
         },
-        "sessionStatus": {
-          "type": "integer",
-          "description": "The session status"
-        },
         "default": {
           "type": "boolean",
           "description": "Whether the session is the default one"

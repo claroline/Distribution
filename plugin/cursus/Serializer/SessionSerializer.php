@@ -15,10 +15,13 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
+use Claroline\CoreBundle\API\Serializer\User\LocationSerializer;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
-use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Claroline\CoreBundle\Entity\Organization\Location;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
@@ -33,8 +36,12 @@ class SessionSerializer
     private $fileSerializer;
     /** @var RoleSerializer */
     private $roleSerializer;
+    /** @var LocationSerializer */
+    private $locationSerializer;
     /** @var WorkspaceSerializer */
     private $workspaceSerializer;
+    /** @var ResourceNodeSerializer */
+    private $resourceSerializer;
     /** @var CourseSerializer */
     private $courseSerializer;
 
@@ -43,23 +50,29 @@ class SessionSerializer
     /**
      * SessionSerializer constructor.
      *
-     * @param ObjectManager        $om
-     * @param PublicFileSerializer $fileSerializer
-     * @param RoleSerializer       $roleSerializer
-     * @param WorkspaceSerializer  $workspaceSerializer
-     * @param CourseSerializer     $courseSerializer
+     * @param ObjectManager          $om
+     * @param PublicFileSerializer   $fileSerializer
+     * @param RoleSerializer         $roleSerializer
+     * @param LocationSerializer     $locationSerializer
+     * @param WorkspaceSerializer    $workspaceSerializer
+     * @param ResourceNodeSerializer $resourceSerializer
+     * @param CourseSerializer       $courseSerializer
      */
     public function __construct(
         ObjectManager $om,
         PublicFileSerializer $fileSerializer,
         RoleSerializer $roleSerializer,
+        LocationSerializer $locationSerializer,
         WorkspaceSerializer $workspaceSerializer,
+        ResourceNodeSerializer $resourceSerializer,
         CourseSerializer $courseSerializer
     ) {
         $this->om = $om;
         $this->fileSerializer = $fileSerializer;
         $this->roleSerializer = $roleSerializer;
+        $this->locationSerializer = $locationSerializer;
         $this->workspaceSerializer = $workspaceSerializer;
+        $this->resourceSerializer = $resourceSerializer;
         $this->courseSerializer = $courseSerializer;
 
         $this->courseRepo = $om->getRepository(Course::class);
@@ -91,6 +104,9 @@ class SessionSerializer
             'workspace' => $session->getWorkspace() ?
                 $this->workspaceSerializer->serialize($session->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
                 null,
+            'location' => $session->getLocation() ?
+                $this->locationSerializer->serialize($session->getLocation(), [Options::SERIALIZE_MINIMAL]) :
+                null,
             'restrictions' => [
                 'users' => $session->getMaxUsers(),
                 'dates' => DateRangeNormalizer::normalize($session->getStartDate(), $session->getEndDate()),
@@ -98,8 +114,15 @@ class SessionSerializer
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $duration = null;
+            if ($session->getStartDate() && $session->getEndDate()) {
+                // this is just to expose the same schema than course
+                $duration = $session->getEndDate()->diff($session->getStartDate())->format('%a');
+            }
+
             $serialized = array_merge($serialized, [
                 'meta' => [
+                    'duration' => $duration,
                     'default' => $session->isDefaultSession(),
                     'order' => $session->getDisplayOrder(),
 
@@ -111,10 +134,7 @@ class SessionSerializer
                     'tutorRole' => $session->getTutorRole() ?
                         $this->roleSerializer->serialize($session->getTutorRole(), [Options::SERIALIZE_MINIMAL]) :
                         null,
-                    'sessionStatus' => $session->getSessionStatus(),
-                    'creationDate' => DateNormalizer::normalize($session->getCreationDate()),
                     'color' => $session->getColor(),
-                    //'total' => $session->getTotal(),
                     'certificated' => $session->getCertificated(),
                 ],
                 'registration' => [
@@ -125,6 +145,9 @@ class SessionSerializer
                     'organizationValidation' => $session->getOrganizationValidation(),
                     'eventRegistrationType' => $session->getEventRegistrationType(),
                 ],
+                'resources' => array_map(function (ResourceNode $resource) {
+                    return $this->resourceSerializer->serialize($resource, [Options::SERIALIZE_MINIMAL]);
+                }, $session->getResources()->toArray()),
             ]);
         }
 
@@ -146,7 +169,6 @@ class SessionSerializer
 
         $this->sipe('meta.default', 'setDefaultSession', $data, $session);
         $this->sipe('meta.type', 'setType', $data, $session);
-        $this->sipe('meta.sessionStatus', 'setSessionStatus', $data, $session);
         $this->sipe('meta.order', 'setDisplayOrder', $data, $session);
         $this->sipe('meta.color', 'setColor', $data, $session);
         //$this->sipe('meta.total', 'setTotal', $data, $session);
@@ -184,6 +206,24 @@ class SessionSerializer
             if ($course) {
                 $session->setCourse($course);
             }
+        }
+
+        if (isset($data['location'])) {
+            $location = null;
+            if (!empty($data['location']['id'])) {
+                $location = $this->om->getRepository(Location::class)->findOneBy(['uuid' => $data['location']['id']]);
+            }
+
+            $session->setLocation($location);
+        }
+
+        if (isset($data['resources'])) {
+            $resources = [];
+            foreach ($data['resources'] as $resourceData) {
+                $resources[] = $this->om->getRepository(ResourceNode::class)->findOneBy(['uuid' => $resourceData['id']]);
+            }
+
+            $session->setResources($resources);
         }
 
         return $session;

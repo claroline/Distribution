@@ -26,7 +26,7 @@ class LogCursusGroupRegistrationEvent extends LogGenericEvent
         $details = [];
         $details['groupName'] = $group->getName();
         $details['cursusId'] = $cursus->getUuid();
-        $details['cursusTitle'] = $cursus->getTitle();
+        $details['cursusTitle'] = $cursus->getName();
         $details['cursusCode'] = $cursus->getCode();
         $details['type'] = $cursusGroup->getGroupType();
         $details['registrationDate'] = $cursusGroup->getRegistrationDate();

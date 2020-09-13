@@ -41,6 +41,13 @@ const reducer = combineReducers({
       [LOAD_COURSE]: () => true
     })
   }),
+  courseEvents: makeListReducer(selectors.STORE_NAME+'.courseEvents', {
+    sortBy: {property: 'startDate', direction: 1}
+  }, {
+    invalidated: makeReducer(false, {
+      [LOAD_COURSE]: () => true
+    })
+  }),
 
   // old
   sessionUser: makeReducer(null, {

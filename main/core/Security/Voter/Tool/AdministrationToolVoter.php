@@ -28,9 +28,12 @@ class AdministrationToolVoter extends AbstractVoter implements VoterInterface
      */
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
     {
+        if ($this->isAdmin($token)) {
+            return VoterInterface::ACCESS_GRANTED;
+        }
+
         $roles = $object->getRoles();
         $tokenRoles = $token->getRoles();
-
         foreach ($tokenRoles as $tokenRole) {
             foreach ($roles as $role) {
                 if ($role->getRole() === $tokenRole->getRole()) {

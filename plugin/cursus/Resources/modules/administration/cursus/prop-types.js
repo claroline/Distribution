@@ -78,7 +78,6 @@ const Session = {
       workspace: T.shape(WorkspaceType.propTypes),
       tutorRole: T.shape(RoleType.propTypes),
       learnerRole: T.shape(RoleType.propTypes),
-      sessionStatus: T.number,
       creationDate: T.string,
       order: T.number,
       color: T.string,

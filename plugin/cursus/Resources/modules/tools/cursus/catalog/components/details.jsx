@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 
 import {Routes} from '#/main/app/router/components/routes'
 import {trans} from '#/main/app/intl/translation'
@@ -42,11 +43,11 @@ const CatalogDetails = (props) =>
       <Routes
         path={props.path+'/catalog'+'/'+props.course.slug}
         redirect={[
-          {from: '/', exact: true, to: '/'+props.activeSession.id, disabled: !props.activeSession.id}
+          {from: '/', exact: true, to: '/'+get(props.activeSession, 'id'), disabled: !props.activeSession}
         ]}
         routes={[
           {
-            path: '/:id',
+            path: '/:id?',
             onEnter(params = {}) {
               if (params.id) {
                 props.openSession(params.id)

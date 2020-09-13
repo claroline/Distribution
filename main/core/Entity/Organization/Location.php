@@ -11,8 +11,13 @@
 
 namespace Claroline\CoreBundle\Entity\Organization;
 
+use Claroline\AppBundle\Entity\Address;
+use Claroline\AppBundle\Entity\Identifier\Id;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\AppBundle\Entity\Meta\Description;
+use Claroline\AppBundle\Entity\Meta\Poster;
+use Claroline\AppBundle\Entity\Meta\Thumbnail;
 use Claroline\CoreBundle\Entity\Group;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,20 +31,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Location
 {
-    use UuidTrait;
+    use Id;
+    use Uuid;
+
+    use Description;
+    use Thumbnail;
+    use Poster;
+    use Address;
 
     const TYPE_DEPARTMENT = 1;
     const TYPE_USER = 2;
     const TYPE_TRAINING = 3;
-
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @var int
-     */
-    private $id;
 
     /**
      * @ORM\Column()
@@ -55,53 +57,6 @@ class Location
      * @var int
      */
     private $type = self::TYPE_DEPARTMENT;
-
-    /**
-     * @ORM\Column()
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    private $street;
-
-    /**
-     * @ORM\Column()
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    private $streetNumber;
-
-    /**
-     * @ORM\Column(nullable=true)
-     *
-     * @var string
-     */
-    private $boxNumber;
-
-    /**
-     * @ORM\Column()
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    private $pc;
-
-    /**
-     * @ORM\Column()
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    private $town;
-
-    /**
-     * @ORM\Column()
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    private $country;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -169,17 +124,9 @@ class Location
     }
 
     /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
@@ -209,70 +156,6 @@ class Location
     }
 
     /**
-     * @param string $street
-     */
-    public function setStreet($street)
-    {
-        $this->street = $street;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStreet()
-    {
-        return $this->street;
-    }
-
-    /**
-     * @param string $pc
-     */
-    public function setPc($pc)
-    {
-        $this->pc = $pc;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPc()
-    {
-        return $this->pc;
-    }
-
-    /**
-     * @param string $town
-     */
-    public function setTown($town)
-    {
-        $this->town = $town;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTown()
-    {
-        return $this->town;
-    }
-
-    /**
-     * @param string $country
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
      * @param float $latitude
      */
     public function setLatitude($latitude)
@@ -286,6 +169,22 @@ class Location
     public function getLatitude()
     {
         return $this->latitude;
+    }
+
+    /**
+     * @param string|null $phone
+     */
+    public function setPhone(string $phone = null)
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
     }
 
     /**
@@ -329,54 +228,6 @@ class Location
     }
 
     /**
-     * @param string $streetNumber
-     */
-    public function setStreetNumber($streetNumber)
-    {
-        $this->streetNumber = $streetNumber;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStreetNumber()
-    {
-        return $this->streetNumber;
-    }
-
-    /**
-     * @param string $boxNumber
-     */
-    public function setBoxNumber($boxNumber)
-    {
-        $this->boxNumber = $boxNumber;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBoxNumber()
-    {
-        return $this->boxNumber;
-    }
-
-    /**
-     * @param string $phone
-     */
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    /**
      * @param User $user
      */
     public function addUser(User $user)
@@ -393,7 +244,7 @@ class Location
     }
 
     /**
-     * @param Organization $orga
+     * @param Organization $organization
      */
     public function addOrganization(Organization $organization)
     {
@@ -401,7 +252,7 @@ class Location
     }
 
     /**
-     * @param Organization $orga
+     * @param Organization $organization
      */
     public function removeOrganization(Organization $organization)
     {

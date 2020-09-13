@@ -13,17 +13,20 @@ import {SessionForm} from '#/plugin/cursus/administration/cursus/session/compone
 
 const SessionFormModal = props =>
   <Modal
-    {...omit(props, 'session', 'course', 'saveEnabled', 'loadSession', 'saveSession', 'onSave')}
-    icon="fa fa-fw fa-plus"
-    title={trans('session', {}, 'cursus')}
+    {...omit(props, 'session', 'course', 'saveEnabled', 'update', 'loadSession', 'saveSession', 'onSave')}
+    icon={props.session && props.session.id ? 'fa fa-fw fa-cog' : 'fa fa-fw fa-plus'}
+    title={trans('sessions', {}, 'cursus')}
+    subtitle={props.session && props.session.id ? props.session.name : trans('new_session', {}, 'cursus')}
     onEntering={() => props.loadSession(props.session, props.course)}
   >
     <SessionForm
       name={selectors.STORE_NAME}
+      update={props.update}
     >
       <Button
         className="modal-btn btn"
         type={CALLBACK_BUTTON}
+        htmlType="submit"
         primary={true}
         label={trans('save', {}, 'actions')}
         disabled={!props.saveEnabled}
@@ -42,6 +45,7 @@ SessionFormModal.propTypes = {
   course: T.shape({
 
   }),
+  update: T.func.isRequired,
   saveEnabled: T.bool.isRequired,
   loadSession: T.func.isRequired,
   saveSession: T.func.isRequired,

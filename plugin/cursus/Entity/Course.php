@@ -19,7 +19,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -32,13 +31,7 @@ class Course extends AbstractCourseSession
     use Uuid;
 
     /**
-     * @ORM\Column()
-     * @Assert\NotBlank()
-     */
-    private $title;
-
-    /**
-     * @Gedmo\Slug(fields={"title"})
+     * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(length=128, unique=true)
      *
      * @var string
@@ -91,11 +84,6 @@ class Course extends AbstractCourseSession
     private $defaultSessionDuration = 1;
 
     /**
-     * @ORM\Column(name="with_session_event", type="boolean", options={"default" = 1})
-     */
-    private $withSessionEvent = true;
-
-    /**
      * @ORM\ManyToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization"
      * )
@@ -113,16 +101,6 @@ class Course extends AbstractCourseSession
         $this->sessions = new ArrayCollection();
         $this->organizations = new ArrayCollection();
         $this->children = new ArrayCollection();
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setTitle($title)
-    {
-        $this->title = $title;
     }
 
     public function getSlug()
@@ -194,16 +172,6 @@ class Course extends AbstractCourseSession
         $this->defaultSessionDuration = $defaultSessionDuration;
     }
 
-    public function getWithSessionEvent()
-    {
-        return $this->withSessionEvent;
-    }
-
-    public function setWithSessionEvent($withSessionEvent)
-    {
-        $this->withSessionEvent = $withSessionEvent;
-    }
-
     public function getOrganizations()
     {
         return $this->organizations;
@@ -263,6 +231,6 @@ class Course extends AbstractCourseSession
 
     public function __toString()
     {
-        return $this->getTitle().' ['.$this->getCode().']';
+        return $this->getName().' ['.$this->getCode().']';
     }
 }

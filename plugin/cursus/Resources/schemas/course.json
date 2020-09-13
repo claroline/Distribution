@@ -57,10 +57,6 @@
           "type": "integer",
           "description": "The default duration in days of session"
         },
-        "withSessionEvent": {
-          "type": "boolean",
-          "description": "Whether a default session event is created at session creation"
-        },
         "order": {
           "type": "integer",
           "description": "The course display order"

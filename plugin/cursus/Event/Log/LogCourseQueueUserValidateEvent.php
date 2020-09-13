@@ -28,7 +28,7 @@ class LogCourseQueueUserValidateEvent extends LogGenericEvent
         $details['firsName'] = $user->getFirstName();
         $details['lastName'] = $user->getLastName();
         $details['courseId'] = $course->getUuid();
-        $details['courseTitle'] = $course->getTitle();
+        $details['courseTitle'] = $course->getName();
         $details['courseCode'] = $course->getCode();
         $details['userValidationDate'] = $queue->getUserValidationDate();
 

@@ -1,9 +1,12 @@
 {
     "add_course": "Ajouter une formation",
     "add_session": "Ajouter une session de formation",
+    "add_event": "Ajouter une séance",
     "add_learners": "Ajouter des apprenants",
     "add_learners_groups": "Ajouter des groupes d'apprenants",
     "add_tutors": "Ajouter des formateurs",
+    "new_session": "Nouvelle session de formation",
+    "new_event": "Nouvelle séance",
     "application_date": "Date de la demande",
     "blocking": "Bloquant",
     "blocking_desc": "Lorsqu'un utilisateur est inscrit à un cursus, il est également inscrit aux cursus sous-jacents. Cette option permet d'empêcher cette propagation de l'inscription.",
@@ -63,5 +66,6 @@
     "with_session_event": "Créer une séance lors de la création d'une session",
     "max_participants": "Max. participants",
     "no_available_session": "Aucune session n'est disponible pour le moment",
-    "no_available_session_help": "Veuillez revenir plus tard ou vous inscrire en file d'attente"
+    "no_available_session_help": "Veuillez revenir plus tard ou vous inscrire en file d'attente",
+    "online_session": "Session en ligne"
 }

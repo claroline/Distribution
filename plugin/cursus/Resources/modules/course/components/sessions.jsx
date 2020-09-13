@@ -23,7 +23,7 @@ const CourseSessions = (props) =>
       primaryAction={(row) => ({
         type: LINK_BUTTON,
         target: route(props.course, row),
-        label: trans('edit', {}, 'actions')
+        label: trans('open', {}, 'actions')
       })}
       delete={{
         url: ['apiv2_cursus_session_delete_bulk']

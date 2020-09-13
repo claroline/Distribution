@@ -26,6 +26,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -37,6 +38,8 @@ class SessionController extends AbstractCrudController
 {
     /** @var AuthorizationCheckerInterface */
     private $authorization;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
     /** @var TranslatorInterface */
     private $translator;
     /** @var ToolManager */
@@ -48,17 +51,20 @@ class SessionController extends AbstractCrudController
      * SessionController constructor.
      *
      * @param AuthorizationCheckerInterface $authorization
+     * @param TokenStorageInterface         $tokenStorage
      * @param TranslatorInterface           $translator
      * @param ToolManager                   $toolManager
      * @param SessionManager                $manager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
+        TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
         ToolManager $toolManager,
         SessionManager $manager
     ) {
         $this->authorization = $authorization;
+        $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->toolManager = $toolManager;
         $this->manager = $manager;
@@ -66,7 +72,7 @@ class SessionController extends AbstractCrudController
 
     public function getName()
     {
-        return 'session';
+        return 'cursus_session';
     }
 
     public function getClass()
@@ -76,41 +82,22 @@ class SessionController extends AbstractCrudController
 
     public function getIgnore()
     {
-        return ['exist', 'copyBulk', 'schema', 'find', 'list'];
+        return ['schema'];
     }
 
-    /**
-     * @Route(
-     *     "/list",
-     *     name="apiv2_cursus_session_list"
-     * )
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     *
-     * @param User    $user
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function sessionsListAction(User $user, Request $request)
+    protected function getDefaultHiddenFilters()
     {
-        $this->checkToolAccess();
-        $params = $request->query->all();
-
-        if (!isset($params['hiddenFilters'])) {
-            $params['hiddenFilters'] = [];
-        }
         if (!$this->authorization->isGranted('ROLE_ADMIN')) {
-            $params['hiddenFilters']['organizations'] = array_map(function (Organization $organization) {
-                return $organization->getUuid();
-            }, $user->getAdministratedOrganizations()->toArray());
-        }
-        if (!isset($params['sortBy'])) {
-            $params['sortBy'] = '-id';
+            $user = $this->tokenStorage->getToken()->getUser();
+
+            return [
+                'organizations' => array_map(function (Organization $organization) {
+                    return $organization->getUuid();
+                }, $user->getOrganizations()),
+            ];
         }
 
-        return new JsonResponse(
-            $this->finder->search(CourseSession::class, $params)
-        );
+        return [];
     }
 
     /**
@@ -131,7 +118,7 @@ class SessionController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function sessionEventsListAction(User $user, CourseSession $session, Request $request)
+    public function listEventsAction(User $user, CourseSession $session, Request $request)
     {
         $this->checkToolAccess();
         $params = $request->query->all();

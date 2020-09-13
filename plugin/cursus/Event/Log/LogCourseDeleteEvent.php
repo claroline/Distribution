@@ -22,7 +22,7 @@ class LogCourseDeleteEvent extends LogGenericEvent
     {
         $details = [];
         $details['id'] = $course->getUuid();
-        $details['title'] = $course->getTitle();
+        $details['title'] = $course->getName();
         $details['code'] = $course->getCode();
         $details['publicRegistration'] = $course->getPublicRegistration();
         $details['publicUnregistration'] = $course->getPublicUnregistration();

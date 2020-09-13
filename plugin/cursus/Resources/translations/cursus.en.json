@@ -1,9 +1,12 @@
 {
     "add_course": "Add a training",
     "add_session": "Add a training session",
+    "add_event": "Add an event",
     "add_learners": "Add learners",
     "add_learners_groups": "Add groups of learners",
     "add_tutors": "Add tutors",
+    "new_session": "New training session",
+    "new_event": "New event",
     "application_date": "Request date",
     "blocking": "Blocking",
     "blocking_desc": "When an user is registered to a cursus, he is also registered to underlying cursus. This option allows to stop this registration propagation.",
@@ -63,5 +66,6 @@
     "with_session_event": "Also create a default session event when creating a training session",
     "max_participants": "Max. participants",
     "no_available_session": "No session is available for now",
-    "no_available_session_help": "Please come back later or join the registration queue"
+    "no_available_session_help": "Please come back later or join the registration queue",
+    "online_session": "Online session"
 }

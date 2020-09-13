@@ -175,7 +175,7 @@ class SessionManager
 
         $workspace = new Workspace();
         $workspace->setCreator($user);
-        $workspace->setName($course->getTitle().' ['.$session->getName().']');
+        $workspace->setName($course->getName().' ['.$session->getName().']');
         $workspace->setCode($this->workspaceManager->getUniqueCode($course->getCode()));
         $workspace->setDescription($course->getDescription());
 
@@ -192,8 +192,6 @@ class SessionManager
 
         return $workspace;
     }
-
-
 
     /**
      * Adds users to a session.
@@ -549,7 +547,7 @@ class SessionManager
                 $trainersList .= '</ul>';
             }
             $basicPlaceholders = [
-                'course_title' => $course->getTitle(),
+                'course_title' => $course->getName(),
                 'course_code' => $course->getCode(),
                 'course_description' => $course->getDescription(),
                 'session_name' => $session->getName(),
@@ -737,7 +735,7 @@ class SessionManager
             $trainersList .= '</ul>';
         }
         $basicPlaceholders = [
-            'course_title' => $course->getTitle(),
+            'course_title' => $course->getName(),
             'course_code' => $course->getCode(),
             'course_description' => $course->getDescription(),
             'session_name' => $session->getName(),
