@@ -12,7 +12,6 @@
 namespace Claroline\AppBundle\Controller\Platform;
 
 use Claroline\CoreBundle\Manager\LocaleManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

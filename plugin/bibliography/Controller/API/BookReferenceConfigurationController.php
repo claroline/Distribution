@@ -3,7 +3,6 @@
 namespace Icap\BibliographyBundle\Controller\API;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**

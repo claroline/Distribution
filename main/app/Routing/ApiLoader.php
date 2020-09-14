@@ -1,4 +1,3 @@
-
 <?php
 
 // src/AppBundle/Routing/ExtraLoader.php
@@ -8,7 +7,6 @@ namespace Claroline\AppBundle\Routing;
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Doctrine\Common\Annotations\Reader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method as MethodConfig;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route as RouteConfig;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -111,7 +109,7 @@ class ApiLoader extends Loader
 
                     foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
                         //The route prefix is defined with the sf2 annotations
-                        if ($annotation instanceof RouteConfig) {
+                        if ($annotation instanceof Route) {
                             $prefix = $annotation->getPath();
 
                             if (0 === strpos($prefix, '/')) {
@@ -135,7 +133,7 @@ class ApiLoader extends Loader
 
                             foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
                                 //The route prefix is defined with the sf2 annotations
-                                if ($annotation instanceof RouteConfig) {
+                                if ($annotation instanceof Route) {
                                     $prefix = $annotation->getPath();
 
                                     if (0 === strpos($prefix, '/')) {

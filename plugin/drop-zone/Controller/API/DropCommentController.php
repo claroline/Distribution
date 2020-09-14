@@ -13,7 +13,6 @@ namespace Claroline\DropZoneBundle\Controller\API;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\DropZoneBundle\Entity\DropComment;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**

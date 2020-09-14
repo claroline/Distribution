@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Controller\APINew\Template;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Template\TemplateType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**

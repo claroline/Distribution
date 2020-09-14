@@ -9,7 +9,6 @@ use Icap\BlogBundle\Manager\BlogManager;
 use Icap\BlogBundle\Manager\PostManager;
 use Icap\BlogBundle\Serializer\BlogOptionsSerializer;
 use Icap\BlogBundle\Serializer\BlogSerializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

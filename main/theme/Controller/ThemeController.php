@@ -13,7 +13,6 @@ namespace Claroline\ThemeBundle\Controller;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\ThemeBundle\Entity\Theme;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
