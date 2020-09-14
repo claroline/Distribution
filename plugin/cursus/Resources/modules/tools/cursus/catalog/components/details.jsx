@@ -43,11 +43,11 @@ const CatalogDetails = (props) =>
       <Routes
         path={props.path+'/catalog'+'/'+props.course.slug}
         redirect={[
-          {from: '/', exact: true, to: '/'+get(props.activeSession, 'id'), disabled: !props.activeSession}
+          {from: '', exact: true, to: '/'+get(props.activeSession, 'id'), disabled: !props.activeSession}
         ]}
         routes={[
           {
-            path: '/:id?',
+            path: '/:id',
             onEnter(params = {}) {
               if (params.id) {
                 props.openSession(params.id)

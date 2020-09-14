@@ -52,8 +52,8 @@ class AdministratorVoter implements VoterInterface
 
     private function isUsurpingWorkspaceRole(TokenInterface $token)
     {
-        foreach ($token->getRoles() as $role) {
-            if ('ROLE_USURPATE_WORKSPACE_ROLE' === $role->getRole()) {
+        foreach ($token->getRoleNames() as $role) {
+            if ('ROLE_USURPATE_WORKSPACE_ROLE' === $role) {
                 return true;
             }
         }
