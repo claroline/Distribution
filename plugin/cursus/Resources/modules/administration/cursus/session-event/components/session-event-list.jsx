@@ -1,6 +1,7 @@
 import {trans} from '#/main/app/intl/translation'
 
 import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {SessionEventCard} from '#/plugin/cursus/administration/cursus/session-event/data/components/session-event-card'
 
 const SessionEventList = {
   definition: [
@@ -16,23 +17,28 @@ const SessionEventList = {
       label: trans('code'),
       displayed: false
     }, {
-      name: 'meta.session',
-      alias: 'sessionName',
-      type: 'string',
-      label: trans('session', {}, 'cursus'),
-      displayed: true,
-      calculated: (sessionEvent) => sessionEvent.meta.session.name
+      name: 'location',
+      type: 'location',
+      label: trans('location'),
+      placeholder: trans('online_session', {}, 'cursus'),
+      displayed: true
     }, {
       name: 'restrictions.dates[0]',
       alias: 'startDate',
       type: 'date',
       label: trans('start_date'),
-      displayed: true
+      displayed: true,
+      options: {
+        time: true
+      }
     }, {
       name: 'restrictions.dates[1]',
       alias: 'endDate',
       type: 'date',
       label: trans('end_date'),
+      options: {
+        time: true
+      },
       displayed: true
     }, {
       name: 'restrictions.users',
@@ -50,7 +56,8 @@ const SessionEventList = {
         choices: constants.REGISTRATION_TYPES
       }
     }
-  ]
+  ],
+  card: SessionEventCard
 }
 
 export {

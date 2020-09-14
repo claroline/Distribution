@@ -1,6 +1,5 @@
 import {trans} from '#/main/app/intl/translation'
 
-// import {constants} from '#/plugin/cursus/administration/cursus/constants'
 import {SessionCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-card'
 
 const SessionList = {
@@ -20,15 +19,9 @@ const SessionList = {
       name: 'location',
       type: 'location',
       label: trans('location'),
+      placeholder: trans('online_session', {}, 'cursus'),
       displayed: true
-    }, /*{
-      name: 'course',
-      alias: 'courseTitle',
-      type: 'string',
-      label: trans('course', {}, 'cursus'),
-      displayed: true,
-      calculated: (session) => session.meta.course.title
-    },*/ {
+    }, {
       name: 'restrictions.dates[0]',
       alias: 'startDate',
       type: 'date',

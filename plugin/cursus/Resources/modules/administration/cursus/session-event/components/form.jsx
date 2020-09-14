@@ -25,27 +25,45 @@ const SessionEventForm = (props) =>
             label: trans('code'),
             required: true
           }, {
-            name: 'description',
-            type: 'html',
-            label: trans('description')
+            name: 'restrictions.dates',
+            type: 'date-range',
+            label: trans('access_dates'),
+            required: true,
+            options: {
+              time: true
+            }
           }
         ]
       }, {
-        icon: 'fa fa-fw fa-cogs',
-        title: trans('parameters'),
+        icon: 'fa fa-fw fa-info',
+        title: trans('information'),
         fields: [
           {
-            name: 'meta.location',
+            name: 'description',
+            type: 'html',
+            label: trans('description')
+          }, {
+            name: 'location',
             type: 'location',
             label: trans('location')
           }, {
             name: 'meta.locationExtra',
             type: 'html',
             label: trans('extra_informations', {}, 'cursus')
+          }
+        ]
+      }, {
+        icon: 'fa fa-fw fa-desktop',
+        title: trans('display_parameters'),
+        fields: [
+          {
+            name: 'poster',
+            type: 'image',
+            label: trans('poster')
           }, {
-            name: 'meta.set',
-            type: 'string',
-            label: trans('session_event_set', {}, 'cursus')
+            name: 'thumbnail',
+            type: 'image',
+            label: trans('thumbnail')
           }, {
             name: 'meta.isEvent',
             type: 'boolean',
@@ -72,14 +90,6 @@ const SessionEventForm = (props) =>
         title: trans('restrictions'),
         fields: [
           {
-            name: 'restrictions.dates',
-            type: 'date-range',
-            label: trans('access_dates'),
-            required: true,
-            options: {
-              time: true
-            }
-          }, {
             name: 'restrictions.users',
             type: 'number',
             label: trans('users_count'),

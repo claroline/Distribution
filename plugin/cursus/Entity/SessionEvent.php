@@ -11,8 +11,12 @@
 
 namespace Claroline\CursusBundle\Entity;
 
+use Claroline\AppBundle\Entity\Identifier\Code;
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\AppBundle\Entity\Meta\Description;
+use Claroline\AppBundle\Entity\Meta\Poster;
+use Claroline\AppBundle\Entity\Meta\Thumbnail;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,6 +32,11 @@ class SessionEvent
     use Id;
     use Uuid;
 
+    use Code;
+    use Description;
+    use Poster;
+    use Thumbnail;
+
     const TYPE_NONE = 0;
     const TYPE_EVENT = 1;
 
@@ -38,14 +47,6 @@ class SessionEvent
      * @var string
      */
     protected $name;
-
-    /**
-     * @ORM\Column(unique=true)
-     * @Assert\NotBlank()
-     *
-     * @var string
-     */
-    protected $code;
 
     /**
      * @ORM\ManyToOne(
@@ -72,13 +73,6 @@ class SessionEvent
      * @var \DateTime
      */
     protected $endDate;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     *
-     * @var string
-     */
-    protected $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Organization\Location")
@@ -142,16 +136,6 @@ class SessionEvent
         $this->name = $name;
     }
 
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    public function setCode($code)
-    {
-        $this->code = $code;
-    }
-
     public function getSession()
     {
         return $this->session;
@@ -201,16 +185,6 @@ class SessionEvent
         $now = new \DateTime();
 
         return $this->endDate && $now > $this->endDate;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    public function setDescription($description)
-    {
-        $this->description = $description;
     }
 
     /**

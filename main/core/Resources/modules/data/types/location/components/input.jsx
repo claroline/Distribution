@@ -44,6 +44,7 @@ const LocationInput = props => {
       <Fragment>
         <LocationCard
           data={props.value}
+          size="xs"
           actions={[
             {
               name: 'delete',

@@ -40,7 +40,8 @@ const SessionFormModal = props =>
 
 SessionFormModal.propTypes = {
   session: T.shape({
-    id: T.string.isRequired
+    id: T.string.isRequired,
+    name: T.string
   }),
   course: T.shape({
 

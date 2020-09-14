@@ -13,8 +13,10 @@ namespace Claroline\CursusBundle\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
+use Claroline\CoreBundle\API\Serializer\User\LocationSerializer;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Repository\Organization\LocationRepository;
@@ -28,8 +30,12 @@ class SessionEventSerializer
 
     /** @var ObjectManager */
     private $om;
-    /** @var SerializerProvider */
-    private $serializer;
+    /** @var PublicFileSerializer */
+    private $fileSerializer;
+    /** @var LocationSerializer */
+    private $locationSerializer;
+    /** @var SessionSerializer */
+    private $sessionSerializer;
 
     /** @var LocationRepository */
     private $locationRepo;
@@ -39,13 +45,21 @@ class SessionEventSerializer
     /**
      * SessionEventSerializer constructor.
      *
-     * @param ObjectManager      $om
-     * @param SerializerProvider $serializer
+     * @param ObjectManager        $om
+     * @param PublicFileSerializer $fileSerializer
+     * @param LocationSerializer   $locationSerializer
+     * @param SessionSerializer    $sessionSerializer
      */
-    public function __construct(ObjectManager $om, SerializerProvider $serializer)
-    {
+    public function __construct(
+        ObjectManager $om,
+        PublicFileSerializer $fileSerializer,
+        LocationSerializer $locationSerializer,
+        SessionSerializer $sessionSerializer
+    ) {
         $this->om = $om;
-        $this->serializer = $serializer;
+        $this->fileSerializer = $fileSerializer;
+        $this->locationSerializer = $locationSerializer;
+        $this->sessionSerializer = $sessionSerializer;
 
         $this->locationRepo = $om->getRepository(Location::class);
         $this->sessionRepo = $om->getRepository(CourseSession::class);
@@ -64,16 +78,18 @@ class SessionEventSerializer
             'code' => $event->getCode(),
             'name' => $event->getName(),
             'description' => $event->getDescription(),
+            'poster' => $this->serializePoster($event),
+            'thumbnail' => $this->serializeThumbnail($event),
+            'location' => $event->getLocation() ? $this->locationSerializer->serialize($event->getLocation(), [Options::SERIALIZE_MINIMAL]) : null,
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'meta' => [
                     'type' => $event->getType(),
-                    'session' => $this->serializer->serialize($event->getSession(), [Options::SERIALIZE_MINIMAL]),
-                    'location' => $event->getLocation() ? $this->serializer->serialize($event->getLocation()) : null,
+                    'session' => $this->sessionSerializer->serialize($event->getSession(), [Options::SERIALIZE_MINIMAL]),
                     'locationExtra' => $event->getLocationExtra(),
-                    'isEvent' => SessionEvent::TYPE_EVENT === $event->getType(),
+                    'isEvent' => SessionEvent::TYPE_EVENT === $event->getType(), // todo : replace by a bool in db
                 ],
                 'restrictions' => [
                     'users' => $event->getMaxUsers(),
@@ -100,13 +116,23 @@ class SessionEventSerializer
         $this->sipe('code', 'setCode', $data, $event);
         $this->sipe('name', 'setName', $data, $event);
         $this->sipe('description', 'setDescription', $data, $event);
-
-        $this->sipe('meta.type', 'setType', $data, $event);
         $this->sipe('meta.locationExtra', 'setLocationExtra', $data, $event);
-
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $event);
-
         $this->sipe('registration.registrationType', 'setRegistrationType', $data, $event);
+
+        if (isset($data['poster'])) {
+            $event->setPoster($data['poster']['url'] ?? null);
+        }
+
+        if (isset($data['thumbnail'])) {
+            $event->setThumbnail($data['thumbnail']['url'] ?? null);
+        }
+
+        if (isset($data['meta'])) {
+            if (isset($data['meta']['isEvent'])) {
+                $event->setType($data['meta']['isEvent'] ? SessionEvent::TYPE_EVENT : SessionEvent::TYPE_NONE);
+            }
+        }
 
         if (isset($data['restrictions']['dates'])) {
             $dates = DateRangeNormalizer::denormalize($data['restrictions']['dates']);
@@ -125,13 +151,45 @@ class SessionEventSerializer
             }
         }
 
-        if (isset($data['meta']['location']) && isset($data['meta']['location']['id'])) {
-            $location = $this->locationRepo->findOneBy(['uuid' => $data['meta']['location']['id']]);
+        if (isset($data['location']) && isset($data['location']['id'])) {
+            $location = $this->locationRepo->findOneBy(['uuid' => $data['location']['id']]);
             $event->setLocation($location);
         } else {
             $event->setLocation(null);
         }
 
         return $event;
+    }
+
+    private function serializePoster(SessionEvent $event)
+    {
+        if (!empty($event->getPoster())) {
+            /** @var PublicFile $file */
+            $file = $this->om
+                ->getRepository(PublicFile::class)
+                ->findOneBy(['url' => $event->getPoster()]);
+
+            if ($file) {
+                return $this->fileSerializer->serialize($file);
+            }
+        }
+
+        return null;
+    }
+
+    private function serializeThumbnail(SessionEvent $event)
+    {
+        if (!empty($event->getThumbnail())) {
+            /** @var PublicFile $file */
+            $file = $this->om
+                ->getRepository(PublicFile::class)
+                ->findOneBy(['url' => $event->getThumbnail()]);
+
+            if ($file) {
+                return $this->fileSerializer->serialize($file);
+            }
+        }
+
+        return null;
     }
 }

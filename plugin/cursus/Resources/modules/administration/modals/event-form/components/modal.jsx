@@ -39,7 +39,8 @@ const EventFormModal = props =>
 
 EventFormModal.propTypes = {
   event: T.shape({
-    id: T.string.isRequired
+    id: T.string.isRequired,
+    name: T.string
   }),
   session: T.shape({
 
