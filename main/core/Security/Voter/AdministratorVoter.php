@@ -26,13 +26,13 @@ class AdministratorVoter implements VoterInterface
     {
         $isImpersonating = $this->isUsurpingWorkspaceRole($token);
 
-        return $this->isAdmin($token) ? (VoterInterface::ACCESS_GRANTED && !$isImpersonating) : VoterInterface::ACCESS_ABSTAIN;
+        return $this->isAdmin($token) && !$isImpersonating ? VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_ABSTAIN;
     }
 
     protected function isAdmin(TokenInterface $token)
     {
-        foreach ($token->getRoles() as $role) {
-            if (PlatformRoles::ADMIN === $role->getRole()) {
+        foreach ($token->getRoleNames() as $role) {
+            if (PlatformRoles::ADMIN === $role) {
                 return true;
             }
         }
