@@ -178,7 +178,7 @@ const CourseAbout = (props) => {
           </div>
         }
 
-        {props.activeSession && !isEmpty(props.activeSession.resources) &&
+        {props.activeSession && !isEmpty(get(props.activeSession, 'resources')) &&
           <ContentTitle
             level={3}
             displayLevel={2}
@@ -186,7 +186,7 @@ const CourseAbout = (props) => {
           />
         }
 
-        {props.activeSession && props.activeSession.resources.map((resource, index) =>
+        {get(props.activeSession, 'resources', []).map((resource, index) =>
           <ResourceCard
             key={resource.id}
             style={{marginBottom: index === props.activeSession.resources.length - 1 ? 20 : 5}}
@@ -200,17 +200,21 @@ const CourseAbout = (props) => {
           />
         )}
 
-        <hr />
+        {(props.course.parent || !isEmpty(props.course.children)) &&
+          <hr/>
+        }
 
-        <ContentTitle
-          level={3}
-          displayLevel={2}
-          title="Formations liées"
-          subtitle={props.course.parent ?
-            'Cette formation fait partie de la formation' :
-            'En vous inscrivant à cette formation, vous serez également inscrit aux formations suivantes'
-          }
-        />
+        {(props.course.parent || !isEmpty(props.course.children)) &&
+          <ContentTitle
+            level={3}
+            displayLevel={2}
+            title="Formations liées"
+            subtitle={props.course.parent ?
+              'Cette formation fait partie de la formation' :
+              'En vous inscrivant à cette formation, vous serez également inscrit aux formations suivantes'
+            }
+          />
+        }
 
         {props.course.parent &&
           <CourseCard
