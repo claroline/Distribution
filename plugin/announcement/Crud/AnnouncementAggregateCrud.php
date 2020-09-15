@@ -7,13 +7,21 @@ use Claroline\AppBundle\Event\Crud\DeleteEvent;
 
 class AnnouncementAggregateCrud
 {
+    /** @var Crud */
+    private $crud;
+
+    /**
+     * AnnouncementAggregateCrud constructor.
+     *
+     * @param Crud $crud
+     */
     public function __construct(Crud $crud)
     {
         $this->crud = $crud;
     }
 
     /**
-     * @param CreateEvent $event
+     * @param DeleteEvent $event
      */
     public function preDelete(DeleteEvent $event)
     {
