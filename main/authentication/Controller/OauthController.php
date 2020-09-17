@@ -15,7 +15,6 @@ use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AuthenticationBundle\Entity\OauthUser;
 use Claroline\AuthenticationBundle\Manager\OauthManager;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,8 +86,7 @@ class OauthController extends AbstractCrudController
     }
 
     /**
-     * @Route("/link_account/{service}/{username}", name="claro_oauth_link_account")
-     * @EXT\Method("POST")
+     * @Route("/link_account/{service}/{username}", name="claro_oauth_link_account", methods={"POST"})
      *
      * @param Request $request
      * @param string  $username
@@ -104,8 +102,7 @@ class OauthController extends AbstractCrudController
     }
 
     /**
-     * @Route("/link_account_mail", name="claro_oauth_link_account_mail")
-     * @EXT\Method("GET")
+     * @Route("/link_account_mail", name="claro_oauth_link_account_mail", methods={"GET"})
      *
      * @param Request $request
      *
