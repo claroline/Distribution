@@ -11,16 +11,17 @@
 
 namespace Claroline\AppBundle\Persistence;
 
-use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\AppBundle\Log\LoggableTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\ObjectManager as ObjectManagerInterface;
 use Doctrine\Persistence\ObjectManagerDecorator;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-class ObjectManager extends ObjectManagerDecorator
+class ObjectManager extends ObjectManagerDecorator implements LoggerAwareInterface
 {
     use LoggableTrait;
 
@@ -36,16 +37,14 @@ class ObjectManager extends ObjectManagerDecorator
      * ObjectManager constructor.
      *
      * @param ObjectManagerInterface $om
-     * @param LoggerInterface        $logger
      */
-    public function __construct(ObjectManagerInterface $om, LoggerInterface $logger)
+    public function __construct(ObjectManagerInterface $om)
     {
         $this->wrapped = $om;
         $this->supportsTransactions
             = $this->hasEventManager
             = $this->hasUnitOfWork
             = $om instanceof EntityManagerInterface;
-        $this->logger = $logger;
     }
 
     /**
