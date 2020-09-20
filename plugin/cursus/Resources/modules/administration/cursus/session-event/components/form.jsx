@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {constants} from '#/plugin/cursus/constants'
 
 const SessionEventForm = (props) =>
   <FormData

@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 
-import {selectors as cursusSelectors} from '#/plugin/cursus/tools/cursus/store/selectors'
+import {selectors as cursusSelectors} from '#/plugin/cursus/tools/trainings/store/selectors'
 
 const STORE_NAME = cursusSelectors.STORE_NAME + '.catalog'
 const LIST_NAME = STORE_NAME + '.courses'

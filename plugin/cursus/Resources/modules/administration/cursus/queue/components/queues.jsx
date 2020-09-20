@@ -6,7 +6,7 @@ import {trans} from '#/main/app/intl/translation'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {constants} from '#/plugin/cursus/constants'
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {actions} from '#/plugin/cursus/administration/cursus/queue/store'
 import {SessionQueueCard} from '#/plugin/cursus/administration/cursus/queue/data/components/session-queue-card'

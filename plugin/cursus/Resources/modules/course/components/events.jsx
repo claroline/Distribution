@@ -13,7 +13,7 @@ import {
 } from '#/plugin/cursus/course/prop-types'
 import {MODAL_SESSION_EVENT_FORM} from '#/plugin/cursus/administration/modals/event-form'
 import {SessionEventList} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-list'
-import {selectors} from '#/plugin/cursus/tools/cursus/catalog/store/selectors'
+import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 
 const CourseEvents = (props) =>
   <Fragment>

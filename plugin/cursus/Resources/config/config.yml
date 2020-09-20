@@ -1,17 +1,13 @@
 plugin:
     has_options: false
 
-    admin_tools:
-        - name: claroline_cursus_tool
-          class: graduation-cap
-
     tools:
         - name: claroline_session_events_tool
           is_displayable_in_workspace: true
           is_displayable_in_desktop: false
           class: clock-o
 
-        - name: cursus
+        - name: trainings
           is_displayable_in_workspace: false
           is_displayable_in_desktop: true
           class: graduation-cap

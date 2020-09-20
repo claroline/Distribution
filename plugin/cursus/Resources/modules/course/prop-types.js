@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {Role as RoleTypes} from '#/main/core/user/prop-types'
 import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {constants} from '#/plugin/cursus/constants'
 
 const Course = {
   propTypes: {

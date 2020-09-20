@@ -11,7 +11,7 @@ import {ToolPage} from '#/main/core/tool/containers/page'
 
 import {route} from '#/plugin/cursus/routing'
 import {CourseCard} from '#/plugin/cursus/course/components/card'
-import {selectors} from '#/plugin/cursus/tools/cursus/catalog/store'
+import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store'
 
 class CatalogList extends Component {
   constructor(props) {

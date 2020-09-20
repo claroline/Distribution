@@ -10,7 +10,7 @@ import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
 import {CoursePage} from '#/plugin/cursus/course/components/page'
 import {CourseForm} from '#/plugin/cursus/course/containers/form'
 
-import {selectors} from '#/plugin/cursus/tools/cursus/catalog/store'
+import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store'
 
 const CatalogForm = (props) => {
   if (!props.isNew) {

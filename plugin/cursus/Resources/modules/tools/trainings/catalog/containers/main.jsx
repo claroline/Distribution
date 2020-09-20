@@ -2,8 +2,8 @@ import {connect} from 'react-redux'
 
 import {selectors as toolSelectors} from '#/main/core/tool/store'
 
-import {actions} from '#/plugin/cursus/tools/cursus/catalog/store'
-import {CatalogMain as CatalogMainComponent} from '#/plugin/cursus/tools/cursus/catalog/components/main'
+import {actions} from '#/plugin/cursus/tools/trainings/catalog/store'
+import {CatalogMain as CatalogMainComponent} from '#/plugin/cursus/tools/trainings/catalog/components/main'
 
 const CatalogMain = connect(
   (state) => ({

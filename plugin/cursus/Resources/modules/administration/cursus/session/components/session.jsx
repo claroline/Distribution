@@ -20,7 +20,7 @@ import {makeId} from '#/main/core/scaffolding/id'
 import {MODAL_USERS} from '#/main/core/modals/users'
 import {MODAL_GROUPS} from '#/main/core/modals/groups'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {constants} from '#/plugin/cursus/constants'
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {
   Session as SessionType,

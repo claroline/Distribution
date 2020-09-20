@@ -10,7 +10,7 @@ import {route} from '#/plugin/cursus/routing'
 import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
 import {MODAL_SESSION_FORM} from '#/plugin/cursus/administration/modals/session-form'
 import {SessionList} from '#/plugin/cursus/administration/cursus/session/components/session-list'
-import {selectors} from '#/plugin/cursus/tools/cursus/catalog/store/selectors'
+import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 
 const CourseSessions = (props) =>
   <Fragment>

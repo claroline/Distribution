@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {Routes} from '#/main/app/router'
 
-import {CatalogMain} from '#/plugin/cursus/tools/cursus/catalog/containers/main'
+import {CatalogMain} from '#/plugin/cursus/tools/trainings/catalog/containers/main'
 
 const CursusTool = (props) =>
   <Routes

@@ -7,7 +7,7 @@ import {
 } from '#/main/core/user/prop-types'
 import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {constants} from '#/plugin/cursus/constants'
 
 const Parameters = {
   propTypes: {
@@ -135,9 +135,6 @@ const SessionEvent = {
   },
   defaultProps: {
     name: '',
-    meta: {
-      type: constants.EVENT_TYPE_NONE
-    },
     registration: {
       registrationType: constants.REGISTRATION_AUTO
     }

@@ -2,7 +2,7 @@ import {API_REQUEST, url} from '#/main/app/api'
 import {actions as formActions} from '#/main/app/content/form/store'
 import {actions as listActions} from '#/main/app/content/list/store'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {constants} from '#/plugin/cursus/constants'
 import {selectors} from '#/plugin/cursus/administration/cursus/store/selectors'
 
 export const actions = {}

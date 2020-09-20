@@ -196,18 +196,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
           ->getRepository('ClarolineCoreBundle:Tool\AdminTool')
           ->findOneBy(['name' => $name]);
 
-        $roles = $tool->getRoles();
-        $tokenRoles = $token->getRoles();
-
-        foreach ($tokenRoles as $tokenRole) {
-            foreach ($roles as $role) {
-                if ($role->getRole() === $tokenRole->getRole()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $this->isGranted('OPEN', $tool);
     }
 
     /**
@@ -234,44 +223,30 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
         return false;
     }
 
+    protected function isOrganizationMember(TokenInterface $token, $object)
+    {
+        if ($token->getUser() instanceof User) {
+            $userOrganizations = $token->getUser()->getOrganizations();
+            $objectOrganizations = $object->getOrganizations();
+
+            foreach ($userOrganizations as $userOrganization) {
+                foreach ($objectOrganizations as $objectOrganization) {
+                    if ($objectOrganization === $userOrganization) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Kinda like a shortcut.
      */
     public function isAdmin(TokenInterface $token)
     {
         return $this->isGranted('ROLE_ADMIN');
-    }
-
-    protected function getWorkspaceToolPerm(Workspace $workspace, $toolName, TokenInterface $token)
-    {
-        if ($this->container->get('claroline.manager.workspace_manager')->isManager($workspace, $token)) {
-            //create + edit as mask
-            return 3;
-        }
-
-        $roles = array_map(function ($role) {
-            return $role->getRole();
-        }, $token->getRoles());
-
-        $perm = 0;
-
-        $finder = $this->container->get('Claroline\CoreBundle\API\Finder\Workspace\OrderedToolFinder');
-        $ot = $finder->findOneBy([
-          'tool' => $toolName,
-          'workspace' => $workspace->getUuid(),
-        ]);
-
-        $rights = $ot->getRights();
-
-        foreach ($rights as $right) {
-            $role = $right->getRole();
-
-            if (in_array($role->getName(), $roles)) {
-                $perm = $right->getMask() | $perm;
-            }
-        }
-
-        return $perm;
     }
 
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)

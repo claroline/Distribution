@@ -4,9 +4,9 @@ import {PropTypes as T} from 'prop-types'
 import {Routes} from '#/main/app/router'
 
 import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
-import {CatalogList} from '#/plugin/cursus/tools/cursus/catalog/components/list'
-import {CatalogDetails} from '#/plugin/cursus/tools/cursus/catalog/containers/details'
-import {CatalogForm} from '#/plugin/cursus/tools/cursus/catalog/containers/form'
+import {CatalogList} from '#/plugin/cursus/tools/trainings/catalog/components/list'
+import {CatalogDetails} from '#/plugin/cursus/tools/trainings/catalog/containers/details'
+import {CatalogForm} from '#/plugin/cursus/tools/trainings/catalog/containers/form'
 
 const CatalogMain = (props) =>
   <Routes

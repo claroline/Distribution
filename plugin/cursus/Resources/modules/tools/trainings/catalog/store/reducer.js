@@ -4,8 +4,8 @@ import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 import {makeFormReducer, FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store'
 import {makeListReducer} from '#/main/app/content/list/store'
 
-import {selectors as cursusSelectors} from '#/plugin/cursus/tools/cursus/store/selectors'
-import {selectors} from '#/plugin/cursus/tools/cursus/catalog/store/selectors'
+import {selectors as cursusSelectors} from '#/plugin/cursus/tools/trainings/store/selectors'
+import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 import {
   LOAD_COURSE,
   LOAD_COURSE_SESSION,
@@ -13,7 +13,7 @@ import {
   LOAD_SESSION_QUEUE,
   LOAD_SESSION_FULL,
   LOAD_EVENTS_REGISTRATION
-} from '#/plugin/cursus/tools/cursus/catalog/store/actions'
+} from '#/plugin/cursus/tools/trainings/catalog/store/actions'
 
 const reducer = combineReducers({
   courses: makeListReducer(selectors.LIST_NAME, {

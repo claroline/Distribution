@@ -1,6 +1,6 @@
 import {trans} from '#/main/app/intl/translation'
 
-import {constants} from '#/plugin/cursus/administration/cursus/constants'
+import {constants} from '#/plugin/cursus/constants'
 import {SessionEventCard} from '#/plugin/cursus/administration/cursus/session-event/data/components/session-event-card'
 
 const SessionEventList = {
