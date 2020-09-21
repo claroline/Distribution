@@ -56,9 +56,7 @@ trait PermissionCheckerTrait
 
         $granted = $this->authorization->isGranted($permission, $collection);
         if (!$granted && $throwException) {
-            throw new AccessDeniedException(
-                sprintf('Operation "%s" cannot be done on object %s', $permission, get_class($object))
-            );
+            throw new AccessDeniedException(sprintf('Operation "%s" cannot be done on object %s', $permission, get_class($object)));
         }
 
         return $granted;

@@ -41,31 +41,18 @@ class SessionEventController extends AbstractCrudController
     private $tokenStorage;
     /** @var TranslatorInterface */
     private $translator;
-    /** @var ToolManager */
-    private $toolManager;
     /** @var SessionEventManager */
     private $manager;
 
-    /**
-     * SessionEventController constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param TokenStorageInterface         $tokenStorage
-     * @param TranslatorInterface           $translator
-     * @param ToolManager                   $toolManager
-     * @param SessionEventManager           $manager
-     */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        ToolManager $toolManager,
         SessionEventManager $manager
     ) {
         $this->authorization = $authorization;
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
-        $this->toolManager = $toolManager;
         $this->manager = $manager;
     }
 
@@ -102,13 +89,8 @@ class SessionEventController extends AbstractCrudController
     /**
      * @Route("/{id}/users", name="apiv2_cursus_session_event_list_users", methods={"GET"})
      * @EXT\ParamConverter("sessionEvent", class="ClarolineCursusBundle:SessionEvent", options={"mapping": {"id": "uuid"}})
-     *
-     * @param SessionEvent $sessionEvent
-     * @param Request      $request
-     *
-     * @return JsonResponse
      */
-    public function listUsersAction(SessionEvent $sessionEvent, Request $request)
+    public function listUsersAction(SessionEvent $sessionEvent, Request $request): JsonResponse
     {
         $this->checkPermission('OPEN', $sessionEvent, [], true);
 
@@ -127,13 +109,8 @@ class SessionEventController extends AbstractCrudController
     /**
      * @Route("/{id}/users", name="apiv2_cursus_session_event_add_users", methods={"PATCH"})
      * @EXT\ParamConverter("sessionEvent", class="ClarolineCursusBundle:SessionEvent", options={"mapping": {"id": "uuid"}})
-     *
-     * @param SessionEvent $sessionEvent
-     * @param Request      $request
-     *
-     * @return JsonResponse
      */
-    public function addUsersAction(SessionEvent $sessionEvent, Request $request)
+    public function addUsersAction(SessionEvent $sessionEvent, Request $request): JsonResponse
     {
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
@@ -156,13 +133,8 @@ class SessionEventController extends AbstractCrudController
     /**
      * @Route("/{id}/users", name="apiv2_cursus_session_event_remove_users", methods={"DELETE"})
      * @EXT\ParamConverter("sessionEvent", class="ClarolineCursusBundle:SessionEvent", options={"mapping": {"id": "uuid"}})
-     *
-     * @param SessionEvent $sessionEvent
-     * @param Request      $request
-     *
-     * @return JsonResponse
      */
-    public function removeUsersAction(SessionEvent $sessionEvent, Request $request)
+    public function removeUsersAction(SessionEvent $sessionEvent, Request $request): JsonResponse
     {
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
@@ -184,13 +156,8 @@ class SessionEventController extends AbstractCrudController
      *     options={"mapping": {"id": "uuid"}}
      * )
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     *
-     * @param SessionEvent $sessionEvent
-     * @param User         $user
-     *
-     * @return JsonResponse
      */
-    public function selfRegisterAction(SessionEvent $sessionEvent, User $user)
+    public function selfRegisterAction(SessionEvent $sessionEvent, User $user): JsonResponse
     {
         $this->checkPermission('OPEN', $sessionEvent, [], true);
 
@@ -236,12 +203,8 @@ class SessionEventController extends AbstractCrudController
      *     class="ClarolineCursusBundle:SessionEvent",
      *     options={"mapping": {"id": "uuid"}}
      * )
-     *
-     * @param SessionEvent $sessionEvent
-     *
-     * @return JsonResponse
      */
-    public function inviteAllUsersAction(SessionEvent $sessionEvent)
+    public function inviteAllUsersAction(SessionEvent $sessionEvent): JsonResponse
     {
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
@@ -261,13 +224,8 @@ class SessionEventController extends AbstractCrudController
      *     class="ClarolineCursusBundle:SessionEvent",
      *     options={"mapping": {"id": "uuid"}}
      * )
-     *
-     * @param SessionEvent $sessionEvent
-     * @param Request      $request
-     *
-     * @return JsonResponse
      */
-    public function inviteUsersAction(SessionEvent $sessionEvent, Request $request)
+    public function inviteUsersAction(SessionEvent $sessionEvent, Request $request): JsonResponse
     {
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
@@ -288,12 +246,8 @@ class SessionEventController extends AbstractCrudController
      *     class="ClarolineCursusBundle:SessionEvent",
      *     options={"mapping": {"id": "uuid"}}
      * )
-     *
-     * @param SessionEvent $sessionEvent
-     *
-     * @return JsonResponse
      */
-    public function generateAllCertificatesAction(SessionEvent $sessionEvent)
+    public function generateAllCertificatesAction(SessionEvent $sessionEvent): JsonResponse
     {
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
@@ -313,13 +267,8 @@ class SessionEventController extends AbstractCrudController
      *     class="ClarolineCursusBundle:SessionEvent",
      *     options={"mapping": {"id": "uuid"}}
      * )
-     *
-     * @param SessionEvent $sessionEvent
-     * @param Request      $request
-     *
-     * @return JsonResponse
      */
-    public function generateUsersCertificatesAction(SessionEvent $sessionEvent, Request $request)
+    public function generateUsersCertificatesAction(SessionEvent $sessionEvent, Request $request): JsonResponse
     {
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
@@ -327,17 +276,5 @@ class SessionEventController extends AbstractCrudController
         $this->manager->generateEventCertificates($sessionEvent, $users);
 
         return new JsonResponse();
-    }
-
-    /**
-     * @param string $rights
-     */
-    private function checkToolAccess($rights = 'OPEN')
-    {
-        $trainingsTool = $this->toolManager->getOrderedTool('trainings', Tool::DESKTOP);
-
-        if (is_null($trainingsTool) || !$this->authorization->isGranted($rights, $trainingsTool)) {
-            throw new AccessDeniedException();
-        }
     }
 }

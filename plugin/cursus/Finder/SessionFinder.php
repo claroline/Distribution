@@ -34,23 +34,29 @@ class SessionFinder extends AbstractFinder
                     $qb->andWhere("o.uuid IN (:{$filterName})");
                     $qb->setParameter($filterName, $filterValue);
                     break;
+
                 case 'course':
                     $qb->andWhere("c.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
-                case 'courseTitle':
-                    $qb->andWhere("UPPER(c.title) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+
+                case 'workspace':
+                    $qb->join('obj.workspace', 'w');
+                    $qb->andWhere("w.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
                     break;
+
                 case 'active':
                     $qb->andWhere('obj.startDate > :now');
                     $qb->andWhere('obj.endDate > :now');
                     $qb->setParameter('now', new \DateTime());
                     break;
+
                 case 'not_ended':
                     $qb->andWhere('obj.endDate > :now');
                     $qb->setParameter('now', new \DateTime());
                     break;
+
                 case 'terminated':
                     if ($filterValue) {
                         $qb->andWhere('obj.endDate < :endDate');
@@ -62,6 +68,7 @@ class SessionFinder extends AbstractFinder
                     }
                     $qb->setParameter('endDate', new \DateTime());
                     break;
+
                 case 'user':
                     $qb->leftJoin('obj.sessionUsers', 'su');
                     $qb->leftJoin('su.user', 'u');
@@ -74,39 +81,9 @@ class SessionFinder extends AbstractFinder
                     ));
                     $qb->setParameter('userId', $filterValue);
                     break;
-                case 'cursusTitle':
-                    $cursusQb = $this->om->createQueryBuilder();
-                    $cursusQuery = $cursusQb
-                        ->select('cursus')
-                        ->from(Cursus::class, 'cursus')
-                        ->andWhere('cursus.lft <= cc.lft')
-                        ->andWhere('cursus.rgt >= cc.rgt')
-                        ->andWhere('cursus.root = cc.root')
-                        ->andWhere("UPPER(cursus.title) LIKE :{$filterName}");
 
-                    $qb->join('c.cursus', 'cc');
-                    $qb->andWhere($qb->expr()->exists($cursusQuery->getDQL()));
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    break;
                 default:
-                    if (is_bool($filterValue)) {
-                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                        $qb->setParameter($filterName, $filterValue);
-                    } else {
-                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    }
-            }
-        }
-        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
-            $sortByProperty = $sortBy['property'];
-            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
-
-            switch ($sortByProperty) {
-                case 'course':
-                case 'courseTitle':
-                    $qb->orderBy('c.title', $sortByDirection);
-                    break;
+                    $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 

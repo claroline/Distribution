@@ -44,18 +44,13 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
     /** @var ContainerInterface */
     protected $container;
 
-    /**
-     * @param ContainerInterface $container
-     */
     public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
     /**
-     * @param TokenInterface $token
-     * @param mixed          $object
-     * @param array          $attributes
+     * @param mixed $object
      *
      * @return int
      */
@@ -179,13 +174,8 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
         return true;
     }
 
-    /***************************/
-    /* COMMON UTILITIES METHOD */
-    /***************************/
-
     /**
-     * @param TokenInterface $token
-     * @param string         $name
+     * @param string $name
      *
      * @return bool
      */
@@ -200,8 +190,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
     }
 
     /**
-     * @param TokenInterface $token
-     * @param User|Group     $object
+     * @param mixed $object
      *
      * @return bool
      */
@@ -241,10 +230,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
         return false;
     }
 
-    /**
-     * Kinda like a shortcut.
-     */
-    public function isAdmin(TokenInterface $token)
+    protected function isAdmin(TokenInterface $token)
     {
         return $this->isGranted('ROLE_ADMIN');
     }

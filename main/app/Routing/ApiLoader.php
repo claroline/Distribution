@@ -38,13 +38,6 @@ class ApiLoader extends Loader
     /** @var Reader */
     private $reader;
 
-    /**
-     * ApiLoader constructor.
-     *
-     * @param FileLocatorInterface $locator
-     * @param Reader               $reader
-     * @param ContainerInterface   $container
-     */
     public function __construct(
         FileLocatorInterface $locator,
         Reader $reader,
@@ -127,7 +120,8 @@ class ApiLoader extends Loader
 
                     if (!$found && $refClass->isSubClassOf('Claroline\AppBundle\Controller\AbstractCrudController')) {
                         $instance = $refClass->newInstanceWithoutConstructor();
-                        if ($class = $instance->getClass()) {
+                        $class = $instance->getClass();
+                        if ($class) {
                             $found = true;
                             $ignore = $instance->getIgnore();
 

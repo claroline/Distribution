@@ -118,6 +118,9 @@ class SessionEvent
      */
     protected $type = self::TYPE_NONE;
 
+    /**
+     * SessionEvent constructor.
+     */
     public function __construct()
     {
         $this->refreshUuid();

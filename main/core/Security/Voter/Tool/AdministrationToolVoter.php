@@ -19,10 +19,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 class AdministrationToolVoter extends AbstractVoter implements VoterInterface
 {
     /**
-     * @param TokenInterface $token
-     * @param AdminTool      $object
-     * @param array          $attributes
-     * @param array          $options
+     * @param AdminTool $object
      *
      * @return int
      */

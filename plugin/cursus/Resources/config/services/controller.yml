@@ -49,5 +49,4 @@ services:
             - '@security.authorization_checker'
             - '@security.token_storage'
             - '@translator'
-            - '@claroline.manager.tool_manager'
             - '@Claroline\CursusBundle\Manager\SessionEventManager'

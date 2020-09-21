@@ -31,25 +31,19 @@ class CourseFinder extends AbstractFinder
                     $qb->andWhere('s.id IS NOT NULL');
                     $qb->andWhere('s.endDate > :now');
                     $qb->setParameter('now', new \DateTime());
-
                     break;
+
                 case 'organizations':
                     $qb->join('obj.organizations', 'o');
                     $qb->andWhere("o.uuid IN (:{$filterName})");
                     $qb->setParameter($filterName, $filterValue);
                     break;
+
                 default:
                     $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 
         return $qb;
-    }
-
-    public function getExtraFieldMapping()
-    {
-        return [
-            'name' => 'title',
-        ];
     }
 }

@@ -17,12 +17,6 @@ class LocationSerializer
     /** @var PublicFileSerializer */
     private $fileSerializer;
 
-    /**
-     * LocationSerializer constructor.
-     *
-     * @param ObjectManager        $om
-     * @param PublicFileSerializer $fileSerializer
-     */
     public function __construct(
         ObjectManager $om,
         PublicFileSerializer $fileSerializer
@@ -52,15 +46,7 @@ class LocationSerializer
         return '#/main/core/location.json';
     }
 
-    /**
-     * Serialize a Location Entity.
-     *
-     * @param Location $location
-     * @param array    $options
-     *
-     * @return array
-     */
-    public function serialize(Location $location, array $options = [])
+    public function serialize(Location $location, array $options = []): array
     {
         return [
             'autoId' => $location->getId(),
@@ -88,16 +74,7 @@ class LocationSerializer
         ];
     }
 
-    /**
-     * Deserialize a Location Entity.
-     *
-     * @param mixed    $data
-     * @param Location $location
-     * @param array    $options
-     *
-     * @return Location
-     */
-    public function deserialize($data, Location $location, array $options = [])
+    public function deserialize(array $data, Location $location, array $options = []): Location
     {
         $this->sipe('name', 'setName', $data, $location);
         $this->sipe('meta.type', 'setType', $data, $location);

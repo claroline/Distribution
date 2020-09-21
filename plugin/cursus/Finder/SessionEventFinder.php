@@ -26,7 +26,6 @@ class SessionEventFinder extends AbstractFinder
     {
         $qb->join('obj.session', 's');
         $qb->join('s.course', 'c');
-        $eventSetJoin = false;
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
@@ -35,57 +34,25 @@ class SessionEventFinder extends AbstractFinder
                     $qb->andWhere("o.uuid IN (:{$filterName})");
                     $qb->setParameter($filterName, $filterValue);
                     break;
+
                 case 'session':
                     $qb->andWhere("s.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
-                case 'sessionName':
-                    $qb->andWhere("UPPER(s.name) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+
+                case 'workspace':
+                    $qb->join('s.workspace', 'w');
+                    $qb->andWhere("w.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
                     break;
+
                 case 'course':
                     $qb->andWhere("c.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
-                case 'courseTitle':
-                    $qb->andWhere("UPPER(c.title) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    break;
-                case 'eventSet':
-                    $qb->join('obj.eventSet', 'es');
-                    $qb->andWhere("UPPER(es.name) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    $eventSetJoin = true;
-                    break;
-                default:
-                    if (is_bool($filterValue)) {
-                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                        $qb->setParameter($filterName, $filterValue);
-                    } else {
-                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    }
-            }
-        }
-        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
-            $sortByProperty = $sortBy['property'];
-            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
 
-            switch ($sortByProperty) {
-                case 'session':
-                case 'sessionName':
-                    $qb->orderBy('s.name', $sortByDirection);
-                    break;
-                case 'course':
-                case 'courseTitle':
-                    $qb->orderBy('c.title', $sortByDirection);
-                    break;
-                case 'eventSet':
-                    if (!$eventSetJoin) {
-                        $qb->join('obj.eventSet', 'es');
-                    }
-                    $qb->orderBy('es.name', $sortByDirection);
-                    break;
+                default:
+                    $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 

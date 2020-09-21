@@ -123,9 +123,6 @@ class Location
         $this->organizations = new ArrayCollection();
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name)
     {
         $this->name = $name;
@@ -171,9 +168,6 @@ class Location
         return $this->latitude;
     }
 
-    /**
-     * @param string|null $phone
-     */
     public function setPhone(string $phone = null)
     {
         $this->phone = $phone;
@@ -211,9 +205,6 @@ class Location
         return $this->users;
     }
 
-    /**
-     * @param Organization $organizations
-     */
     public function setOrganizations(Organization $organizations)
     {
         $this->organizations = $organizations;
@@ -227,49 +218,31 @@ class Location
         return $this->organizations;
     }
 
-    /**
-     * @param User $user
-     */
     public function addUser(User $user)
     {
         $user->getLocations()->add($this);
     }
 
-    /**
-     * @param User $user
-     */
     public function removeUser(User $user)
     {
         $user->getLocations()->removeElement($this);
     }
 
-    /**
-     * @param Organization $organization
-     */
     public function addOrganization(Organization $organization)
     {
         $organization->addLocation($this);
     }
 
-    /**
-     * @param Organization $organization
-     */
     public function removeOrganization(Organization $organization)
     {
         $organization->removeLocation($this);
     }
 
-    /**
-     * @param Group $group
-     */
     public function addGroup(Group $group)
     {
         $group->getLocations()->add($this);
     }
 
-    /**
-     * @param Group $group
-     */
     public function removeGroup(Group $group)
     {
         $group->getLocations()->removeElement($this);

@@ -4,7 +4,6 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
-import {ListData} from '#/main/app/content/list/containers/data'
 
 import {route} from '#/plugin/cursus/routing'
 import {

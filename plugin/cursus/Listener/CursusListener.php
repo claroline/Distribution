@@ -27,12 +27,6 @@ class CursusListener
     /** @var TranslatorInterface */
     private $translator;
 
-    /**
-     * CursusListener constructor.
-     *
-     * @param CourseManager       $cursusManager
-     * @param TranslatorInterface $translator
-     */
     public function __construct(
         CourseManager $cursusManager,
         TranslatorInterface $translator
@@ -41,9 +35,6 @@ class CursusListener
         $this->translator = $translator;
     }
 
-    /**
-     * @param GenericDataEvent $event
-     */
     public function onAgendaEventsRequest(GenericDataEvent $event)
     {
         $events = $event->getResponse() ? $event->getResponse() : [];
