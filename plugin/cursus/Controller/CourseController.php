@@ -37,8 +37,6 @@ class CourseController extends AbstractCrudController
 {
     use PermissionCheckerTrait;
 
-    /** @var AuthorizationCheckerInterface */
-    private $authorization;
     /** @var TokenStorageInterface */
     private $tokenStorage;
     /** @var ToolManager */

@@ -28,13 +28,13 @@ import {
 } from '#/plugin/cursus/administration/cursus/prop-types'
 import {actions} from '#/plugin/cursus/administration/cursus/session/store'
 import {actions as sessionEventActions} from '#/plugin/cursus/administration/cursus/session-event/store'
-import {MODAL_SESSION_EVENT_FORM} from '#/plugin/cursus/administration/modals/event-form'
+import {MODAL_SESSION_EVENT_PARAMETERS} from '#/plugin/cursus/event/modals/parameters'
 import {SessionForm} from '#/plugin/cursus/administration/cursus/session/components/form'
 import {CourseList} from '#/plugin/cursus/administration/cursus/course/components/course-list'
 import {SessionEventList} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-list'
 import {SessionUserCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-user-card'
 import {SessionGroupCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-group-card'
-import {SessionEventCard} from '#/plugin/cursus/administration/cursus/session-event/data/components/session-event-card'
+import {EventCard} from '#/plugin/cursus/event/components/card'
 
 const InvalidForm = (props) => props.new && props.session.id ?
   <div>
@@ -116,7 +116,7 @@ const SessionComponent = (props) => props.session && props.session.meta && props
             url: ['apiv2_cursus_session_event_delete_bulk']
           }}
           definition={SessionEventList.definition}
-          card={SessionEventCard}
+          card={EventCard}
         />
       </FormSection>
       <FormSection
@@ -332,7 +332,7 @@ const Session = connect(
       set(defaultProps, 'registration.registrationType', session.registration.eventRegistrationType)
       set(defaultProps, 'restrictions.dates', session.restrictions.dates)
       dispatch(sessionEventActions.open(selectors.STORE_NAME + '.events.current', defaultProps))
-      dispatch(modalActions.showModal(MODAL_SESSION_EVENT_FORM))
+      dispatch(modalActions.showModal(MODAL_SESSION_EVENT_PARAMETERS))
     },
     addUsers(sessionId, users, type = constants.LEARNER_TYPE) {
       dispatch(actions.addUsers(sessionId, users, type))

@@ -5,8 +5,8 @@ import omit from 'lodash/omit'
 import {withReducer} from '#/main/app/store/components/withReducer'
 import {actions as formActions, selectors as formSelectors} from '#/main/app/content/form/store'
 
-import {selectors, reducer} from '#/plugin/cursus/administration/modals/event-form/store'
-import {EventFormModal as EventFormModalComponent} from '#/plugin/cursus/administration/modals/event-form/components/modal'
+import {selectors, reducer} from '#/plugin/cursus/event/modals/parameters/store'
+import {EventFormModal as EventFormModalComponent} from '#/plugin/cursus/event/modals/parameters/components/modal'
 import {Event as EventTypes} from '#/plugin/cursus/course/prop-types'
 
 const EventFormModal = withReducer(selectors.STORE_NAME, reducer)(

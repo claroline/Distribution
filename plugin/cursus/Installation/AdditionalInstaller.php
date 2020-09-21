@@ -8,8 +8,8 @@ class AdditionalInstaller extends BaseInstaller
 {
     public function preUpdate($currentVersion, $targetVersion)
     {
-        if (version_compare($currentVersion, '13.1.0', '<')) {
-            $updater = new Updater\Updater130100($this->container, $this->logger);
+        if (version_compare($currentVersion, '13.0.0', '<')) {
+            $updater = new Updater\Updater130000($this->container, $this->logger);
             $updater->setLogger($this->logger);
             $updater->preUpdate();
         }

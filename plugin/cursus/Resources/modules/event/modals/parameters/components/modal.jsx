@@ -8,8 +8,8 @@ import {Modal} from '#/main/app/overlays/modal/components/modal'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {SessionEventForm} from '#/plugin/cursus/administration/cursus/session-event/components/form'
-import {selectors} from '#/plugin/cursus/administration/modals/event-form/store'
+import {EventForm} from '#/plugin/cursus/event/components/form'
+import {selectors} from '#/plugin/cursus/event/modals/parameters/store'
 
 const EventFormModal = props =>
   <Modal
@@ -19,7 +19,7 @@ const EventFormModal = props =>
     subtitle={props.event && props.event.id ? props.event.name : trans('new_event', {}, 'cursus')}
     onEntering={() => props.loadEvent(props.event, props.session)}
   >
-    <SessionEventForm
+    <EventForm
       name={selectors.STORE_NAME}
     >
       <Button
@@ -34,7 +34,7 @@ const EventFormModal = props =>
           props.fadeModal()
         })}
       />
-    </SessionEventForm>
+    </EventForm>
   </Modal>
 
 EventFormModal.propTypes = {

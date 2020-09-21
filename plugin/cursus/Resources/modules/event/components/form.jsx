@@ -6,7 +6,7 @@ import {FormData} from '#/main/app/content/form/containers/data'
 
 import {constants} from '#/plugin/cursus/constants'
 
-const SessionEventForm = (props) =>
+const EventForm = (props) =>
   <FormData
     {...props}
     sections={[
@@ -105,11 +105,11 @@ const SessionEventForm = (props) =>
     {props.children}
   </FormData>
 
-SessionEventForm.propTypes = {
+EventForm.propTypes = {
   name: T.string.isRequired,
   children: T.any
 }
 
 export {
-  SessionEventForm
+  EventForm
 }

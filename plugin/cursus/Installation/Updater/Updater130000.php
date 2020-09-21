@@ -6,7 +6,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater130100 extends Updater
+class Updater130000 extends Updater
 {
     protected $logger;
     private $container;
@@ -23,6 +23,7 @@ class Updater130100 extends Updater
     public function preUpdate()
     {
         $this->renameTool('cursus', 'trainings');
+        $this->renameTool('claroline_session_events_tool', 'training_events');
     }
 
     private function renameTool($oldName, $newName)

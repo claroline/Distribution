@@ -6,6 +6,7 @@ namespace Claroline\AppBundle\Routing;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Doctrine\Common\Annotations\Reader;
+use ReflectionMethod;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -149,7 +150,7 @@ class ApiLoader extends Loader
                         foreach ($this->makeRouteMap($controller, $routes, $prefix, $ignore) as $name => $options) {
                             $pattern = '';
 
-                            if ('' !== $options[0]) {
+                            if (!empty($options[0])) {
                                 $pattern = $options[0];
                             }
 
@@ -188,7 +189,7 @@ class ApiLoader extends Loader
 
         foreach ($traits as $trait) {
             $refClass = new \ReflectionClass($trait);
-            $methods = $refClass->getMethods();
+            $methods = $refClass->getMethods(ReflectionMethod::IS_PUBLIC);
 
             foreach ($methods as $method) {
                 $actionName = preg_replace('/Action/', '', $method->getName());

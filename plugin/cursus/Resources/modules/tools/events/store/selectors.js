@@ -1,4 +1,4 @@
-const STORE_NAME = 'claroline_session_events_tool'
+const STORE_NAME = 'training_events'
 
 const store = (state) => state[STORE_NAME]
 

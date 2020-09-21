@@ -22,67 +22,23 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class CursusListener
 {
-    /** @var AuthorizationCheckerInterface */
-    private $authorization;
     /** @var CourseManager */
     private $cursusManager;
-    /** @var ParametersSerializer */
-    private $parametersSerializer;
-    /** @var ToolManager */
-    private $toolManager;
     /** @var TranslatorInterface */
     private $translator;
 
     /**
-     * @param AuthorizationCheckerInterface $authorization
-     * @param CourseManager                 $cursusManager
-     * @param ParametersSerializer          $parametersSerializer
-     * @param ToolManager                   $toolManager
-     * @param TranslatorInterface           $translator
+     * CursusListener constructor.
+     *
+     * @param CourseManager       $cursusManager
+     * @param TranslatorInterface $translator
      */
     public function __construct(
-        AuthorizationCheckerInterface $authorization,
         CourseManager $cursusManager,
-        ParametersSerializer $parametersSerializer,
-        ToolManager $toolManager,
         TranslatorInterface $translator
     ) {
-        $this->authorization = $authorization;
         $this->cursusManager = $cursusManager;
-        $this->parametersSerializer = $parametersSerializer;
-        $this->toolManager = $toolManager;
         $this->translator = $translator;
-    }
-
-    /**
-     * @param OpenToolEvent $event
-     */
-    public function onAdministrationToolOpen(OpenToolEvent $event)
-    {
-        $event->setData([
-            'parameters' => $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]),
-        ]);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @param OpenToolEvent $event
-     */
-    public function onDisplayWorkspaceSessionEventTool(OpenToolEvent $event)
-    {
-        $event->setData([]);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @param OpenToolEvent $event
-     */
-    public function onDisplayDesktopCursusTool(OpenToolEvent $event)
-    {
-        $event->setData([
-            'parameters' => $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]),
-        ]);
-        $event->stopPropagation();
     }
 
     /**

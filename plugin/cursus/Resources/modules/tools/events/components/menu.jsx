@@ -7,37 +7,33 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 import {Toolbar} from '#/main/app/action/components/toolbar'
 import {MenuSection} from '#/main/app/layout/menu/components/section'
 
-const CursusMenu = (props) =>
+const EventsMenu = (props) =>
   <MenuSection
     {...omit(props, 'path')}
-    title={trans('trainings', {}, 'tools')}
+    title={trans('training_events', {}, 'tools')}
   >
     <Toolbar
       className="list-group"
       buttonName="list-group-item"
       actions={[
         {
-          name: 'catalog',
+          name: 'registered',
           type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-list',
-          label: trans('catalog', {}, 'cursus'),
-          target: props.path + '/catalog'
+          label: trans('Mes séances', {}, 'cursus'),
+          target: props.path + '/registered'
         }, {
-          name: 'sessions',
+          name: 'public',
           type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-calendar-week',
-          label: trans('sessions', {}, 'cursus'),
-          target: props.path + '/sessions'
+          label: trans('Séances publics', {}, 'cursus'),
+          target: props.path + '/public'
         }, {
-          name: 'session_events',
+          name: 'all',
           type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-clock',
-          label: trans('session_events', {}, 'cursus'),
-          target: props.path + '/events'
+          label: trans('Toutes les séances', {}, 'cursus'),
+          target: props.path + '/all'
         }, {
           name: 'pending',
           type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-user-plus',
           label: trans('pending_registrations'),
           target: props.path + '/pending'
         }
@@ -46,7 +42,7 @@ const CursusMenu = (props) =>
     />
   </MenuSection>
 
-CursusMenu.propTypes = {
+EventsMenu.propTypes = {
   path: T.string,
 
   // from menu
@@ -56,5 +52,5 @@ CursusMenu.propTypes = {
 }
 
 export {
-  CursusMenu
+  EventsMenu
 }

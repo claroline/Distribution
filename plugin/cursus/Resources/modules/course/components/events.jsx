@@ -11,35 +11,27 @@ import {
   Course as CourseTypes,
   Session as SessionTypes
 } from '#/plugin/cursus/course/prop-types'
-import {MODAL_SESSION_EVENT_FORM} from '#/plugin/cursus/administration/modals/event-form'
-import {SessionEventList} from '#/plugin/cursus/administration/cursus/session-event/components/session-event-list'
+import {MODAL_SESSION_EVENT_PARAMETERS} from '#/plugin/cursus/event/modals/parameters'
+import {EventList} from '#/plugin/cursus/event/components/list'
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 
 const CourseEvents = (props) =>
   <Fragment>
-    <ListData
+    <EventList
       name={selectors.STORE_NAME+'.courseEvents'}
-      fetch={{
-        url: ['apiv2_cursus_session_list_events', {id: props.activeSession.id}],
-        autoload: true
-      }}
+      url={['apiv2_cursus_session_list_events', {id: props.activeSession.id}]}
       primaryAction={(row) => ({
         type: LINK_BUTTON,
         target: route(props.course, row),
         label: trans('open', {}, 'actions')
       })}
-      delete={{
-        url: ['apiv2_cursus_event_delete_bulk']
-      }}
-      definition={SessionEventList.definition}
-      card={SessionEventList.card}
       actions={(rows) => [
         {
           name: 'edit',
           type: MODAL_BUTTON,
           icon: 'fa fa-fw fa-pencil',
           label: trans('edit', {}, 'actions'),
-          modal: [MODAL_SESSION_EVENT_FORM, {
+          modal: [MODAL_SESSION_EVENT_PARAMETERS, {
             event: rows[0],
             onSave: () => props.invalidateList()
           }],
@@ -53,7 +45,7 @@ const CourseEvents = (props) =>
       className="btn btn-block btn-emphasis component-container"
       type={MODAL_BUTTON}
       label={trans('add_event', {}, 'cursus')}
-      modal={[MODAL_SESSION_EVENT_FORM, {
+      modal={[MODAL_SESSION_EVENT_PARAMETERS, {
         session: props.activeSession,
         onSave: () => props.reload(props.course.slug)
       }]}

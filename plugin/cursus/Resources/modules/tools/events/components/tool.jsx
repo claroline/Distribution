@@ -4,7 +4,7 @@ import {trans} from '#/main/app/intl/translation'
 
 import {ToolPage} from '#/main/core/tool/containers/page'
 
-const SessionEventsTool = () =>
+const EventsTool = () =>
   <ToolPage>
     <div className="alert alert-warning">
       {trans('tool_work_in_progress')}
@@ -13,5 +13,5 @@ const SessionEventsTool = () =>
 
 
 export {
-  SessionEventsTool
+  EventsTool
 }

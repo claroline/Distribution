@@ -7,7 +7,7 @@ import {DataCard} from '#/main/app/data/components/card'
 
 import {Event as EventTypes} from '#/plugin/cursus/course/prop-types'
 
-const SessionEventCard = props =>
+const EventCard = props =>
   <DataCard
     {...props}
     id={props.data.id}
@@ -21,12 +21,12 @@ const SessionEventCard = props =>
     contentText={props.data.description}
   />
 
-SessionEventCard.propTypes = {
+EventCard.propTypes = {
   data: T.shape(
     EventTypes.propTypes
   ).isRequired
 }
 
 export {
-  SessionEventCard
+  EventCard
 }
