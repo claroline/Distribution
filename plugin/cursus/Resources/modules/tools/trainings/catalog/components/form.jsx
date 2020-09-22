@@ -16,7 +16,7 @@ const CatalogForm = (props) => {
   if (!props.isNew) {
     return (
       <CoursePage
-        path={props.course ? [
+        path={[
           {
             type: LINK_BUTTON,
             label: trans('catalog', {}, 'cursus'),
@@ -25,10 +25,13 @@ const CatalogForm = (props) => {
             type: LINK_BUTTON,
             label: props.course.name,
             target: route(props.course)
+          }, {
+            label: trans('edit', {}, 'actions'),
           }
-        ] : undefined}
+        ]}
+        currentContext={props.currentContext}
         primaryAction="edit"
-        actions={props.course ? [
+        actions={[
           {
             name: 'edit',
             type: LINK_BUTTON,
@@ -38,7 +41,7 @@ const CatalogForm = (props) => {
             group: trans('management'),
             primary: true
           }
-        ] : undefined}
+        ]}
         course={props.course}
       >
         <CourseForm
@@ -56,7 +59,16 @@ const CatalogForm = (props) => {
 
   return (
     <ToolPage
-      title={trans('cursus', {}, 'tools')}
+      path={[
+        {
+          type: LINK_BUTTON,
+          label: trans('catalog', {}, 'cursus'),
+          target: `${props.path}/catalog`
+        }, {
+          label: trans('new_course', {}, 'cursus'),
+        }
+      ]}
+      title={trans('trainings', {}, 'tools')}
       subtitle={trans('new_course', {}, 'cursus')}
       primaryAction="add"
       actions={[
@@ -85,6 +97,10 @@ const CatalogForm = (props) => {
 
 CatalogForm.propTypes = {
   path: T.string.isRequired,
+  currentContext: T.shape({
+    type: T.oneOf(['administration', 'desktop', 'workspace']),
+    data: T.object
+  }).isRequired,
   isNew: T.bool.isRequired,
   formData: T.shape(
     CourseTypes.propTypes

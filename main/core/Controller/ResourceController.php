@@ -48,31 +48,24 @@ class ResourceController
 {
     /** @var TokenStorageInterface */
     private $tokenStorage;
-
     /** @var AuthorizationCheckerInterface */
     private $authorization;
-
     /** @var EngineInterface */
     private $templating;
-
     /** @var Utilities */
     private $security;
-
     /** @var SerializerProvider */
     private $serializer;
-
     /** @var ResourceManager */
     private $manager;
-
     /** @var ResourceActionManager */
     private $actionManager;
-
     /** @var ResourceRestrictionsManager */
     private $restrictionsManager;
-
     /** @var ObjectManager */
     private $om;
-
+    /** @var FinderProvider */
+    private $finder;
     /** @var ResourceRightsRepository */
     private $rightsRepo;
 
@@ -205,12 +198,12 @@ class ResourceController
      *     requirements={"forceArchive" = "^(true|false|0|1)$"},
      * )
      *
-     * @param bool    $forceArchive
      * @param Request $request
+     * @param bool    $forceArchive
      *
      * @return JsonResponse|BinaryFileResponse
      */
-    public function downloadAction($forceArchive = false, Request $request)
+    public function downloadAction(Request $request, $forceArchive = false)
     {
         $ids = $request->query->get('ids');
         $nodes = $this->om->findList(ResourceNode::class, 'uuid', $ids);

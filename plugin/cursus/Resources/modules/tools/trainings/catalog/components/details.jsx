@@ -25,6 +25,7 @@ const CatalogDetails = (props) =>
         target: route(props.course)
       }
     ] : undefined}
+    currentContext={props.currentContext}
     primaryAction="edit"
     actions={props.course ? [
       {
@@ -47,7 +48,7 @@ const CatalogDetails = (props) =>
         ]}
         routes={[
           {
-            path: '/:id',
+            path: '/:id?',
             onEnter(params = {}) {
               if (params.id) {
                 props.openSession(params.id)
@@ -73,6 +74,10 @@ const CatalogDetails = (props) =>
 
 CatalogDetails.propTypes = {
   path: T.string.isRequired,
+  currentContext: T.shape({
+    type: T.oneOf(['administration', 'desktop', 'workspace']),
+    data: T.object
+  }).isRequired,
   course: T.shape(
     CourseTypes.propTypes
   ),

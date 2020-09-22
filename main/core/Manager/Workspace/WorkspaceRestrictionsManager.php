@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\Manager\Workspace;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -60,11 +61,6 @@ class WorkspaceRestrictionsManager
 
     /**
      * Gets the list of access error for a workspace and a user.
-     *
-     * @param Workspace $workspace
-     * @param User      $user
-     *
-     * @return array
      */
     public function getErrors(Workspace $workspace, User $user = null): array
     {
@@ -88,13 +84,9 @@ class WorkspaceRestrictionsManager
 
             if (!empty($workspace->getAccessibleFrom()) || !empty($workspace->getAccessibleUntil())) {
                 $errors['notStarted'] = !$this->isStarted($workspace);
-                $errors['startDate'] = $workspace->getAccessibleFrom() ?
-                    $workspace->getAccessibleFrom()->format('d/m/Y') :
-                    null;
+                $errors['startDate'] = DateNormalizer::normalize($workspace->getAccessibleFrom());
                 $errors['ended'] = $this->isEnded($workspace);
-                $errors['endDate'] = $workspace->getAccessibleUntil() ?
-                    $workspace->getAccessibleUntil()->format('d/m/Y') :
-                    null;
+                $errors['endDate'] = DateNormalizer::normalize($workspace->getAccessibleUntil());
             }
 
             if (!empty($workspace->getAllowedIps())) {
