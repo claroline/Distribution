@@ -21,10 +21,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 class SessionEventVoter extends AbstractVoter
 {
     /**
-     * @param TokenInterface $token
      * @param SessionEvent   $object
-     * @param array          $attributes
-     * @param array          $options
      *
      * @return int
      */

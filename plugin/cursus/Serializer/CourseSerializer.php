@@ -52,17 +52,6 @@ class CourseSerializer
     private $workspaceRepo;
     private $courseRepo;
 
-    /**
-     * CourseSerializer constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param TokenStorageInterface         $tokenStorage
-     * @param EventDispatcherInterface      $eventDispatcher
-     * @param ObjectManager                 $om
-     * @param PublicFileSerializer          $fileSerializer
-     * @param OrganizationSerializer        $orgaSerializer
-     * @param WorkspaceSerializer           $workspaceSerializer
-     */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         TokenStorageInterface $tokenStorage,
@@ -85,21 +74,12 @@ class CourseSerializer
         $this->courseRepo = $om->getRepository(Course::class);
     }
 
-    /**
-     * @return string
-     */
     public function getSchema()
     {
         return '#/plugin/cursus/course.json';
     }
 
-    /**
-     * @param Course $course
-     * @param array  $options
-     *
-     * @return array
-     */
-    public function serialize(Course $course, array $options = [])
+    public function serialize(Course $course, array $options = []): array
     {
         $serialized = [
             'id' => $course->getUuid(),
@@ -154,14 +134,7 @@ class CourseSerializer
         return $serialized;
     }
 
-    /**
-     * @param array  $data
-     * @param Course $course
-     * @param array  $options
-     *
-     * @return Course
-     */
-    public function deserialize($data, Course $course, array $options)
+    public function deserialize(array $data, Course $course, array $options): Course
     {
         $this->sipe('id', 'setUuid', $data, $course);
         $this->sipe('code', 'setCode', $data, $course);
@@ -270,10 +243,8 @@ class CourseSerializer
     /**
      * Serializes Course tags.
      * Forwards the tag serialization to ItemTagSerializer.
-     *
-     * @return array
      */
-    private function serializeTags(Course $course)
+    private function serializeTags(Course $course): array
     {
         $event = new GenericDataEvent([
             'class' => Course::class,

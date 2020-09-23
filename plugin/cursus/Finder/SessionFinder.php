@@ -13,7 +13,6 @@ namespace Claroline\CursusBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
 use Claroline\CursusBundle\Entity\CourseSession;
-use Claroline\CursusBundle\Entity\Cursus;
 use Doctrine\ORM\QueryBuilder;
 
 class SessionFinder extends AbstractFinder

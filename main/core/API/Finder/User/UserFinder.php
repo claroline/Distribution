@@ -31,13 +31,6 @@ class UserFinder extends AbstractFinder
     /** @var WorkspaceManager */
     private $workspaceManager;
 
-    /**
-     * UserFinder constructor.
-     *
-     * @param AuthorizationCheckerInterface $authChecker
-     * @param TokenStorageInterface         $tokenStorage
-     * @param WorkspaceManager              $workspaceManager
-     */
     public function __construct(
         AuthorizationCheckerInterface $authChecker,
         TokenStorageInterface $tokenStorage,

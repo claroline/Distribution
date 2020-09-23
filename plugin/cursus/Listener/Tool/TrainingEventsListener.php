@@ -24,12 +24,6 @@ class TrainingEventsListener
     /** @var ParametersSerializer */
     private $parametersSerializer;
 
-    /**
-     * TrainingEventsListener constructor.
-     *
-     * @param FinderProvider       $finder
-     * @param ParametersSerializer $parametersSerializer
-     */
     public function __construct(
         FinderProvider $finder,
         ParametersSerializer $parametersSerializer
@@ -38,9 +32,6 @@ class TrainingEventsListener
         $this->parametersSerializer = $parametersSerializer;
     }
 
-    /**
-     * @param OpenToolEvent $event
-     */
     public function onDisplayWorkspace(OpenToolEvent $event)
     {
         $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);

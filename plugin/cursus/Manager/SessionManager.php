@@ -73,20 +73,6 @@ class SessionManager
     private $sessionEventRepo;
     private $sessionQueueRepo;
 
-    /**
-     * SessionManager constructor.
-     *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param MailManager              $mailManager
-     * @param ObjectManager            $om
-     * @param Crud                     $crud
-     * @param RoleManager              $roleManager
-     * @param UrlGeneratorInterface    $router
-     * @param TemplateManager          $templateManager
-     * @param TokenStorageInterface    $tokenStorage
-     * @param WorkspaceManager         $workspaceManager
-     * @param SessionEventManager      $sessionEventManager
-     */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         MailManager $mailManager,
@@ -150,12 +136,8 @@ class SessionManager
 
     /**
      * Generates a workspace from CourseSession.
-     *
-     * @param CourseSession $session
-     *
-     * @return Workspace
      */
-    public function generateWorkspace(CourseSession $session)
+    public function generateWorkspace(CourseSession $session): Workspace
     {
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
@@ -185,14 +167,8 @@ class SessionManager
 
     /**
      * Adds users to a session.
-     *
-     * @param CourseSession $session
-     * @param array         $users
-     * @param int           $type
-     *
-     * @return array
      */
-    public function addUsersToSession(CourseSession $session, array $users, $type = CourseSessionUser::TYPE_LEARNER)
+    public function addUsersToSession(CourseSession $session, array $users, int $type = CourseSessionUser::TYPE_LEARNER): array
     {
         $results = [];
         $registrationDate = new \DateTime();
@@ -238,14 +214,8 @@ class SessionManager
 
     /**
      * Adds groups to a session.
-     *
-     * @param CourseSession $session
-     * @param array         $groups
-     * @param int           $type
-     *
-     * @return array
      */
-    public function addGroupsToSession(CourseSession $session, array $groups, $type = CourseSessionGroup::TYPE_LEARNER)
+    public function addGroupsToSession(CourseSession $session, array $groups, int $type = CourseSessionGroup::TYPE_LEARNER): array
     {
         $results = [];
         $registrationDate = new \DateTime();
@@ -283,13 +253,9 @@ class SessionManager
     /**
      * Registers an user to a session if allowed.
      *
-     * @param CourseSession $session
-     * @param User          $user
-     * @param bool          $skipValidation
-     *
      * @return CourseSessionUser|CourseSessionRegistrationQueue|array
      */
-    public function registerUserToSession(CourseSession $session, User $user, $skipValidation = false)
+    public function registerUserToSession(CourseSession $session, User $user, bool $skipValidation = false)
     {
         $validationMask = 0;
 
@@ -327,15 +293,8 @@ class SessionManager
 
     /**
      * Creates a queue for session and user.
-     *
-     * @param CourseSession $session
-     * @param User          $user
-     * @param int           $mask
-     * @param \DateTime     $date
-     *
-     * @return CourseSessionRegistrationQueue
      */
-    public function createSessionQueue(CourseSession $session, User $user, $mask = 0, $date = null)
+    public function createSessionQueue(CourseSession $session, User $user, int $mask = 0, \DateTime $date = null): CourseSessionRegistrationQueue
     {
         $this->om->startFlushSuite();
         $queue = new CourseSessionRegistrationQueue();
@@ -357,12 +316,8 @@ class SessionManager
 
     /**
      * Validates user registration to session.
-     *
-     * @param CourseSessionRegistrationQueue $queue
-     * @param User                           $user
-     * @param int                            $type
      */
-    public function validateSessionQueueByType(CourseSessionRegistrationQueue $queue, User $user, $type)
+    public function validateSessionQueueByType(CourseSessionRegistrationQueue $queue, User $user, int $type)
     {
         $mask = $queue->getStatus();
 
@@ -414,8 +369,6 @@ class SessionManager
 
     /**
      * Registers user to session from session queue.
-     *
-     * @param CourseSessionRegistrationQueue $queue
      */
     public function validateSessionQueue(CourseSessionRegistrationQueue $queue)
     {
@@ -432,14 +385,8 @@ class SessionManager
 
     /**
      * Gets/generates workspace role for session depending on given role name and type.
-     *
-     * @param Workspace $workspace
-     * @param string    $roleName
-     * @param string    $type
-     *
-     * @return Role
      */
-    public function generateRoleForSession(Workspace $workspace, string $roleName, string $type = 'learner')
+    public function generateRoleForSession(Workspace $workspace, string $roleName, string $type = 'learner'): Role
     {
         if (empty($roleName)) {
             if ('manager' === $type) {
@@ -476,13 +423,8 @@ class SessionManager
 
     /**
      * Checks user limit of a session to know if there is still place for the given number of users.
-     *
-     * @param CourseSession $session
-     * @param int           $count
-     *
-     * @return bool
      */
-    public function checkSessionCapacity(CourseSession $session, $count = 1)
+    public function checkSessionCapacity(CourseSession $session, $count = 1): bool
     {
         $hasPlace = true;
         $maxUsers = $session->getMaxUsers();
@@ -507,166 +449,7 @@ class SessionManager
     }
 
     /**
-     * Generates and sends session certificate for given users.
-     *
-     * @param CourseSession $session
-     * @param array         $users
-     * @param Template|null $template
-     */
-    public function generateSessionCertificates(CourseSession $session, array $users, Template $template = null)
-    {
-        $authenticatedUser = $this->tokenStorage->getToken()->getUser();
-        $course = $session->getCourse();
-
-        if ('anon.' !== $authenticatedUser) {
-            $data = [];
-            $trainersList = '';
-            /** @var CourseSessionUser[] $sessionTrainers */
-            $sessionTrainers = $this->sessionUserRepo->findBy([
-                'session' => $session,
-                'userType' => CourseSessionUser::TYPE_TEACHER,
-            ]);
-
-            if (0 < count($sessionTrainers)) {
-                $trainersList = '<ul>';
-
-                foreach ($sessionTrainers as $sessionTrainer) {
-                    $user = $sessionTrainer->getUser();
-                    $trainersList .= '<li>'.$user->getFirstName().' '.$user->getLastName().'</li>';
-                }
-                $trainersList .= '</ul>';
-            }
-            $basicPlaceholders = [
-                'course_title' => $course->getName(),
-                'course_code' => $course->getCode(),
-                'course_description' => $course->getDescription(),
-                'session_name' => $session->getName(),
-                'session_description' => $session->getDescription(),
-                'session_start' => $session->getStartDate()->format('Y-m-d'),
-                'session_end' => $session->getEndDate()->format('Y-m-d'),
-                'session_trainers' => $trainersList,
-            ];
-
-            foreach ($users as $user) {
-                $locale = $user->getLocale();
-
-                $eventsList = '';
-                /** @var SessionEvent[] $events */
-                $events = $this->sessionEventRepo->findSessionEventsBySessionAndUserAndRegistrationStatus(
-                    $session,
-                    $user,
-                    SessionEventUser::REGISTERED
-                );
-
-                if (0 < count($events)) {
-                    $eventsList = '<ul>';
-
-                    foreach ($events as $event) {
-                        $eventsList .= '<li>'.
-                            $event->getName().
-                            ' ['.$event->getStartDate()->format('d/m/Y H:i').
-                            ' -> '.
-                            $event->getEndDate()->format('d/m/Y H:i').']';
-                        $location = $event->getLocation();
-
-                        if ($location) {
-                            $locationHtml = '<br>'.$location->getStreet().', '.$location->getStreetNumber();
-
-                            if ($location->getBoxNumber()) {
-                                $locationHtml .= '/'.$location->getBoxNumber();
-                            }
-                            $locationHtml .= '<br>'.$location->getPc().' '.$location->getTown().'<br>'.$location->getCountry();
-
-                            if ($location->getPhone()) {
-                                $locationHtml .= '<br>'.$location->getPhone();
-                            }
-                            $eventsList .= $locationHtml;
-                        }
-                        $eventsList .= $event->getLocationExtra();
-                    }
-                    $eventsList .= '</ul>';
-                }
-                $placeholders = array_merge($basicPlaceholders, [
-                    'first_name' => $user->getFirstName(),
-                    'last_name' => $user->getLastName(),
-                    'username' => $user->getUsername(),
-                    'events_list' => $eventsList,
-                ]);
-                $certificateContent = $template ?
-                    $this->templateManager->getTemplateContent($template, $placeholders) :
-                    $this->templateManager->getTemplate('session_certificate', $placeholders, $locale);
-                $pdfName = $session->getName().'-'.$user->getUsername();
-                $pdf = $this->pdfManager->create($certificateContent, $pdfName, $authenticatedUser, 'session_certificate');
-                $pdfLink = $this->router->generate('claro_pdf_download', ['pdf' => $pdf->getGuid()], true);
-
-                $placeholders['certificate_link'] = $pdfLink;
-                $title = $this->templateManager->getTemplate('session_certificate_mail', $placeholders, $locale, 'title');
-                $content = $this->templateManager->getTemplate('session_certificate_mail', $placeholders, $locale);
-                $this->mailManager->send($title, $content, [$user]);
-                $data[] = ['user' => $user->getFirstName().' '.$user->getLastName(), 'pdf' => $pdfLink];
-            }
-            $links = '<ul>';
-
-            foreach ($data as $row) {
-                $links .= '<li><a href="'.$row['pdf'].'">'.$row['user'].'</a></li>';
-            }
-            $links .= '</ul>';
-            $adminTitle = $this->templateManager->getTemplate(
-                'admin_certificate_mail',
-                ['certificates_link' => $links],
-                $authenticatedUser->getLocale(),
-                'title'
-            );
-            $adminContent = $this->templateManager->getTemplate(
-                'admin_certificate_mail',
-                ['certificates_link' => $links],
-                $authenticatedUser->getLocale()
-            );
-            $this->mailManager->send($adminTitle, $adminContent, [$authenticatedUser]);
-        }
-    }
-
-    /**
-     * Generates certificates for all session learners.
-     *
-     * @param CourseSession $session
-     * @param Template|null $template
-     */
-    public function generateAllSessionCertificates(CourseSession $session, Template $template = null)
-    {
-        /** @var CourseSessionUser[] $sessionLearners */
-        $sessionLearners = $this->sessionUserRepo->findBy([
-            'session' => $session,
-            'userType' => CourseSessionUser::TYPE_LEARNER,
-        ]);
-        /** @var CourseSessionGroup[] $sessionGroups */
-        $sessionGroups = $this->sessionGroupRepo->findBy([
-            'session' => $session,
-            'groupType' => CourseSessionGroup::TYPE_LEARNER,
-        ]);
-        $users = [];
-
-        foreach ($sessionLearners as $sessionLearner) {
-            $user = $sessionLearner->getUser();
-            $users[$user->getUuid()] = $user;
-        }
-        foreach ($sessionGroups as $sessionGroup) {
-            $group = $sessionGroup->getGroup();
-            $groupUsers = $group->getUsers();
-
-            foreach ($groupUsers as $user) {
-                $users[$user->getUuid()] = $user;
-            }
-        }
-
-        $this->generateSessionCertificates($session, $users, $template);
-    }
-
-    /**
      * Sends invitation to all session learners.
-     *
-     * @param CourseSession $session
-     * @param Template|null $template
      */
     public function inviteAllSessionLearners(CourseSession $session, Template $template = null)
     {
@@ -700,10 +483,6 @@ class SessionManager
 
     /**
      * Sends invitation to session to given users.
-     *
-     * @param CourseSession $session
-     * @param array         $users
-     * @param Template|null $template
      */
     public function sendSessionInvitation(CourseSession $session, array $users, Template $template = null)
     {

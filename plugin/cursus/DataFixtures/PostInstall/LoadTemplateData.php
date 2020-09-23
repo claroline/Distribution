@@ -11,7 +11,6 @@
 
 namespace Claroline\CursusBundle\DataFixtures\PostInstall;
 
-use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\Entity\Template\Template;
 use Claroline\CoreBundle\Entity\Template\TemplateType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -84,65 +83,6 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
             $om->persist($eventInvitationType);
         }
 
-        $sessionCertificateMailType = $this->templateTypeRepo->findOneBy(['name' => 'session_certificate_mail']);
-        $templates = $this->templateRepo->findBy(['name' => 'session_certificate_mail']);
-        if ($sessionCertificateMailType && empty($templates)) {
-            foreach ($this->availableLocales as $locale) {
-                $template = new Template();
-                $template->setType($sessionCertificateMailType);
-                $template->setName('session_certificate_mail');
-                $template->setLang($locale);
-                $template->setTitle($this->translator->trans('session_certificate_email_title', [], 'cursus', $locale));
-
-                $content = '<div>'.$this->translator->trans('session_certificate_email', [], 'cursus', $locale).'</div>';
-                $content .= '<br/>';
-                $content .= '<a href="%certificate_link%">'.$this->translator->trans('certificate', [], 'cursus', $locale).'</a>';
-                $template->setContent($content);
-                $om->persist($template);
-            }
-            $sessionCertificateMailType->setDefaultTemplate('session_certificate_mail');
-            $om->persist($sessionCertificateMailType);
-        }
-
-        $eventCertificateMailType = $this->templateTypeRepo->findOneBy(['name' => 'session_event_certificate_mail']);
-        $templates = $this->templateRepo->findBy(['name' => 'session_event_certificate_mail']);
-        if ($eventCertificateMailType && empty($templates)) {
-            foreach ($this->availableLocales as $locale) {
-                $template = new Template();
-                $template->setType($eventCertificateMailType);
-                $template->setName('session_event_certificate_mail');
-                $template->setLang($locale);
-                $template->setTitle($this->translator->trans('session_event_certificate_email_title', [], 'cursus', $locale));
-
-                $content = '<div>'.$this->translator->trans('session_event_certificate_email', [], 'cursus', $locale).'</div>';
-                $content .= '<br/>';
-                $content .= '<a href="%certificate_link%">'.$this->translator->trans('certificate', [], 'cursus', $locale).'</a>';
-                $template->setContent($content);
-                $om->persist($template);
-            }
-            $eventCertificateMailType->setDefaultTemplate('session_event_certificate_mail');
-            $om->persist($eventCertificateMailType);
-        }
-
-        $adminCertificateMailType = $this->templateTypeRepo->findOneBy(['name' => 'admin_certificate_mail']);
-        $templates = $this->templateRepo->findBy(['name' => 'admin_certificate_mail']);
-        if ($adminCertificateMailType && empty($templates)) {
-            foreach ($this->availableLocales as $locale) {
-                $template = new Template();
-                $template->setType($adminCertificateMailType);
-                $template->setName('admin_certificate_mail');
-                $template->setLang($locale);
-                $template->setTitle($this->translator->trans('new_certificates', [], 'cursus', $locale));
-
-                $content = '<div>'.$this->translator->trans('new_certificates', [], 'cursus', $locale).'</div>';
-                $content .= '%certificates_link%';
-                $template->setContent($content);
-                $om->persist($template);
-            }
-            $adminCertificateMailType->setDefaultTemplate('admin_certificate_mail');
-            $om->persist($adminCertificateMailType);
-        }
-
         $om->flush();
     }
 
@@ -161,7 +101,7 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
                 $template->setTitle($this->translator->trans('training_course', [], 'template', $locale));
 
                 $content = "
-                    <img src='%poster_url%' style='max-width: 100%' />
+                    <img src='%poster_url%' style='max-width: 100%' alt='training poster'/>
                     <h1>%name% <small>%code%</small></h1>
                     
                     <h2>{$this->translator->trans('description', [], 'platform')}</h2>

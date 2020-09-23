@@ -5,7 +5,7 @@ import {Routes} from '#/main/app/router'
 
 import {CatalogMain} from '#/plugin/cursus/tools/trainings/catalog/containers/main'
 
-const CursusTool = (props) =>
+const TrainingsTool = (props) =>
   <Routes
     path={props.path}
     redirect={[
@@ -19,10 +19,10 @@ const CursusTool = (props) =>
     ]}
   />
 
-CursusTool.propTypes = {
+TrainingsTool.propTypes = {
   path: T.string.isRequired
 }
 
 export {
-  CursusTool
+  TrainingsTool
 }

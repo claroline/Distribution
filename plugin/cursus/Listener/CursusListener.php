@@ -11,13 +11,8 @@
 
 namespace Claroline\CursusBundle\Listener;
 
-use Claroline\AppBundle\API\Options;
-use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Event\GenericDataEvent;
-use Claroline\CoreBundle\Event\Tool\OpenToolEvent;
-use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Claroline\CursusBundle\Manager\CourseManager;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class CursusListener

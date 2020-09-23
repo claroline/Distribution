@@ -25,7 +25,7 @@ const CoursePage = (props) => {
   return (
     <PageFull
       showBreadcrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
-      path={[].concat(getToolBreadcrumb(props.name, props.currentContext.type, props.currentContext.data), props.path)}
+      path={[].concat(getToolBreadcrumb('trainings', props.currentContext.type, props.currentContext.data), props.path)}
       title={props.course.name}
       subtitle={props.course.code}
       poster={props.course.poster ? props.course.poster.url : undefined}

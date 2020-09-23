@@ -69,20 +69,6 @@ class ResourceController
     /** @var ResourceRightsRepository */
     private $rightsRepo;
 
-    /**
-     * ResourceController constructor.
-     *
-     * @param TokenStorageInterface         $tokenStorage
-     * @param EngineInterface               $templating
-     * @param Utilities                     $security
-     * @param SerializerProvider            $serializer
-     * @param ResourceManager               $manager
-     * @param ResourceActionManager         $actionManager
-     * @param ResourceRestrictionsManager   $restrictionsManager
-     * @param ObjectManager                 $om
-     * @param AuthorizationCheckerInterface $authorization
-     * @param FinderProvider                $finder
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         EngineInterface $templating,
@@ -163,12 +149,8 @@ class ResourceController
      *
      * @Route("/embed/{id}", name="claro_resource_embed_short")
      * @Route("/embed/{type}/{id}", name="claro_resource_embed")
-     *
-     * @param ResourceNode $resourceNode
-     *
-     * @return Response
      */
-    public function embedAction(ResourceNode $resourceNode)
+    public function embedAction(ResourceNode $resourceNode): Response
     {
         $mimeType = explode('/', $resourceNode->getMimeType());
 
@@ -198,8 +180,7 @@ class ResourceController
      *     requirements={"forceArchive" = "^(true|false|0|1)$"},
      * )
      *
-     * @param Request $request
-     * @param bool    $forceArchive
+     * @param bool $forceArchive
      *
      * @return JsonResponse|BinaryFileResponse
      */
@@ -238,13 +219,8 @@ class ResourceController
      *
      * @Route("/unlock/{id}", name="claro_resource_unlock", methods={"POST"})
      * @EXT\ParamConverter("resourceNode", class="ClarolineCoreBundle:Resource\ResourceNode", options={"mapping": {"id": "uuid"}})
-     *
-     * @param ResourceNode $resourceNode
-     * @param Request      $request
-     *
-     * @return JsonResponse
      */
-    public function unlockAction(ResourceNode $resourceNode, Request $request)
+    public function unlockAction(ResourceNode $resourceNode, Request $request): JsonResponse
     {
         $this->restrictionsManager->unlock($resourceNode, json_decode($request->getContent(), true)['code']);
 
@@ -255,15 +231,8 @@ class ResourceController
      * Executes an action on a collection of resources.
      *
      * @Route("/collection/{action}", name="claro_resource_collection_action")
-     *
-     * @param string  $action
-     * @param Request $request
-     *
-     * @return JsonResponse
-     *
-     * @throws NotFoundHttpException
      */
-    public function executeCollectionAction($action, Request $request)
+    public function executeCollectionAction(string $action, Request $request): JsonResponse
     {
         $ids = $request->query->get('ids');
 
@@ -286,9 +255,7 @@ class ResourceController
             // check the requested action exists
             if (!$this->actionManager->support($resourceNode, $action, $request->getMethod())) {
                 // undefined action
-                throw new NotFoundHttpException(
-                    sprintf('The action %s with method [%s] does not exist for resource type %s.', $action, $request->getMethod(), $resourceNode->getResourceType()->getName())
-                );
+                throw new NotFoundHttpException(sprintf('The action %s with method [%s] does not exist for resource type %s.', $action, $request->getMethod(), $resourceNode->getResourceType()->getName()));
             }
 
             // check current user rights
@@ -310,23 +277,13 @@ class ResourceController
      *
      * @Route("/{action}/{id}", name="claro_resource_action_short")
      * @Route("/{type}/{action}/{id}", name="claro_resource_action")
-     *
-     * @param string       $action
-     * @param ResourceNode $resourceNode
-     * @param Request      $request
-     *
-     * @return Response
-     *
-     * @throws NotFoundHttpException
      */
-    public function executeAction($action, ResourceNode $resourceNode, Request $request)
+    public function executeAction(string $action, ResourceNode $resourceNode, Request $request): Response
     {
         // check the requested action exists
         if (!$this->actionManager->support($resourceNode, $action, $request->getMethod())) {
             // undefined action
-            throw new NotFoundHttpException(
-                sprintf('The action %s with method [%s] does not exist for resource type %s.', $action, $request->getMethod(), $resourceNode->getResourceType()->getName())
-            );
+            throw new NotFoundHttpException(sprintf('The action %s with method [%s] does not exist for resource type %s.', $action, $request->getMethod(), $resourceNode->getResourceType()->getName()));
         }
 
         // check current user rights
@@ -348,10 +305,6 @@ class ResourceController
 
     /**
      * Checks the current user can execute the action on the requested nodes.
-     *
-     * @param MenuAction $action
-     * @param array      $resourceNodes
-     * @param array      $attributes
      */
     private function checkAccess(MenuAction $action, array $resourceNodes, array $attributes = [])
     {

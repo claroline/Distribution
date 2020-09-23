@@ -506,9 +506,6 @@ class SessionController extends AbstractCrudController
         return new JsonResponse();
     }
 
-    /**
-     * @param string $rights
-     */
     private function checkToolAccess(string $rights = 'OPEN')
     {
         $trainingsTool = $this->toolManager->getOrderedTool('trainings', Tool::DESKTOP);

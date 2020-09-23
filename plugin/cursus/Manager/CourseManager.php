@@ -91,14 +91,8 @@ class CourseManager
 
     /**
      * Adds users to a cursus.
-     *
-     * @param Cursus $cursus
-     * @param array  $users
-     * @param int    $type
-     *
-     * @return array
      */
-    public function addUsersToCursus(Cursus $cursus, array $users, $type = CursusUser::TYPE_LEARNER)
+    public function addUsersToCursus(Cursus $cursus, array $users, $type = CursusUser::TYPE_LEARNER): array
     {
         $results = [];
         $registrationDate = new \DateTime();
@@ -136,14 +130,8 @@ class CourseManager
 
     /**
      * Adds groups to a cursus.
-     *
-     * @param Cursus $cursus
-     * @param array  $groups
-     * @param int    $type
-     *
-     * @return array
      */
-    public function addGroupsToCursus(Cursus $cursus, array $groups, $type = CursusGroup::TYPE_LEARNER)
+    public function addGroupsToCursus(Cursus $cursus, array $groups, $type = CursusGroup::TYPE_LEARNER): array
     {
         $results = [];
         $registrationDate = new \DateTime();
@@ -182,13 +170,9 @@ class CourseManager
     /**
      * Registers an user to default session of a course if allowed.
      *
-     * @param Course $course
-     * @param User   $user
-     * @param bool   $skipValidation
-     *
      * @return CourseRegistrationQueue|CourseSessionUser|CourseSessionRegistrationQueue|null
      */
-    public function registerUserToCourse(Course $course, User $user, $skipValidation = false)
+    public function registerUserToCourse(Course $course, User $user, bool $skipValidation = false)
     {
         $validationMask = 0;
 
@@ -229,15 +213,8 @@ class CourseManager
 
     /**
      * Creates a queue for course and user.
-     *
-     * @param Course    $course
-     * @param User      $user
-     * @param int       $mask
-     * @param \DateTime $date
-     *
-     * @return CourseRegistrationQueue
      */
-    public function createCourseQueue(Course $course, User $user, $mask = 0, $date = null)
+    public function createCourseQueue(Course $course, User $user, int $mask = 0, \DateTime $date = null): CourseRegistrationQueue
     {
         $this->om->startFlushSuite();
         $queue = new CourseRegistrationQueue();

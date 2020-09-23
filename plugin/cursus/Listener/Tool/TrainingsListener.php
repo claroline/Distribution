@@ -20,20 +20,12 @@ class TrainingsListener
     /** @var ParametersSerializer */
     private $parametersSerializer;
 
-    /**
-     * TrainingsListener constructor.
-     *
-     * @param ParametersSerializer $parametersSerializer
-     */
     public function __construct(
         ParametersSerializer $parametersSerializer
     ) {
         $this->parametersSerializer = $parametersSerializer;
     }
 
-    /**
-     * @param OpenToolEvent $event
-     */
     public function onDisplayDesktop(OpenToolEvent $event)
     {
         $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
