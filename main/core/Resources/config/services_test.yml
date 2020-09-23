@@ -1,7 +1,7 @@
 services:
     _defaults:
         public: true
-        autowire: false
+        autowire: true
         autoconfigure: true
 
     claroline.library.testing.persister:
