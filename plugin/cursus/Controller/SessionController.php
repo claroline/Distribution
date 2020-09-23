@@ -359,7 +359,7 @@ class SessionController extends AbstractCrudController
 
         return new JsonResponse([
             'errors' => [
-                $this->translator->trans('users_limit_reached', ['%count%' => 1], 'cursus')
+                $this->translator->trans('users_limit_reached', ['%count%' => 1], 'cursus'),
             ],
         ], 405);
     }

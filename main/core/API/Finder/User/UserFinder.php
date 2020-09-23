@@ -152,6 +152,7 @@ class UserFinder extends AbstractFinder
                         $qb->leftJoin('oref.organization', 'oparent');
                         $qb->leftJoin('oref.organization', 'organization');
 
+                        $expr = [];
                         foreach ($roots as $root) {
                             $expr[] = $qb->expr()->andX(
                                   $qb->expr()->gte('organization.lft', $root->getLeft()),

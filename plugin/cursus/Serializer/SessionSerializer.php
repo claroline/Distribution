@@ -47,17 +47,6 @@ class SessionSerializer
 
     private $courseRepo;
 
-    /**
-     * SessionSerializer constructor.
-     *
-     * @param ObjectManager          $om
-     * @param PublicFileSerializer   $fileSerializer
-     * @param RoleSerializer         $roleSerializer
-     * @param LocationSerializer     $locationSerializer
-     * @param WorkspaceSerializer    $workspaceSerializer
-     * @param ResourceNodeSerializer $resourceSerializer
-     * @param CourseSerializer       $courseSerializer
-     */
     public function __construct(
         ObjectManager $om,
         PublicFileSerializer $fileSerializer,
@@ -78,21 +67,12 @@ class SessionSerializer
         $this->courseRepo = $om->getRepository(Course::class);
     }
 
-    /**
-     * @return string
-     */
     public function getSchema()
     {
         return '#/plugin/cursus/session.json';
     }
 
-    /**
-     * @param CourseSession $session
-     * @param array         $options
-     *
-     * @return array
-     */
-    public function serialize(CourseSession $session, array $options = [])
+    public function serialize(CourseSession $session, array $options = []): array
     {
         $serialized = [
             'id' => $session->getUuid(),
@@ -154,13 +134,7 @@ class SessionSerializer
         return $serialized;
     }
 
-    /**
-     * @param array         $data
-     * @param CourseSession $session
-     *
-     * @return CourseSession
-     */
-    public function deserialize(array $data, CourseSession $session)
+    public function deserialize(array $data, CourseSession $session): CourseSession
     {
         $this->sipe('id', 'setUuid', $data, $session);
         $this->sipe('code', 'setCode', $data, $session);

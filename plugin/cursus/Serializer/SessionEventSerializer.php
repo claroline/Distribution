@@ -42,14 +42,6 @@ class SessionEventSerializer
     /** @var ObjectRepository */
     private $sessionRepo;
 
-    /**
-     * SessionEventSerializer constructor.
-     *
-     * @param ObjectManager        $om
-     * @param PublicFileSerializer $fileSerializer
-     * @param LocationSerializer   $locationSerializer
-     * @param SessionSerializer    $sessionSerializer
-     */
     public function __construct(
         ObjectManager $om,
         PublicFileSerializer $fileSerializer,
@@ -65,13 +57,7 @@ class SessionEventSerializer
         $this->sessionRepo = $om->getRepository(CourseSession::class);
     }
 
-    /**
-     * @param SessionEvent $event
-     * @param array        $options
-     *
-     * @return array
-     */
-    public function serialize(SessionEvent $event, array $options = [])
+    public function serialize(SessionEvent $event, array $options = []): array
     {
         $serialized = [
             'id' => $event->getUuid(),
@@ -104,13 +90,7 @@ class SessionEventSerializer
         return $serialized;
     }
 
-    /**
-     * @param array        $data
-     * @param SessionEvent $event
-     *
-     * @return SessionEvent
-     */
-    public function deserialize($data, SessionEvent $event)
+    public function deserialize(array $data, SessionEvent $event): SessionEvent
     {
         $this->sipe('id', 'setUuid', $data, $event);
         $this->sipe('code', 'setCode', $data, $event);

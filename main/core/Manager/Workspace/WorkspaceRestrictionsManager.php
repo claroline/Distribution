@@ -20,12 +20,11 @@ class WorkspaceRestrictionsManager
 {
     /** @var SessionInterface */
     private $session;
-
     /** @var AuthorizationCheckerInterface */
     private $authorization;
-
     /** @var WorkspaceManager */
     private $workspaceManager;
+
     public function __construct(
         SessionInterface $session,
         AuthorizationCheckerInterface $authorization,
@@ -172,8 +171,8 @@ class WorkspaceRestrictionsManager
      */
     public function unlock(Workspace $workspace, string $code = null)
     {
-        //if a code is defined
-        if ($accessCode = $workspace->getAccessCode()) {
+        $accessCode = $workspace->getAccessCode();
+        if ($accessCode) {
             if (empty($code) || $accessCode !== $code) {
                 $this->session->set($workspace->getUuid(), false);
 
