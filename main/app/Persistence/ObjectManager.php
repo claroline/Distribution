@@ -267,7 +267,7 @@ class ObjectManager extends ObjectManagerDecorator implements LoggerAwareInterfa
         $objects = $query->getResult();
 
         if (($entityCount = count($objects)) !== ($idCount = count($list))) {
-            $this->logger->warning("{$entityCount} out of {$idCount} ids don't match any existing object");
+            $this->log("{$entityCount} out of {$idCount} ids don't match any existing object", LogLevel::WARNING);
         }
 
         if ($orderStrict) {
@@ -313,14 +313,6 @@ class ObjectManager extends ObjectManagerDecorator implements LoggerAwareInterfa
     public function allowForceFlush($bool)
     {
         $this->allowForceFlush = $bool;
-    }
-
-    //override the monolog logger if something else is needed for debug
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
     }
 
     public function activateLog()
