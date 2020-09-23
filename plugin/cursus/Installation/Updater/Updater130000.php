@@ -25,6 +25,8 @@ class Updater130000 extends Updater
     {
         $this->renameTool('cursus', 'trainings');
         $this->renameTool('claroline_session_events_tool', 'training_events');
+
+        $this->cleanTemplates();
     }
 
     public function postUpdate()
@@ -45,5 +47,15 @@ class Updater130000 extends Updater
             $this->om->persist($tool);
             $this->om->flush();
         }
+    }
+
+    private function cleanTemplates()
+    {
+        // templates types
+        // session_certificate
+        // session_event_certificate
+        // session_certificate_mail
+        // session_event_certificate_mail
+        // admin_certificate_mail
     }
 }
