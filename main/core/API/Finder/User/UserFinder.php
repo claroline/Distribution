@@ -62,6 +62,10 @@ class UserFinder extends AbstractFinder
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+                case 'publicUrl':
+                    $qb->andWhere('UPPER(obj.publicUrl) = :publicUrl');
+                    $qb->setParameter('publicUrl', strtoupper($filterValue));
+                    break;
                 case 'name':
                     $qb->andWhere('UPPER(obj.username) LIKE :name OR UPPER(CONCAT(obj.firstName, \' \', obj.lastName)) LIKE :name');
                     $qb->setParameter('name', '%'.strtoupper($filterValue).'%');

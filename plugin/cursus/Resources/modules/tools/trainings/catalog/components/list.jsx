@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {hasPermission} from '#/main/app/security'
-import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
+import {CALLBACK_BUTTON, LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {ContentTabs} from '#/main/app/content/components/tabs'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {constants as listConst} from '#/main/app/content/list/constants'
@@ -119,6 +119,15 @@ class CatalogList extends Component {
               target: route(rows[0]) + '/edit',
               displayed: hasPermission('delete', rows[0]),
               group: trans('management'),
+              scope: ['object']
+            }, {
+              name: 'export-pdf',
+              type: URL_BUTTON,
+              icon: 'fa fa-fw fa-file-pdf-o',
+              label: trans('export-pdf', {}, 'actions'),
+              displayed: hasPermission('open', rows[0]),
+              group: trans('transfer'),
+              target: ['apiv2_cursus_course_download_pdf', {id: rows[0].id}],
               scope: ['object']
             }
           ]}

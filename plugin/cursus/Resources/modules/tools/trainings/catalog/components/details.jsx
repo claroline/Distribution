@@ -4,7 +4,7 @@ import get from 'lodash/get'
 
 import {Routes} from '#/main/app/router/components/routes'
 import {trans} from '#/main/app/intl/translation'
-import {hasPermission} from '#/main/app/security'
+
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {route} from '#/plugin/cursus/routing'
@@ -26,18 +26,6 @@ const CatalogDetails = (props) =>
       }
     ] : undefined}
     currentContext={props.currentContext}
-    primaryAction="edit"
-    actions={props.course ? [
-      {
-        name: 'edit',
-        type: LINK_BUTTON,
-        icon: 'fa fa-fw fa-pencil',
-        label: trans('edit', {}, 'actions'),
-        target: route(props.course) + '/edit',
-        displayed: hasPermission('edit', props.course),
-        primary: true
-      }
-    ] : undefined}
     course={props.course}
   >
     {props.course &&

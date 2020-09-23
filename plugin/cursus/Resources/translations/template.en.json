@@ -31,5 +31,10 @@
     "session_invitation_desc": "Template used for the mail sent for the invitation to a training session.",
     "session_name_desc": "The name of the training session",
     "session_start_desc": "The end date of the training session",
-    "session_trainers_desc": "The list of the trainers of the training session"
+    "session_trainers_desc": "The list of the trainers of the training session",
+
+    "training_course": "Training",
+    "training_course_desc": "Template used to print information about a training.",
+    "training_session": "Training session",
+    "training_session_desc": "Template used to print information about a training session."
 }

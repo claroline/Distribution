@@ -17,14 +17,17 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
 use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Manager\CourseManager;
+use Dompdf\Dompdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -82,6 +85,7 @@ class CourseController extends AbstractCrudController
     protected function getDefaultHiddenFilters()
     {
         if (!$this->authorization->isGranted('ROLE_ADMIN')) {
+            /** @var User $user */
             $user = $this->tokenStorage->getToken()->getUser();
 
             return [
@@ -134,6 +138,36 @@ class CourseController extends AbstractCrudController
             'course' => $this->serializer->serialize($course),
             'defaultSession' => $course->getDefaultSession() ? $this->serializer->serialize($course->getDefaultSession()) : null,
             'availableSessions' => $sessions['data'],
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/pdf", name="apiv2_cursus_course_download_pdf", methods={"GET"})
+     * @EXT\ParamConverter("course", class="ClarolineCursusBundle:Course", options={"mapping": {"id": "uuid"}})
+     */
+    public function downloadPdfAction(Course $course, Request $request): StreamedResponse
+    {
+        $this->checkPermission('OPEN', $course, [], true);
+
+        $domPdf = new Dompdf([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+        ]);
+
+        $domPdf->loadHtml($this->manager->generateFromTemplate(
+            $course,
+            $request->server->get('DOCUMENT_ROOT').$request->getBasePath(),
+            $request->getLocale()
+        ));
+
+        // Render the HTML as PDF
+        $domPdf->render();
+
+        return new StreamedResponse(function () use ($domPdf) {
+            echo $domPdf->output();
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename='.TextNormalizer::toKey($course->getName()).'.pdf',
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace Claroline\CursusBundle\Installation\Updater;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CursusBundle\DataFixtures\PostInstall\LoadTemplateData;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -24,6 +25,14 @@ class Updater130000 extends Updater
     {
         $this->renameTool('cursus', 'trainings');
         $this->renameTool('claroline_session_events_tool', 'training_events');
+    }
+
+    public function postUpdate()
+    {
+        $dataFixtures = new LoadTemplateData();
+        $dataFixtures->setContainer($this->container);
+
+        $dataFixtures->load($this->om);
     }
 
     private function renameTool($oldName, $newName)

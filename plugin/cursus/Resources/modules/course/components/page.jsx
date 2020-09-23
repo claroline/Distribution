@@ -1,13 +1,15 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
+import {hasPermission} from '#/main/app/security'
+import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {ContentLoader} from '#/main/app/content/components/loader'
 import {PageFull} from '#/main/app/page/components/full'
 import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
 
+import {route} from '#/plugin/cursus/routing'
 import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
 
 const CoursePage = (props) => {
@@ -20,11 +22,6 @@ const CoursePage = (props) => {
     )
   }
 
-  let toolbar = 'more'
-  if (props.primaryAction) {
-    toolbar = props.primaryAction + ' | ' + toolbar
-  }
-
   return (
     <PageFull
       showBreadcrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
@@ -32,8 +29,26 @@ const CoursePage = (props) => {
       title={props.course.name}
       subtitle={props.course.code}
       poster={props.course.poster ? props.course.poster.url : undefined}
-      toolbar={toolbar}
-      actions={props.actions}
+      toolbar="edit | more"
+      actions={[
+        {
+          name: 'edit',
+          type: LINK_BUTTON,
+          icon: 'fa fa-fw fa-pencil',
+          label: trans('edit', {}, 'actions'),
+          target: route(props.course) + '/edit',
+          displayed: hasPermission('edit', props.course),
+          primary: true
+        }, {
+          name: 'export-pdf',
+          type: URL_BUTTON,
+          icon: 'fa fa-fw fa-file-pdf-o',
+          label: trans('export-pdf', {}, 'actions'),
+          displayed: hasPermission('open', props.course),
+          group: trans('transfer'),
+          target: ['apiv2_cursus_course_download_pdf', {id: props.course.id}]
+        }
+      ]}
 
       header={{
         title: `${trans('trainings', {}, 'tools')} - ${props.course.name}`,

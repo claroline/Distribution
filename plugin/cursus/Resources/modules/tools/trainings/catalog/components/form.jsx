@@ -30,18 +30,6 @@ const CatalogForm = (props) => {
           }
         ]}
         currentContext={props.currentContext}
-        primaryAction="edit"
-        actions={[
-          {
-            name: 'edit',
-            type: LINK_BUTTON,
-            icon: 'fa fa-fw fa-pencil',
-            label: trans('edit', {}, 'actions'),
-            target: route(props.course) + '/edit',
-            group: trans('management'),
-            primary: true
-          }
-        ]}
         course={props.course}
       >
         <CourseForm

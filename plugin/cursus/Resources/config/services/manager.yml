@@ -9,10 +9,11 @@ services:
 
     Claroline\CursusBundle\Manager\CourseManager:
         arguments:
+            - '@security.token_storage'
             - '@event_dispatcher'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
-            - '@claroline.manager.role_manager'
-            - '@security.token_storage'
+            - '@Claroline\CoreBundle\Manager\Template\TemplateManager'
+            - '@Claroline\CoreBundle\Manager\RoleManager'
             - '@Claroline\CursusBundle\Manager\SessionManager'
 
     Claroline\CursusBundle\Manager\SessionManager:
@@ -21,11 +22,11 @@ services:
             - '@claroline.manager.mail_manager'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\AppBundle\API\Crud'
-            - '@claroline.manager.role_manager'
+            - '@Claroline\CoreBundle\Manager\RoleManager'
             - '@router'
             - '@claroline.manager.template_manager'
             - '@security.token_storage'
-            - '@claroline.manager.workspace_manager'
+            - '@Claroline\CoreBundle\Manager\Workspace\WorkspaceManager'
             - '@Claroline\CursusBundle\Manager\SessionEventManager'
 
     Claroline\CursusBundle\Manager\SessionEventManager:

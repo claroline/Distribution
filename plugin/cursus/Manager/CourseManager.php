@@ -14,6 +14,7 @@ namespace Claroline\CursusBundle\Manager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CursusBundle\Entity\AbstractRegistrationQueue;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseRegistrationQueue;
@@ -30,14 +31,16 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class CourseManager
 {
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
     /** @var ObjectManager */
     private $om;
+    /** @var TemplateManager */
+    private $templateManager;
     /** @var RoleManager */
     private $roleManager;
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
     /** @var SessionManager */
     private $sessionManager;
 
@@ -45,31 +48,45 @@ class CourseManager
     private $cursusGroupRepo;
     private $courseQueueRepo;
 
-    /**
-     * CourseManager constructor.
-     *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param ObjectManager            $om
-     * @param RoleManager              $roleManager
-     * @param TokenStorageInterface    $tokenStorage
-     * @param SessionManager           $sessionManager
-     */
     public function __construct(
+        TokenStorageInterface $tokenStorage,
         EventDispatcherInterface $eventDispatcher,
         ObjectManager $om,
+        TemplateManager $templateManager,
         RoleManager $roleManager,
-        TokenStorageInterface $tokenStorage,
         SessionManager $sessionManager
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
         $this->roleManager = $roleManager;
         $this->tokenStorage = $tokenStorage;
+        $this->templateManager = $templateManager;
         $this->sessionManager = $sessionManager;
 
         $this->cursusUserRepo = $om->getRepository(CursusUser::class);
         $this->cursusGroupRepo = $om->getRepository(CursusGroup::class);
         $this->courseQueueRepo = $om->getRepository(CourseRegistrationQueue::class);
+    }
+
+    public function generateFromTemplate(Course $course, string $basePath, string $locale)
+    {
+        $placeholders = [
+            'name' => $course->getName(),
+            'code' => $course->getCode(),
+            'description' => $course->getDescription(),
+            'poster_url' => $basePath.'/'.$course->getPoster(),
+            'default_duration' => $course->getDefaultSessionDuration(),
+            'public_registration' => $course->getPublicRegistration(),
+            'max_users' => $course->getMaxUsers(),
+
+            // TODO : add info about default session
+        ];
+
+        $content = $this->templateManager->getTemplate('training_course', $placeholders, $locale);
+
+        // todo : append sessions templates
+
+        return $content;
     }
 
     /**
@@ -189,6 +206,7 @@ class CourseManager
                 $validationMask += AbstractRegistrationQueue::WAITING_ORGANIZATION;
             }
         }
+
         if (0 < $validationMask) {
             $courseQueue = $this->courseQueueRepo->findOneBy(['course' => $course, 'user' => $user]);
 
@@ -197,16 +215,16 @@ class CourseManager
             }
 
             return $courseQueue;
-        } else {
-            $defaultSession = $course->getDefaultSession();
-            $result = null;
-
-            if ($defaultSession && $defaultSession->isActive()) {
-                $result = $this->sessionManager->registerUserToSession($defaultSession, $user, $skipValidation);
-            }
-
-            return $result;
         }
+
+        $defaultSession = $course->getDefaultSession();
+        $result = null;
+
+        if ($defaultSession && $defaultSession->isActive()) {
+            $result = $this->sessionManager->registerUserToSession($defaultSession, $user, $skipValidation);
+        }
+
+        return $result;
     }
 
     /**

@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
 use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\CursusBundle\Entity\CourseSession;
@@ -24,9 +25,11 @@ use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Manager\SessionManager;
+use Dompdf\Dompdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -81,6 +84,7 @@ class SessionController extends AbstractCrudController
     protected function getDefaultHiddenFilters()
     {
         if (!$this->authorization->isGranted('ROLE_ADMIN')) {
+            /** @var User $user */
             $user = $this->tokenStorage->getToken()->getUser();
 
             return [
@@ -95,9 +99,8 @@ class SessionController extends AbstractCrudController
 
     /**
      * @Route("/public", name="apiv2_cursus_session_public", methods={"GET"})
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      */
-    public function listPublicAction(User $user, Request $request): JsonResponse
+    public function listPublicAction(Request $request): JsonResponse
     {
         $params = $request->query->all();
 
@@ -111,11 +114,39 @@ class SessionController extends AbstractCrudController
     }
 
     /**
+     * @Route("/{id}/pdf", name="apiv2_cursus_session_download_pdf", methods={"GET"})
+     * @EXT\ParamConverter("course", class="ClarolineCursusBundle:CourseSession", options={"mapping": {"id": "uuid"}})
+     */
+    public function downloadPdfAction(CourseSession $session, Request $request): StreamedResponse
+    {
+        $this->checkPermission('OPEN', $session, [], true);
+
+        $domPdf = new Dompdf([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+        ]);
+        $domPdf->loadHtml($this->manager->generateFromTemplate(
+            $session,
+            $request->server->get('DOCUMENT_ROOT').$request->getBasePath(),
+            $request->getLocale())
+        );
+
+        // Render the HTML as PDF
+        $domPdf->render();
+
+        return new StreamedResponse(function () use ($domPdf) {
+            echo $domPdf->output();
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename='.TextNormalizer::toKey($session->getName()).'.pdf',
+        ]);
+    }
+
+    /**
      * @Route("/{id}/events", name="apiv2_cursus_session_list_events")
      * @EXT\ParamConverter("session", class="ClarolineCursusBundle:CourseSession", options={"mapping": {"id": "uuid"}})
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      */
-    public function listEventsAction(User $user, CourseSession $session, Request $request): JsonResponse
+    public function listEventsAction(CourseSession $session, Request $request): JsonResponse
     {
         $this->checkPermission('OPEN', $session, [], true);
 

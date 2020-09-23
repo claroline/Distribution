@@ -13,9 +13,11 @@ namespace Claroline\CursusBundle\Manager;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Template\Template;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\RoleManager;
@@ -130,32 +132,20 @@ class SessionManager
         $this->om->flush();
     }
 
-    public function createDefaultEvent(CourseSession $session)
+    public function generateFromTemplate(CourseSession $session, string $basePath, string $locale)
     {
-        $this->om->startFlushSuite();
-
-        /** @var SessionEvent $event */
-        $event = $this->crud->create(SessionEvent::class, [
+        $placeholders = [
             'name' => $session->getName(),
             'code' => $session->getCode(),
-            'meta' => [
-                'type' => SessionEvent::TYPE_NONE,
-            ],
-            'restrictions' => [
-                'dates' => DateRangeNormalizer::normalize($session->getStartDate(), $session->getEndDate()),
-            ],
-            'registration' => [
-                'registrationType' => $session->getEventRegistrationType(),
-            ],
-        ], [Crud::THROW_EXCEPTION]);
+            'description' => $session->getDescription(),
+            'poster_url' => $basePath.'/'.$session->getPoster(),
+            'public_registration' => $session->getPublicRegistration(),
+            'max_users' => $session->getMaxUsers(),
+            'start_date' => $session->getStartDate()->format('d/m/Y'),
+            'end_date' => $session->getEndDate()->format('d/m/Y'),
+        ];
 
-        $event->setSession($session);
-        $this->om->persist($event);
-        $this->om->flush();
-
-        $this->om->startFlushSuite();
-
-        return $event;
+        return $this->templateManager->getTemplate('course_session', $placeholders, $locale);
     }
 
     /**
@@ -447,9 +437,9 @@ class SessionManager
      * @param string    $roleName
      * @param string    $type
      *
-     * @return \Claroline\CoreBundle\Entity\Role
+     * @return Role
      */
-    public function generateRoleForSession(Workspace $workspace, $roleName, $type = 'learner')
+    public function generateRoleForSession(Workspace $workspace, string $roleName, string $type = 'learner')
     {
         if (empty($roleName)) {
             if ('manager' === $type) {

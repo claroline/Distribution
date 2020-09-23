@@ -31,5 +31,10 @@
     "session_invitation_desc": "Template utilisé pour le mail d'invitation à une session de formation.",
     "session_name_desc": "Le nom de la session de formation",
     "session_start_desc": "La date de début de la session de formation",
-    "session_trainers_desc": "La liste des formateurs de la session de formation"
+    "session_trainers_desc": "La liste des formateurs de la session de formation",
+
+    "training_course": "Formation",
+    "training_course_desc": "Template utilisé pour l'impression des informations relatives à une formation du catalogue.",
+    "training_session": "Session de formation",
+    "training_session_desc": "Template utilisé pour l'impression des informations relatives à une session de formation."
 }

@@ -24,17 +24,29 @@ plugin:
           tags: [community, event]
 
     templates:
+        - name: training_course
+          placeholders: [name, code, description, poster_url, default_duration, public_registration, max_users]
+
+        - name: training_session
+          placeholders: [name, code, description, poster_url, default_duration, public_registration, max_users, start_date, end_date]
+
         - name: session_invitation
           placeholders: [course_title, course_code, course_description, session_name, session_description, session_start, session_end, session_trainers]
+
         - name: session_event_invitation
           placeholders: [course_title, course_code, course_description, session_name, session_description, session_start, session_end, event_name, event_description, event_start, event_end, event_location_name, event_location_address, event_location_extra, event_trainers]
+
         - name: session_certificate
           placeholders: [course_title, course_code, course_description, session_name, session_description, session_start, session_end, session_trainers, events_list]
+
         - name: session_event_certificate
           placeholders: [course_title, course_code, course_description, session_name, session_description, session_start, session_end, event_name, event_description, event_start, event_end, event_location_name, event_location_address, event_location_extra, event_trainers]
+
         - name: session_certificate_mail
           placeholders: [course_title, course_code, course_description, session_name, session_description, session_start, session_end, session_trainers, events_list, certificate_link]
+
         - name: session_event_certificate_mail
           placeholders: [course_title, course_code, course_description, session_name, session_description, session_start, session_end, event_name, event_description, event_start, event_end, event_location_name, event_location_address, event_location_extra, event_trainers, certificate_link]
+
         - name: admin_certificate_mail
           placeholders: [certificates_link]

@@ -40,6 +40,13 @@ const CourseAbout = (props) => {
         <div className="panel panel-default">
           <ul className="list-group list-group-values">
             <li className="list-group-item">
+              {trans('public_registration', {}, 'cursus')}
+              <span className="value">
+                {getInfo(props.course, props.activeSession, 'registration.publicRegistration') ? trans('yes') : trans('no')}
+              </span>
+            </li>
+
+            <li className="list-group-item">
               {trans('max_participants', {}, 'cursus')}
               <span className="value">
                 {getInfo(props.course, props.activeSession, 'restrictions.users') || trans('empty_value')}

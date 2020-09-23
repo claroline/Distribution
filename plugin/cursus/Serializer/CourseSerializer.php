@@ -110,6 +110,7 @@ class CourseSerializer
             'poster' => $this->serializePoster($course),
             'thumbnail' => $this->serializeThumbnail($course),
             'permissions' => [
+                'open' => $this->authorization->isGranted('OPEN', $course),
                 'edit' => $this->authorization->isGranted('EDIT', $course),
                 'delete' => $this->authorization->isGranted('DELETE', $course),
             ],
