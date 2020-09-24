@@ -81,9 +81,11 @@ class CreateOrUpdate extends AbstractAction
             /** @var User $user */
             $user = $this->om->getRepository(User::class)->findOneBy(['username' => $data['user']]);
 
-            foreach ($user->getEntityRoles() as $role) {
-                if (Role::USER_ROLE === $role->getType()) {
-                    $roles[] = $role;
+            if ($user) {
+                foreach ($user->getEntityRoles() as $role) {
+                    if (Role::USER_ROLE === $role->getType()) {
+                        $roles[] = $role;
+                    }
                 }
             }
         }
