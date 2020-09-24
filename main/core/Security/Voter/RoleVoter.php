@@ -15,6 +15,7 @@ use Claroline\AppBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Role\Role as BaseRole;
@@ -73,11 +74,21 @@ class RoleVoter extends AbstractVoter
 
         // if it's a workspace role, we must be able be granted the edit perm on the workspace users tool
         // and our right level to be less than the role we're trying to remove that way, a user cannot remove admins
-        if ($this->isGranted(['community', 'edit'], $object->getWorkspace())) {
+
+        /** @var Workspace $workspace */
+        $workspace = $object->getWorkspace();
+        if ($this->isGranted(['community', 'edit'], $workspace)) {
             $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
             // If user is workspace manager then grant access
             if ($workspaceManager->isManager($object->getWorkspace(), $token)) {
                 return VoterInterface::ACCESS_GRANTED;
+            }
+
+            // If public registration is enabled and user try to get the default role, grant access
+            if ($workspace->getSelfRegistration() && $workspace->getDefaultRole()) {
+                if ($workspace->getDefaultRole()->getId() === $object->getId()) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
             }
 
             // Otherwise only allow modification of roles the current user owns

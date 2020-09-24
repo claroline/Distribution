@@ -116,12 +116,20 @@ class UserVoter extends AbstractVoter
 
             // check if we can add a workspace (this block is mostly a c/c from RoleVoter)
             $nonAuthorized = array_filter($collection->toArray(), function (Role $role) use ($token, $currentRoles) {
-                if ($role->getWorkspace()) {
-                    if ($this->isGranted(['community', 'edit'], $role->getWorkspace())) {
+                $workspace = $role->getWorkspace();
+                if ($workspace) {
+                    if ($this->isGranted(['community', 'edit'], $workspace)) {
                         $workspaceManager = $this->getContainer()->get('claroline.manager.workspace_manager');
                         // If user is workspace manager then grant access
-                        if ($workspaceManager->isManager($role->getWorkspace(), $token)) {
+                        if ($workspaceManager->isManager($workspace, $token)) {
                             return false;
+                        }
+
+                        // If public registration is enabled and user try to get the default role, grant access
+                        if ($workspace->getSelfRegistration() && $workspace->getDefaultRole()) {
+                            if ($workspace->getDefaultRole()->getId() === $role->getId()) {
+                                return false;
+                            }
                         }
 
                         // Otherwise only allow modification of roles the current user owns
