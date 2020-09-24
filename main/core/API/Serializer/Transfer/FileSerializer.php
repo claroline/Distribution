@@ -84,7 +84,7 @@ class FileSerializer
         }
 
         if (isset($data['workspace'])) {
-            $workspace = $this->om->getRepository(Workspace::class)->find($data['workspace']['id']);
+            $workspace = $this->om->getRepository(Workspace::class)->findOneBy(['uuid' => $data['workspace']['id']]);
             if ($workspace) {
                 $file->setWorkspace($workspace);
             }
