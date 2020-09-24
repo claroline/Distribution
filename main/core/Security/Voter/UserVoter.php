@@ -125,15 +125,15 @@ class UserVoter extends AbstractVoter
                             return false;
                         }
 
-                        // If public registration is enabled and user try to get the default role, grant access
-                        if ($workspace->getSelfRegistration() && $workspace->getDefaultRole()) {
-                            if ($workspace->getDefaultRole()->getId() === $role->getId()) {
-                                return false;
-                            }
-                        }
-
                         // Otherwise only allow modification of roles the current user owns
                         if (in_array($role->getName(), $currentRoles)) {
+                            return false;
+                        }
+                    }
+
+                    // If public registration is enabled and user try to get the default role, grant access
+                    if ($workspace->getSelfRegistration() && $workspace->getDefaultRole()) {
+                        if ($workspace->getDefaultRole()->getId() === $role->getId()) {
                             return false;
                         }
                     }

@@ -84,18 +84,18 @@ class RoleVoter extends AbstractVoter
                 return VoterInterface::ACCESS_GRANTED;
             }
 
-            // If public registration is enabled and user try to get the default role, grant access
-            if ($workspace->getSelfRegistration() && $workspace->getDefaultRole()) {
-                if ($workspace->getDefaultRole()->getId() === $object->getId()) {
-                    return VoterInterface::ACCESS_GRANTED;
-                }
-            }
-
             // Otherwise only allow modification of roles the current user owns
             $roles = array_map(function (BaseRole $role) {
                 return $role->getRole();
             }, $token->getRoles());
             if (in_array($object->getName(), $roles)) {
+                return VoterInterface::ACCESS_GRANTED;
+            }
+        }
+
+        // If public registration is enabled and user try to get the default role, grant access
+        if ($workspace->getSelfRegistration() && $workspace->getDefaultRole()) {
+            if ($workspace->getDefaultRole()->getId() === $object->getId()) {
                 return VoterInterface::ACCESS_GRANTED;
             }
         }
