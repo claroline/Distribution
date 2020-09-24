@@ -91,7 +91,7 @@ class TransferController extends AbstractCrudController
      * @EXT\Method("POST")
      *
      * @param Request $request
-     * @param int     $workspaceId
+     * @param string  $workspaceId
      *
      * @return JsonResponse
      */
@@ -106,14 +106,9 @@ class TransferController extends AbstractCrudController
 
         $file = $this->serializer->serialize($object);
 
-        $workspace = null;
-        if ($workspaceId) {
-            $workspace = $this->om->getRepository(Workspace::class)->find($workspaceId);
-        }
-
         $this->crud->create(File::class, [
             'uploadedFile' => $file,
-            'workspace' => $workspace ? $this->serializer->serialize($workspace) : null,
+            'workspace' => $workspaceId ? ['id' => $workspaceId] : null,
         ]);
 
         return new JsonResponse([$file], 200);
