@@ -72,13 +72,6 @@ class VersionManager implements LoggerAwareInterface
         $this->om->flush();
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
     public function getCurrent()
     {
         return $this->getVersionFile()[0];

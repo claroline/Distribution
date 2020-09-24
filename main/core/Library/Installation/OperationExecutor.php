@@ -45,7 +45,7 @@ class OperationExecutor implements LoggerAwareInterface
         $this->om = $om;
     }
 
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->logger = $logger;
         $this->baseInstaller->setLogger($logger);

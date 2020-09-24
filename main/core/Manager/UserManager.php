@@ -488,16 +488,6 @@ class UserManager implements LoggerAwareInterface
         $this->objectManager->endFlushSuite();
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
     public function enable(User $user)
     {
         $user->enable();

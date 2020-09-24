@@ -466,28 +466,6 @@ class UserRepository extends ServiceEntityRepository implements UserProviderInte
         return $query->getResult();
     }
 
-    /**
-     * @param string $data
-     *
-     * @return User
-     */
-    public function findOneByIdOrPublicUrl($data)
-    {
-        $dql = '
-            SELECT u
-            FROM Claroline\CoreBundle\Entity\User u
-            WHERE u.id = :id
-            OR u.publicUrl = :publicUrl
-            AND u.isRemoved = false
-        ';
-
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('id', $data);
-        $query->setParameter('publicUrl', $data);
-
-        return $query->getSingleResult();
-    }
-
     public function countUsersByRoleIncludingGroup(Role $role)
     {
         $sql = '

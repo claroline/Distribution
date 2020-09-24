@@ -32,11 +32,25 @@ const CatalogDetails = (props) =>
       <Routes
         path={props.path+'/catalog'+'/'+props.course.slug}
         redirect={[
-          {from: '', exact: true, to: '/'+get(props.activeSession, 'id'), disabled: !props.activeSession}
+          {from: '/', exact: true, to: '/'+get(props.activeSession, 'id'), disabled: !props.activeSession}
         ]}
         routes={[
           {
-            path: '/:id?',
+            path: '/',
+            disabled: props.activeSession,
+            render() {
+              const CurrentCourse = (
+                <CourseDetails
+                  path={props.path+'/catalog'}
+                  course={props.course}
+                  availableSessions={props.availableSessions}
+                />
+              )
+
+              return CurrentCourse
+            }
+          }, {
+            path: '/:id',
             onEnter(params = {}) {
               if (params.id) {
                 props.openSession(params.id)

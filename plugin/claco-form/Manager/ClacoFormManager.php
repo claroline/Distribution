@@ -1676,16 +1676,6 @@ class ClacoFormManager implements LoggerAwareInterface
         return count($entryUsers);
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
     /**
      * Creates an entries from data from a csv.
      *

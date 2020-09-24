@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 class Detector implements LoggerAwareInterface
 {
     use LoggableTrait;
+
     private $baseDir;
 
     public function __construct($baseDir = null)
@@ -129,10 +130,5 @@ class Detector implements LoggerAwareInterface
                 return false;
             }
         }
-    }
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 }

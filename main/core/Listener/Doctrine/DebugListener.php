@@ -79,13 +79,6 @@ class DebugListener implements LoggerAwareInterface
         $this->log('Function "'.$call['function'].'" was called from file '.$call['file'].' on line '.$call['line'].'.', LogLevel::DEBUG);
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
     public function activateLog()
     {
         $this->activateLog = true;

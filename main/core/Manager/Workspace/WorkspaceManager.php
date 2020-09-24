@@ -338,18 +338,10 @@ class WorkspaceManager implements LoggerAwareInterface
         return $workspaceOptions;
     }
 
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
-        if (!$this->resourceManager->getLogger()) {
-            $this->resourceManager->setLogger($logger);
-        }
-
         $this->logger = $logger;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
+        $this->resourceManager->setLogger($logger);
     }
 
     public function getPersonalWorkspaceExcludingRoles(array $roles, $includeOrphans, $empty = false, $offset = null, $limit = null)

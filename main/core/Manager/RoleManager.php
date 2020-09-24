@@ -555,11 +555,6 @@ class RoleManager implements LoggerAwareInterface
         );
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     public function checkIntegrity($workspaceIdx = 0, $userIdx = 0)
     {
         // Define load batch size, and flush size

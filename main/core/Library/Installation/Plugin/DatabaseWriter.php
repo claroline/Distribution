@@ -754,14 +754,4 @@ class DatabaseWriter implements LoggerAwareInterface
         $templateType->setPlugin($plugin);
         $this->em->persist($templateType);
     }
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
 }

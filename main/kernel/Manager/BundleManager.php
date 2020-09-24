@@ -25,6 +25,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class BundleManager implements LoggerAwareInterface
 {
     use LoggableTrait;
+
     const BUNDLE_INSTANCE = 'instance';
     const BUNDLE_CONFIG = 'config';
 
@@ -113,10 +114,5 @@ class BundleManager implements LoggerAwareInterface
         $environment = $this->kernel->getEnvironment();
 
         return preg_match('#tmp\d+#', $environment) ? 'dev' : $environment;
-    }
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 }

@@ -25,11 +25,14 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SessionSerializer
 {
     use SerializerTrait;
 
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
     /** @var ObjectManager */
     private $om;
     /** @var PublicFileSerializer */
@@ -48,6 +51,7 @@ class SessionSerializer
     private $courseRepo;
 
     public function __construct(
+        AuthorizationCheckerInterface $authorization,
         ObjectManager $om,
         PublicFileSerializer $fileSerializer,
         RoleSerializer $roleSerializer,
@@ -56,6 +60,7 @@ class SessionSerializer
         ResourceNodeSerializer $resourceSerializer,
         CourseSerializer $courseSerializer
     ) {
+        $this->authorization = $authorization;
         $this->om = $om;
         $this->fileSerializer = $fileSerializer;
         $this->roleSerializer = $roleSerializer;
@@ -81,6 +86,11 @@ class SessionSerializer
             'description' => $session->getDescription(),
             'poster' => $this->serializePoster($session),
             'thumbnail' => $this->serializeThumbnail($session),
+            'permissions' => [
+                'open' => $this->authorization->isGranted('OPEN', $session),
+                'edit' => $this->authorization->isGranted('EDIT', $session),
+                'delete' => $this->authorization->isGranted('DELETE', $session),
+            ],
             'workspace' => $session->getWorkspace() ?
                 $this->workspaceSerializer->serialize($session->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
                 null,

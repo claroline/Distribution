@@ -29,7 +29,7 @@ const CoursePage = (props) => {
       title={props.course.name}
       subtitle={props.course.code}
       poster={props.course.poster ? props.course.poster.url : undefined}
-      toolbar="edit | more"
+      toolbar="edit | fullscreen more"
       actions={[
         {
           name: 'edit',

@@ -3,6 +3,7 @@
 namespace Claroline\CursusBundle\Installation\Updater;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Template\TemplateType;
 use Claroline\CursusBundle\DataFixtures\PostInstall\LoadTemplateData;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -51,11 +52,20 @@ class Updater130000 extends Updater
 
     private function cleanTemplates()
     {
-        // templates types
-        // session_certificate
-        // session_event_certificate
-        // session_certificate_mail
-        // session_event_certificate_mail
-        // admin_certificate_mail
+        $templateTypes = [
+            'session_certificate',
+            'session_event_certificate',
+            'session_certificate_mail',
+            'session_event_certificate_mail',
+            'admin_certificate_mail',
+        ];
+
+        foreach ($templateTypes as $templateType) {
+            $type = $this->om->getRepository(TemplateType::class)->findOneBy(['name' => $templateType]);
+
+            $this->om->remove($type);
+        }
+
+        $this->om->flush();
     }
 }

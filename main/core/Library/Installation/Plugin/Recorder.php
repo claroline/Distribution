@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Library\Installation\Plugin;
 
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * This recorder is used to register a plugin both in database and in the
@@ -122,7 +123,7 @@ class Recorder
         }
     }
 
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger = null)
     {
         $this->dbWriter->setLogger($logger);
     }

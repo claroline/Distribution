@@ -279,11 +279,6 @@ class IconSetManager implements LoggerAwareInterface
         return $iconItems;
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     private function fetchResourcesMimeTypes($fileName, array $mimeTypesList)
     {
         $nameParts = explode('.', $fileName);

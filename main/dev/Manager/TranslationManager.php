@@ -68,9 +68,4 @@ class TranslationManager implements LoggerAwareInterface
 
         return $translations;
     }
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
 }
