@@ -47,9 +47,9 @@ class PublicFile
             $tmpFile->getClientOriginalName();
         $directoryName = $this->fileUtils->getActiveDirectoryName();
         $size = filesize($tmpFile);
-        $mimeType = !method_exists($tmpFile, 'getClientMimeType') || !$tmpFile->getClientMimeType() ?
-            $tmpFile->getMimeType() :
-            $tmpFile->getClientMimeType();
+        $mimeType = !$tmpFile->getMimeType() && method_exists($tmpFile, 'getClientMimeType') ?
+            $tmpFile->getClientMimeType() :
+            $tmpFile->getMimeType();
         $extension = !method_exists($tmpFile, 'getClientOriginalExtension') || !$tmpFile->getClientOriginalExtension() ?
             $tmpFile->guessExtension() :
             $tmpFile->getClientOriginalExtension();
