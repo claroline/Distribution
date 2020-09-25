@@ -94,7 +94,6 @@ class CsvAdapter implements AdapterInterface
      */
     private function addPropertyToObject(Property $property, array &$object, $value)
     {
-        $formattedValue = $value;
         $propertyName = $property->getName();
         $types = !is_array($property->getType()) ? [$property->getType()] : $property->getType();
 
@@ -166,10 +165,12 @@ class CsvAdapter implements AdapterInterface
                 $formattedValue = (int) $value;
             } elseif (in_array('boolean', $types)) {
                 $formattedValue = (bool) $value;
+            } elseif (in_array('string', $types) && empty($value)) {
+                $formattedValue = '';
             }
         }
 
-        return $value;
+        return $formattedValue;
     }
 
     /**
