@@ -121,9 +121,9 @@ class CourseSerializer
                     'users' => $course->getMaxUsers(),
                 ],
                 'registration' => [
-                    'publicRegistration' => $course->getPublicRegistration(),
-                    'publicUnregistration' => $course->getPublicUnregistration(),
-                    'registrationValidation' => $course->getRegistrationValidation(),
+                    'selfRegistration' => $course->getPublicRegistration(),
+                    'selfUnregistration' => $course->getPublicUnregistration(),
+                    'validation' => $course->getRegistrationValidation(),
                     'userValidation' => $course->getUserValidation(),
                 ],
                 'workspace' => $course->getWorkspace() ?
@@ -159,9 +159,9 @@ class CourseSerializer
 
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $course);
 
-        $this->sipe('registration.publicRegistration', 'setPublicRegistration', $data, $course);
-        $this->sipe('registration.publicUnregistration', 'setPublicUnregistration', $data, $course);
-        $this->sipe('registration.registrationValidation', 'setRegistrationValidation', $data, $course);
+        $this->sipe('registration.selfRegistration', 'setPublicRegistration', $data, $course);
+        $this->sipe('registration.selfUnregistration', 'setPublicUnregistration', $data, $course);
+        $this->sipe('registration.validation', 'setRegistrationValidation', $data, $course);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $course);
 
         if (isset($data['meta'])) {

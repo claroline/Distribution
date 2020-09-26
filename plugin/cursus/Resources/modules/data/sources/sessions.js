@@ -26,11 +26,9 @@ export default {
         displayed: false
       }, {
         name: 'course',
-        alias: 'courseTitle',
-        type: 'string',
+        type: 'course',
         label: trans('course', {}, 'cursus'),
-        displayed: true,
-        calculated: (session) => session.meta.course.title
+        displayed: true
       }, {
         name: 'restrictions.dates[0]',
         alias: 'startDate',
@@ -50,19 +48,19 @@ export default {
         label: trans('max_participants', {}, 'cursus'),
         displayed: true
       }, {
-        name: 'registration.publicRegistration',
+        name: 'registration.selfRegistration',
         alias: 'publicRegistration',
         type: 'boolean',
         label: trans('public_registration'),
         displayed: false
       }, {
-        name: 'registration.publicUnregistration',
+        name: 'registration.selfUnregistration',
         alias: 'publicUnregistration',
         type: 'boolean',
         label: trans('public_unregistration'),
         displayed: false
       }, {
-        name: 'registration.registrationValidation',
+        name: 'registration.validation',
         alias: 'registrationValidation',
         type: 'boolean',
         label: trans('registration_validation', {}, 'cursus'),
@@ -73,19 +71,6 @@ export default {
         type: 'boolean',
         label: trans('user_validation', {}, 'cursus'),
         displayed: false
-      }, {
-        name: 'registration.organizationValidation',
-        alias: 'organizationValidation',
-        type: 'boolean',
-        label: trans('organization_validation', {}, 'cursus'),
-        displayed: false
-      }, {
-        name: 'cursus',
-        alias: 'cursusTitle',
-        type: 'string',
-        label: trans('cursus', {}, 'cursus'),
-        displayed: false,
-        displayable: false
       }
     ],
     card: SessionCard

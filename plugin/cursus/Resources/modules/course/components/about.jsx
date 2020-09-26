@@ -42,7 +42,7 @@ const CourseAbout = (props) => {
             <li className="list-group-item">
               {trans('public_registration')}
               <span className="value">
-                {getInfo(props.course, props.activeSession, 'registration.publicRegistration') ? trans('yes') : trans('no')}
+                {getInfo(props.course, props.activeSession, 'registration.selfRegistration') ? trans('yes') : trans('no')}
               </span>
             </li>
 

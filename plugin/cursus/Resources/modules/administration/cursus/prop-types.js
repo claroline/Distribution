@@ -9,21 +9,6 @@ import {Workspace as WorkspaceType} from '#/main/core/workspace/prop-types'
 
 import {constants} from '#/plugin/cursus/constants'
 
-const Parameters = {
-  propTypes: {
-    cursus: T.shape({
-      disable_certificates: T.bool.isRequired,
-      disable_invitations: T.bool.isRequired,
-      disable_session_event_registration: T.bool.isRequired,
-      disable_session_registration: T.bool.isRequired,
-      enable_courses_profile_tab: T.bool.isRequired,
-      enable_ws_in_courses_profile_tab: T.bool.isRequired,
-      session_default_duration: T.number,
-      session_default_total: T.number
-    })
-  }
-}
-
 const Course = {
   propTypes: {
     id: T.string,
@@ -43,11 +28,10 @@ const Course = {
       users: T.number
     }),
     registration: T.shape({
-      publicRegistration: T.bool,
-      publicUnregistration: T.bool,
-      registrationValidation: T.bool,
-      userValidation: T.bool,
-      organizationValidation: T.bool
+      selfRegistration: T.bool,
+      selfUnregistration: T.bool,
+      validation: T.bool,
+      userValidation: T.bool
     })
   },
   defaultProps: {
@@ -55,11 +39,10 @@ const Course = {
       order: constants.DEFAULT_ORDER
     },
     registration: {
-      publicRegistration: false,
-      publicUnregistration: false,
-      registrationValidation: false,
-      userValidation: false,
-      organizationValidation: false
+      selfRegistration: false,
+      selfUnregistration: false,
+      validation: false,
+      userValidation: false
     }
   }
 }
@@ -88,11 +71,10 @@ const Session = {
       dates: T.arrayOf(T.string)
     }),
     registration: T.shape({
-      publicRegistration: T.bool,
-      publicUnregistration: T.bool,
-      registrationValidation: T.bool,
+      selfRegistration: T.bool,
+      selfUnregistration: T.bool,
+      validation: T.bool,
       userValidation: T.bool,
-      organizationValidation: T.bool,
       eventRegistrationType: T.number
     })
   },
@@ -104,11 +86,10 @@ const Session = {
       certificated: true
     },
     registration: {
-      publicRegistration: false,
-      publicUnregistration: false,
-      registrationValidation: false,
+      selfRegistration: false,
+      selfUnregistration: false,
+      validation: false,
       userValidation: false,
-      organizationValidation: false,
       eventRegistrationType: constants.REGISTRATION_AUTO
     }
   }
@@ -213,7 +194,6 @@ const SessionQueue = {
 }
 
 export {
-  Parameters,
   Course,
   Session,
   SessionEvent,

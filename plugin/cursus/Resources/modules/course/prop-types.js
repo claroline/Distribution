@@ -29,11 +29,10 @@ const Course = {
       users: T.number
     }),
     registration: T.shape({
-      publicRegistration: T.bool,
-      publicUnregistration: T.bool,
-      registrationValidation: T.bool,
-      userValidation: T.bool,
-      organizationValidation: T.bool
+      selfRegistration: T.bool,
+      selfUnregistration: T.bool,
+      validation: T.bool,
+      userValidation: T.bool
     })
   },
   defaultProps: {
@@ -47,11 +46,10 @@ const Course = {
       users: null
     },
     registration: {
-      publicRegistration: false,
-      publicUnregistration: false,
-      registrationValidation: false,
-      userValidation: false,
-      organizationValidation: false
+      selfRegistration: false,
+      selfUnregistration: false,
+      validation: false,
+      userValidation: false
     }
   }
 }
@@ -86,11 +84,10 @@ const Session = {
       dates: T.arrayOf(T.string)
     }),
     registration: T.shape({
-      publicRegistration: T.bool,
-      publicUnregistration: T.bool,
-      registrationValidation: T.bool,
+      selfRegistration: T.bool,
+      selfUnregistration: T.bool,
+      validation: T.bool,
       userValidation: T.bool,
-      organizationValidation: T.bool,
       eventRegistrationType: T.number
     })
   },
@@ -101,11 +98,10 @@ const Session = {
       certificated: true
     },
     registration: {
-      publicRegistration: false,
-      publicUnregistration: false,
-      registrationValidation: false,
+      selfRegistration: false,
+      selfUnregistration: false,
+      validation: false,
       userValidation: false,
-      organizationValidation: false,
       eventRegistrationType: constants.REGISTRATION_AUTO
     }
   }

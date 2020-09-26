@@ -49,17 +49,17 @@ const SessionList = {
       type: 'boolean',
       label: trans('default')
     }, {
-      name: 'registration.publicRegistration',
+      name: 'registration.selfRegistration',
       alias: 'publicRegistration',
       type: 'boolean',
       label: trans('public_registration')
     }, {
-      name: 'registration.publicUnregistration',
+      name: 'registration.selfUnregistration',
       alias: 'publicUnregistration',
       type: 'boolean',
       label: trans('public_unregistration')
     }, {
-      name: 'registration.registrationValidation',
+      name: 'registration.validation',
       alias: 'registrationValidation',
       type: 'boolean',
       label: trans('registration_validation', {}, 'cursus')

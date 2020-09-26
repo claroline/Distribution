@@ -137,9 +137,9 @@ class SessionSerializer
                         null,
                 ],
                 'registration' => [
-                    'publicRegistration' => $session->getPublicRegistration(),
-                    'publicUnregistration' => $session->getPublicUnregistration(),
-                    'registrationValidation' => $session->getRegistrationValidation(),
+                    'selfRegistration' => $session->getPublicRegistration(),
+                    'selfUnregistration' => $session->getPublicUnregistration(),
+                    'validation' => $session->getRegistrationValidation(),
                     'userValidation' => $session->getUserValidation(),
                     'eventRegistrationType' => $session->getEventRegistrationType(),
                 ],
@@ -164,9 +164,9 @@ class SessionSerializer
 
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $session);
 
-        $this->sipe('registration.publicRegistration', 'setPublicRegistration', $data, $session);
-        $this->sipe('registration.publicUnregistration', 'setPublicUnregistration', $data, $session);
-        $this->sipe('registration.registrationValidation', 'setRegistrationValidation', $data, $session);
+        $this->sipe('registration.selfRegistration', 'setPublicRegistration', $data, $session);
+        $this->sipe('registration.selfUnregistration', 'setPublicUnregistration', $data, $session);
+        $this->sipe('registration.validation', 'setRegistrationValidation', $data, $session);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $session);
         $this->sipe('registration.eventRegistrationType', 'setEventRegistrationType', $data, $session);
 

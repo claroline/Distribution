@@ -82,25 +82,24 @@ const CourseForm = (props) =>
         title: trans('registration'),
         fields: [
           {
-            name: 'registration.publicRegistration',
+            name: 'registration.selfRegistration',
             type: 'boolean',
-            label: trans('public_registration')
+            label: trans('activate_self_registration'),
+            help: trans('self_registration_training_help', {}, 'cursus'),
+            linked: [
+              {
+                name: 'registration.validation',
+                type: 'boolean',
+                label: trans('validate_registration'),
+                help: trans('validate_registration_help'),
+                displayed: (course) => course.registration && course.registration.selfRegistration
+              }
+            ]
           }, {
-            name: 'registration.publicUnregistration',
+            name: 'registration.selfUnregistration',
             type: 'boolean',
-            label: trans('public_unregistration')
-          }, {
-            name: 'registration.registrationValidation',
-            type: 'boolean',
-            label: trans('registration_validation', {}, 'cursus')
-          }, {
-            name: 'registration.userValidation',
-            type: 'boolean',
-            label: trans('user_validation', {}, 'cursus')
-          }, {
-            name: 'registration.organizationValidation',
-            type: 'boolean',
-            label: trans('organization_validation', {}, 'cursus')
+            label: trans('activate_self_unregistration'),
+            help: trans('self_unregistration_training_help', {}, 'cursus')
           }
         ]
       }, {

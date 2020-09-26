@@ -16,9 +16,8 @@ import {now, nowAdd} from '#/main/app/intl/date'
 import {selectors} from '#/plugin/cursus/administration/cursus/store'
 import {actions} from '#/plugin/cursus/administration/cursus/session/store'
 import {
-  Parameters as ParametersType,
   Session as SessionType
-} from '#/plugin/cursus/administration/cursus/prop-types'
+} from '#/plugin/cursus/prop-types'
 import {CourseList} from '#/plugin/cursus/administration/cursus/course/components/course-list'
 import {Sessions} from '#/plugin/cursus/administration/cursus/session/components/sessions'
 import {Session} from '#/plugin/cursus/administration/cursus/session/components/session'
@@ -54,7 +53,6 @@ const SessionTabComponent = (props) =>
 
 SessionTabComponent.propTypes = {
   path: T.string.isRequired,
-  parameters: T.shape(ParametersType.propTypes),
   openForm: T.func.isRequired,
   resetForm: T.func.isRequired
 }
