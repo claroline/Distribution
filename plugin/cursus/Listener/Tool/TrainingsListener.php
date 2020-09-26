@@ -11,28 +11,13 @@
 
 namespace Claroline\CursusBundle\Listener\Tool;
 
-use Claroline\AppBundle\API\Options;
-use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Event\Tool\OpenToolEvent;
 
 class TrainingsListener
 {
-    /** @var ParametersSerializer */
-    private $parametersSerializer;
-
-    public function __construct(
-        ParametersSerializer $parametersSerializer
-    ) {
-        $this->parametersSerializer = $parametersSerializer;
-    }
-
     public function onDisplayDesktop(OpenToolEvent $event)
     {
-        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
-
-        $event->setData([
-            'parameters' => $parameters['cursus'],
-        ]);
+        $event->setData([]);
         $event->stopPropagation();
     }
 }

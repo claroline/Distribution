@@ -263,12 +263,6 @@ class SessionManager
             if ($session->getUserValidation()) {
                 $validationMask += AbstractRegistrationQueue::WAITING_USER;
             }
-            if (0 < count($session->getValidators())) {
-                $validationMask += AbstractRegistrationQueue::WAITING_VALIDATOR;
-            }
-            if ($session->getOrganizationValidation()) {
-                $validationMask += AbstractRegistrationQueue::WAITING_ORGANIZATION;
-            }
         }
 
         if (0 < $validationMask) {

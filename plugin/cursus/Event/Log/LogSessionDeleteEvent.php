@@ -28,14 +28,12 @@ class LogSessionDeleteEvent extends LogGenericEvent
         $details['id'] = $session->getUuid();
         $details['name'] = $session->getName();
         $details['defaultSession'] = $session->isDefaultSession();
-        $details['creationDate'] = $session->getCreationDate();
         $details['publicRegistration'] = $session->getPublicRegistration();
         $details['publicUnregistration'] = $session->getPublicUnregistration();
         $details['registrationValidation'] = $session->getRegistrationValidation();
         $details['startDate'] = $session->getStartDate();
         $details['endDate'] = $session->getEndDate();
         $details['userValidation'] = $session->getUserValidation();
-        $details['organizationValidation'] = $session->getOrganizationValidation();
         $details['maxUsers'] = $session->getMaxUsers();
         $details['type'] = $session->getType();
 

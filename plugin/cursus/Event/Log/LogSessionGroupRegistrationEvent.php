@@ -27,7 +27,6 @@ class LogSessionGroupRegistrationEvent extends LogGenericEvent
         $details['groupName'] = $group->getName();
         $details['sessionId'] = $session->getUuid();
         $details['sessionName'] = $session->getName();
-        $details['sessionCreationDate'] = $session->getCreationDate()->format('d/m/Y H:i:s');
         $details['courseId'] = $course->getUuid();
         $details['courseTitle'] = $course->getName();
         $details['courseCode'] = $course->getCode();

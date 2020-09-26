@@ -16,7 +16,6 @@ use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,9 +27,6 @@ class CourseSession extends AbstractCourseSession
 {
     use Id;
     use Uuid;
-
-    // TODO : location
-    // TODO : secondary resources
 
     const REGISTRATION_AUTO = 0;
     const REGISTRATION_MANUAL = 1;
@@ -73,13 +69,6 @@ class CourseSession extends AbstractCourseSession
     protected $defaultSession = false;
 
     /**
-     * @ORM\Column(name="creation_date", type="datetime", nullable=false)
-     *
-     * @var \DateTime
-     */
-    protected $creationDate;
-
-    /**
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
      *
      * @var \DateTime
@@ -108,12 +97,6 @@ class CourseSession extends AbstractCourseSession
      * )
      */
     protected $sessionGroups;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinTable(name="claro_cursusbundle_course_session_validators")
-     */
-    protected $validators;
 
     /**
      * @ORM\Column(name="session_type", type="integer")
@@ -153,19 +136,12 @@ class CourseSession extends AbstractCourseSession
      */
     protected $eventRegistrationType = self::REGISTRATION_AUTO;
 
-    /**
-     * @ORM\Column(type="json_array", nullable=true)
-     */
-    protected $details;
-
     public function __construct()
     {
         $this->refreshUuid();
 
-        $this->creationDate = new \DateTime();
         $this->sessionUsers = new ArrayCollection();
         $this->sessionGroups = new ArrayCollection();
-        $this->validators = new ArrayCollection();
         $this->resources = new ArrayCollection();
         $this->events = new ArrayCollection();
     }
@@ -211,16 +187,6 @@ class CourseSession extends AbstractCourseSession
     public function setDefaultSession($defaultSession)
     {
         $this->defaultSession = $defaultSession;
-    }
-
-    public function getCreationDate()
-    {
-        return $this->creationDate;
-    }
-
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
     }
 
     /**
@@ -280,60 +246,6 @@ class CourseSession extends AbstractCourseSession
         return $this->sessionGroups->toArray();
     }
 
-    public function getCourseTitle()
-    {
-        return $this->getCourse()->getName();
-    }
-
-    public function getFullNameWithCourse()
-    {
-        return $this->getCourseTitle().
-            ' ['.
-            $this->getCourse()->getCode().
-            ']'.
-            ' - '.
-            $this->getName();
-    }
-
-    public function getShortNameWithCourse($courseLength = 25)
-    {
-        $courseTitle = $this->getCourseTitle();
-        $length = strlen($courseTitle);
-        $shortTitle = ($length > $courseLength) ?
-            substr($courseTitle, 0, $courseLength).'...' :
-            $courseTitle;
-
-        return $shortTitle.' - '.$this->getName();
-    }
-
-    public function getValidators()
-    {
-        return $this->validators->toArray();
-    }
-
-    public function addValidator(User $validator)
-    {
-        if (!$this->validators->contains($validator)) {
-            $this->validators->add($validator);
-        }
-
-        return $this;
-    }
-
-    public function removeValidator(User $validator)
-    {
-        if ($this->validators->contains($validator)) {
-            $this->validators->removeElement($validator);
-        }
-
-        return $this;
-    }
-
-    public function emptyValidators()
-    {
-        $this->validators->clear();
-    }
-
     public function getType()
     {
         return $this->type;
@@ -342,11 +254,6 @@ class CourseSession extends AbstractCourseSession
     public function setType($type)
     {
         $this->type = $type;
-    }
-
-    public function hasValidation()
-    {
-        return parent::hasValidation() || 0 < count($this->getValidators());
     }
 
     public function getResources()
@@ -402,55 +309,6 @@ class CourseSession extends AbstractCourseSession
     public function setEventRegistrationType($eventRegistrationType)
     {
         $this->eventRegistrationType = $eventRegistrationType;
-    }
-
-    public function getDetails()
-    {
-        return $this->details;
-    }
-
-    public function setDetails($details)
-    {
-        $this->details = $details;
-    }
-
-    public function getColor()
-    {
-        return !is_null($this->details) && isset($this->details['color']) ? $this->details['color'] : null;
-    }
-
-    public function setColor($color)
-    {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['color'] = $color;
-    }
-
-    public function getTotal()
-    {
-        return !is_null($this->details) && isset($this->details['total']) ? $this->details['total'] : null;
-    }
-
-    public function setTotal($total)
-    {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['total'] = $total;
-    }
-
-    public function getCertificated()
-    {
-        return !is_null($this->details) && isset($this->details['certificated']) ? $this->details['certificated'] : true;
-    }
-
-    public function setCertificated($certificated)
-    {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['certificated'] = $certificated;
     }
 
     public function __toString()

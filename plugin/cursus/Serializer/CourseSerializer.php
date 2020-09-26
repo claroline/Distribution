@@ -114,7 +114,6 @@ class CourseSerializer
                     'publicUnregistration' => $course->getPublicUnregistration(),
                     'registrationValidation' => $course->getRegistrationValidation(),
                     'userValidation' => $course->getUserValidation(),
-                    'organizationValidation' => $course->getOrganizationValidation(),
                 ],
                 'workspace' => $course->getWorkspace() ?
                     $this->workspaceSerializer->serialize($course->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
@@ -153,7 +152,6 @@ class CourseSerializer
         $this->sipe('registration.publicUnregistration', 'setPublicUnregistration', $data, $course);
         $this->sipe('registration.registrationValidation', 'setRegistrationValidation', $data, $course);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $course);
-        $this->sipe('registration.organizationValidation', 'setOrganizationValidation', $data, $course);
 
         if (isset($data['parent'])) {
             $parent = null;

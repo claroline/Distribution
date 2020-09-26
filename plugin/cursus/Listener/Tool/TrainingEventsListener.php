@@ -13,7 +13,6 @@ namespace Claroline\CursusBundle\Listener\Tool;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
-use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Event\Tool\OpenToolEvent;
 use Claroline\CursusBundle\Entity\CourseSession;
 
@@ -21,26 +20,19 @@ class TrainingEventsListener
 {
     /** @var FinderProvider */
     private $finder;
-    /** @var ParametersSerializer */
-    private $parametersSerializer;
 
-    public function __construct(
-        FinderProvider $finder,
-        ParametersSerializer $parametersSerializer
-    ) {
+    public function __construct(FinderProvider $finder)
+    {
         $this->finder = $finder;
-        $this->parametersSerializer = $parametersSerializer;
     }
 
     public function onDisplayWorkspace(OpenToolEvent $event)
     {
-        $parameters = $this->parametersSerializer->serialize([Options::SERIALIZE_MINIMAL]);
         $sessionList = $this->finder->search(CourseSession::class, [
             'filters' => ['workspace' => $event->getWorkspace()->getUuid()],
         ], [Options::SERIALIZE_MINIMAL]);
 
         $event->setData([
-            'parameters' => $parameters['cursus'],
             'sessions' => $sessionList['data'],
         ]);
         $event->stopPropagation();

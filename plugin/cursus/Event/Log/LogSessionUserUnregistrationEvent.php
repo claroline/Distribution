@@ -29,7 +29,6 @@ class LogSessionUserUnregistrationEvent extends LogGenericEvent
         $details['lastName'] = $user->getLastName();
         $details['sessionId'] = $session->getUuid();
         $details['sessionName'] = $session->getName();
-        $details['sessionCreationDate'] = $session->getCreationDate()->format('d/m/Y H:i:s');
         $details['type'] = $sessionUser->getUserType();
         $details['courseId'] = $course->getUuid();
         $details['courseTitle'] = $course->getName();

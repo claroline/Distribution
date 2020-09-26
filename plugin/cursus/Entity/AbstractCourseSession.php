@@ -12,9 +12,12 @@
 namespace Claroline\CursusBundle\Entity;
 
 use Claroline\AppBundle\Entity\Identifier\Code;
+use Claroline\AppBundle\Entity\Meta\CreatedAt;
+use Claroline\AppBundle\Entity\Meta\Creator;
 use Claroline\AppBundle\Entity\Meta\Description;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
+use Claroline\AppBundle\Entity\Meta\UpdatedAt;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,6 +29,9 @@ class AbstractCourseSession
 {
     use Code;
     use Description;
+    use CreatedAt;
+    use UpdatedAt;
+    use Creator;
     use Poster;
     use Thumbnail;
 
@@ -66,19 +72,14 @@ class AbstractCourseSession
     protected $userValidation = false;
 
     /**
-     * @ORM\Column(name="organization_validation", type="boolean")
-     */
-    protected $organizationValidation = false;
-
-    /**
      * @ORM\Column(name="max_users", nullable=true, type="integer")
      */
     protected $maxUsers;
 
     /**
-     * @ORM\Column(name="display_order", type="integer", options={"default" = 500})
+     * @ORM\Column(name="display_order", type="integer", options={"default" = 1})
      */
-    protected $displayOrder = 500;
+    protected $displayOrder = 1;
 
     public function getName()
     {
@@ -140,19 +141,9 @@ class AbstractCourseSession
         $this->userValidation = $userValidation;
     }
 
-    public function getOrganizationValidation()
-    {
-        return $this->organizationValidation;
-    }
-
-    public function setOrganizationValidation($organizationValidation)
-    {
-        $this->organizationValidation = $organizationValidation;
-    }
-
     public function hasValidation()
     {
-        return $this->registrationValidation || $this->userValidation || $this->organizationValidation;
+        return $this->registrationValidation || $this->userValidation;
     }
 
     public function getMaxUsers()

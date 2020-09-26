@@ -124,15 +124,12 @@ class SessionSerializer
                     'tutorRole' => $session->getTutorRole() ?
                         $this->roleSerializer->serialize($session->getTutorRole(), [Options::SERIALIZE_MINIMAL]) :
                         null,
-                    'color' => $session->getColor(),
-                    'certificated' => $session->getCertificated(),
                 ],
                 'registration' => [
                     'publicRegistration' => $session->getPublicRegistration(),
                     'publicUnregistration' => $session->getPublicUnregistration(),
                     'registrationValidation' => $session->getRegistrationValidation(),
                     'userValidation' => $session->getUserValidation(),
-                    'organizationValidation' => $session->getOrganizationValidation(),
                     'eventRegistrationType' => $session->getEventRegistrationType(),
                 ],
                 'resources' => array_map(function (ResourceNode $resource) {
@@ -154,9 +151,6 @@ class SessionSerializer
         $this->sipe('meta.default', 'setDefaultSession', $data, $session);
         $this->sipe('meta.type', 'setType', $data, $session);
         $this->sipe('meta.order', 'setDisplayOrder', $data, $session);
-        $this->sipe('meta.color', 'setColor', $data, $session);
-        //$this->sipe('meta.total', 'setTotal', $data, $session);
-        $this->sipe('meta.certificated', 'setCertificated', $data, $session);
 
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $session);
 
@@ -164,7 +158,6 @@ class SessionSerializer
         $this->sipe('registration.publicUnregistration', 'setPublicUnregistration', $data, $session);
         $this->sipe('registration.registrationValidation', 'setRegistrationValidation', $data, $session);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $session);
-        $this->sipe('registration.organizationValidation', 'setOrganizationValidation', $data, $session);
         $this->sipe('registration.eventRegistrationType', 'setEventRegistrationType', $data, $session);
 
         if (isset($data['restrictions']['dates'])) {
