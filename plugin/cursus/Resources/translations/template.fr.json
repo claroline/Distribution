@@ -10,7 +10,7 @@
 
     "course_code_desc": "Le code de la formation",
     "course_description_desc": "La description de la formation",
-    "course_title_desc": "Le titre de la formation",
+    "course_name_desc": "Le nom de la formation",
     "event_description_desc": "La description de la séance",
     "event_end_desc": "La date de fin de la séance",
     "event_location_address_desc": "L'adresse de la séance",

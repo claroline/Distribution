@@ -71,13 +71,13 @@ class CourseManager
     public function generateFromTemplate(Course $course, string $basePath, string $locale)
     {
         $placeholders = [
-            'name' => $course->getName(),
-            'code' => $course->getCode(),
-            'description' => $course->getDescription(),
-            'poster_url' => $basePath.'/'.$course->getPoster(),
-            'default_duration' => $course->getDefaultSessionDuration(),
-            'public_registration' => $course->getPublicRegistration(),
-            'max_users' => $course->getMaxUsers(),
+            'course_name' => $course->getName(),
+            'course_code' => $course->getCode(),
+            'course_description' => $course->getDescription(),
+            'course_poster_url' => $basePath.'/'.$course->getPoster(),
+            'course_default_duration' => $course->getDefaultSessionDuration(),
+            'course_public_registration' => $course->getPublicRegistration(),
+            'course_max_users' => $course->getMaxUsers(),
 
             // TODO : add info about default session
         ];

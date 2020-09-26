@@ -118,14 +118,14 @@ class SessionManager
     public function generateFromTemplate(CourseSession $session, string $basePath, string $locale)
     {
         $placeholders = [
-            'name' => $session->getName(),
-            'code' => $session->getCode(),
-            'description' => $session->getDescription(),
-            'poster_url' => $basePath.'/'.$session->getPoster(),
-            'public_registration' => $session->getPublicRegistration(),
-            'max_users' => $session->getMaxUsers(),
-            'start_date' => $session->getStartDate()->format('d/m/Y'),
-            'end_date' => $session->getEndDate()->format('d/m/Y'),
+            'course_name' => $session->getName(),
+            'course_code' => $session->getCode(),
+            'course_description' => $session->getDescription(),
+            'course_poster_url' => $basePath.'/'.$session->getPoster(),
+            'course_public_registration' => $session->getPublicRegistration(),
+            'course_max_users' => $session->getMaxUsers(),
+            'course_start_date' => $session->getStartDate()->format('d/m/Y'),
+            'course_end_date' => $session->getEndDate()->format('d/m/Y'),
         ];
 
         return $this->templateManager->getTemplate('course_session', $placeholders, $locale);
@@ -501,7 +501,7 @@ class SessionManager
             $trainersList .= '</ul>';
         }
         $basicPlaceholders = [
-            'course_title' => $course->getName(),
+            'course_name' => $course->getName(),
             'course_code' => $course->getCode(),
             'course_description' => $course->getDescription(),
             'session_name' => $session->getName(),
@@ -520,10 +520,10 @@ class SessionManager
             ]);
             $title = $template ?
                 $this->templateManager->getTemplateContent($template, $placeholders, 'title') :
-                $this->templateManager->getTemplate('session_invitation', $placeholders, $locale);
+                $this->templateManager->getTemplate('training_session_invitation', $placeholders, $locale);
             $content = $template ?
                 $this->templateManager->getTemplateContent($template, $placeholders) :
-                $this->templateManager->getTemplate('session_invitation', $placeholders, $locale);
+                $this->templateManager->getTemplate('training_session_invitation', $placeholders, $locale);
             $this->mailManager->send($title, $content, [$user]);
         }
     }

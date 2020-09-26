@@ -58,6 +58,8 @@ class Updater130000 extends Updater
             'session_certificate_mail',
             'session_event_certificate_mail',
             'admin_certificate_mail',
+            'session_invitation',
+            'session_event_invitation',
         ];
 
         foreach ($templateTypes as $templateType) {

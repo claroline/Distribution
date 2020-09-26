@@ -170,7 +170,7 @@ class SessionEventManager
             }
         }
         $basicPlaceholders = [
-            'course_title' => $course->getName(),
+            'course_name' => $course->getName(),
             'course_code' => $course->getCode(),
             'course_description' => $course->getDescription(),
             'session_name' => $session->getName(),
@@ -196,10 +196,10 @@ class SessionEventManager
             ]);
             $title = $template ?
                 $this->templateManager->getTemplateContent($template, $placeholders, 'title') :
-                $this->templateManager->getTemplate('session_event_invitation', $placeholders, $locale);
+                $this->templateManager->getTemplate('training_event_invitation', $placeholders, $locale);
             $content = $template ?
                 $this->templateManager->getTemplateContent($template, $placeholders) :
-                $this->templateManager->getTemplate('session_event_invitation', $placeholders, $locale);
+                $this->templateManager->getTemplate('training_event_invitation', $placeholders, $locale);
             $this->mailManager->send($title, $content, [$user]);
         }
     }

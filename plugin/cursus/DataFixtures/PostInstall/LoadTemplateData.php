@@ -43,34 +43,34 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
 
         $this->createCourseTemplates();
 
-        $sessionInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'session_invitation']);
-        $templates = $this->templateRepo->findBy(['name' => 'session_invitation']);
+        $sessionInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'training_session_invitation']);
+        $templates = $this->templateRepo->findBy(['name' => 'training_session_invitation']);
         if ($sessionInvitationType && empty($templates)) {
             foreach ($this->availableLocales as $locale) {
                 $template = new Template();
                 $template->setType($sessionInvitationType);
-                $template->setName('session_invitation');
+                $template->setName('training_session_invitation');
                 $template->setLang($locale);
-                $template->setTitle($this->translator->trans('session_invitation', [], 'template', $locale));
+                $template->setTitle($this->translator->trans('training_session_invitation', [], 'template', $locale));
                 $content = '%session_name%<br/>';
                 $content .= '[%session_start% -> %session_end%]<br/>';
                 $content .= '%session_description%';
                 $template->setContent($content);
                 $om->persist($template);
             }
-            $sessionInvitationType->setDefaultTemplate('session_invitation');
+            $sessionInvitationType->setDefaultTemplate('training_session_invitation');
             $om->persist($sessionInvitationType);
         }
 
-        $eventInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'session_event_invitation']);
-        $templates = $this->templateRepo->findBy(['name' => 'session_event_invitation']);
+        $eventInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'training_event_invitation']);
+        $templates = $this->templateRepo->findBy(['name' => 'training_event_invitation']);
         if ($eventInvitationType && empty($templates)) {
             foreach ($this->availableLocales as $locale) {
                 $template = new Template();
                 $template->setType($eventInvitationType);
-                $template->setName('session_event_invitation');
+                $template->setName('training_event_invitation');
                 $template->setLang($locale);
-                $template->setTitle($this->translator->trans('session_event_invitation', [], 'template', $locale));
+                $template->setTitle($this->translator->trans('training_event_invitation', [], 'template', $locale));
                 $content = '%event_name%<br/>';
                 $content .= '[%event_start% -> %event_end%]<br/>';
                 $content .= '%event_description%<br/><br/>';
@@ -79,7 +79,7 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
                 $template->setContent($content);
                 $om->persist($template);
             }
-            $eventInvitationType->setDefaultTemplate('session_event_invitation');
+            $eventInvitationType->setDefaultTemplate('training_event_invitation');
             $om->persist($eventInvitationType);
         }
 
@@ -101,16 +101,16 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
                 $template->setTitle($this->translator->trans('training_course', [], 'template', $locale));
 
                 $content = "
-                    <img src='%poster_url%' style='max-width: 100%' alt='training poster'/>
-                    <h1>%name% <small>%code%</small></h1>
+                    <img src='%course_poster_url%' style='max-width: 100%' alt='training poster'/>
+                    <h1>%course_name% <small>%course_code%</small></h1>
                     
                     <h2>{$this->translator->trans('description', [], 'platform')}</h2>
-                    <p>%description%</p>
+                    <p>%course_description%</p>
                     <h2>{$this->translator->trans('information', [], 'platform')}</h2>
                     <ul>
-                        <li><b>{$this->translator->trans('public_registration', [], 'platform')} : </b> %public_registration%</li>
-                        <li><b>{$this->translator->trans('duration', [], 'platform')} : </b> %default_duration%</li>
-                        <li><b>{$this->translator->trans('max_participants', [], 'cursus')} : </b> %max_users%</li>
+                        <li><b>{$this->translator->trans('public_registration', [], 'platform')} : </b> %course_public_registration%</li>
+                        <li><b>{$this->translator->trans('duration', [], 'platform')} : </b> %course_default_duration%</li>
+                        <li><b>{$this->translator->trans('max_participants', [], 'cursus')} : </b> %course_max_users%</li>
                     </ul>
                 ";
                 $template->setContent($content);
