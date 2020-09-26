@@ -65,7 +65,9 @@ class Updater130000 extends Updater
         foreach ($templateTypes as $templateType) {
             $type = $this->om->getRepository(TemplateType::class)->findOneBy(['name' => $templateType]);
 
-            $this->om->remove($type);
+            if (!empty($type)) {
+                $this->om->remove($type);
+            }
         }
 
         $this->om->flush();

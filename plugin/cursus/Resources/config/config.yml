@@ -25,7 +25,7 @@ plugin:
 
     templates:
         - name: training_course
-          placeholders: [
+          placeholders:
               - course_name
               - course_code
               - course_description
