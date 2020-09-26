@@ -4,9 +4,6 @@ services:
         autoconfigure: false
         public: true
 
-    Claroline\CursusBundle\Configuration\PlatformDefaults:
-        tags: ['claroline.configuration']
-
     Claroline\CursusBundle\Manager\CourseManager:
         arguments:
             - '@security.token_storage'
