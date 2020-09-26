@@ -13,15 +13,19 @@ services:
         tags:
             - { name: kernel.event_listener, event: crud_pre_create_object_claroline_cursusbundle_entity_course, method: preCreate }
             - { name: kernel.event_listener, event: crud_post_create_object_claroline_cursusbundle_entity_course, method: postCreate }
+            - { name: kernel.event_listener, event: crud_pre_update_object_claroline_cursusbundle_entity_course, method: preUpdate }
             - { name: kernel.event_listener, event: crud_post_update_object_claroline_cursusbundle_entity_course, method: postUpdate }
             - { name: kernel.event_listener, event: crud_pre_delete_object_claroline_cursusbundle_entity_course, method: preDelete }
 
     Claroline\CursusBundle\Crud\SessionCrud:
         arguments:
+            - '@security.token_storage'
             - '@event_dispatcher'
             - '@Claroline\CursusBundle\Manager\SessionManager'
         tags:
+            - { name: kernel.event_listener, event: crud_pre_create_object_claroline_cursusbundle_entity_coursesession, method: preCreate }
             - { name: kernel.event_listener, event: crud_post_create_object_claroline_cursusbundle_entity_coursesession, method: postCreate }
+            - { name: kernel.event_listener, event: crud_pre_update_object_claroline_cursusbundle_entity_coursesession, method: preUpdate }
             - { name: kernel.event_listener, event: crud_post_update_object_claroline_cursusbundle_entity_coursesession, method: postUpdate }
             - { name: kernel.event_listener, event: crud_pre_delete_object_claroline_cursusbundle_entity_coursesession, method: preDelete }
 

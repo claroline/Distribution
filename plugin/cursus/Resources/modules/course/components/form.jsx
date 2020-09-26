@@ -9,6 +9,7 @@ import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
 const CourseForm = (props) =>
   <FormData
     name={props.name}
+    meta={true}
     buttons={true}
     target={(data, isNew) => isNew ?
       ['apiv2_cursus_course_create'] :

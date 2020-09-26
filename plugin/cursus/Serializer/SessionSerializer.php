@@ -18,10 +18,13 @@ use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\API\Serializer\User\LocationSerializer;
 use Claroline\CoreBundle\API\Serializer\User\RoleSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\CourseSession;
@@ -37,6 +40,8 @@ class SessionSerializer
     private $om;
     /** @var PublicFileSerializer */
     private $fileSerializer;
+    /** @var UserSerializer */
+    private $userSerializer;
     /** @var RoleSerializer */
     private $roleSerializer;
     /** @var LocationSerializer */
@@ -54,6 +59,7 @@ class SessionSerializer
         AuthorizationCheckerInterface $authorization,
         ObjectManager $om,
         PublicFileSerializer $fileSerializer,
+        UserSerializer $userSerializer,
         RoleSerializer $roleSerializer,
         LocationSerializer $locationSerializer,
         WorkspaceSerializer $workspaceSerializer,
@@ -63,6 +69,7 @@ class SessionSerializer
         $this->authorization = $authorization;
         $this->om = $om;
         $this->fileSerializer = $fileSerializer;
+        $this->userSerializer = $userSerializer;
         $this->roleSerializer = $roleSerializer;
         $this->locationSerializer = $locationSerializer;
         $this->workspaceSerializer = $workspaceSerializer;
@@ -112,11 +119,15 @@ class SessionSerializer
 
             $serialized = array_merge($serialized, [
                 'meta' => [
+                    'creator' => $session->getCreator() ?
+                        $this->userSerializer->serialize($session->getCreator(), [Options::SERIALIZE_MINIMAL]) :
+                        null,
+                    'created' => DateNormalizer::normalize($session->getCreatedAt()),
+                    'updated' => DateNormalizer::normalize($session->getUpdatedAt()),
                     'duration' => $duration,
                     'default' => $session->isDefaultSession(),
                     'order' => $session->getDisplayOrder(),
 
-                    'type' => $session->getType(),
                     'course' => $this->courseSerializer->serialize($session->getCourse(), [Options::SERIALIZE_MINIMAL]),
                     'learnerRole' => $session->getLearnerRole() ?
                         $this->roleSerializer->serialize($session->getLearnerRole(), [Options::SERIALIZE_MINIMAL]) :
@@ -149,7 +160,6 @@ class SessionSerializer
         $this->sipe('description', 'setDescription', $data, $session);
 
         $this->sipe('meta.default', 'setDefaultSession', $data, $session);
-        $this->sipe('meta.type', 'setType', $data, $session);
         $this->sipe('meta.order', 'setDisplayOrder', $data, $session);
 
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $session);
@@ -159,6 +169,22 @@ class SessionSerializer
         $this->sipe('registration.registrationValidation', 'setRegistrationValidation', $data, $session);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $session);
         $this->sipe('registration.eventRegistrationType', 'setEventRegistrationType', $data, $session);
+
+        if (isset($data['meta'])) {
+            if (isset($data['meta']['created'])) {
+                $session->setCreatedAt(DateNormalizer::denormalize($data['meta']['created']));
+            }
+
+            if (isset($data['meta']['updated'])) {
+                $session->setUpdatedAt(DateNormalizer::denormalize($data['meta']['updated']));
+            }
+
+            if (!empty($data['meta']['creator'])) {
+                /** @var User $creator */
+                $creator = $this->om->getObject($data['meta']['creator'], User::class);
+                $session->setCreator($creator);
+            }
+        }
 
         if (isset($data['restrictions']['dates'])) {
             $dates = DateRangeNormalizer::denormalize($data['restrictions']['dates']);

@@ -16,6 +16,7 @@ services:
             - '@event_dispatcher'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\OrganizationSerializer'
             - '@Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer'
 
@@ -51,6 +52,7 @@ services:
             - '@security.authorization_checker'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
+            - '@Claroline\CoreBundle\API\Serializer\User\UserSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\RoleSerializer'
             - '@Claroline\CoreBundle\API\Serializer\User\LocationSerializer'
             - '@Claroline\CoreBundle\API\Serializer\Workspace\WorkspaceSerializer'

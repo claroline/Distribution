@@ -14,32 +14,48 @@ namespace Claroline\CursusBundle\Crud;
 use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
 use Claroline\AppBundle\Event\Crud\UpdateEvent;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Event\Log\LogSessionCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionDeleteEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionEditEvent;
 use Claroline\CursusBundle\Manager\SessionManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SessionCrud
 {
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
     /** @var SessionManager */
     private $sessionManager;
 
-    /**
-     * SessionCrud constructor.
-     *
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param SessionManager           $sessionManager
-     */
     public function __construct(
+        TokenStorageInterface $tokenStorage,
         EventDispatcherInterface $eventDispatcher,
         SessionManager $sessionManager
     ) {
+        $this->tokenStorage = $tokenStorage;
         $this->eventDispatcher = $eventDispatcher;
         $this->sessionManager = $sessionManager;
+    }
+
+    public function preCreate(CreateEvent $event)
+    {
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        /** @var CourseSession $session */
+        $session = $event->getObject();
+
+        $session->setCreatedAt(new \DateTime());
+        $session->setUpdatedAt(new \DateTime());
+
+        if (empty($session->getCreator()) && $user instanceof User) {
+            $session->setCreator($user);
+        }
     }
 
     public function postCreate(CreateEvent $event)
@@ -80,6 +96,14 @@ class SessionCrud
 
         $event = new LogSessionCreateEvent($session);
         $this->eventDispatcher->dispatch($event, 'log');
+    }
+
+    public function preUpdate(UpdateEvent $event)
+    {
+        /** @var CourseSession $session */
+        $session = $event->getObject();
+
+        $session->setUpdatedAt(new \DateTime());
     }
 
     public function postUpdate(UpdateEvent $event)

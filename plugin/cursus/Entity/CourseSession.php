@@ -99,11 +99,6 @@ class CourseSession extends AbstractCourseSession
     protected $sessionGroups;
 
     /**
-     * @ORM\Column(name="session_type", type="integer")
-     */
-    protected $type = 0;
-
-    /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode", orphanRemoval=true)
      * @ORM\JoinTable(name="claro_cursusbundle_course_session_resources",
      *      joinColumns={@ORM\JoinColumn(name="resource_id", referencedColumnName="id")},
@@ -244,16 +239,6 @@ class CourseSession extends AbstractCourseSession
     public function getSessionGroups()
     {
         return $this->sessionGroups->toArray();
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 
     public function getResources()

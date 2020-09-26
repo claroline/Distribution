@@ -71,6 +71,7 @@ class CursusUser
     public function __construct()
     {
         $this->refreshUuid();
+
         $this->registrationDate = new \DateTime();
     }
 

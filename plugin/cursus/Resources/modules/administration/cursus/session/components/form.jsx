@@ -10,6 +10,7 @@ import {constants} from '#/plugin/cursus/constants'
 const SessionForm = (props) =>
   <FormData
     {...props}
+    meta={true}
     sections={[
       {
         title: trans('general'),
