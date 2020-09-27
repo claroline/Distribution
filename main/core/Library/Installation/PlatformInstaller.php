@@ -67,9 +67,6 @@ class PlatformInstaller implements LoggerAwareInterface
         $this->pluginInstaller->setLogger($logger);
     }
 
-    /**
-     * @param OutputInterface $output
-     */
     public function setOutput(OutputInterface $output)
     {
         $this->output = $output;
@@ -120,10 +117,7 @@ class PlatformInstaller implements LoggerAwareInterface
             $code = $command->run(new ArrayInput([]), $this->output ?: new NullOutput());
 
             if (0 !== $code) {
-                throw new \Exception(
-                    'Database cannot be created : check that the parameters you provided '
-                    .'are correct and/or that you have sufficient permissions.'
-                );
+                throw new \Exception('Database cannot be created : check that the parameters you provided are correct and/or that you have sufficient permissions.');
             }
         }
     }

@@ -15,9 +15,9 @@ use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Utils\FileBag;
 use Claroline\AppBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Log\LoggableTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AuthenticationBundle\Security\Authentication\Token\ViewAsToken;
-use Claroline\AppBundle\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\AbstractRoleSubject;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Role;
@@ -65,16 +65,6 @@ class WorkspaceManager implements LoggerAwareInterface
     /** @var ObjectRepository */
     private $workspaceOptionsRepo;
 
-    /**
-     * WorkspaceManager constructor.
-     *
-     * @param RoleManager        $roleManager
-     * @param ResourceManager    $resourceManager
-     * @param StrictDispatcher   $dispatcher
-     * @param ObjectManager      $om
-     * @param Utilities          $sut
-     * @param ContainerInterface $container
-     */
     public function __construct(
         RoleManager $roleManager,
         ResourceManager $resourceManager,
@@ -100,8 +90,7 @@ class WorkspaceManager implements LoggerAwareInterface
     /**
      * Rename a workspace.
      *
-     * @param Workspace $workspace
-     * @param string    $name
+     * @param string $name
      */
     public function rename(Workspace $workspace, $name)
     {
@@ -119,8 +108,6 @@ class WorkspaceManager implements LoggerAwareInterface
     }
 
     /**
-     * @param User $user
-     *
      * @return Workspace[]
      */
     public function getWorkspacesByUser(User $user)
@@ -137,8 +124,6 @@ class WorkspaceManager implements LoggerAwareInterface
     }
 
     /**
-     * @param Organization[] $organizations
-     *
      * @return int
      */
     public function getNbNonPersonalWorkspaces($organizations = null)
@@ -157,10 +142,9 @@ class WorkspaceManager implements LoggerAwareInterface
      * keys are workspace ids and values are boolean indicating if the
      * workspace is open.
      *
-     * @param TokenInterface $token
-     * @param Workspace[]    $workspaces
-     * @param string|null    $toolName
-     * @param string         $action
+     * @param Workspace[] $workspaces
+     * @param string|null $toolName
+     * @param string      $action
      *
      * @return bool[]
      */
@@ -245,9 +229,6 @@ class WorkspaceManager implements LoggerAwareInterface
     }
 
     /**
-     * @param Workspace $workspace
-     * @param User      $user
-     *
      * @return User
      */
     public function addUser(Workspace $workspace, User $user)
@@ -435,8 +416,6 @@ class WorkspaceManager implements LoggerAwareInterface
     /**
      * Gets the list of role which have access to the workspace.
      * (either workspace roles or a platform role with ws tool access).
-     *
-     * @param Workspace $workspace
      *
      * @return Role[]
      */

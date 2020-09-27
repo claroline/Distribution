@@ -5,7 +5,6 @@ namespace Claroline\CoreBundle\Listener\Doctrine;
 use Claroline\AppBundle\Log\LoggableTrait;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 

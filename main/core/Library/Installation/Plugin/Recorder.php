@@ -26,16 +26,9 @@ class Recorder
 {
     /** @var DatabaseWriter */
     private $dbWriter;
-
     /** @var Validator */
     private $validator;
 
-    /**
-     * Recorder constructor.
-     *
-     * @param DatabaseWriter $dbWriter
-     * @param Validator      $validator
-     */
     public function __construct(
         DatabaseWriter $dbWriter,
         Validator $validator)
@@ -46,8 +39,6 @@ class Recorder
 
     /**
      * Sets the database writer.
-     *
-     * @param DatabaseWriter $writer
      */
     public function setDatabaseWriter(DatabaseWriter $writer)
     {
@@ -56,8 +47,6 @@ class Recorder
 
     /**
      * Registers a plugin.
-     *
-     * @param PluginBundleInterface $plugin
      *
      * @return Plugin
      */
@@ -70,8 +59,6 @@ class Recorder
 
     /**
      * Update configuration for a plugin.
-     *
-     * @param PluginBundleInterface $plugin
      */
     public function update(PluginBundleInterface $plugin)
     {
@@ -82,8 +69,6 @@ class Recorder
 
     /**
      * Unregisters a plugin.
-     *
-     * @param PluginBundleInterface $plugin
      */
     public function unregister(PluginBundleInterface $plugin)
     {
@@ -93,8 +78,6 @@ class Recorder
 
     /**
      * Checks if a plugin is registered.
-     *
-     * @param PluginBundleInterface $plugin
      *
      * @return bool
      */
