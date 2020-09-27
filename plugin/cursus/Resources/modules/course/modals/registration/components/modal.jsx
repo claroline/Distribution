@@ -7,7 +7,7 @@ import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON} from '#/main/app/buttons'
 import {Modal} from '#/main/app/overlays/modal/components/modal'
 
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
 
 const RegistrationModal = props =>
   <Modal

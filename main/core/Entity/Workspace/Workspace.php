@@ -201,13 +201,6 @@ class Workspace
     protected $personal = false;
 
     /**
-     * @ORM\Column(name="workspace_type", type="integer", nullable=true)
-     *
-     * @var int
-     */
-    protected $workspaceType;
-
-    /**
      * @ORM\Column(name="disabled_notifications", type="boolean")
      *
      * @var bool
@@ -579,16 +572,6 @@ class Workspace
     public function isPersonal()
     {
         return $this->personal;
-    }
-
-    public function getWorkspaceType()
-    {
-        return $this->workspaceType;
-    }
-
-    public function setWorkspaceType($workspaceType)
-    {
-        $this->workspaceType = $workspaceType;
     }
 
     public function setMaxUsers($maxUsers)

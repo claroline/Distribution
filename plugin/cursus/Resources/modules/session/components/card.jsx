@@ -5,7 +5,7 @@ import {asset} from '#/main/app/config/asset'
 import {trans, displayDate} from '#/main/app/intl'
 import {DataCard} from '#/main/app/data/components/card'
 
-import {Session as SessionTypes} from '#/plugin/cursus/administration/cursus/prop-types'
+import {Session as SessionTypes} from '#/plugin/cursus/prop-types'
 
 const SessionCard = props =>
   <DataCard

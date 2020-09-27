@@ -48,8 +48,6 @@ class SessionManager
     private $mailManager;
     /** @var ObjectManager */
     private $om;
-    /** @var Crud */
-    private $crud;
     /** @var RoleManager */
     private $roleManager;
     /** @var UrlGeneratorInterface */
@@ -66,15 +64,12 @@ class SessionManager
     private $courseSessionRepo;
     private $sessionUserRepo;
     private $sessionGroupRepo;
-    /** @var SessionEventRepository */
-    private $sessionEventRepo;
     private $sessionQueueRepo;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         MailManager $mailManager,
         ObjectManager $om,
-        Crud $crud,
         RoleManager $roleManager,
         UrlGeneratorInterface $router,
         TemplateManager $templateManager,
@@ -85,7 +80,6 @@ class SessionManager
         $this->eventDispatcher = $eventDispatcher;
         $this->mailManager = $mailManager;
         $this->om = $om;
-        $this->crud = $crud;
         $this->roleManager = $roleManager;
         $this->router = $router;
         $this->templateManager = $templateManager;
@@ -96,7 +90,6 @@ class SessionManager
         $this->courseSessionRepo = $om->getRepository(CourseSession::class);
         $this->sessionUserRepo = $om->getRepository(CourseSessionUser::class);
         $this->sessionGroupRepo = $om->getRepository(CourseSessionGroup::class);
-        $this->sessionEventRepo = $om->getRepository(SessionEvent::class);
         $this->sessionQueueRepo = $om->getRepository(CourseSessionRegistrationQueue::class);
     }
 
@@ -138,25 +131,25 @@ class SessionManager
     {
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
+
         $course = $session->getCourse();
-
-        $model = $course->getWorkspaceModel();
-
-        $workspace = new Workspace();
-        $workspace->setCreator($user);
-        $workspace->setName($course->getName().' ['.$session->getName().']');
-        $workspace->setCode($this->workspaceManager->getUniqueCode($course->getCode()));
-        $workspace->setDescription($course->getDescription());
-
-        if (is_null($model)) {
-            $defaultModel = $this->workspaceManager->getDefaultModel();
-            $workspace = $this->workspaceManager->copy($defaultModel, $workspace);
+        if (!empty($course->getWorkspaceModel())) {
+            $model = $course->getWorkspaceModel();
         } else {
-            $workspace = $this->workspaceManager->copy($model, $workspace);
+            $model = $this->workspaceManager->getDefaultModel();
         }
-        $workspace->setWorkspaceType(0);
+
+        $workspace = $this->workspaceManager->copy($model, new Workspace());
+
+        $workspace->setCreator($user);
+        $workspace->setName($session->getName());
+        $workspace->setCode($this->workspaceManager->getUniqueCode($session->getCode()));
+        $workspace->setDescription($session->getDescription());
+        $workspace->setPoster($session->getPoster());
+        $workspace->setThumbnail($session->getThumbnail());
         $workspace->setAccessibleFrom($session->getStartDate());
         $workspace->setAccessibleUntil($session->getEndDate());
+
         $this->om->persist($workspace);
 
         return $workspace;

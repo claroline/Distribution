@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {asset} from '#/main/app/config/asset'
 import {DataCard} from '#/main/app/data/components/card'
 
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
 
 const CourseCard = props =>
   <DataCard

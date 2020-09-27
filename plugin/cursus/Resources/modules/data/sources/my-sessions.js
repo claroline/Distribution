@@ -3,7 +3,7 @@ import {URL_BUTTON} from '#/main/app/buttons'
 
 import {route as workspaceRoute} from '#/main/core/workspace/routing'
 
-import {SessionCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-card'
+import {SessionCard} from '#/plugin/cursus/session/components/card'
 
 export default {
   name: 'my-sessions',

@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/app/intl/translation'
 import {FormData} from '#/main/app/content/form/containers/data'
 
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
 
 const CourseForm = (props) =>
   <FormData
@@ -91,7 +91,7 @@ const CourseForm = (props) =>
                 name: 'registration.validation',
                 type: 'boolean',
                 label: trans('validate_registration'),
-                help: trans('validate_registration_help'),
+                help: trans('validate_registration_help', {}, 'cursus'),
                 displayed: (course) => course.registration && course.registration.selfRegistration
               }
             ]
@@ -100,6 +100,19 @@ const CourseForm = (props) =>
             type: 'boolean',
             label: trans('activate_self_unregistration'),
             help: trans('self_unregistration_training_help', {}, 'cursus')
+          }, {
+            name: 'registration.mail',
+            type: 'boolean',
+            label: trans('registration_send_mail', {}, 'cursus'),
+            linked: [
+              {
+                name: 'registration.userValidation',
+                type: 'boolean',
+                label: trans('registration_user_validation', {}, 'cursus'),
+                help: trans('registration_user_validation_help', {}, 'cursus'),
+                displayed: (course) => course.registration && course.registration.mail
+              }
+            ]
           }
         ]
       }, {

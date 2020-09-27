@@ -146,7 +146,7 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
                     <p>%session_description%</p>
                     <h2>{$this->translator->trans('information', [], 'platform')}</h2>
                     <ul>
-                        <li><b>{$this->translator->trans('period', [], 'platform')} : </b> {$this->translator->trans('date_range', ['start' => '%session_start%', 'end' => '%session_end%'], 'platform')}</li>
+                        <li><b>{$this->translator->trans('access_dates', [], 'platform')} : </b> {$this->translator->trans('date_range', ['start' => '%session_start%', 'end' => '%session_end%'], 'platform')}</li>
                         <li><b>{$this->translator->trans('public_registration', [], 'platform')} : </b> %session_public_registration%</li>
                         <li><b>{$this->translator->trans('duration', [], 'platform')} : </b> %session_default_duration%</li>
                         <li><b>{$this->translator->trans('max_participants', [], 'cursus')} : </b> %session_max_users%</li>

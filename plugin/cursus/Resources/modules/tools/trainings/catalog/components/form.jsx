@@ -6,7 +6,7 @@ import {LINK_BUTTON} from '#/main/app/buttons'
 import {ToolPage} from '#/main/core/tool/containers/page'
 
 import {route} from '#/plugin/cursus/routing'
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
 import {CoursePage} from '#/plugin/cursus/course/components/page'
 import {CourseForm} from '#/plugin/cursus/course/containers/form'
 

@@ -10,7 +10,7 @@ import {PageFull} from '#/main/app/page/components/full'
 import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
 
 import {route} from '#/plugin/cursus/routing'
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
 
 const CoursePage = (props) => {
   if (isEmpty(props.course)) {

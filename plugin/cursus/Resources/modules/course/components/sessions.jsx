@@ -3,47 +3,19 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {Button} from '#/main/app/action/components/button'
-import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
-import {ListData} from '#/main/app/content/list/containers/data'
+import {MODAL_BUTTON} from '#/main/app/buttons'
 
-import {route} from '#/plugin/cursus/routing'
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
-import {MODAL_SESSION_FORM} from '#/plugin/cursus/administration/modals/session-form'
-import {SessionList} from '#/plugin/cursus/administration/cursus/session/components/session-list'
+import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
+import {MODAL_SESSION_FORM} from '#/plugin/cursus/session/modals/parameters'
+import {SessionList} from '#/plugin/cursus/session/components/list'
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 
 const CourseSessions = (props) =>
   <Fragment>
-    <ListData
+    <SessionList
       name={selectors.STORE_NAME+'.courseSessions'}
-      fetch={{
-        url: ['apiv2_cursus_course_list_sessions', {id: props.course.id}],
-        autoload: true
-      }}
-      primaryAction={(row) => ({
-        type: LINK_BUTTON,
-        target: route(props.course, row),
-        label: trans('open', {}, 'actions')
-      })}
-      delete={{
-        url: ['apiv2_cursus_session_delete_bulk']
-      }}
-      definition={SessionList.definition}
-      card={SessionList.card}
-      actions={(rows) => [
-        {
-          name: 'edit',
-          type: MODAL_BUTTON,
-          icon: 'fa fa-fw fa-pencil',
-          label: trans('edit', {}, 'actions'),
-          modal: [MODAL_SESSION_FORM, {
-            session: rows[0],
-            onSave: () => props.invalidateList()
-          }],
-          scope: ['object'],
-          group: trans('management')
-        }
-      ]}
+      url={['apiv2_cursus_course_list_sessions', {id: props.course.id}]}
+      invalidate={() => props.reload(props.course.slug)}
     />
 
     <Button
@@ -63,8 +35,7 @@ CourseSessions.propTypes = {
   course: T.shape(
     CourseTypes.propTypes
   ).isRequired,
-  reload: T.func.isRequired,
-  invalidateList: T.func.isRequired
+  reload: T.func.isRequired
 }
 
 export {

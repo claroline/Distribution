@@ -6,7 +6,7 @@ import {schemeCategory20c} from 'd3-scale'
 import {trans} from '#/main/app/intl/translation'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
 
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 
 const CourseParticipants = (props) =>
   <Fragment>
@@ -15,7 +15,7 @@ const CourseParticipants = (props) =>
         <span className="fa fa-chalkboard-teacher" style={{backgroundColor: schemeCategory20c[1]}} />
 
         <h1 className="h3">
-          <small>{trans('Formateurs')}</small>
+          <small>{trans('tutors', {}, 'cursus')}</small>
           5
         </h1>
       </div>
@@ -42,11 +42,11 @@ const CourseParticipants = (props) =>
     <div className="row">
       <div className="col-md-3">
         <Vertical
-          basePath={props.path+'/'+props.course.slug+'/participants'}
+          basePath={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants'}
           tabs={[
             {
               icon: 'fa fa-fw fa-chalkboard-teacher',
-              title: trans('Formateurs'),
+              title: trans('tutors', {}, 'cursus'),
               path: '/',
               exact: true
             }, {
@@ -78,7 +78,10 @@ CourseParticipants.propTypes = {
   path: T.string.isRequired,
   course: T.shape(
     CourseTypes.propTypes
-  ).isRequired
+  ).isRequired,
+  activeSession: T.shape(
+    SessionTypes.propTypes
+  )
 }
 
 export {

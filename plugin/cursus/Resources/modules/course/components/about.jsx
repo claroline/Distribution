@@ -15,9 +15,9 @@ import {route as workspaceRoute} from '#/main/core/workspace/routing'
 import {route as resourceRoute} from '#/main/core/resource/routing'
 
 import {route} from '#/plugin/cursus/routing'
-import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {CourseCard} from '#/plugin/cursus/course/components/card'
-import {SessionCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-card'
+import {SessionCard} from '#/plugin/cursus/session/components/card'
 import {MODAL_COURSE_REGISTRATION} from '#/plugin/cursus/course/modals/registration'
 
 function getInfo(course, session, path) {

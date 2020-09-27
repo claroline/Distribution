@@ -9,7 +9,7 @@ import {route} from '#/plugin/cursus/routing'
 import {
   Course as CourseTypes,
   Session as SessionTypes
-} from '#/plugin/cursus/course/prop-types'
+} from '#/plugin/cursus/prop-types'
 import {MODAL_SESSION_EVENT_PARAMETERS} from '#/plugin/cursus/event/modals/parameters'
 import {EventList} from '#/plugin/cursus/event/components/list'
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'

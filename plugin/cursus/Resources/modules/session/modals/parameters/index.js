@@ -5,7 +5,7 @@
 
 import {registry} from '#/main/app/modals/registry'
 
-import {SessionFormModal} from '#/plugin/cursus/administration/modals/session-form/containers/modal'
+import {SessionFormModal} from '#/plugin/cursus/session/modals/parameters/containers/modal'
 
 const MODAL_SESSION_FORM = 'MODAL_SESSION_FORM'
 

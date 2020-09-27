@@ -7,7 +7,7 @@ import {actions as formActions, selectors as formSelectors} from '#/main/app/con
 
 import {selectors, reducer} from '#/plugin/cursus/event/modals/parameters/store'
 import {EventFormModal as EventFormModalComponent} from '#/plugin/cursus/event/modals/parameters/components/modal'
-import {Event as EventTypes} from '#/plugin/cursus/course/prop-types'
+import {Event as EventTypes} from '#/plugin/cursus/prop-types'
 
 const EventFormModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(

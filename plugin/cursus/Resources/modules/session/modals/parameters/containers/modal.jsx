@@ -5,9 +5,9 @@ import omit from 'lodash/omit'
 import {withReducer} from '#/main/app/store/components/withReducer'
 import {actions as formActions, selectors as formSelectors} from '#/main/app/content/form/store'
 
-import {selectors, reducer} from '#/plugin/cursus/administration/modals/session-form/store'
-import {SessionFormModal as SessionFormModalComponent} from '#/plugin/cursus/administration/modals/session-form/components/modal'
-import {Session as SessionTypes} from '#/plugin/cursus/course/prop-types'
+import {selectors, reducer} from '#/plugin/cursus/session/modals/parameters/store'
+import {SessionFormModal as SessionFormModalComponent} from '#/plugin/cursus/session/modals/parameters/components/modal'
+import {Session as SessionTypes} from '#/plugin/cursus/prop-types'
 
 const SessionFormModal = withReducer(selectors.STORE_NAME, reducer)(
   connect(

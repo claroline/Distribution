@@ -32,6 +32,7 @@ const Course = {
       selfRegistration: T.bool,
       selfUnregistration: T.bool,
       validation: T.bool,
+      mail: T.bool,
       userValidation: T.bool
     })
   },
@@ -49,6 +50,7 @@ const Course = {
       selfRegistration: false,
       selfUnregistration: false,
       validation: false,
+      mail: false,
       userValidation: false
     }
   }
@@ -87,6 +89,7 @@ const Session = {
       selfRegistration: T.bool,
       selfUnregistration: T.bool,
       validation: T.bool,
+      mail: T.bool,
       userValidation: T.bool,
       eventRegistrationType: T.number
     })
@@ -101,6 +104,7 @@ const Session = {
       selfRegistration: false,
       selfUnregistration: false,
       validation: false,
+      mail: false,
       userValidation: false,
       eventRegistrationType: constants.REGISTRATION_AUTO
     }

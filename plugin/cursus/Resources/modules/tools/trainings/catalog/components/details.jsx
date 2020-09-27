@@ -8,7 +8,7 @@ import {trans} from '#/main/app/intl/translation'
 import {LINK_BUTTON} from '#/main/app/buttons'
 
 import {route} from '#/plugin/cursus/routing'
-import {Course as CourseTypes} from '#/plugin/cursus/course/prop-types'
+import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
 import {CoursePage} from '#/plugin/cursus/course/components/page'
 import {CourseDetails} from '#/plugin/cursus/course/components/details'
 

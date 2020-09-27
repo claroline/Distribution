@@ -91,13 +91,13 @@ const SessionForm = (props) =>
             name: 'registration.selfRegistration',
             type: 'boolean',
             label: trans('activate_self_registration'),
-            help: trans('self_registration_session_help', {}, 'cursus'),
+            help: trans('self_registration_training_help', {}, 'cursus'),
             linked: [
               {
                 name: 'registration.validation',
                 type: 'boolean',
                 label: trans('validate_registration'),
-                help: trans('validate_registration_help'),
+                help: trans('validate_registration_help', {}, 'cursus'),
                 displayed: (course) => course.registration && course.registration.selfRegistration
               }
             ]
@@ -105,7 +105,20 @@ const SessionForm = (props) =>
             name: 'registration.selfUnregistration',
             type: 'boolean',
             label: trans('activate_self_unregistration'),
-            help: trans('self_unregistration_session_help', {}, 'cursus')
+            help: trans('self_unregistration_training_help', {}, 'cursus')
+          }, {
+            name: 'registration.mail',
+            type: 'boolean',
+            label: trans('registration_send_mail', {}, 'cursus'),
+            linked: [
+              {
+                name: 'registration.userValidation',
+                type: 'boolean',
+                label: trans('registration_user_validation', {}, 'cursus'),
+                help: trans('registration_user_validation_help', {}, 'cursus'),
+                displayed: (course) => course.registration && course.registration.mail
+              }
+            ]
           }, {
             name: 'registration.eventRegistrationType',
             type: 'choice',

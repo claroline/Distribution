@@ -5,7 +5,7 @@ import {asset} from '#/main/app/config/asset'
 import {trans, displayDate} from '#/main/app/intl'
 import {DataCard} from '#/main/app/data/components/card'
 
-import {Event as EventTypes} from '#/plugin/cursus/course/prop-types'
+import {Event as EventTypes} from '#/plugin/cursus/prop-types'
 
 const EventCard = props =>
   <DataCard

@@ -9,7 +9,7 @@ import {ContentTabs} from '#/main/app/content/components/tabs'
 import {
   Course as CourseTypes,
   Session as SessionTypes
-} from '#/plugin/cursus/course/prop-types'
+} from '#/plugin/cursus/prop-types'
 
 import {CourseAbout} from '#/plugin/cursus/course/components/about'
 import {CourseParticipants} from '#/plugin/cursus/course/components/participants'
@@ -80,6 +80,7 @@ const CourseDetails = (props) =>
               <CourseParticipants
                 path={props.path}
                 course={props.course}
+                activeSession={props.activeSession}
               />
             )
           }

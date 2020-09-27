@@ -2,7 +2,7 @@ import {trans} from '#/main/app/intl/translation'
 import {URL_BUTTON} from '#/main/app/buttons'
 
 import {route} from '#/plugin/cursus/routing'
-import {SessionCard} from '#/plugin/cursus/administration/cursus/session/data/components/session-card'
+import {SessionCard} from '#/plugin/cursus/session/components/card'
 
 export default {
   name: 'sessions',

@@ -8,8 +8,8 @@ import {Modal} from '#/main/app/overlays/modal/components/modal'
 
 import {trans} from '#/main/app/intl/translation'
 
-import {selectors} from '#/plugin/cursus/administration/modals/session-form/store'
-import {SessionForm} from '#/plugin/cursus/administration/cursus/session/components/form'
+import {selectors} from '#/plugin/cursus/session/modals/parameters/store'
+import {SessionForm} from '#/plugin/cursus/session/components/form'
 
 const SessionFormModal = props =>
   <Modal

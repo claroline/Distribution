@@ -115,7 +115,7 @@ class SessionController extends AbstractCrudController
 
     /**
      * @Route("/{id}/pdf", name="apiv2_cursus_session_download_pdf", methods={"GET"})
-     * @EXT\ParamConverter("course", class="ClarolineCursusBundle:CourseSession", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("session", class="ClarolineCursusBundle:CourseSession", options={"mapping": {"id": "uuid"}})
      */
     public function downloadPdfAction(CourseSession $session, Request $request): StreamedResponse
     {

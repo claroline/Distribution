@@ -46,5 +46,11 @@
     "max_participants": "Max. participants",
     "no_available_session": "No session is available for now",
     "no_available_session_help": "Please come back later or join the registration queue",
-    "online_session": "Online session"
+    "online_session": "Online session",
+    "self_registration_training_help": "Users will be able to register themselves to the training.",
+    "self_unregistration_training_help": "Users will be able to unregister themselves from the training.",
+    "validate_registration_help": "Registrations must be validated by a manager before users have access to the training.",
+    "registration_send_mail": "Send a confirmation email when registering",
+    "registration_user_validation": "Ask the user to validate their registration",
+    "registration_user_validation_help": "The user will have to click on the link sent in the email to complete their registration."
 }
