@@ -22,7 +22,6 @@ class AbstractRegistrationQueue
     const WAITING = 1;
     const WAITING_USER = 2;
     const WAITING_VALIDATOR = 4;
-    const WAITING_ORGANIZATION = 8;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")

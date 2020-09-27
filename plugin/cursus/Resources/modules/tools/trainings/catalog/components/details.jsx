@@ -37,7 +37,7 @@ const CatalogDetails = (props) =>
         routes={[
           {
             path: '/',
-            disabled: props.activeSession,
+            disabled: !!props.activeSession,
             render() {
               const CurrentCourse = (
                 <CourseDetails

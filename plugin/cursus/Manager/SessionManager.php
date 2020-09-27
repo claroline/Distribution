@@ -11,7 +11,6 @@
 
 namespace Claroline\CursusBundle\Manager;
 
-use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Template\Template;
@@ -27,15 +26,12 @@ use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\CourseSessionGroup;
 use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
 use Claroline\CursusBundle\Entity\CourseSessionUser;
-use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionGroupRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueCreateEvent;
-use Claroline\CursusBundle\Event\Log\LogSessionQueueOrganizationValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserRegistrationEvent;
-use Claroline\CursusBundle\Repository\SessionEventRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -183,7 +179,7 @@ class SessionManager
                 }
                 $this->om->persist($sessionUser);
 
-                $this->eventDispatcher->dispatch('log', new LogSessionUserRegistrationEvent($sessionUser));
+                $this->eventDispatcher->dispatch(new LogSessionUserRegistrationEvent($sessionUser), 'log');
 
                 $results[] = $sessionUser;
             }
@@ -230,7 +226,7 @@ class SessionManager
                 }
                 $this->om->persist($sessionGroup);
 
-                $this->eventDispatcher->dispatch('log', new LogSessionGroupRegistrationEvent($sessionGroup));
+                $this->eventDispatcher->dispatch(new LogSessionGroupRegistrationEvent($sessionGroup), 'log');
 
                 $results[] = $sessionGroup;
             }
@@ -291,7 +287,7 @@ class SessionManager
         }
         $this->om->persist($queue);
 
-        $this->eventDispatcher->dispatch('log', new LogSessionQueueCreateEvent($queue));
+        $this->eventDispatcher->dispatch(new LogSessionQueueCreateEvent($queue), 'log');
 
         $this->om->endFlushSuite();
 
@@ -315,7 +311,7 @@ class SessionManager
                     $queue->setStatus($mask);
                     $this->om->persist($queue);
 
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueValidateEvent($queue));
+                    $this->eventDispatcher->dispatch(new LogSessionQueueValidateEvent($queue), 'log');
                     break;
                 case CourseSessionRegistrationQueue::WAITING_USER:
                     $mask -= CourseSessionRegistrationQueue::WAITING_USER;
@@ -323,7 +319,7 @@ class SessionManager
                     $queue->setStatus($mask);
                     $this->om->persist($queue);
 
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueUserValidateEvent($queue));
+                    $this->eventDispatcher->dispatch(new LogSessionQueueUserValidateEvent($queue), 'log');
                     break;
                 case CourseSessionRegistrationQueue::WAITING_VALIDATOR:
                     $mask -= CourseSessionRegistrationQueue::WAITING_VALIDATOR;
@@ -332,16 +328,7 @@ class SessionManager
                     $queue->setStatus($mask);
                     $this->om->persist($queue);
 
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueValidatorValidateEvent($queue));
-                    break;
-                case CourseSessionRegistrationQueue::WAITING_ORGANIZATION:
-                    $mask -= CourseSessionRegistrationQueue::WAITING_ORGANIZATION;
-                    $queue->setOrganizationValidationDate(new \DateTime());
-                    $queue->setOrganizationAdmin($user);
-                    $queue->setStatus($mask);
-                    $this->om->persist($queue);
-
-                    $this->eventDispatcher->dispatch('log', new LogSessionQueueOrganizationValidateEvent($queue));
+                    $this->eventDispatcher->dispatch(new LogSessionQueueValidatorValidateEvent($queue), 'log');
                     break;
             }
             $this->om->endFlushSuite();

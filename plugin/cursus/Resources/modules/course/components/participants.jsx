@@ -1,12 +1,70 @@
 import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
-
 import {schemeCategory20c} from 'd3-scale'
 
+import {Button} from '#/main/app/action/components/button'
+import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {trans} from '#/main/app/intl/translation'
+import {Routes} from '#/main/app/router/components/routes'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
+import {ListData} from '#/main/app/content/list/containers/data'
+import {constants as listConst} from '#/main/app/content/list/constants'
+import {MODAL_USERS} from '#/main/core/modals/users'
+import {UserCard} from '#/main/core/user/components/card'
 
+import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
+import {constants} from '#/plugin/cursus/constants'
+
+const CourseTutors = (props) =>
+  <Fragment>
+    <ListData
+      name={selectors.STORE_NAME+'.courseTutors'}
+      fetch={{
+        url: ['apiv2_cursus_session_list_users', {type: constants.TEACHER_TYPE, id: props.activeSession.id}],
+        autoload: true
+      }}
+      definition={[
+        {
+          name: 'user',
+          type: 'user',
+          label: trans('user'),
+          displayed: true
+        }, {
+          name: 'registrationDate',
+          type: 'date',
+          label: trans('registration_date', {}, 'cursus'),
+          options: {time: true},
+          displayed: true
+        }
+      ]}
+      card={(props) => <UserCard {...props} data={props.data.user} />}
+      display={{
+        current: listConst.DISPLAY_TILES_SM
+      }}
+    />
+
+    <Button
+      className="btn btn-block btn-emphasis component-container"
+      type={MODAL_BUTTON}
+      label={trans('add_tutors', {}, 'cursus')}
+      modal={[MODAL_USERS, {
+        selectAction: (selected) => ({
+          type: CALLBACK_BUTTON,
+          label: trans('register', {}, 'actions'),
+          callback: () => props.addTutors(props.activeSession.id, selected)
+        })
+      }]}
+      primary={true}
+    />
+  </Fragment>
+
+CourseTutors.propTypes = {
+  activeSession: T.shape(
+    SessionTypes.propTypes
+  ),
+  addTutors: T.func.isRequired
+}
 
 const CourseParticipants = (props) =>
   <Fragment>
@@ -70,6 +128,34 @@ const CourseParticipants = (props) =>
       </div>
 
       <div className="col-md-9">
+        <Routes
+          path={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants'}
+          routes={[
+            {
+              path: '/',
+              exact: true,
+              render() {
+                const Tutors = (
+                  <CourseTutors
+                    activeSession={props.activeSession}
+                    addTutors={props.addTutors}
+                  />
+                )
+
+                return Tutors
+              }
+            }, {
+              path: '/users',
+              component: null
+            }, {
+              path: '/groups',
+              component: null
+            }, {
+              path: '/pending',
+              component: null
+            }
+          ]}
+        />
       </div>
     </div>
   </Fragment>
@@ -81,7 +167,9 @@ CourseParticipants.propTypes = {
   ).isRequired,
   activeSession: T.shape(
     SessionTypes.propTypes
-  )
+  ),
+  addTutors: T.func.isRequired,
+  invalidateList: T.func.isRequired
 }
 
 export {

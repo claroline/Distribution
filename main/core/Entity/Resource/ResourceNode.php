@@ -722,30 +722,6 @@ class ResourceNode
         return $this->getPathForDisplay();
     }
 
-    /**
-     * Sets the resource GUID.
-     *
-     * @param string $guid
-     *
-     * @deprecated
-     */
-    public function setGuid($guid)
-    {
-        $this->uuid = $guid;
-    }
-
-    /**
-     * Returns the resource GUID.
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    public function getGuid()
-    {
-        return $this->uuid;
-    }
-
     public function setFullscreen($fullscreen)
     {
         $this->fullscreen = $fullscreen;

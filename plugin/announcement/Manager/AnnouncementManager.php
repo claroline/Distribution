@@ -109,7 +109,7 @@ class AnnouncementManager
         $nonManagerWorkspaces = [];
 
         foreach ($workspaces as $workspace) {
-            if (in_array("ROLE_WS_MANAGER_{$workspace->getGuid()}", $roles)) {
+            if (in_array("ROLE_WS_MANAGER_{$workspace->getUuid()}", $roles)) {
                 $managerWorkspaces[] = $workspace;
             } else {
                 $nonManagerWorkspaces[] = $workspace;

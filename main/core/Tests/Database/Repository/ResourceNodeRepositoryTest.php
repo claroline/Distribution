@@ -29,7 +29,7 @@ class ResourceNodeRepositoryTest extends RepositoryTestCase
         self::createWorkspace('ws_2');
         self::createRole('ROLE_1', self::get('ws_1'));
         self::createRole('ROLE_2', self::get('ws_2'));
-        self::$roleManagerName = 'ROLE_WS_MANAGER_'.self::get('ws_1')->getGuid();
+        self::$roleManagerName = 'ROLE_WS_MANAGER_'.self::get('ws_1')->getUuid();
         self::createRole(self::$roleManagerName);
         self::createUser('john', [self::get('ROLE_1'), self::get('ROLE_2')]);
         self::createUser('jane', [self::get('ROLE_2')]);

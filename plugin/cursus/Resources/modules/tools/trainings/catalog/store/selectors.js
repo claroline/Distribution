@@ -26,26 +26,6 @@ const activeSession = createSelector(
   (catalog) => catalog.courseActiveSession
 )
 
-const sessionUser = createSelector(
-  [catalog],
-  (catalog) => catalog.sessionUser
-)
-
-const sessionQueue = createSelector(
-  [catalog],
-  (catalog) => catalog.sessionQueue
-)
-
-const isFull = createSelector(
-  [catalog],
-  (catalog) => catalog.isFull
-)
-
-const eventsRegistration = createSelector(
-  [catalog],
-  (catalog) => catalog.eventsRegistration
-)
-
 export const selectors = {
   STORE_NAME,
   LIST_NAME,
@@ -53,9 +33,5 @@ export const selectors = {
 
   course,
   activeSession,
-  availableSessions,
-  sessionUser,
-  sessionQueue,
-  isFull,
-  eventsRegistration
+  availableSessions
 }

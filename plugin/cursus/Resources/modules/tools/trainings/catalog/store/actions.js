@@ -3,15 +3,13 @@ import isEmpty from 'lodash/isEmpty'
 import {API_REQUEST, url} from '#/main/app/api'
 import {makeActionCreator} from '#/main/app/store/actions'
 import {actions as formActions} from '#/main/app/content/form/store/actions'
+import {actions as listActions} from '#/main/app/content/list/store/actions'
 
+import {constants} from '#/plugin/cursus/constants'
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 
 export const LOAD_COURSE = 'LOAD_COURSE'
 export const LOAD_COURSE_SESSION = 'LOAD_COURSE_SESSION'
-export const LOAD_SESSION_USER = 'LOAD_SESSION_USER'
-export const LOAD_SESSION_QUEUE = 'LOAD_SESSION_QUEUE'
-export const LOAD_SESSION_FULL = 'LOAD_SESSION_FULL'
-export const LOAD_EVENTS_REGISTRATION = 'LOAD_EVENTS_REGISTRATION'
 
 export const actions = {}
 
@@ -59,6 +57,19 @@ actions.openSession = (sessionId) => (dispatch, getState) => {
   }
 }
 
+actions.addTutors = (sessionId, users) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_cursus_session_add_users', {id: sessionId, type: constants.TEACHER_TYPE}], {ids: users.map(user => user.id)}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData(selectors.STORE_NAME+'.courseTutors'))
+    }
+  }
+})
+
+
 actions.register = (sessionId) => ({
   [API_REQUEST]: {
     url: ['apiv2_cursus_session_self_register', {id: sessionId}],
@@ -66,43 +77,7 @@ actions.register = (sessionId) => ({
       method: 'PUT'
     },
     success: (data, dispatch) => {
-      if (data.registrationDate) {
-        dispatch(actions.loadSessionUser(data))
-      } else if (data.applicationDate) {
-        dispatch(actions.loadSessionQueue(data))
-      }
+
     }
   }
 })
-
-/*actions.fetchSession = (sessionId) => ({
-  [API_REQUEST]: {
-    url: ['claro_cursus_catalog_session', {session: sessionId}],
-    request: {
-      method: 'GET'
-    },
-    success: (data, dispatch) => {
-      dispatch(actions.loadSession(data['session']))
-      dispatch(actions.loadSessionUser(data['sessionUser']))
-      dispatch(actions.loadSessionQueue(data['sessionQueue']))
-      dispatch(actions.loadIsFull(data['isFull']))
-      dispatch(actions.loadEventsRegistration(data['eventsRegistration']))
-    }
-  }
-})*/
-
-actions.registerToEvent = (eventId) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_cursus_session_event_self_register', {id: eventId}],
-    request: {
-      method: 'PUT'
-    },
-    success: (data, dispatch) => dispatch(actions.loadEventsRegistration(data))
-  }
-})
-
-//actions.loadSession = makeActionCreator(LOAD_SESSION, 'session')
-actions.loadSessionUser = makeActionCreator(LOAD_SESSION_USER, 'sessionUser')
-actions.loadSessionQueue = makeActionCreator(LOAD_SESSION_QUEUE, 'sessionQueue')
-actions.loadIsFull = makeActionCreator(LOAD_SESSION_FULL, 'isFull')
-actions.loadEventsRegistration = makeActionCreator(LOAD_EVENTS_REGISTRATION, 'eventsRegistration')

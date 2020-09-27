@@ -45,7 +45,7 @@ class LogSessionEditEvent extends LogGenericEvent
             $details['workspaceId'] = $workspace->getUuid();
             $details['workspaceName'] = $workspace->getName();
             $details['workspaceCode'] = $workspace->getCode();
-            $details['workspaceGuid'] = $workspace->getGuid();
+            $details['workspaceGuid'] = $workspace->getUuid();
         }
 
         if (!is_null($learnerRole)) {

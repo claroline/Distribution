@@ -4,15 +4,10 @@ import {makeReducer, combineReducers} from '#/main/app/store/reducer'
 import {makeFormReducer, FORM_SUBMIT_SUCCESS} from '#/main/app/content/form/store'
 import {makeListReducer} from '#/main/app/content/list/store'
 
-import {selectors as cursusSelectors} from '#/plugin/cursus/tools/trainings/store/selectors'
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 import {
   LOAD_COURSE,
-  LOAD_COURSE_SESSION,
-  LOAD_SESSION_USER,
-  LOAD_SESSION_QUEUE,
-  LOAD_SESSION_FULL,
-  LOAD_EVENTS_REGISTRATION
+  LOAD_COURSE_SESSION
 } from '#/plugin/cursus/tools/trainings/catalog/store/actions'
 
 const reducer = combineReducers({
@@ -49,20 +44,15 @@ const reducer = combineReducers({
     })
   }),
 
-  // old
-  sessionUser: makeReducer(null, {
-    [LOAD_SESSION_USER]: (state, action) => action.sessionUser
+  // participants
+  courseTutors: makeListReducer(selectors.STORE_NAME+'.courseTutors', {
+    sortBy: {property: 'startDate', direction: 1}
+  }, {
+    invalidated: makeReducer(false, {
+      [LOAD_COURSE]: () => true,
+      [LOAD_COURSE_SESSION]: () => true
+    })
   }),
-  sessionQueue: makeReducer(null, {
-    [LOAD_SESSION_QUEUE]: (state, action) => action.sessionQueue
-  }),
-  isFull: makeReducer(false, {
-    [LOAD_SESSION_FULL]: (state, action) => action.isFull
-  }),
-  eventsRegistration: makeReducer({}, {
-    [LOAD_EVENTS_REGISTRATION]: (state, action) => action.eventsRegistration
-  }),
-  events: makeListReducer(cursusSelectors.STORE_NAME + '.catalog.events')
 })
 
 export {

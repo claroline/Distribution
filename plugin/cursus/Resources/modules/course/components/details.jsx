@@ -12,7 +12,7 @@ import {
 } from '#/plugin/cursus/prop-types'
 
 import {CourseAbout} from '#/plugin/cursus/course/components/about'
-import {CourseParticipants} from '#/plugin/cursus/course/components/participants'
+import {CourseParticipants} from '#/plugin/cursus/course/containers/participants'
 import {CourseSessions} from '#/plugin/cursus/course/containers/sessions'
 import {CourseEvents} from '#/plugin/cursus/course/containers/events'
 

@@ -44,7 +44,7 @@ class LogEditResourceTextEvent extends LogGenericEvent implements NotifiableInte
                 'workspace' => array(
                     'name' => $node->getWorkspace()->getName(),
                     'id' => $node->getWorkspace()->getId(),
-                    'guid' => $node->getWorkspace()->getGuid(),
+                    'guid' => $node->getWorkspace()->getUuid(),
                 ),
                 'owner' => array(
                     'lastName' => $node->getCreator()->getLastName(),

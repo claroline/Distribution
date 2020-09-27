@@ -41,7 +41,7 @@ class LogCourseCreateEvent extends LogGenericEvent
             $details['workspaceId'] = $workspace->getId();
             $details['workspaceName'] = $workspace->getName();
             $details['workspaceCode'] = $workspace->getCode();
-            $details['workspaceGuid'] = $workspace->getGuid();
+            $details['workspaceGuid'] = $workspace->getUuid();
         }
         if (!is_null($workspaceModel)) {
             $details['workspaceModelId'] = $workspaceModel->getId();

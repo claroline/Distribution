@@ -46,7 +46,7 @@ const CourseEvents = (props) =>
       label={trans('add_event', {}, 'cursus')}
       modal={[MODAL_SESSION_EVENT_PARAMETERS, {
         session: props.activeSession,
-        onSave: () => props.reload(props.course.slug)
+        onSave: () => props.invalidateList()
       }]}
       primary={true}
     />
@@ -60,7 +60,6 @@ CourseEvents.propTypes = {
   activeSession: T.shape(
     SessionTypes.propTypes
   ).isRequired,
-  reload: T.func.isRequired,
   invalidateList: T.func.isRequired
 }
 
