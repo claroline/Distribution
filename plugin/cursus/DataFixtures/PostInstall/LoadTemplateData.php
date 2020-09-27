@@ -42,6 +42,7 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
         $this->availableLocales = $this->container->get(PlatformConfigurationHandler::class)->getParameter('locales.available');
 
         $this->createCourseTemplates();
+        $this->createSessionTemplates();
 
         $sessionInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'training_session_invitation']);
         $templates = $this->templateRepo->findBy(['name' => 'training_session_invitation']);
@@ -119,6 +120,44 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
             }
 
             $templateType->setDefaultTemplate('training_course');
+            $this->om->persist($templateType);
+        }
+    }
+
+    private function createSessionTemplates()
+    {
+        /** @var TemplateType $templateType */
+        $templateType = $this->templateTypeRepo->findOneBy(['name' => 'training_session']);
+        $templates = $this->templateRepo->findBy(['name' => 'training_session']);
+
+        if ($templateType && empty($templates)) {
+            foreach ($this->availableLocales as $locale) {
+                $template = new Template();
+                $template->setType($templateType);
+                $template->setName('training_session');
+                $template->setLang($locale);
+                $template->setTitle($this->translator->trans('training_session', [], 'template', $locale));
+
+                $content = "
+                    <img src='%session_poster_url%' style='max-width: 100%' alt='training poster'/>
+                    <h1>%session_name% <small>%session_code%</small></h1>
+                    
+                    <h2>{$this->translator->trans('description', [], 'platform')}</h2>
+                    <p>%session_description%</p>
+                    <h2>{$this->translator->trans('information', [], 'platform')}</h2>
+                    <ul>
+                        <li><b>{$this->translator->trans('period', [], 'platform')} : </b> {$this->translator->trans('date_range', ['start' => '%session_start%', 'end' => '%session_end%'], 'platform')}</li>
+                        <li><b>{$this->translator->trans('public_registration', [], 'platform')} : </b> %session_public_registration%</li>
+                        <li><b>{$this->translator->trans('duration', [], 'platform')} : </b> %session_default_duration%</li>
+                        <li><b>{$this->translator->trans('max_participants', [], 'cursus')} : </b> %session_max_users%</li>
+                    </ul>
+                ";
+                $template->setContent($content);
+
+                $this->om->persist($template);
+            }
+
+            $templateType->setDefaultTemplate('training_session');
             $this->om->persist($templateType);
         }
     }

@@ -78,13 +78,16 @@ class CourseManager
             'course_default_duration' => $course->getDefaultSessionDuration(),
             'course_public_registration' => $course->getPublicRegistration(),
             'course_max_users' => $course->getMaxUsers(),
-
-            // TODO : add info about default session
         ];
 
         $content = $this->templateManager->getTemplate('training_course', $placeholders, $locale);
 
-        // todo : append sessions templates
+        // append all available sessions to the export
+        foreach ($course->getSessions() as $session) {
+            if (!$session->isTerminated()) {
+                $content .= "<div style='page-break-before: always'>{$this->sessionManager->generateFromTemplate($session, $basePath, $locale)}</div>";
+            }
+        }
 
         return $content;
     }

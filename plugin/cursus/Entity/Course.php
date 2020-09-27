@@ -75,6 +75,8 @@ class Course extends AbstractCourseSession
      *     targetEntity="Claroline\CursusBundle\Entity\CourseSession",
      *     mappedBy="course"
      * )
+     *
+     * @var CourseSession[]
      */
     private $sessions;
 

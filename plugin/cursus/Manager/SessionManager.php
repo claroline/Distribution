@@ -118,17 +118,17 @@ class SessionManager
     public function generateFromTemplate(CourseSession $session, string $basePath, string $locale)
     {
         $placeholders = [
-            'course_name' => $session->getName(),
-            'course_code' => $session->getCode(),
-            'course_description' => $session->getDescription(),
-            'course_poster_url' => $basePath.'/'.$session->getPoster(),
-            'course_public_registration' => $session->getPublicRegistration(),
-            'course_max_users' => $session->getMaxUsers(),
-            'course_start_date' => $session->getStartDate()->format('d/m/Y'),
-            'course_end_date' => $session->getEndDate()->format('d/m/Y'),
+            'session_name' => $session->getName(),
+            'session_code' => $session->getCode(),
+            'session_description' => $session->getDescription(),
+            'session_poster_url' => $basePath.'/'.$session->getPoster(),
+            'session_public_registration' => $session->getPublicRegistration(),
+            'session_max_users' => $session->getMaxUsers(),
+            'session_start_date' => $session->getStartDate()->format('d/m/Y'),
+            'session_end_date' => $session->getEndDate()->format('d/m/Y'),
         ];
 
-        return $this->templateManager->getTemplate('course_session', $placeholders, $locale);
+        return $this->templateManager->getTemplate('training_session', $placeholders, $locale);
     }
 
     /**
