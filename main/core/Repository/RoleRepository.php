@@ -24,8 +24,6 @@ class RoleRepository extends EntityRepository
     /**
      * Returns the collaborator role of a workspace.
      *
-     * @param Workspace $workspace
-     *
      * @return Role
      */
     public function findCollaboratorRole(Workspace $workspace)
@@ -36,8 +34,6 @@ class RoleRepository extends EntityRepository
     /**
      * Returns the manager role of a workspace.
      *
-     * @param Workspace $workspace
-     *
      * @return Role
      */
     public function findManagerRole(Workspace $workspace)
@@ -47,8 +43,6 @@ class RoleRepository extends EntityRepository
 
     /**
      * Returns the platform roles of a user.
-     *
-     * @param User $user
      *
      * @return Role[]
      */

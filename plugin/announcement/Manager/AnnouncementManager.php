@@ -29,38 +29,23 @@ class AnnouncementManager
 {
     /** @var ObjectManager */
     private $om;
-
     /** @var StrictDispatcher */
     private $eventDispatcher;
-
     /** @var MailManager */
     private $mailManager;
-
     /** @var ScheduledTaskManager */
     private $taskManager;
-
     /** @var AnnouncementSerializer */
     private $serializer;
-
+    /** @var FinderProvider */
+    private $finder;
     /** @var AnnouncementRepository */
     private $announcementRepo;
-
     /** @var RoleRepository */
     private $roleRepo;
-
     /** @var UserRepository */
     private $userRepo;
 
-    /**
-     * AnnouncementManager constructor.
-     *
-     * @param ObjectManager          $om
-     * @param StrictDispatcher       $eventDispatcher
-     * @param AnnouncementSerializer $serializer
-     * @param MailManager            $mailManager
-     * @param ScheduledTaskManager   $taskManager
-     * @param FinderProvider         $finder
-     */
     public function __construct(
         ObjectManager $om,
         StrictDispatcher $eventDispatcher,
@@ -83,8 +68,6 @@ class AnnouncementManager
 
     /**
      * Serializes an Announcement entity.
-     *
-     * @param Announcement $announcement
      *
      * @return array
      */
@@ -125,9 +108,6 @@ class AnnouncementManager
 
     /**
      * Sends an Announcement by message to Users that can access it.
-     *
-     * @param Announcement $announcement
-     * @param array        $users
      */
     public function sendMessage(Announcement $announcement, array $users = [])
     {
@@ -211,13 +191,8 @@ class AnnouncementManager
 
     /**
      * Gets the data which will be sent by message (internal &email) to Users.
-     *
-     * @param Announcement $announce
-     * @param array        $users
-     *
-     * @return array
      */
-    private function getMessage(Announcement $announce, array $users = [])
+    private function getMessage(Announcement $announce, array $users = []): array
     {
         $resourceNode = $announce->getAggregate()->getResourceNode();
 

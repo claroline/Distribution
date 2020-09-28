@@ -331,8 +331,6 @@ class ResourceNode
      *
      * NOTE : creation date is already handled by the timestamp listener; this
      *        setter exists mainly for testing purposes.
-     *
-     * @param \DateTime $date
      */
     public function setCreationDate(\DateTime $date)
     {
@@ -352,8 +350,6 @@ class ResourceNode
 
     /**
      * Sets the resource modification date.
-     *
-     * @param \DateTime $date
      */
     public function setModificationDate(\DateTime $date)
     {
@@ -381,7 +377,7 @@ class ResourceNode
     }
 
     /**
-     * Unmapped field so we don't have to force flush and fetch the database at node copy for the momoent.
+     * Unmapped field so we don't have to force flush and fetch the database at node copy for the moment.
      *
      * @param AbstractResource
      *
@@ -414,8 +410,6 @@ class ResourceNode
 
     /**
      * Sets the workspace containing the resource instance.
-     *
-     * @param Workspace $workspace
      */
     public function setWorkspace(Workspace $workspace)
     {
@@ -444,8 +438,6 @@ class ResourceNode
 
     /**
      * Sets the parent resource.
-     *
-     * @param ResourceNode $parent
      */
     public function setParent(self $parent = null)
     {
@@ -541,8 +533,6 @@ class ResourceNode
 
     /**
      * Add rights to the resource.
-     *
-     * @param ResourceRights $right
      */
     public function addRight(ResourceRights $right)
     {
@@ -554,8 +544,6 @@ class ResourceNode
 
     /**
      * Remove rights from the resource.
-     *
-     * @param ResourceRights $right
      */
     public function removeRight(ResourceRights $right)
     {
@@ -619,8 +607,6 @@ class ResourceNode
 
     /**
      * Add a child resource node.
-     *
-     * @param ResourceNode $resourceNode
      */
     public function addChild(self $resourceNode)
     {
@@ -845,8 +831,6 @@ class ResourceNode
 
     /**
      * @ORM\PreFlush
-     *
-     * @param PreFlushEventArgs $args
      */
     public function preFlush(PreFlushEventArgs $args)
     {
@@ -929,8 +913,6 @@ class ResourceNode
 
     /**
      * Add comment.
-     *
-     * @param ResourceComment $comment
      */
     public function addComment(ResourceComment $comment)
     {
@@ -941,8 +923,6 @@ class ResourceNode
 
     /**
      * Remove comment.
-     *
-     * @param ResourceComment $comment
      */
     public function removeComment(ResourceComment $comment)
     {

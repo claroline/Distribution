@@ -257,8 +257,6 @@ class RoleManager implements LoggerAwareInterface
     }
 
     /**
-     * @param Workspace $workspace
-     *
      * @return Role
      */
     public function getCollaboratorRole(Workspace $workspace)
@@ -267,8 +265,6 @@ class RoleManager implements LoggerAwareInterface
     }
 
     /**
-     * @param Workspace $workspace
-     *
      * @return Role
      */
     public function getManagerRole(Workspace $workspace)

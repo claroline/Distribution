@@ -540,9 +540,6 @@ class UserManager implements LoggerAwareInterface
     /**
      * Merges two users and transfers every resource to the kept user.
      *
-     * @param User $from
-     * @param User $to
-     *
      * @return int
      */
     public function transferRoles(User $from, User $to)

@@ -38,7 +38,7 @@ const CourseTutors = (props) =>
           displayed: true
         }
       ]}
-      card={(props) => <UserCard {...props} data={props.data.user} />}
+      card={(cardProps) => <UserCard {...cardProps} data={cardProps.data.user} />}
       display={{
         current: listConst.DISPLAY_TILES_SM
       }}

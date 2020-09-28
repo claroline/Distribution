@@ -371,30 +371,6 @@ class Workspace
     }
 
     /**
-     * Set displayable.
-     *
-     * @param bool $displayable
-     *
-     * @deprecated use `setHidden()`
-     */
-    public function setDisplayable($displayable)
-    {
-        $this->displayable = $displayable;
-    }
-
-    /**
-     * Is displayable ?
-     *
-     * @deprecated use `isHidden()`
-     *
-     * @return bool
-     */
-    public function isDisplayable()
-    {
-        return $this->displayable;
-    }
-
-    /**
      * Is hidden ?
      *
      * @return bool

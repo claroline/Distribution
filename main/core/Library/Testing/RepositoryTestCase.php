@@ -183,7 +183,7 @@ abstract class RepositoryTestCase extends WebTestCase
         $workspace = new Workspace();
         $workspace->setName($name);
         $workspace->setCode($name.'Code');
-        $workspace->setDisplayable(false);
+        $workspace->setHidden(true);
 
         self::create($name, $workspace);
     }
@@ -193,7 +193,7 @@ abstract class RepositoryTestCase extends WebTestCase
         $workspace = new Workspace();
         $workspace->setName($name);
         $workspace->setCode($name.'Code');
-        $workspace->setDisplayable(true);
+        $workspace->setHidden(false);
         $workspace->setSelfRegistration($selfRegistration);
 
         self::create($name, $workspace);
@@ -421,12 +421,6 @@ abstract class RepositoryTestCase extends WebTestCase
 
     /**
      * Sets the common properties of a resource.
-     *
-     * @param AbstractResource $resource
-     * @param ResourceType     $type
-     * @param User             $creator
-     * @param Workspace        $workspace
-     * @param ResourceNode     $parent
      *
      * @return AbstractResource
      */

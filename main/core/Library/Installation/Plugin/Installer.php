@@ -149,9 +149,7 @@ class Installer implements LoggerAwareInterface
         if ($this->recorder->isRegistered($plugin) !== $shouldBeInstalled) {
             $stateDiscr = $shouldBeInstalled ? 'not' : 'already';
 
-            throw new \LogicException(
-                "Plugin '{$plugin->getName()}' is {$stateDiscr} installed."
-            );
+            throw new \LogicException("Plugin '{$plugin->getName()}' is {$stateDiscr} installed.");
         }
     }
 

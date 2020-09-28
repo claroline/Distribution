@@ -13,7 +13,6 @@ namespace Claroline\BundleRecorder\Detector;
 
 use Claroline\AppBundle\Log\LoggableTrait;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 
 class Detector implements LoggerAwareInterface
 {

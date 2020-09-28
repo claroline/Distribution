@@ -16,7 +16,6 @@ use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\KernelBundle\Bundle\ConfigurationProviderInterface;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -44,9 +43,7 @@ class BundleManager implements LoggerAwareInterface
             return static::$selfInstance;
         }
 
-        throw new \LogicException(
-            'Manager has not been initialized: call BundleManager::initialize() first'
-        );
+        throw new \LogicException('Manager has not been initialized: call BundleManager::initialize() first');
     }
 
     public function getActiveBundles($fetchAll = false)

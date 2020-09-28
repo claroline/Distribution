@@ -262,8 +262,6 @@ class WorkspaceManager implements LoggerAwareInterface
     /**
      * Get the current used storage in a workspace.
      *
-     * @param Workspace $workspace
-     *
      * @return int
      */
     public function getUsedStorage(Workspace $workspace)

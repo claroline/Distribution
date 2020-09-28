@@ -13,7 +13,6 @@ namespace Claroline\DevBundle\Manager;
 
 use Claroline\AppBundle\Log\LoggableTrait;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class TranslationManager implements LoggerAwareInterface
