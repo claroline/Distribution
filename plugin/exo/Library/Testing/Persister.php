@@ -43,11 +43,6 @@ class Persister
      */
     private $userRole;
 
-    /**
-     * Persister constructor.
-     *
-     * @param ObjectManager $om
-     */
     public function __construct(ObjectManager $om)
     {
         $this->om = $om;

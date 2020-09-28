@@ -19,7 +19,6 @@ use Claroline\AppBundle\Log\LoggableTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AuthenticationBundle\Security\Authentication\Token\ViewAsToken;
 use Claroline\CoreBundle\Entity\AbstractRoleSubject;
-use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Shortcuts;
@@ -247,8 +246,6 @@ class WorkspaceManager implements LoggerAwareInterface
 
     /**
      * Get the workspace storage directory.
-     *
-     * @param Workspace $workspace
      *
      * @return string
      */

@@ -503,9 +503,7 @@ class ResourceNode
     public function setName($name)
     {
         if (false !== strpos(self::PATH_SEPARATOR, $name)) {
-            throw new \InvalidArgumentException(
-                'Invalid character "'.self::PATH_SEPARATOR.'" in resource name.'
-            );
+            throw new \InvalidArgumentException('Invalid character "'.self::PATH_SEPARATOR.'" in resource name.');
         }
 
         $this->name = $name;

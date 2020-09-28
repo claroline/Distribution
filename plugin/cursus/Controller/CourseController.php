@@ -129,7 +129,7 @@ class CourseController extends AbstractCrudController
 
         $sessions = $this->finder->search(CourseSession::class, [
             'filters' => [
-                'not_ended' => true,
+                'terminated' => false,
                 'course' => $course->getUuid(),
             ],
         ]);

@@ -32,6 +32,7 @@ use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserRegistrationEvent;
+use Claroline\CursusBundle\Event\Log\LogSessionUserUnregistrationEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -184,6 +185,7 @@ class SessionManager
                 $results[] = $sessionUser;
             }
         }
+
         if (CourseSessionUser::TYPE_LEARNER === $type) {
             $events = $session->getEvents();
 
@@ -193,9 +195,26 @@ class SessionManager
                 }
             }
         }
+
         $this->om->endFlushSuite();
 
         return $results;
+    }
+
+    /**
+     * @param CourseSessionUser[] $sessionUsers
+     */
+    public function removeUsersFromSession(array $sessionUsers)
+    {
+        foreach ($sessionUsers as $sessionUser) {
+            $this->om->remove($sessionUser);
+
+            $this->eventDispatcher->dispatch(new LogSessionUserUnregistrationEvent($sessionUser), 'log');
+        }
+
+        // TODO : unregister from events
+
+        $this->om->flush();
     }
 
     /**
@@ -231,6 +250,7 @@ class SessionManager
                 $results[] = $sessionGroup;
             }
         }
+
         $this->om->endFlushSuite();
 
         return $results;

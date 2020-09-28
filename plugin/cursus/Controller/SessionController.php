@@ -213,9 +213,9 @@ class SessionController extends AbstractCrudController
         $this->checkPermission('EDIT', $session, [], true);
 
         $sessionUsers = $this->decodeIdsString($request, CourseSessionUser::class);
-        $this->manager->deleteEntities($sessionUsers);
+        $this->manager->removeUsersFromSession($sessionUsers);
 
-        return new JsonResponse();
+        return new JsonResponse(null, 204);
     }
 
     /**
@@ -227,7 +227,6 @@ class SessionController extends AbstractCrudController
         $this->checkPermission('OPEN', $session, [], true);
 
         $params = $request->query->all();
-
         if (!isset($params['hiddenFilters'])) {
             $params['hiddenFilters'] = [];
         }

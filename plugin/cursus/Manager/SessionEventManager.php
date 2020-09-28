@@ -20,6 +20,7 @@ use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Event\Log\LogSessionEventUserRegistrationEvent;
+use Claroline\CursusBundle\Event\Log\LogSessionEventUserUnregistrationEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -79,14 +80,29 @@ class SessionEventManager
                 $eventUser->setRegistrationDate($registrationDate);
                 $this->om->persist($eventUser);
 
-                $this->eventDispatcher->dispatch('log', new LogSessionEventUserRegistrationEvent($eventUser));
+                $this->eventDispatcher->dispatch(new LogSessionEventUserRegistrationEvent($eventUser), 'log');
 
                 $results[] = $eventUser;
             }
         }
+
         $this->om->endFlushSuite();
 
         return $results;
+    }
+
+    /**
+     * @param SessionEventUser[] $eventUsers
+     */
+    public function removeUsersFromSessionEvent(array $eventUsers)
+    {
+        foreach ($eventUsers as $eventUser) {
+            $this->om->remove($eventUser);
+
+            $this->eventDispatcher->dispatch(new LogSessionEventUserUnregistrationEvent($eventUser), 'log');
+        }
+
+        $this->om->flush();
     }
 
     /**

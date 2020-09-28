@@ -24,6 +24,10 @@ const CourseTutors = (props) =>
         url: ['apiv2_cursus_session_list_users', {type: constants.TEACHER_TYPE, id: props.activeSession.id}],
         autoload: true
       }}
+      delete={{
+        url: ['apiv2_cursus_session_remove_users', {type: constants.TEACHER_TYPE, id: props.activeSession.id}],
+        label: trans('unregister', {}, 'actions')
+      }}
       definition={[
         {
           name: 'user',

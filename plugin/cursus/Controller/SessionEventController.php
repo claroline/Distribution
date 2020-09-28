@@ -137,9 +137,9 @@ class SessionEventController extends AbstractCrudController
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
         $sessionEventUsers = $this->decodeIdsString($request, SessionEventUser::class);
-        $this->manager->deleteEntities($sessionEventUsers);
+        $this->manager->removeUsersFromSessionEvent($sessionEventUsers);
 
-        return new JsonResponse();
+        return new JsonResponse(null, 204);
     }
 
     /**
