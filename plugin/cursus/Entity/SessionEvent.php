@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CursusBundle\Repository\SessionEventRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="claro_cursusbundle_session_event")
  */
 class SessionEvent

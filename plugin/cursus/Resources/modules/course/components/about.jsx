@@ -15,20 +15,11 @@ import {route as workspaceRoute} from '#/main/core/workspace/routing'
 import {route as resourceRoute} from '#/main/core/resource/routing'
 
 import {route} from '#/plugin/cursus/routing'
+import {getInfo} from '#/plugin/cursus/course/utils'
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {CourseCard} from '#/plugin/cursus/course/components/card'
 import {SessionCard} from '#/plugin/cursus/session/components/card'
 import {MODAL_COURSE_REGISTRATION} from '#/plugin/cursus/course/modals/registration'
-
-function getInfo(course, session, path) {
-  if (session && get(session, path)) {
-    return get(session, path)
-  } else if (get(course, path)) {
-    return get(course, path)
-  }
-
-  return null
-}
 
 const CourseAbout = (props) => {
   const availableSessions = props.availableSessions

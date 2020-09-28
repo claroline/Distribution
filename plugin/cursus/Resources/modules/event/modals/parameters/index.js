@@ -7,10 +7,10 @@ import {registry} from '#/main/app/modals/registry'
 
 import {EventFormModal} from '#/plugin/cursus/event/modals/parameters/containers/modal'
 
-const MODAL_SESSION_EVENT_PARAMETERS = 'MODAL_SESSION_EVENT_PARAMETERS'
+const MODAL_TRAINING_EVENT_PARAMETERS = 'MODAL_TRAINING_EVENT_PARAMETERS'
 
-registry.add(MODAL_SESSION_EVENT_PARAMETERS, EventFormModal)
+registry.add(MODAL_TRAINING_EVENT_PARAMETERS, EventFormModal)
 
 export {
-  MODAL_SESSION_EVENT_PARAMETERS
+  MODAL_TRAINING_EVENT_PARAMETERS
 }
