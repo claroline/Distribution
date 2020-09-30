@@ -37,6 +37,7 @@ const WorkspaceCard = props =>
   />
 
 WorkspaceCard.propTypes = {
+  className: T.string,
   data: T.shape(
     WorkspaceTypes.propTypes
   ).isRequired

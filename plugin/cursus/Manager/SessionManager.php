@@ -166,7 +166,7 @@ class SessionManager
         $this->om->startFlushSuite();
 
         foreach ($users as $user) {
-            $sessionUser = $this->sessionUserRepo->findOneBy(['session' => $session, 'user' => $user, 'userType' => $type]);
+            $sessionUser = $this->sessionUserRepo->findOneBy(['session' => $session, 'user' => $user, 'type' => $type]);
 
             if (empty($sessionUser)) {
                 $sessionUser = new CourseSessionUser();
@@ -244,7 +244,7 @@ class SessionManager
         $this->om->startFlushSuite();
 
         foreach ($groups as $group) {
-            $sessionGroup = $this->sessionGroupRepo->findOneBy(['session' => $session, 'group' => $group, 'groupType' => $type]);
+            $sessionGroup = $this->sessionGroupRepo->findOneBy(['session' => $session, 'group' => $group, 'type' => $type]);
 
             if (empty($sessionGroup)) {
                 $sessionGroup = new CourseSessionGroup();
@@ -437,8 +437,8 @@ class SessionManager
         $maxUsers = $session->getMaxUsers();
 
         if ($maxUsers) {
-            $sessionUsers = $this->sessionUserRepo->findBy(['session' => $session, 'userType' => CourseSessionUser::TYPE_LEARNER]);
-            $sessionGroups = $this->sessionGroupRepo->findBy(['session' => $session, 'groupType' => CourseSessionGroup::TYPE_LEARNER]);
+            $sessionUsers = $this->sessionUserRepo->findBy(['session' => $session, 'type' => CourseSessionUser::TYPE_LEARNER]);
+            $sessionGroups = $this->sessionGroupRepo->findBy(['session' => $session, 'type' => CourseSessionGroup::TYPE_LEARNER]);
             $groups = [];
 
             foreach ($sessionGroups as $sessionGroup) {
@@ -463,12 +463,12 @@ class SessionManager
         /** @var CourseSessionUser[] $sessionLearners */
         $sessionLearners = $this->sessionUserRepo->findBy([
             'session' => $session,
-            'userType' => CourseSessionUser::TYPE_LEARNER,
+            'type' => CourseSessionUser::TYPE_LEARNER,
         ]);
         /** @var CourseSessionGroup[] $sessionGroups */
         $sessionGroups = $this->sessionGroupRepo->findBy([
             'session' => $session,
-            'groupType' => CourseSessionGroup::TYPE_LEARNER,
+            'type' => CourseSessionGroup::TYPE_LEARNER,
         ]);
         $users = [];
 
@@ -498,7 +498,7 @@ class SessionManager
         /** @var CourseSessionUser[] $sessionTrainers */
         $sessionTrainers = $this->sessionUserRepo->findBy([
             'session' => $session,
-            'userType' => CourseSessionUser::TYPE_TEACHER,
+            'type' => CourseSessionUser::TYPE_TEACHER,
         ]);
 
         if (0 < count($sessionTrainers)) {

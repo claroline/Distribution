@@ -15,7 +15,6 @@ import {MODAL_USERS} from '#/main/core/modals/users'
 import {UserCard} from '#/main/core/user/components/card'
 
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
-import {getInfo} from '#/plugin/cursus/course/utils'
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {constants} from '#/plugin/cursus/constants'
 
@@ -103,7 +102,7 @@ const CourseParticipants = (props) =>
         <h1 className="h3">
           <small>{trans('available_seats', {}, 'cursus')}</small>
           {get(props.activeSession, 'restrictions.users') ?
-            get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.users', 0)
+            (get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.users', 0)) + ' / ' + get(props.activeSession, 'restrictions.users')
             : <span className="fa fa-fw fa-infinity" />
           }
         </h1>

@@ -105,7 +105,7 @@ class CourseManager
         $this->om->startFlushSuite();
 
         foreach ($users as $user) {
-            $cursusUser = $this->cursusUserRepo->findOneBy(['cursus' => $cursus, 'user' => $user, 'userType' => $type]);
+            $cursusUser = $this->cursusUserRepo->findOneBy(['cursus' => $cursus, 'user' => $user, 'type' => $type]);
 
             if (empty($cursusUser)) {
                 $cursusUser = new CursusUser();

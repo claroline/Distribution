@@ -53,7 +53,8 @@ class Detector implements LoggerAwareInterface
 
         foreach ($items as $item) {
             if (preg_match('#^(.+Bundle)\.php$#', $item->getBasename())) {
-                if ($bundle = $this->findBundleClass($item->getPathname())) {
+                $bundle = $this->findBundleClass($item->getPathname());
+                if ($bundle) {
                     $bundles[] = $bundle;
                 }
             }
@@ -66,7 +67,8 @@ class Detector implements LoggerAwareInterface
     {
         $bundles = $this->detectBundles($path);
 
-        if (1 !== $count = count($bundles)) {
+        $count = count($bundles);
+        if (1 !== $count) {
             $msg = "Expected one bundle in class {$path}, {$count} found";
             $msg .= 0 === $count ? '.' : ('('.implode(', ', $bundles).').');
 

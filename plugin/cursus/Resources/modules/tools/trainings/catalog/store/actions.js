@@ -69,7 +69,6 @@ actions.addTutors = (sessionId, users) => ({
   }
 })
 
-
 actions.register = (sessionId) => ({
   [API_REQUEST]: {
     url: ['apiv2_cursus_session_self_register', {id: sessionId}],

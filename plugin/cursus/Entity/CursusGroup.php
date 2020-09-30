@@ -66,7 +66,7 @@ class CursusGroup
     /**
      * @ORM\Column(name="group_type", type="integer", nullable=true)
      */
-    protected $groupType = self::TYPE_LEARNER;
+    protected $type = self::TYPE_LEARNER;
 
     public function __construct()
     {
@@ -116,11 +116,11 @@ class CursusGroup
 
     public function getType()
     {
-        return $this->groupType;
+        return $this->type;
     }
 
-    public function setType($groupType)
+    public function setType($type)
     {
-        $this->groupType = $groupType;
+        $this->type = $type;
     }
 }

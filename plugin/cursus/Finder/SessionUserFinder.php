@@ -58,7 +58,7 @@ class SessionUserFinder extends AbstractFinder
                     $qb->setParameter('lastName', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'type':
-                    $qb->andWhere("obj.userType = :{$filterName}");
+                    $qb->andWhere("obj.type = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 default:

@@ -66,7 +66,7 @@ class CursusUser
     /**
      * @ORM\Column(name="user_type", type="integer", nullable=true)
      */
-    protected $userType = self::TYPE_LEARNER;
+    protected $type = self::TYPE_LEARNER;
 
     public function __construct()
     {
@@ -117,11 +117,11 @@ class CursusUser
 
     public function getType()
     {
-        return $this->userType;
+        return $this->type;
     }
 
-    public function setType($userType)
+    public function setType($type)
     {
-        $this->userType = $userType;
+        $this->type = $type;
     }
 }

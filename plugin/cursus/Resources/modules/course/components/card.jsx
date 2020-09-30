@@ -1,13 +1,13 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
 import {asset} from '#/main/app/config/asset'
 import {DataCard} from '#/main/app/data/components/card'
 
 import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
-import get from "lodash/get";
 
 const CourseCard = props =>
   <DataCard
@@ -28,6 +28,7 @@ const CourseCard = props =>
   />
 
 CourseCard.propTypes = {
+  className: T.string,
   data: T.shape(
     CourseTypes.propTypes
   ).isRequired

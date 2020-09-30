@@ -4,7 +4,6 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans, displayDuration, displayDate, now} from '#/main/app/intl'
-import {hasPermission} from '#/main/app/security'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ContentHtml} from '#/main/app/content/components/html'
@@ -38,19 +37,21 @@ const CourseAbout = (props) => {
               </span>
             </li>
 
-            <li className="list-group-item">
-              {trans('max_participants', {}, 'cursus')}
-              <span className="value">
-                {getInfo(props.course, props.activeSession, 'restrictions.users') || trans('empty_value')}
-              </span>
-            </li>
-
-            {props.activeSession && get(props.activeSession, 'restrictions.users') &&
+            {getInfo(props.course, props.activeSession, 'restrictions.users') &&
               <li className="list-group-item">
                 {trans('available_seats', {}, 'cursus')}
-                <span className="value">
-                  {get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.learners')}
-                </span>
+
+                {!props.activeSession &&
+                  <span className="value">
+                    {get(props.course, 'restrictions.users')}
+                  </span>
+                }
+
+                {props.activeSession &&
+                  <span className="value">
+                    {(get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.learners')) + ' / ' + get(props.activeSession, 'restrictions.users')}
+                  </span>
+                }
               </li>
             }
 

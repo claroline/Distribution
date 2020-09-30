@@ -110,7 +110,6 @@ const CourseForm = (props) =>
             type: 'boolean',
             label: trans('registration_send_mail', {}, 'cursus'),
             onChange: (checked) => {
-              console.log(checked)
               if (!checked) {
                 props.update(props.name, 'registration.userValidation', false)
               }

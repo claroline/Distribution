@@ -50,7 +50,7 @@ class SessionGroupFinder extends AbstractFinder
                     $qb->setParameter('groupName', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'type':
-                    $qb->andWhere("obj.groupType = :{$filterName}");
+                    $qb->andWhere("obj.type = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 default:

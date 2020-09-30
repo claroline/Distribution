@@ -24,32 +24,19 @@ class CursusGroupSerializer
     /** @var SerializerProvider */
     private $serializer;
 
-    /**
-     * CursusGroupSerializer constructor.
-     *
-     * @param SerializerProvider $serializer
-     */
     public function __construct(SerializerProvider $serializer)
     {
         $this->serializer = $serializer;
     }
 
-    /**
-     * @param CursusGroup $cursusGroup
-     * @param array       $options
-     *
-     * @return array
-     */
-    public function serialize(CursusGroup $cursusGroup, array $options = [])
+    public function serialize(CursusGroup $cursusGroup, array $options = []): array
     {
-        $serialized = [
+        return [
             'id' => $cursusGroup->getUuid(),
             'cursus' => $this->serializer->serialize($cursusGroup->getCursus(), [Options::SERIALIZE_MINIMAL]),
             'group' => $this->serializer->serialize($cursusGroup->getGroup(), [Options::SERIALIZE_MINIMAL]),
             'type' => $cursusGroup->getType(),
             'registrationDate' => DateNormalizer::normalize($cursusGroup->getRegistrationDate()),
         ];
-
-        return $serialized;
     }
 }

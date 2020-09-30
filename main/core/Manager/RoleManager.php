@@ -591,7 +591,8 @@ class RoleManager implements LoggerAwareInterface
             $operationExecuted = true;
         }
 
-        if ($creator = $workspace->getCreator()) {
+        $creator = $workspace->getCreator();
+        if ($creator) {
             $creator->addRole($manager);
         }
 

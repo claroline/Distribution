@@ -40,7 +40,7 @@ const SessionList = (props) =>
             not_started: trans('session_not_started', {}, 'cursus'),
             in_progress: trans('session_in_progress', {}, 'cursus'),
             closed: trans('session_closed', {}, 'cursus')
-          },
+          }
         },
         render: (row) => {
           let status
@@ -52,7 +52,7 @@ const SessionList = (props) =>
             status = 'closed'
           }
 
-          return (
+          const SessionStatus = (
             <span className={classes('label', {
               'label-success': 'not_started' === status,
               'label-info': 'in_progress' === status,
@@ -61,6 +61,8 @@ const SessionList = (props) =>
               {trans('session_'+status, {}, 'cursus')}
             </span>
           )
+
+          return SessionStatus
         }
       }, {
         name: 'name',

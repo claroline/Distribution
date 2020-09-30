@@ -24,32 +24,19 @@ class SessionUserSerializer
     /** @var SerializerProvider */
     private $serializer;
 
-    /**
-     * SessionUserSerializer constructor.
-     *
-     * @param SerializerProvider $serializer
-     */
     public function __construct(SerializerProvider $serializer)
     {
         $this->serializer = $serializer;
     }
 
-    /**
-     * @param CourseSessionUser $sessionUser
-     * @param array             $options
-     *
-     * @return array
-     */
-    public function serialize(CourseSessionUser $sessionUser, array $options = [])
+    public function serialize(CourseSessionUser $sessionUser, array $options = []): array
     {
-        $serialized = [
+        return [
             'id' => $sessionUser->getUuid(),
             'session' => $this->serializer->serialize($sessionUser->getSession(), [Options::SERIALIZE_MINIMAL]),
             'user' => $this->serializer->serialize($sessionUser->getUser(), [Options::SERIALIZE_MINIMAL]),
             'type' => $sessionUser->getType(),
             'registrationDate' => DateNormalizer::normalize($sessionUser->getRegistrationDate()),
         ];
-
-        return $serialized;
     }
 }

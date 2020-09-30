@@ -24,23 +24,12 @@ class SessionGroupSerializer
     /** @var SerializerProvider */
     private $serializer;
 
-    /**
-     * SessionGroupSerializer constructor.
-     *
-     * @param SerializerProvider $serializer
-     */
     public function __construct(SerializerProvider $serializer)
     {
         $this->serializer = $serializer;
     }
 
-    /**
-     * @param CourseSessionGroup $sessionGroup
-     * @param array              $options
-     *
-     * @return array
-     */
-    public function serialize(CourseSessionGroup $sessionGroup, array $options = [])
+    public function serialize(CourseSessionGroup $sessionGroup, array $options = []): array
     {
         return [
             'id' => $sessionGroup->getUuid(),
