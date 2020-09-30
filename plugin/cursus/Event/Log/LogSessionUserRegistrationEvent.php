@@ -33,7 +33,7 @@ class LogSessionUserRegistrationEvent extends LogGenericEvent
         $details['courseTitle'] = $course->getName();
         $details['courseCode'] = $course->getCode();
         $details['registrationDate'] = $sessionUser->getRegistrationDate()->format('d/m/Y H:i:s');
-        $details['type'] = $sessionUser->getUserType();
+        $details['type'] = $sessionUser->getType();
 
         parent::__construct(
             self::ACTION,

@@ -89,6 +89,7 @@ class CourseController extends AbstractCrudController
             $user = $this->tokenStorage->getToken()->getUser();
 
             return [
+                'hidden' => $this->checkToolAccess('EDIT'),
                 'organizations' => array_map(function (Organization $organization) {
                     return $organization->getUuid();
                 }, $user->getOrganizations()),

@@ -121,10 +121,12 @@ class CourseSerializer
                     'users' => $course->getMaxUsers(),
                 ],
                 'registration' => [
+                    'propagate' => $course->getPropagateRegistration(),
                     'selfRegistration' => $course->getPublicRegistration(),
                     'selfUnregistration' => $course->getPublicUnregistration(),
                     'validation' => $course->getRegistrationValidation(),
                     'userValidation' => $course->getUserValidation(),
+                    'mail' => $course->getRegistrationMail(),
                 ],
                 'workspace' => $course->getWorkspace() ?
                     $this->workspaceSerializer->serialize($course->getWorkspace(), [Options::SERIALIZE_MINIMAL]) :
@@ -159,10 +161,12 @@ class CourseSerializer
 
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $course);
 
+        $this->sipe('registration.propagate', 'setPropagateRegistration', $data, $course);
         $this->sipe('registration.selfRegistration', 'setPublicRegistration', $data, $course);
         $this->sipe('registration.selfUnregistration', 'setPublicUnregistration', $data, $course);
         $this->sipe('registration.validation', 'setRegistrationValidation', $data, $course);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $course);
+        $this->sipe('registration.mail', 'setRegistrationMail', $data, $course);
 
         if (isset($data['meta'])) {
             if (isset($data['meta']['created'])) {

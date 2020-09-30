@@ -31,13 +31,7 @@ const SessionForm = (props) =>
             type: 'date-range',
             label: trans('access_dates'),
             required: true
-          }/*, {
-            name: 'meta.course',
-            type: 'course',
-            label: trans('course', {}, 'cursus'),
-            required: true,
-            disabled: true
-          }*/
+          }
         ]
       }, {
         icon: 'fa fa-fw fa-info',
@@ -50,7 +44,11 @@ const SessionForm = (props) =>
           }, {
             name: 'meta.default',
             type: 'boolean',
-            label: trans('default_session', {}, 'cursus')
+            label: trans('default_session', {}, 'cursus'),
+            help: [
+              trans('default_session_help', {}, 'cursus'),
+              trans('default_session_help_registration', {}, 'cursus')
+            ]
           }, {
             name: 'location',
             type: 'location',

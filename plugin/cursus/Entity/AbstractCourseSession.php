@@ -67,6 +67,11 @@ class AbstractCourseSession
     protected $registrationValidation = false;
 
     /**
+     * @ORM\Column(name="registration_mail", type="boolean")
+     */
+    protected $registrationMail = false;
+
+    /**
      * @ORM\Column(name="user_validation", type="boolean")
      */
     protected $userValidation = false;
@@ -129,6 +134,16 @@ class AbstractCourseSession
     public function setRegistrationValidation($registrationValidation)
     {
         $this->registrationValidation = $registrationValidation;
+    }
+
+    public function getRegistrationMail(): bool
+    {
+        return $this->registrationMail;
+    }
+
+    public function setRegistrationMail(bool $mail)
+    {
+        $this->registrationMail = $mail;
     }
 
     public function getUserValidation()

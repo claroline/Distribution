@@ -141,7 +141,12 @@ class SessionSerializer
                     'selfUnregistration' => $session->getPublicUnregistration(),
                     'validation' => $session->getRegistrationValidation(),
                     'userValidation' => $session->getUserValidation(),
+                    'mail' => $session->getRegistrationMail(),
                     'eventRegistrationType' => $session->getEventRegistrationType(),
+                ],
+                'participants' => [
+                    'tutors' => $session->countTutors(),
+                    'learners' => $session->countLearners(),
                 ],
                 'resources' => array_map(function (ResourceNode $resource) {
                     return $this->resourceSerializer->serialize($resource, [Options::SERIALIZE_MINIMAL]);
@@ -168,6 +173,7 @@ class SessionSerializer
         $this->sipe('registration.selfUnregistration', 'setPublicUnregistration', $data, $session);
         $this->sipe('registration.validation', 'setRegistrationValidation', $data, $session);
         $this->sipe('registration.userValidation', 'setUserValidation', $data, $session);
+        $this->sipe('registration.mail', 'setRegistrationMail', $data, $session);
         $this->sipe('registration.eventRegistrationType', 'setEventRegistrationType', $data, $session);
 
         if (isset($data['meta'])) {

@@ -17,7 +17,7 @@ const CoursePage = (props) => {
     return (
       <ContentLoader
         size="lg"
-        description="Nous chargeons la formation..."
+        description={trans('training_loading', {}, 'cursus')}
       />
     )
   }

@@ -2,6 +2,7 @@ import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {hasPermission} from '#/main/app/security'
 import {Button} from '#/main/app/action/components/button'
 import {MODAL_BUTTON} from '#/main/app/buttons'
 
@@ -18,16 +19,18 @@ const CourseSessions = (props) =>
       invalidate={() => props.reload(props.course.slug)}
     />
 
-    <Button
-      className="btn btn-block btn-emphasis component-container"
-      type={MODAL_BUTTON}
-      label={trans('add_session', {}, 'cursus')}
-      modal={[MODAL_SESSION_FORM, {
-        course: props.course,
-        onSave: () => props.reload(props.course.slug)
-      }]}
-      primary={true}
-    />
+    {hasPermission('edit', props.course) &&
+      <Button
+        className="btn btn-block btn-emphasis component-container"
+        type={MODAL_BUTTON}
+        label={trans('add_session', {}, 'cursus')}
+        modal={[MODAL_SESSION_FORM, {
+          course: props.course,
+          onSave: () => props.reload(props.course.slug)
+        }]}
+        primary={true}
+      />
+    }
   </Fragment>
 
 CourseSessions.propTypes = {

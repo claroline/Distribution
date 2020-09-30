@@ -45,9 +45,19 @@ class SessionFinder extends AbstractFinder
                     $qb->setParameter($filterName, $filterValue);
                     break;
 
-                case 'active':
-                    $qb->andWhere('obj.startDate > :now');
-                    $qb->andWhere('obj.endDate > :now');
+                case 'status':
+                    switch ($filterValue) {
+                        case 'not_started':
+                            $qb->andWhere('obj.startDate < :now');
+                            break;
+                        case 'in_progress':
+                            $qb->andWhere('(obj.startDate >= :now AND obj.endDate >= :now)');
+                            break;
+                        case 'closed':
+                            $qb->andWhere('obj.endDate < :now');
+                            break;
+                    }
+
                     $qb->setParameter('now', new \DateTime());
                     break;
 

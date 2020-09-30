@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {hasPermission} from '#/main/app/security'
 //import {CALLBACK_BUTTON, LINK_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
@@ -38,7 +39,8 @@ const EventList = (props) =>
       }
     ]*/}
     delete={{
-      url: ['apiv2_cursus_event_delete_bulk']
+      url: ['apiv2_cursus_event_delete_bulk'],
+      displayed: (rows) => -1 !== rows.filter(row => hasPermission('delete', row))
     }}
     definition={[
       {

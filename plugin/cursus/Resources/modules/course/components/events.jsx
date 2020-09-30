@@ -2,6 +2,7 @@ import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
+import {hasPermission} from '#/main/app/security'
 import {Button} from '#/main/app/action/components/button'
 import {MODAL_BUTTON} from '#/main/app/buttons'
 import {
@@ -36,21 +37,24 @@ const CourseEvents = (props) =>
             onSave: () => props.invalidateList()
           }],
           scope: ['object'],
-          group: trans('management')
+          group: trans('management'),
+          displayed: hasPermission('edit', rows[0])
         }
       ]}
     />
 
-    <Button
-      className="btn btn-block btn-emphasis component-container"
-      type={MODAL_BUTTON}
-      label={trans('add_event', {}, 'cursus')}
-      modal={[MODAL_TRAINING_EVENT_PARAMETERS, {
-        session: props.activeSession,
-        onSave: () => props.invalidateList()
-      }]}
-      primary={true}
-    />
+    {hasPermission('edit', props.activeSession) &&
+      <Button
+        className="btn btn-block btn-emphasis component-container"
+        type={MODAL_BUTTON}
+        label={trans('add_event', {}, 'cursus')}
+        modal={[MODAL_TRAINING_EVENT_PARAMETERS, {
+          session: props.activeSession,
+          onSave: () => props.invalidateList()
+        }]}
+        primary={true}
+      />
+    }
   </Fragment>
 
 CourseEvents.propTypes = {

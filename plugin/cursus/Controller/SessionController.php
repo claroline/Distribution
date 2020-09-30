@@ -114,6 +114,27 @@ class SessionController extends AbstractCrudController
     }
 
     /**
+     * @Route("/registered", name="apiv2_cursus_session_registered", methods={"GET"})
+     */
+    public function listRegisteredAction(Request $request): JsonResponse
+    {
+        if (!$this->authorization->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedException();
+        }
+
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        $params = $request->query->all();
+        $params['hiddenFilters'] = $this->getDefaultHiddenFilters();
+        $params['hiddenFilters']['user'] = $user->getUuid();
+
+        return new JsonResponse(
+            $this->finder->search(CourseSession::class, $params)
+        );
+    }
+
+    /**
      * @Route("/{id}/pdf", name="apiv2_cursus_session_download_pdf", methods={"GET"})
      * @EXT\ParamConverter("session", class="ClarolineCursusBundle:CourseSession", options={"mapping": {"id": "uuid"}})
      */
@@ -213,7 +234,7 @@ class SessionController extends AbstractCrudController
         $this->checkPermission('EDIT', $session, [], true);
 
         $sessionUsers = $this->decodeIdsString($request, CourseSessionUser::class);
-        $this->manager->removeUsersFromSession($sessionUsers);
+        $this->manager->removeUsersFromSession($session, $sessionUsers);
 
         return new JsonResponse(null, 204);
     }

@@ -146,6 +146,7 @@ class SessionManager
         $workspace->setThumbnail($session->getThumbnail());
         $workspace->setAccessibleFrom($session->getStartDate());
         $workspace->setAccessibleUntil($session->getEndDate());
+        $workspace->setHidden($course->isHidden());
 
         $this->om->persist($workspace);
 
@@ -158,6 +159,8 @@ class SessionManager
     public function addUsersToSession(CourseSession $session, array $users, int $type = CourseSessionUser::TYPE_LEARNER): array
     {
         $results = [];
+
+        $course = $session->getCourse();
         $registrationDate = new \DateTime();
 
         $this->om->startFlushSuite();
@@ -169,7 +172,7 @@ class SessionManager
                 $sessionUser = new CourseSessionUser();
                 $sessionUser->setSession($session);
                 $sessionUser->setUser($user);
-                $sessionUser->setUserType($type);
+                $sessionUser->setType($type);
                 $sessionUser->setRegistrationDate($registrationDate);
 
                 // Registers user to session workspace
@@ -186,6 +189,17 @@ class SessionManager
             }
         }
 
+        // registers users to linked trainings
+        if ($course->getPropagateRegistration() && !empty($course->getChildren())) {
+            foreach ($course->getChildren() as $childCourse) {
+                $childSession = $childCourse->getDefaultSession();
+                if ($childSession && !$childSession->isTerminated()) {
+                    $this->addUsersToSession($childSession, $users);
+                }
+            }
+        }
+
+        // registers users to linked events
         if (CourseSessionUser::TYPE_LEARNER === $type) {
             $events = $session->getEvents();
 
@@ -201,18 +215,20 @@ class SessionManager
         return $results;
     }
 
-    /**
-     * @param CourseSessionUser[] $sessionUsers
-     */
-    public function removeUsersFromSession(array $sessionUsers)
+    public function removeUsersFromSession(CourseSession $session, array $sessionUsers)
     {
         foreach ($sessionUsers as $sessionUser) {
             $this->om->remove($sessionUser);
 
+            // unregister user from the linked workspace
+            if ($session->getWorkspace()) {
+                $this->workspaceManager->unregister($sessionUser->getUser(), $session->getWorkspace());
+            }
+
+            // TODO : unregister from events
+
             $this->eventDispatcher->dispatch(new LogSessionUserUnregistrationEvent($sessionUser), 'log');
         }
-
-        // TODO : unregister from events
 
         $this->om->flush();
     }
@@ -234,7 +250,7 @@ class SessionManager
                 $sessionGroup = new CourseSessionGroup();
                 $sessionGroup->setSession($session);
                 $sessionGroup->setGroup($group);
-                $sessionGroup->setGroupType($type);
+                $sessionGroup->setType($type);
                 $sessionGroup->setRegistrationDate($registrationDate);
 
                 // Registers group to session workspace

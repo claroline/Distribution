@@ -34,17 +34,18 @@ const CourseDetails = (props) =>
             target: `${props.path}/${props.course.slug}${props.activeSession ? '/'+props.activeSession.id : ''}`,
             exact: true
           }, {
-            name: 'participants',
-            type: LINK_BUTTON,
-            icon: 'fa fa-fw fa-users',
-            label: trans('Participants', {}, 'cursus'),
-            target: `${props.path}/${props.course.slug}${props.activeSession ? '/'+props.activeSession.id : ''}/participants`
-          }, {
             name: 'sessions',
             type: LINK_BUTTON,
             icon: 'fa fa-fw fa-calendar-week',
             label: trans('Sessions', {}, 'cursus'),
             target: `${props.path}/${props.course.slug}${props.activeSession ? '/'+props.activeSession.id : ''}/sessions`
+          }, {
+            name: 'participants',
+            type: LINK_BUTTON,
+            icon: 'fa fa-fw fa-users',
+            label: trans('Participants', {}, 'cursus'),
+            target: `${props.path}/${props.course.slug}${props.activeSession ? '/'+props.activeSession.id : ''}/participants`,
+            displayed: !!props.activeSession
           }, {
             name: 'events',
             type: LINK_BUTTON,
@@ -74,23 +75,24 @@ const CourseDetails = (props) =>
             )
           }
         }, {
-          path: '/participants',
-          render() {
-            return (
-              <CourseParticipants
-                path={props.path}
-                course={props.course}
-                activeSession={props.activeSession}
-              />
-            )
-          }
-        }, {
           path: '/sessions',
           render() {
             return (
               <CourseSessions
                 path={props.path}
                 course={props.course}
+              />
+            )
+          }
+        }, {
+          path: '/participants',
+          disabled: !props.activeSession,
+          render() {
+            return (
+              <CourseParticipants
+                path={props.path}
+                course={props.course}
+                activeSession={props.activeSession}
               />
             )
           }

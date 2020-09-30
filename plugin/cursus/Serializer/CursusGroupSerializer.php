@@ -46,7 +46,7 @@ class CursusGroupSerializer
             'id' => $cursusGroup->getUuid(),
             'cursus' => $this->serializer->serialize($cursusGroup->getCursus(), [Options::SERIALIZE_MINIMAL]),
             'group' => $this->serializer->serialize($cursusGroup->getGroup(), [Options::SERIALIZE_MINIMAL]),
-            'type' => $cursusGroup->getGroupType(),
+            'type' => $cursusGroup->getType(),
             'registrationDate' => DateNormalizer::normalize($cursusGroup->getRegistrationDate()),
         ];
 

@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans, displayDuration, displayDate, now} from '#/main/app/intl'
+import {hasPermission} from '#/main/app/security'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ContentHtml} from '#/main/app/content/components/html'
@@ -44,6 +45,15 @@ const CourseAbout = (props) => {
               </span>
             </li>
 
+            {props.activeSession && get(props.activeSession, 'restrictions.users') &&
+              <li className="list-group-item">
+                {trans('available_seats', {}, 'cursus')}
+                <span className="value">
+                  {get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.learners')}
+                </span>
+              </li>
+            }
+
             <li className="list-group-item">
               {trans('duration')}
               <span className="value">
@@ -77,16 +87,18 @@ const CourseAbout = (props) => {
           />
         }
 
-        <Button
-          className="btn btn-block btn-emphasis"
-          type={MODAL_BUTTON}
-          label={trans('self-register', {}, 'actions')}
-          modal={[MODAL_COURSE_REGISTRATION, {
-            course: props.course,
-            session: props.activeSession
-          }]}
-          primary={true}
-        />
+        {getInfo(props.course, props.activeSession, 'registration.selfRegistration') &&
+          <Button
+            className="btn btn-block btn-emphasis"
+            type={MODAL_BUTTON}
+            label={trans('self-register', {}, 'actions')}
+            modal={[MODAL_COURSE_REGISTRATION, {
+              course: props.course,
+              session: props.activeSession
+            }]}
+            primary={true}
+          />
+        }
 
         {!isEmpty(getInfo(props.course, props.activeSession, 'workspace')) &&
           <Button
@@ -122,7 +134,7 @@ const CourseAbout = (props) => {
 
               {(get(props.activeSession, 'restrictions.dates[0]') <= now() && get(props.activeSession, 'restrictions.dates[1]') >= now()) &&
                 <h1 className="content-resume-title h2 text-success">
-                  {trans('session_open', {}, 'cursus')}
+                  {trans('session_in_progress', {}, 'cursus')}
                 </h1>
               }
 

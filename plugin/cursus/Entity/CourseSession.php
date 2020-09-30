@@ -87,6 +87,8 @@ class CourseSession extends AbstractCourseSession
      *     targetEntity="Claroline\CursusBundle\Entity\CourseSessionUser",
      *     mappedBy="session"
      * )
+     *
+     * @var ArrayCollection|CourseSessionUser[]
      */
     protected $sessionUsers;
 
@@ -95,6 +97,8 @@ class CourseSession extends AbstractCourseSession
      *     targetEntity="Claroline\CursusBundle\Entity\CourseSessionGroup",
      *     mappedBy="session"
      * )
+     *
+     * @var ArrayCollection|CourseSessionGroup[]
      */
     protected $sessionGroups;
 
@@ -210,20 +214,6 @@ class CourseSession extends AbstractCourseSession
         $this->endDate = $endDate;
     }
 
-    public function isActive()
-    {
-        $now = new \DateTime();
-
-        return (is_null($this->startDate) || $now >= $this->startDate) && (is_null($this->endDate) || $now <= $this->endDate);
-    }
-
-    public function hasStarted()
-    {
-        $now = new \DateTime();
-
-        return is_null($this->startDate) || $now >= $this->startDate;
-    }
-
     public function isTerminated()
     {
         $now = new \DateTime();
@@ -233,12 +223,42 @@ class CourseSession extends AbstractCourseSession
 
     public function getSessionUsers()
     {
-        return $this->sessionUsers->toArray();
+        return $this->sessionUsers;
     }
 
     public function getSessionGroups()
     {
-        return $this->sessionGroups->toArray();
+        return $this->sessionGroups;
+    }
+
+    public function countTutors()
+    {
+        $count = 0;
+        foreach ($this->sessionUsers as $userRegistration) {
+            if (CourseSessionUser::TYPE_TEACHER === $userRegistration->getType()) {
+                ++$count;
+            }
+        }
+
+        return $count;
+    }
+
+    public function countLearners()
+    {
+        $count = 0;
+        foreach ($this->sessionUsers as $userRegistration) {
+            if (CourseSessionUser::TYPE_LEARNER === $userRegistration->getType()) {
+                ++$count;
+            }
+        }
+
+        foreach ($this->sessionGroups as $groupRegistration) {
+            if (CourseSessionGroup::TYPE_LEARNER === $groupRegistration->getType()) {
+                $count += $groupRegistration->getGroup()->getUsers()->count();
+            }
+        }
+
+        return $count;
     }
 
     public function getResources()

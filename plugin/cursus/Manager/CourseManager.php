@@ -111,7 +111,7 @@ class CourseManager
                 $cursusUser = new CursusUser();
                 $cursusUser->setCursus($cursus);
                 $cursusUser->setUser($user);
-                $cursusUser->setUserType($type);
+                $cursusUser->setType($type);
                 $cursusUser->setRegistrationDate($registrationDate);
 
                 // Registers user to workspace if one is associated to cursus
@@ -150,7 +150,7 @@ class CourseManager
                 $cursusGroup = new CursusGroup();
                 $cursusGroup->setCursus($cursus);
                 $cursusGroup->setGroup($group);
-                $cursusGroup->setGroupType($type);
+                $cursusGroup->setType($type);
                 $cursusGroup->setRegistrationDate($registrationDate);
 
                 // Registers group to workspace if one is associated to cursus
@@ -201,7 +201,7 @@ class CourseManager
         $defaultSession = $course->getDefaultSession();
         $result = null;
 
-        if ($defaultSession && $defaultSession->isActive()) {
+        if ($defaultSession && !$defaultSession->isTerminated()) {
             $result = $this->sessionManager->registerUserToSession($defaultSession, $user, $skipValidation);
         }
 

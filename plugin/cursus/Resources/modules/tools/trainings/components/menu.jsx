@@ -19,9 +19,13 @@ const TrainingsMenu = (props) =>
         {
           name: 'catalog',
           type: LINK_BUTTON,
-          icon: 'fa fa-fw fa-list',
           label: trans('catalog', {}, 'cursus'),
           target: props.path + '/catalog'
+        }, {
+          name: 'registered',
+          type: LINK_BUTTON,
+          label: trans('my_courses', {}, 'cursus'),
+          target: props.path + '/registered'
         }
       ]}
       onClick={props.autoClose}

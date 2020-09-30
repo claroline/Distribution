@@ -169,20 +169,6 @@ class SessionEvent
         $this->endDate = $endDate;
     }
 
-    public function isActive()
-    {
-        $now = new \DateTime();
-
-        return $now >= $this->startDate && $now <= $this->endDate;
-    }
-
-    public function hasStarted()
-    {
-        $now = new \DateTime();
-
-        return is_null($this->startDate) || $now >= $this->startDate;
-    }
-
     public function isTerminated()
     {
         $now = new \DateTime();

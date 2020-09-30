@@ -1,10 +1,12 @@
 import React, {Fragment} from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 import {schemeCategory20c} from 'd3-scale'
 
+import {trans} from '#/main/app/intl/translation'
+import {hasPermission} from '#/main/app/security'
 import {Button} from '#/main/app/action/components/button'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
-import {trans} from '#/main/app/intl/translation'
 import {Routes} from '#/main/app/router/components/routes'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
 import {ListData} from '#/main/app/content/list/containers/data'
@@ -27,7 +29,8 @@ const CourseTutors = (props) =>
       }}
       delete={{
         url: ['apiv2_cursus_session_remove_users', {type: constants.TEACHER_TYPE, id: props.activeSession.id}],
-        label: trans('unregister', {}, 'actions')
+        label: trans('unregister', {}, 'actions'),
+        displayed: (rows) => -1 !== rows.filter(row => hasPermission('edit', row))
       }}
       definition={[
         {
@@ -49,19 +52,21 @@ const CourseTutors = (props) =>
       }}
     />
 
-    <Button
-      className="btn btn-block btn-emphasis component-container"
-      type={MODAL_BUTTON}
-      label={trans('add_tutors', {}, 'cursus')}
-      modal={[MODAL_USERS, {
-        selectAction: (selected) => ({
-          type: CALLBACK_BUTTON,
-          label: trans('register', {}, 'actions'),
-          callback: () => props.addTutors(props.activeSession.id, selected)
-        })
-      }]}
-      primary={true}
-    />
+    {hasPermission('edit', props.activeSession) &&
+      <Button
+        className="btn btn-block btn-emphasis component-container"
+        type={MODAL_BUTTON}
+        label={trans('add_tutors', {}, 'cursus')}
+        modal={[MODAL_USERS, {
+          selectAction: (selected) => ({
+            type: CALLBACK_BUTTON,
+            label: trans('register', {}, 'actions'),
+            callback: () => props.addTutors(props.activeSession.id, selected)
+          })
+        }]}
+        primary={true}
+      />
+    }
   </Fragment>
 
 CourseTutors.propTypes = {
@@ -79,7 +84,7 @@ const CourseParticipants = (props) =>
 
         <h1 className="h3">
           <small>{trans('tutors', {}, 'cursus')}</small>
-          5
+          {get(props.activeSession, 'participants.tutors', 0)}
         </h1>
       </div>
 
@@ -88,7 +93,7 @@ const CourseParticipants = (props) =>
 
         <h1 className="h3">
           <small>{trans('users')}</small>
-          23
+          {get(props.activeSession, 'participants.users', 0)}
         </h1>
       </div>
 
@@ -96,8 +101,11 @@ const CourseParticipants = (props) =>
         <span className="fa fa-user-plus" style={{backgroundColor: schemeCategory20c[9]}} />
 
         <h1 className="h3">
-          <small>{trans('Places disponibles')}</small>
-          {getInfo(props.course, props.activeSession, 'restrictions.users') || <span className="fa fa-fw fa-infinity"></span>}
+          <small>{trans('available_seats', {}, 'cursus')}</small>
+          {get(props.activeSession, 'restrictions.users') ?
+            get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.users', 0)
+            : <span className="fa fa-fw fa-infinity" />
+          }
         </h1>
       </div>
     </div>

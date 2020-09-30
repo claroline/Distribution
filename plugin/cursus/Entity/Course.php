@@ -13,6 +13,7 @@ namespace Claroline\CursusBundle\Entity;
 
 use Claroline\AppBundle\Entity\Identifier\Id;
 use Claroline\AppBundle\Entity\Identifier\Uuid;
+use Claroline\AppBundle\Entity\Restriction\Hidden;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -29,6 +30,8 @@ class Course extends AbstractCourseSession
 {
     use Id;
     use Uuid;
+
+    use Hidden;
 
     /**
      * @Gedmo\Slug(fields={"name"})
@@ -79,6 +82,16 @@ class Course extends AbstractCourseSession
      * @var CourseSession[]
      */
     private $sessions;
+
+    /**
+     * If true, automatically register users to the default session of the training children
+     * when registering to a session of this training.
+     *
+     * @ORM\Column(type="boolean", options={"default" = 0})
+     *
+     * @var bool
+     */
+    private $propagateRegistration = false;
 
     /**
      * @ORM\Column(name="session_duration", nullable=false, type="integer", options={"default" = 1})
@@ -143,6 +156,16 @@ class Course extends AbstractCourseSession
     public function setLearnerRoleName($learnerRoleName)
     {
         $this->learnerRoleName = $learnerRoleName;
+    }
+
+    public function getPropagateRegistration(): bool
+    {
+        return $this->propagateRegistration;
+    }
+
+    public function setPropagateRegistration(bool $propagate)
+    {
+        $this->propagateRegistration = $propagate;
     }
 
     public function getSessions()

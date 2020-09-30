@@ -114,12 +114,12 @@ class CursusGroup
         $this->registrationDate = $registrationDate;
     }
 
-    public function getGroupType()
+    public function getType()
     {
         return $this->groupType;
     }
 
-    public function setGroupType($groupType)
+    public function setType($groupType)
     {
         $this->groupType = $groupType;
     }

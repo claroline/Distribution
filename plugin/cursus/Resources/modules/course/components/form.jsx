@@ -86,6 +86,11 @@ const CourseForm = (props) =>
             type: 'boolean',
             label: trans('activate_self_registration'),
             help: trans('self_registration_training_help', {}, 'cursus'),
+            onChange: (checked) => {
+              if (!checked) {
+                props.update(props.name, 'registration.validation', false)
+              }
+            },
             linked: [
               {
                 name: 'registration.validation',
@@ -104,6 +109,12 @@ const CourseForm = (props) =>
             name: 'registration.mail',
             type: 'boolean',
             label: trans('registration_send_mail', {}, 'cursus'),
+            onChange: (checked) => {
+              console.log(checked)
+              if (!checked) {
+                props.update(props.name, 'registration.userValidation', false)
+              }
+            },
             linked: [
               {
                 name: 'registration.userValidation',
@@ -113,6 +124,11 @@ const CourseForm = (props) =>
                 displayed: (course) => course.registration && course.registration.mail
               }
             ]
+          }, {
+            name: 'registration.propagate',
+            type: 'boolean',
+            label: trans('propagate_registration', {}, 'cursus'),
+            help: trans('propagate_registration_help', {}, 'cursus')
           }
         ]
       }, {
@@ -235,10 +251,15 @@ const CourseForm = (props) =>
         title: trans('access_restrictions'),
         fields: [
           {
+            name: 'restrictions.hidden',
+            type: 'boolean',
+            label: trans('restrict_hidden'),
+            help: trans('restrict_hidden_help')
+          }, {
             name: 'restrictions._restrictUsers',
             type: 'boolean',
             label: trans('restrict_users_count'),
-            calculated: (course) => course.restrictions.users || course.restrictions._restrictUsers,
+            calculated: (course) => !!course.restrictions.users || course.restrictions._restrictUsers,
             onChange: (value) => {
               if (!value) {
                 props.update(props.name, 'restrictions.users', null)

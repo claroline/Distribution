@@ -71,6 +71,7 @@ class CourseSessionGroup
     public function __construct()
     {
         $this->refreshUuid();
+
         $this->registrationDate = new \DateTime();
     }
 
@@ -107,12 +108,12 @@ class CourseSessionGroup
         $this->registrationDate = $registrationDate;
     }
 
-    public function getGroupType()
+    public function getType()
     {
         return $this->groupType;
     }
 
-    public function setGroupType($groupType)
+    public function setType($groupType)
     {
         $this->groupType = $groupType;
     }

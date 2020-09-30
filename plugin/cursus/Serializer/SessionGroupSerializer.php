@@ -42,14 +42,12 @@ class SessionGroupSerializer
      */
     public function serialize(CourseSessionGroup $sessionGroup, array $options = [])
     {
-        $serialized = [
+        return [
             'id' => $sessionGroup->getUuid(),
             'session' => $this->serializer->serialize($sessionGroup->getSession(), [Options::SERIALIZE_MINIMAL]),
             'group' => $this->serializer->serialize($sessionGroup->getGroup(), [Options::SERIALIZE_MINIMAL]),
-            'type' => $sessionGroup->getGroupType(),
+            'type' => $sessionGroup->getType(),
             'registrationDate' => DateNormalizer::normalize($sessionGroup->getRegistrationDate()),
         ];
-
-        return $serialized;
     }
 }

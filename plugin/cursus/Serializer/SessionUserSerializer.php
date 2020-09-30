@@ -46,7 +46,7 @@ class SessionUserSerializer
             'id' => $sessionUser->getUuid(),
             'session' => $this->serializer->serialize($sessionUser->getSession(), [Options::SERIALIZE_MINIMAL]),
             'user' => $this->serializer->serialize($sessionUser->getUser(), [Options::SERIALIZE_MINIMAL]),
-            'type' => $sessionUser->getUserType(),
+            'type' => $sessionUser->getType(),
             'registrationDate' => DateNormalizer::normalize($sessionUser->getRegistrationDate()),
         ];
 

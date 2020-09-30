@@ -85,6 +85,10 @@ const Session = {
       users: T.number,
       dates: T.arrayOf(T.string)
     }),
+    participants: T.shape({
+      tutors: T.number,
+      learners: T.number
+    }),
     registration: T.shape({
       selfRegistration: T.bool,
       selfUnregistration: T.bool,
@@ -107,6 +111,10 @@ const Session = {
       mail: false,
       userValidation: false,
       eventRegistrationType: constants.REGISTRATION_AUTO
+    },
+    participants: {
+      tutors: 0,
+      learners: 0
     }
   }
 }

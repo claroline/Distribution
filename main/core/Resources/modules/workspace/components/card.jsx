@@ -1,5 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
+
 import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
@@ -11,6 +13,9 @@ import {Workspace as WorkspaceTypes} from '#/main/core/workspace/prop-types'
 const WorkspaceCard = props =>
   <DataCard
     {...props}
+    className={classes(props.className, {
+      'data-card-muted': get(props.data, 'restrictions.hidden', false)
+    })}
     id={props.data.id}
     poster={props.data.thumbnail ? asset(props.data.thumbnail.url) : null}
     icon="fa fa-book"

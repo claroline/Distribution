@@ -46,7 +46,7 @@ class CursusUserSerializer
             'id' => $cursusUser->getUuid(),
             'cursus' => $this->serializer->serialize($cursusUser->getCursus(), [Options::SERIALIZE_MINIMAL]),
             'user' => $this->serializer->serialize($cursusUser->getUser(), [Options::SERIALIZE_MINIMAL]),
-            'type' => $cursusUser->getUserType(),
+            'type' => $cursusUser->getType(),
             'registrationDate' => DateNormalizer::normalize($cursusUser->getRegistrationDate()),
         ];
 

@@ -1,7 +1,10 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
+import get from 'lodash/get'
 
 import {trans} from '#/main/app/intl/translation'
+import {now} from '#/main/app/intl/date'
 import {hasPermission} from '#/main/app/security'
 import {LINK_BUTTON, MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
@@ -27,6 +30,39 @@ const SessionList = (props) =>
     }}
     definition={[
       {
+        name: 'status',
+        type: 'choice',
+        label: trans('status'),
+        displayed: true,
+        options: {
+          noEmpty: true,
+          choices: {
+            not_started: trans('session_not_started', {}, 'cursus'),
+            in_progress: trans('session_in_progress', {}, 'cursus'),
+            closed: trans('session_closed', {}, 'cursus')
+          },
+        },
+        render: (row) => {
+          let status
+          if (get(row, 'restrictions.dates[0]') > now(false)) {
+            status = 'not_started'
+          } else if (get(row, 'restrictions.dates[0]') <= now(false) && get(row, 'restrictions.dates[1]') >= now(false)) {
+            status = 'in_progress'
+          } else if (get(row, 'restrictions.dates[1]') < now(false)) {
+            status = 'closed'
+          }
+
+          return (
+            <span className={classes('label', {
+              'label-success': 'not_started' === status,
+              'label-info': 'in_progress' === status,
+              'label-danger': 'closed' === status
+            })}>
+              {trans('session_'+status, {}, 'cursus')}
+            </span>
+          )
+        }
+      }, {
         name: 'name',
         type: 'string',
         label: trans('name'),

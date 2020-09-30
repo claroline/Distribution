@@ -115,12 +115,12 @@ class CursusUser
         $this->registrationDate = $registrationDate;
     }
 
-    public function getUserType()
+    public function getType()
     {
         return $this->userType;
     }
 
-    public function setUserType($userType)
+    public function setType($userType)
     {
         $this->userType = $userType;
     }

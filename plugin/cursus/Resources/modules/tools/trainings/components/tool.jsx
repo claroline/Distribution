@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {Routes} from '#/main/app/router'
 
 import {CatalogMain} from '#/plugin/cursus/tools/trainings/catalog/containers/main'
+import {SessionMain} from '#/plugin/cursus/tools/trainings/session/containers/main'
 
 const TrainingsTool = (props) =>
   <Routes
@@ -15,6 +16,9 @@ const TrainingsTool = (props) =>
       {
         path: '/catalog',
         component: CatalogMain
+      }, {
+        path: '/registered',
+        component: SessionMain
       }
     ]}
   />
