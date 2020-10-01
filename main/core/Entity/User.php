@@ -33,7 +33,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\User\UserRepository")
  * @ORM\Table(
  *     name="claro_user",
  *     indexes={

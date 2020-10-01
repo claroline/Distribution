@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\Role\Role as BaseRole;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\RoleRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\User\RoleRepository")
  * @ORM\Table(name="claro_role")
  * @ORM\HasLifecycleCallbacks
  * @DoctrineAssert\UniqueEntity("name")

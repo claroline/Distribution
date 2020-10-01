@@ -29,7 +29,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Base entity for all resources.
  *
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ResourceNodeRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Resource\ResourceNodeRepository")
  * @ORM\Table(name="claro_resource_node")
  * @Gedmo\Tree(type="materializedPath")
  * @ORM\HasLifecycleCallbacks

@@ -31,7 +31,7 @@ class NoteActionManager
     protected $noteActionRepository;
 
     /**
-     * @var \Claroline\CoreBundle\Repository\ResourceNodeRepository
+     * @var \Claroline\CoreBundle\Repository\Resource\ResourceNodeRepository
      */
     protected $resourceNodeRepository;
 

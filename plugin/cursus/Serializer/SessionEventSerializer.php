@@ -19,7 +19,7 @@ use Claroline\CoreBundle\API\Serializer\User\LocationSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
-use Claroline\CoreBundle\Repository\Organization\LocationRepository;
+use Claroline\CoreBundle\Repository\User\LocationRepository;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Doctrine\Common\Persistence\ObjectRepository;

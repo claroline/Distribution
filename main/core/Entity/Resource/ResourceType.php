@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ResourceTypeRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Resource\ResourceTypeRepository")
  * @ORM\Table(name="claro_resource_type")
  */
 class ResourceType

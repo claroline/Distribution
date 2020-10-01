@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Repository\Organization;
+namespace Claroline\CoreBundle\Repository\User;
 
 use Doctrine\ORM\EntityRepository;
 

@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ResourceMaskDecoderRepository")
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Resource\ResourceMaskDecoderRepository")
  * @ORM\Table(
  *     name="claro_resource_mask_decoder",
  *     indexes={

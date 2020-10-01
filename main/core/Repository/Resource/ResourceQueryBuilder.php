@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Repository;
+namespace Claroline\CoreBundle\Repository\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
@@ -325,7 +325,7 @@ class ResourceQueryBuilder
      *
      * @param array[string|Role] $roles
      *
-     * @return \Claroline\CoreBundle\Repository\ResourceQueryBuilder
+     * @return ResourceQueryBuilder
      */
     public function whereHasRoleIn(array $roles)
     {

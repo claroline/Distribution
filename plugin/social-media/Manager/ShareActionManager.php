@@ -33,7 +33,7 @@ class ShareActionManager
     protected $shareActionRepository;
 
     /**
-     * @var \Claroline\CoreBundle\Repository\ResourceNodeRepository
+     * @var \Claroline\CoreBundle\Repository\Resource\ResourceNodeRepository
      */
     protected $resourceNodeRepository;
 
