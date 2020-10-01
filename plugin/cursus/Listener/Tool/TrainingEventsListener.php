@@ -14,7 +14,7 @@ namespace Claroline\CursusBundle\Listener\Tool;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\Event\Tool\OpenToolEvent;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 
 class TrainingEventsListener
 {
@@ -28,7 +28,7 @@ class TrainingEventsListener
 
     public function onDisplayWorkspace(OpenToolEvent $event)
     {
-        $sessionList = $this->finder->search(CourseSession::class, [
+        $sessionList = $this->finder->search(Session::class, [
             'filters' => ['workspace' => $event->getWorkspace()->getUuid()],
         ], [Options::SERIALIZE_MINIMAL]);
 

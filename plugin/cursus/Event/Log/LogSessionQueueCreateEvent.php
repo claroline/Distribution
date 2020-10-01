@@ -12,7 +12,7 @@
 namespace Claroline\CursusBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
+use Claroline\CursusBundle\Entity\SessionRegistrationQueue;
 
 class LogSessionQueueCreateEvent extends LogGenericEvent
 {
@@ -34,7 +34,7 @@ class LogSessionQueueCreateEvent extends LogGenericEvent
         $details['sessionId'] = $session->getUuid();
         $details['sessionName'] = $session->getName();
         $details['sessionType'] = $session->getType();
-        $details['applicationDate'] = $queue->getApplicationDate();
+        //$details['applicationDate'] = $queue->getApplicationDate();
 
         parent::__construct(
             self::ACTION,

@@ -12,12 +12,17 @@
 namespace Claroline\CursusBundle\Security\Voter;
 
 use Claroline\CoreBundle\Security\Voter\AbstractVoter;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class SessionVoter extends AbstractVoter
 {
+    public function getClass()
+    {
+        return Session::class;
+    }
+
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
     {
         switch ($attributes[0]) {
@@ -33,10 +38,5 @@ class SessionVoter extends AbstractVoter
         }
 
         return VoterInterface::ACCESS_ABSTAIN;
-    }
-
-    public function getClass()
-    {
-        return CourseSession::class;
     }
 }

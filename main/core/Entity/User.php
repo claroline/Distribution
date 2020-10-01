@@ -679,12 +679,7 @@ class User extends AbstractRoleSubject implements \Serializable, AdvancedUserInt
         return $this;
     }
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return bool
-     */
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
         if (0 === count($user->getRoles())) {
             return false;
@@ -806,8 +801,6 @@ class User extends AbstractRoleSubject implements \Serializable, AdvancedUserInt
      *
      * NOTE : creation date is already handled by the timestamp listener; this
      *        setter exists mainly for testing purposes.
-     *
-     * @param \DateTime $date
      */
     public function setCreationDate(\DateTime $date)
     {

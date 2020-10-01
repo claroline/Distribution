@@ -12,13 +12,13 @@
 namespace Claroline\CursusBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 
 class LogSessionDeleteEvent extends LogGenericEvent
 {
     const ACTION = 'cursusbundle-course-session-delete';
 
-    public function __construct(CourseSession $session)
+    public function __construct(Session $session)
     {
         $course = $session->getCourse();
         $workspace = $session->getWorkspace();
@@ -35,7 +35,6 @@ class LogSessionDeleteEvent extends LogGenericEvent
         $details['endDate'] = $session->getEndDate();
         $details['userValidation'] = $session->getUserValidation();
         $details['maxUsers'] = $session->getMaxUsers();
-        $details['type'] = $session->getType();
 
         $details['courseId'] = $course->getUuid();
         $details['courseTitle'] = $course->getName();

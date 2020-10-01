@@ -12,8 +12,8 @@ const REGISTRATION_TYPES = {
   [REGISTRATION_PUBLIC]: trans('event_registration_public', {}, 'cursus')
 }
 
-const LEARNER_TYPE = 0
-const TEACHER_TYPE = 1
+const LEARNER_TYPE = 'learner'
+const TEACHER_TYPE = 'tutor'
 
 const VALIDATION = 1
 const VALIDATION_USER = 2

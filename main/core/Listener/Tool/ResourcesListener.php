@@ -22,13 +22,6 @@ class ResourcesListener
     private $serializer;
     /** @var ResourceNodeRepository */
     private $resourceRepository;
-
-    /**
-     * ResourcesListener constructor.
-     *
-     * @param ObjectManager      $om
-     * @param SerializerProvider $serializer
-     */
     public function __construct(
         ObjectManager $om,
         SerializerProvider $serializer
@@ -39,8 +32,6 @@ class ResourcesListener
 
     /**
      * Displays resources on Desktop.
-     *
-     * @param OpenToolEvent $event
      */
     public function onDisplayDesktop(OpenToolEvent $event)
     {
@@ -52,8 +43,6 @@ class ResourcesListener
 
     /**
      * Displays resources on Workspace.
-     *
-     * @param OpenToolEvent $event
      */
     public function onDisplayWorkspace(OpenToolEvent $event)
     {

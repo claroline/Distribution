@@ -101,11 +101,6 @@ class MaskDecoder
         return $this->name;
     }
 
-    /**
-     * @param ResourceType $resourceType
-     *
-     * @return MaskDecoder
-     */
     public function setResourceType(ResourceType $resourceType)
     {
         if ($this->resourceType instanceof ResourceType) {

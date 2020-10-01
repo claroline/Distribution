@@ -27,7 +27,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CursusBundle\Entity\Course;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SessionSerializer
@@ -84,7 +84,7 @@ class SessionSerializer
         return '#/plugin/cursus/session.json';
     }
 
-    public function serialize(CourseSession $session, array $options = []): array
+    public function serialize(Session $session, array $options = []): array
     {
         $serialized = [
             'id' => $session->getUuid(),
@@ -145,8 +145,8 @@ class SessionSerializer
                     'eventRegistrationType' => $session->getEventRegistrationType(),
                 ],
                 'participants' => [
-                    'tutors' => $session->countTutors(),
-                    'learners' => $session->countLearners(),
+                    'tutors' => 0, //$session->countTutors(),
+                    'learners' => 0 //$session->countLearners(),
                 ],
                 'resources' => array_map(function (ResourceNode $resource) {
                     return $this->resourceSerializer->serialize($resource, [Options::SERIALIZE_MINIMAL]);
@@ -157,7 +157,7 @@ class SessionSerializer
         return $serialized;
     }
 
-    public function deserialize(array $data, CourseSession $session): CourseSession
+    public function deserialize(array $data, Session $session): Session
     {
         $this->sipe('id', 'setUuid', $data, $session);
         $this->sipe('code', 'setCode', $data, $session);
@@ -238,7 +238,7 @@ class SessionSerializer
         return $session;
     }
 
-    private function serializePoster(CourseSession $session)
+    private function serializePoster(Session $session)
     {
         if (!empty($session->getPoster())) {
             /** @var PublicFile $file */
@@ -254,7 +254,7 @@ class SessionSerializer
         return null;
     }
 
-    private function serializeThumbnail(CourseSession $session)
+    private function serializeThumbnail(Session $session)
     {
         if (!empty($session->getThumbnail())) {
             /** @var PublicFile $file */

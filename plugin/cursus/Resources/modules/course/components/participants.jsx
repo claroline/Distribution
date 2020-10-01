@@ -38,7 +38,7 @@ const CourseTutors = (props) =>
           label: trans('user'),
           displayed: true
         }, {
-          name: 'registrationDate',
+          name: 'date',
           type: 'date',
           label: trans('registration_date', {}, 'cursus'),
           options: {time: true},

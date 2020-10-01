@@ -20,12 +20,11 @@ use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
-use Claroline\CursusBundle\Entity\AbstractRegistrationQueue;
+use Claroline\CursusBundle\Entity\Registration\AbstractRegistration;
+use Claroline\CursusBundle\Entity\Registration\SessionGroup;
+use Claroline\CursusBundle\Entity\Registration\SessionUser;
 use Claroline\CursusBundle\Entity\Course;
-use Claroline\CursusBundle\Entity\CourseSession;
-use Claroline\CursusBundle\Entity\CourseSessionGroup;
-use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
-use Claroline\CursusBundle\Entity\CourseSessionUser;
+use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Event\Log\LogSessionGroupRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
@@ -55,13 +54,12 @@ class SessionManager
     private $tokenStorage;
     /** @var WorkspaceManager */
     private $workspaceManager;
-    /** @var SessionEventManager */
+    /** @var EventManager */
     private $sessionEventManager;
 
-    private $courseSessionRepo;
+    private $sessionRepo;
     private $sessionUserRepo;
     private $sessionGroupRepo;
-    private $sessionQueueRepo;
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -72,7 +70,7 @@ class SessionManager
         TemplateManager $templateManager,
         TokenStorageInterface $tokenStorage,
         WorkspaceManager $workspaceManager,
-        SessionEventManager $sessionEventManager
+        EventManager $sessionEventManager
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->mailManager = $mailManager;
@@ -84,16 +82,15 @@ class SessionManager
         $this->workspaceManager = $workspaceManager;
         $this->sessionEventManager = $sessionEventManager;
 
-        $this->courseSessionRepo = $om->getRepository(CourseSession::class);
-        $this->sessionUserRepo = $om->getRepository(CourseSessionUser::class);
-        $this->sessionGroupRepo = $om->getRepository(CourseSessionGroup::class);
-        $this->sessionQueueRepo = $om->getRepository(CourseSessionRegistrationQueue::class);
+        $this->sessionRepo = $om->getRepository(Session::class);
+        $this->sessionUserRepo = $om->getRepository(SessionUser::class);
+        $this->sessionGroupRepo = $om->getRepository(SessionGroup::class);
     }
 
-    public function setDefaultSession(Course $course, CourseSession $session = null)
+    public function setDefaultSession(Course $course, Session $session = null)
     {
-        /** @var CourseSession[] $defaultSessions */
-        $defaultSessions = $this->courseSessionRepo->findBy(['course' => $course, 'defaultSession' => true]);
+        /** @var Session[] $defaultSessions */
+        $defaultSessions = $this->sessionRepo->findBy(['course' => $course, 'defaultSession' => true]);
 
         foreach ($defaultSessions as $defaultSession) {
             if ($defaultSession !== $session) {
@@ -105,7 +102,7 @@ class SessionManager
         $this->om->flush();
     }
 
-    public function generateFromTemplate(CourseSession $session, string $basePath, string $locale)
+    public function generateFromTemplate(Session $session, string $basePath, string $locale)
     {
         $placeholders = [
             'session_name' => $session->getName(),
@@ -124,7 +121,7 @@ class SessionManager
     /**
      * Generates a workspace from CourseSession.
      */
-    public function generateWorkspace(CourseSession $session): Workspace
+    public function generateWorkspace(Session $session): Workspace
     {
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
@@ -156,7 +153,7 @@ class SessionManager
     /**
      * Adds users to a session.
      */
-    public function addUsersToSession(CourseSession $session, array $users, int $type = CourseSessionUser::TYPE_LEARNER): array
+    public function addUsersToSession(Session $session, array $users, string $type = AbstractRegistration::LEARNER): array
     {
         $results = [];
 
@@ -169,14 +166,14 @@ class SessionManager
             $sessionUser = $this->sessionUserRepo->findOneBy(['session' => $session, 'user' => $user, 'type' => $type]);
 
             if (empty($sessionUser)) {
-                $sessionUser = new CourseSessionUser();
+                $sessionUser = new SessionUser();
                 $sessionUser->setSession($session);
                 $sessionUser->setUser($user);
                 $sessionUser->setType($type);
-                $sessionUser->setRegistrationDate($registrationDate);
+                $sessionUser->setDate($registrationDate);
 
                 // Registers user to session workspace
-                $role = CourseSessionGroup::TYPE_TEACHER === $type ? $session->getTutorRole() : $session->getLearnerRole();
+                $role = AbstractRegistration::TUTOR === $type ? $session->getTutorRole() : $session->getLearnerRole();
 
                 if ($role) {
                     $this->roleManager->associateRole($user, $role);
@@ -200,13 +197,11 @@ class SessionManager
         }
 
         // registers users to linked events
-        if (CourseSessionUser::TYPE_LEARNER === $type) {
-            $events = $session->getEvents();
+        $events = $session->getEvents();
 
-            foreach ($events as $event) {
-                if (CourseSession::REGISTRATION_AUTO === $event->getRegistrationType() && !$event->isTerminated()) {
-                    $this->sessionEventManager->addUsersToSessionEvent($event, $users);
-                }
+        foreach ($events as $event) {
+            if (Session::REGISTRATION_AUTO === $event->getRegistrationType() && !$event->isTerminated()) {
+                $this->sessionEventManager->addUsersToSessionEvent($event, $users);
             }
         }
 
@@ -215,7 +210,7 @@ class SessionManager
         return $results;
     }
 
-    public function removeUsersFromSession(CourseSession $session, array $sessionUsers)
+    public function removeUsersFromSession(Session $session, array $sessionUsers)
     {
         foreach ($sessionUsers as $sessionUser) {
             $this->om->remove($sessionUser);
@@ -236,7 +231,7 @@ class SessionManager
     /**
      * Adds groups to a session.
      */
-    public function addGroupsToSession(CourseSession $session, array $groups, int $type = CourseSessionGroup::TYPE_LEARNER): array
+    public function addGroupsToSession(Session $session, array $groups, string $type = AbstractRegistration::LEARNER): array
     {
         $results = [];
         $registrationDate = new \DateTime();
@@ -247,14 +242,14 @@ class SessionManager
             $sessionGroup = $this->sessionGroupRepo->findOneBy(['session' => $session, 'group' => $group, 'type' => $type]);
 
             if (empty($sessionGroup)) {
-                $sessionGroup = new CourseSessionGroup();
+                $sessionGroup = new SessionGroup();
                 $sessionGroup->setSession($session);
                 $sessionGroup->setGroup($group);
                 $sessionGroup->setType($type);
-                $sessionGroup->setRegistrationDate($registrationDate);
+                $sessionGroup->setDate($registrationDate);
 
                 // Registers group to session workspace
-                $role = CourseSessionGroup::TYPE_TEACHER === $type ? $session->getTutorRole() : $session->getLearnerRole();
+                $role = AbstractRegistration::TUTOR === $type ? $session->getTutorRole() : $session->getLearnerRole();
 
                 if ($role) {
                     $this->roleManager->associateRole($group, $role);
@@ -275,9 +270,9 @@ class SessionManager
     /**
      * Registers an user to a session if allowed.
      *
-     * @return CourseSessionUser|CourseSessionRegistrationQueue|array
+     * @return SessionUser
      */
-    public function registerUserToSession(CourseSession $session, User $user, bool $skipValidation = false)
+    public function registerUserToSession(Session $session, User $user, bool $skipValidation = false)
     {
         $validationMask = 0;
 
@@ -310,7 +305,7 @@ class SessionManager
     /**
      * Creates a queue for session and user.
      */
-    public function createSessionQueue(CourseSession $session, User $user, int $mask = 0, \DateTime $date = null): CourseSessionRegistrationQueue
+    public function createSessionQueue(Session $session, User $user, int $mask = 0, \DateTime $date = null): CourseSessionRegistrationQueue
     {
         $this->om->startFlushSuite();
         $queue = new CourseSessionRegistrationQueue();
@@ -431,14 +426,14 @@ class SessionManager
     /**
      * Checks user limit of a session to know if there is still place for the given number of users.
      */
-    public function checkSessionCapacity(CourseSession $session, $count = 1): bool
+    public function checkSessionCapacity(Session $session, $count = 1): bool
     {
         $hasPlace = true;
         $maxUsers = $session->getMaxUsers();
 
         if ($maxUsers) {
-            $sessionUsers = $this->sessionUserRepo->findBy(['session' => $session, 'type' => CourseSessionUser::TYPE_LEARNER]);
-            $sessionGroups = $this->sessionGroupRepo->findBy(['session' => $session, 'type' => CourseSessionGroup::TYPE_LEARNER]);
+            $sessionUsers = $this->sessionUserRepo->findBy(['session' => $session, 'type' => AbstractRegistration::LEARNER]);
+            $sessionGroups = $this->sessionGroupRepo->findBy(['session' => $session, 'type' => AbstractRegistration::LEARNER]);
             $groups = [];
 
             foreach ($sessionGroups as $sessionGroup) {
@@ -458,17 +453,17 @@ class SessionManager
     /**
      * Sends invitation to all session learners.
      */
-    public function inviteAllSessionLearners(CourseSession $session, Template $template = null)
+    public function inviteAllSessionLearners(Session $session, Template $template = null)
     {
-        /** @var CourseSessionUser[] $sessionLearners */
+        /** @var SessionUser[] $sessionLearners */
         $sessionLearners = $this->sessionUserRepo->findBy([
             'session' => $session,
-            'type' => CourseSessionUser::TYPE_LEARNER,
+            'type' => AbstractRegistration::LEARNER,
         ]);
-        /** @var CourseSessionGroup[] $sessionGroups */
+        /** @var SessionGroup[] $sessionGroups */
         $sessionGroups = $this->sessionGroupRepo->findBy([
             'session' => $session,
-            'type' => CourseSessionGroup::TYPE_LEARNER,
+            'type' => AbstractRegistration::LEARNER,
         ]);
         $users = [];
 
@@ -491,14 +486,14 @@ class SessionManager
     /**
      * Sends invitation to session to given users.
      */
-    public function sendSessionInvitation(CourseSession $session, array $users, Template $template = null)
+    public function sendSessionInvitation(Session $session, array $users, Template $template = null)
     {
         $course = $session->getCourse();
         $trainersList = '';
-        /** @var CourseSessionUser[] $sessionTrainers */
+        /** @var SessionUser[] $sessionTrainers */
         $sessionTrainers = $this->sessionUserRepo->findBy([
             'session' => $session,
-            'type' => CourseSessionUser::TYPE_TEACHER,
+            'type' => AbstractRegistration::TUTOR,
         ]);
 
         if (0 < count($sessionTrainers)) {

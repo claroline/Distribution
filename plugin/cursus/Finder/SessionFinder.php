@@ -12,14 +12,14 @@
 namespace Claroline\CursusBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 use Doctrine\ORM\QueryBuilder;
 
 class SessionFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return CourseSession::class;
+        return Session::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])

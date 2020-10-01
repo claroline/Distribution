@@ -13,7 +13,6 @@ namespace Claroline\CursusBundle\Controller;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
@@ -21,7 +20,7 @@ use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
 use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\CursusBundle\Entity\Course;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Manager\CourseManager;
 use Dompdf\Dompdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -128,7 +127,7 @@ class CourseController extends AbstractCrudController
     {
         $this->checkPermission('OPEN', $course, [], true);
 
-        $sessions = $this->finder->search(CourseSession::class, [
+        $sessions = $this->finder->search(Session::class, [
             'filters' => [
                 'terminated' => false,
                 'course' => $course->getUuid(),
@@ -195,7 +194,7 @@ class CourseController extends AbstractCrudController
         }
 
         return new JsonResponse(
-            $this->finder->search('Claroline\CursusBundle\Entity\CourseSession', $params)
+            $this->finder->search(Session::class, $params)
         );
     }
 
@@ -246,56 +245,6 @@ class CourseController extends AbstractCrudController
 
         $cursusUsers = $this->decodeIdsString($request, CursusUser::class);
         $this->manager->deleteEntities($cursusUsers);
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route("/{id}/groups/{type}", name="apiv2_cursus_course_list_groups", methods={"GET"})
-     * @EXT\ParamConverter("course", class="ClarolineCursusBundle:Course", options={"mapping": {"id": "uuid"}})
-     */
-    public function listGroupsAction(Course $course, $type, Request $request): JsonResponse
-    {
-        $this->checkPermission('OPEN', $course, [], true);
-
-        $params = $request->query->all();
-
-        if (!isset($params['hiddenFilters'])) {
-            $params['hiddenFilters'] = [];
-        }
-        $params['hiddenFilters']['course'] = $course->getUuid();
-        $params['hiddenFilters']['type'] = intval($type);
-
-        return new JsonResponse(
-            $this->finder->search(CursusGroup::class, $params)
-        );
-    }
-
-    /**
-     * @Route("/{id}/{type}/groups", name="apiv2_cursus_course_add_groups", methods={"PATCH"})
-     * @EXT\ParamConverter("course", class="ClarolineCursusBundle:Course", options={"mapping": {"id": "uuid"}})
-     */
-    public function addGroupsAction(Course $course, $type, Request $request): JsonResponse
-    {
-        $this->checkPermission('EDIT', $course, [], true);
-
-        $groups = $this->decodeIdsString($request, Group::class);
-        $cursusGroups = $this->manager->addGroupsToCursus($course, $groups, intval($type));
-
-        return new JsonResponse(array_map(function (CursusGroup $cursusGroup) {
-            return $this->serializer->serialize($cursusGroup);
-        }, $cursusGroups));
-    }
-
-    /**
-     * @Route("/{id}/groups/{type}", name="apiv2_cursus_course_remove_groups", methods={"DELETE"})
-     */
-    public function removeGroupsAction(Course $course, Request $request): JsonResponse
-    {
-        $this->checkPermission('EDIT', $course, [], true);
-
-        $cursusGroups = $this->decodeIdsString($request, CursusGroup::class);
-        $this->manager->deleteEntities($cursusGroups);
 
         return new JsonResponse();
     }

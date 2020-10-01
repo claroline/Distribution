@@ -11,8 +11,6 @@
 
 namespace Claroline\CursusBundle\Entity;
 
-use Claroline\AppBundle\Entity\Identifier\Id;
-use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\AppBundle\Entity\Restriction\Hidden;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -26,11 +24,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  * @ORM\Table(name="claro_cursusbundle_course")
  * @DoctrineAssert\UniqueEntity("code")
  */
-class Course extends AbstractCourseSession
+class Course extends AbstractTraining
 {
-    use Id;
-    use Uuid;
-
     use Hidden;
 
     /**
@@ -75,11 +70,11 @@ class Course extends AbstractCourseSession
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\CursusBundle\Entity\CourseSession",
+     *     targetEntity="Claroline\CursusBundle\Entity\Session",
      *     mappedBy="course"
      * )
      *
-     * @var CourseSession[]
+     * @var Session[]
      */
     private $sessions;
 

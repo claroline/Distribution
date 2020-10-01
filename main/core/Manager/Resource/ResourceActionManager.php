@@ -57,15 +57,6 @@ class ResourceActionManager
      */
     private $actions = [];
 
-    /**
-     * ResourceMenuManager constructor.
-     *
-     * @param ObjectManager                 $om
-     * @param AuthorizationCheckerInterface $authorization
-     * @param StrictDispatcher              $dispatcher
-     * @param ResourceManager               $resourceManager
-     * @param ParametersSerializer          $parametersSerializer
-     */
     public function __construct(
         ObjectManager $om,
         AuthorizationCheckerInterface $authorization,
@@ -84,12 +75,6 @@ class ResourceActionManager
 
     /**
      * Checks if the resource node supports an action.
-     *
-     * @param ResourceNode $resourceNode
-     * @param string       $actionName
-     * @param string       $method
-     *
-     * @return bool
      */
     public function support(ResourceNode $resourceNode, string $actionName, string $method): bool
     {
@@ -104,12 +89,6 @@ class ResourceActionManager
 
     /**
      * Executes an action on a resource.
-     *
-     * @param ResourceNode $resourceNode
-     * @param string       $actionName
-     * @param array        $options
-     * @param array        $content
-     * @param array        $files
      *
      * @return Response
      */
@@ -143,9 +122,6 @@ class ResourceActionManager
     /**
      * Retrieves the correct action instance for resource.
      *
-     * @param ResourceNode $resourceNode
-     * @param string       $actionName
-     *
      * @return MenuAction
      */
     public function get(ResourceNode $resourceNode, string $actionName)
@@ -162,8 +138,6 @@ class ResourceActionManager
 
     /**
      * Gets all actions available for a resource type.
-     *
-     * @param ResourceType $resourceType
      *
      * @return MenuAction[]
      */
@@ -183,11 +157,6 @@ class ResourceActionManager
 
     /**
      * Checks if the current user can execute an action on a resource.
-     *
-     * @param MenuAction         $action
-     * @param ResourceCollection $resourceNodes
-     *
-     * @return bool
      */
     public function hasPermission(MenuAction $action, ResourceCollection $resourceNodes): bool
     {
@@ -196,13 +165,8 @@ class ResourceActionManager
 
     /**
      * Generates the names for resource actions events.
-     *
-     * @param string       $actionName
-     * @param ResourceType $resourceType
-     *
-     * @return string
      */
-    private static function eventName($actionName, ResourceType $resourceType = null): string
+    private static function eventName(string $actionName, ResourceType $resourceType = null): string
     {
         if (!empty($resourceType)) {
             // This is an action only available for the current type

@@ -20,6 +20,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class CourseVoter extends AbstractVoter
 {
+    public function getClass()
+    {
+        return Course::class;
+    }
+
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
     {
         /** @var OrderedToolRepository $orderedToolRepo */
@@ -55,10 +60,5 @@ class CourseVoter extends AbstractVoter
         }
 
         return VoterInterface::ACCESS_ABSTAIN;
-    }
-
-    public function getClass()
-    {
-        return Course::class;
     }
 }

@@ -47,18 +47,6 @@ class ResourceVoter implements VoterInterface
     private $rightsManager;
     private $restrictionsManager;
 
-    /**
-     * ResourceVoter constructor.
-     *
-     * @param EntityManager               $em
-     * @param TranslatorInterface         $translator
-     * @param Utilities                   $ut
-     * @param MaskManager                 $maskManager
-     * @param WorkspaceManager            $workspaceManager
-     * @param ResourceManager             $resourceManager
-     * @param RightsManager               $rightsManager
-     * @param ResourceRestrictionsManager $restrictionsManager
-     */
     public function __construct(
         EntityManager $em,
         TranslatorInterface $translator,
@@ -182,7 +170,6 @@ class ResourceVoter implements VoterInterface
      * Checks if the resourceType name $resourceType is in the
      * $rightsCreation array.
      *
-     * @param array  $rightsCreation
      * @param string $resourceType
      *
      * @return bool
@@ -201,7 +188,6 @@ class ResourceVoter implements VoterInterface
     /**
      * @param string         $action
      * @param ResourceNode[] $nodes
-     * @param TokenInterface $token
      *
      * @return array
      *
@@ -280,10 +266,6 @@ class ResourceVoter implements VoterInterface
      * Checks if a resource whose type is $type
      * can be created in the directory $resource by the $token.
      *
-     * @param $type
-     * @param ResourceNode   $node
-     * @param TokenInterface $token
-     *
      * @return array
      */
     protected function checkCreation($type, ResourceNode $node, TokenInterface $token)
@@ -340,9 +322,7 @@ class ResourceVoter implements VoterInterface
      * Checks if the array of resources can be moved to the resource $parent
      * by the $token.
      *
-     * @param ResourceNode   $parent
-     * @param array          $nodes
-     * @param TokenInterface $token
+     * @param array $nodes
      *
      * @return array
      */
@@ -369,9 +349,7 @@ class ResourceVoter implements VoterInterface
      * Checks if the array of resources can be copied to the resource $parent
      * by the $token.
      *
-     * @param ResourceNode   $parent
      * @param ResourceNode[] $nodes
-     * @param TokenInterface $token
      *
      * @return array
      */

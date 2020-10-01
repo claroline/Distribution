@@ -30,7 +30,7 @@ class LogCourseQueueCreateEvent extends LogGenericEvent
         $details['courseId'] = $course->getUuid();
         $details['courseTitle'] = $course->getName();
         $details['courseCode'] = $course->getCode();
-        $details['applicationDate'] = $queue->getApplicationDate();
+        //$details['applicationDate'] = $queue->getApplicationDate();
 
         parent::__construct(
             self::ACTION,

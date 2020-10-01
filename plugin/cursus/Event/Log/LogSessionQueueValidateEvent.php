@@ -12,7 +12,7 @@
 namespace Claroline\CursusBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
+use Claroline\CursusBundle\Entity\SessionRegistrationQueue;
 
 class LogSessionQueueValidateEvent extends LogGenericEvent
 {

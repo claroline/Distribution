@@ -13,13 +13,13 @@ namespace Claroline\CursusBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CursusBundle\Entity\CourseRegistrationQueue;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 
 class LogCourseQueueTransferEvent extends LogGenericEvent
 {
     const ACTION = 'cursusbundle-course-queue-transfer';
 
-    public function __construct(CourseRegistrationQueue $queue, CourseSession $session)
+    public function __construct(CourseRegistrationQueue $queue, Session $session)
     {
         $course = $queue->getCourse();
         $user = $queue->getUser();
@@ -33,7 +33,6 @@ class LogCourseQueueTransferEvent extends LogGenericEvent
         $details['courseCode'] = $course->getCode();
         $details['sessionId'] = $session->getUuid();
         $details['sessionName'] = $session->getName();
-        $details['sessionType'] = $session->getType();
 
         parent::__construct(
             self::ACTION,

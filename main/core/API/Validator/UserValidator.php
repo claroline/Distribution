@@ -21,12 +21,6 @@ class UserValidator implements ValidatorInterface
     /** @var UserRepository */
     private $repo;
 
-    /**
-     * UserValidator constructor.
-     *
-     * @param ObjectManager     $om
-     * @param ProfileSerializer $profileSerializer
-     */
     public function __construct(ObjectManager $om, ProfileSerializer $profileSerializer)
     {
         $this->om = $om;

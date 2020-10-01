@@ -13,7 +13,7 @@ namespace Claroline\CursusBundle\Listener\DataSource;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Event\DataSource\GetDataEvent;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 
 class PublicSessionSource
 {
@@ -40,7 +40,7 @@ class PublicSessionSource
         $options['hiddenFilters']['terminated'] = false;
 
         $event->setData(
-            $this->finder->search(CourseSession::class, $options)
+            $this->finder->search(Session::class, $options)
         );
 
         $event->stopPropagation();

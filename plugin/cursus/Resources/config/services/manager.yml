@@ -23,9 +23,9 @@ services:
             - '@claroline.manager.template_manager'
             - '@security.token_storage'
             - '@Claroline\CoreBundle\Manager\Workspace\WorkspaceManager'
-            - '@Claroline\CursusBundle\Manager\SessionEventManager'
+            - '@Claroline\CursusBundle\Manager\EventManager'
 
-    Claroline\CursusBundle\Manager\SessionEventManager:
+    Claroline\CursusBundle\Manager\EventManager:
         arguments:
             - '@event_dispatcher'
             - '@claroline.manager.mail_manager'

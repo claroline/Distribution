@@ -44,9 +44,9 @@ services:
             - '@claroline.manager.tool_manager'
             - '@Claroline\CursusBundle\Manager\SessionManager'
 
-    Claroline\CursusBundle\Controller\SessionEventController:
+    Claroline\CursusBundle\Controller\EventController:
         arguments:
             - '@security.authorization_checker'
             - '@security.token_storage'
             - '@translator'
-            - '@Claroline\CursusBundle\Manager\SessionEventManager'
+            - '@Claroline\CursusBundle\Manager\EventManager'

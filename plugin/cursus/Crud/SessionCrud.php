@@ -15,7 +15,7 @@ use Claroline\AppBundle\Event\Crud\CreateEvent;
 use Claroline\AppBundle\Event\Crud\DeleteEvent;
 use Claroline\AppBundle\Event\Crud\UpdateEvent;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Event\Log\LogSessionCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionDeleteEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionEditEvent;
@@ -47,7 +47,7 @@ class SessionCrud
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        /** @var CourseSession $session */
+        /** @var Session $session */
         $session = $event->getObject();
 
         $session->setCreatedAt(new \DateTime());
@@ -60,7 +60,7 @@ class SessionCrud
 
     public function postCreate(CreateEvent $event)
     {
-        /** @var CourseSession $session */
+        /** @var Session $session */
         $session = $event->getObject();
 
         // Removes default session flag on all other sessions if this one is the default one
@@ -100,7 +100,7 @@ class SessionCrud
 
     public function preUpdate(UpdateEvent $event)
     {
-        /** @var CourseSession $session */
+        /** @var Session $session */
         $session = $event->getObject();
 
         $session->setUpdatedAt(new \DateTime());
@@ -108,7 +108,7 @@ class SessionCrud
 
     public function postUpdate(UpdateEvent $event)
     {
-        /** @var CourseSession $session */
+        /** @var Session $session */
         $session = $event->getObject();
 
         // Removes default session flag on all other sessions if this one is the default one

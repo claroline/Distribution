@@ -25,13 +25,6 @@ class ResourceWidgetSerializer
     /** @var ResourceNodeRepository */
     private $nodeRepo;
 
-    /**
-     * ResourceWidgetSerializer constructor.
-     *
-     * @param TokenStorageInterface  $tokenStorage
-     * @param ObjectManager          $om
-     * @param ResourceNodeSerializer $nodeSerializer
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         ObjectManager $om,
@@ -44,14 +37,11 @@ class ResourceWidgetSerializer
         $this->nodeRepo = $om->getRepository(ResourceNode::class);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'resource_widget';
     }
 
-    /**
-     * @return string
-     */
     public function getClass(): string
     {
         return ResourceWidget::class;

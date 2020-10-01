@@ -12,14 +12,14 @@
 namespace Claroline\CursusBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\CursusBundle\Entity\CourseSessionUser;
+use Claroline\CursusBundle\Entity\Registration\SessionUser;
 use Doctrine\ORM\QueryBuilder;
 
 class SessionUserFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return CourseSessionUser::class;
+        return SessionUser::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
@@ -33,6 +33,7 @@ class SessionUserFinder extends AbstractFinder
                     $qb->andWhere("s.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
+
                 case 'user':
                     if (!$userJoin) {
                         $qb->join('obj.user', 'u');
@@ -41,53 +42,14 @@ class SessionUserFinder extends AbstractFinder
                     $qb->andWhere("u.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
-                case 'user.firstName':
-                    if (!$userJoin) {
-                        $qb->join('obj.user', 'u');
-                        $userJoin = true;
-                    }
-                    $qb->andWhere('u.firstName LIKE :firstName');
-                    $qb->setParameter('firstName', '%'.strtoupper($filterValue).'%');
-                    break;
-                case 'user.lastName':
-                    if (!$userJoin) {
-                        $qb->join('obj.user', 'u');
-                        $userJoin = true;
-                    }
-                    $qb->andWhere('u.lastName LIKE :lastName');
-                    $qb->setParameter('lastName', '%'.strtoupper($filterValue).'%');
-                    break;
+
                 case 'type':
                     $qb->andWhere("obj.type = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
-                default:
-                    if (is_bool($filterValue)) {
-                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                        $qb->setParameter($filterName, $filterValue);
-                    } else {
-                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    }
-            }
-        }
-        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
-            $sortByProperty = $sortBy['property'];
-            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
 
-            switch ($sortByProperty) {
-                case 'user.firstName':
-                    if (!$userJoin) {
-                        $qb->join('obj.user', 'u');
-                    }
-                    $qb->orderBy('u.firstName', $sortByDirection);
-                    break;
-                case 'user.lastName':
-                    if (!$userJoin) {
-                        $qb->join('obj.user', 'u');
-                    }
-                    $qb->orderBy('u.lastName', $sortByDirection);
-                    break;
+                default:
+                    $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 

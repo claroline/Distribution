@@ -15,17 +15,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\Template\TemplateManager;
-use Claroline\CursusBundle\Entity\AbstractRegistrationQueue;
 use Claroline\CursusBundle\Entity\Course;
-use Claroline\CursusBundle\Entity\CourseRegistrationQueue;
-use Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue;
-use Claroline\CursusBundle\Entity\CourseSessionUser;
-use Claroline\CursusBundle\Entity\Cursus;
-use Claroline\CursusBundle\Entity\CursusGroup;
-use Claroline\CursusBundle\Entity\CursusUser;
-use Claroline\CursusBundle\Event\Log\LogCourseQueueCreateEvent;
-use Claroline\CursusBundle\Event\Log\LogCursusGroupRegistrationEvent;
-use Claroline\CursusBundle\Event\Log\LogCursusUserRegistrationEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -44,10 +34,6 @@ class CourseManager
     /** @var SessionManager */
     private $sessionManager;
 
-    private $cursusUserRepo;
-    private $cursusGroupRepo;
-    private $courseQueueRepo;
-
     public function __construct(
         TokenStorageInterface $tokenStorage,
         EventDispatcherInterface $eventDispatcher,
@@ -62,10 +48,6 @@ class CourseManager
         $this->tokenStorage = $tokenStorage;
         $this->templateManager = $templateManager;
         $this->sessionManager = $sessionManager;
-
-        $this->cursusUserRepo = $om->getRepository(CursusUser::class);
-        $this->cursusGroupRepo = $om->getRepository(CursusGroup::class);
-        $this->courseQueueRepo = $om->getRepository(CourseRegistrationQueue::class);
     }
 
     public function generateFromTemplate(Course $course, string $basePath, string $locale)
@@ -93,141 +75,10 @@ class CourseManager
     }
 
     /**
-     * Adds users to a cursus.
-     */
-    public function addUsersToCursus(Cursus $cursus, array $users, $type = CursusUser::TYPE_LEARNER): array
-    {
-        $results = [];
-        $registrationDate = new \DateTime();
-        $workspace = $cursus->getWorkspace();
-        $role = $workspace ? $this->roleManager->getCollaboratorRole($workspace) : null;
-
-        $this->om->startFlushSuite();
-
-        foreach ($users as $user) {
-            $cursusUser = $this->cursusUserRepo->findOneBy(['cursus' => $cursus, 'user' => $user, 'type' => $type]);
-
-            if (empty($cursusUser)) {
-                $cursusUser = new CursusUser();
-                $cursusUser->setCursus($cursus);
-                $cursusUser->setUser($user);
-                $cursusUser->setType($type);
-                $cursusUser->setRegistrationDate($registrationDate);
-
-                // Registers user to workspace if one is associated to cursus
-                if ($role) {
-                    $this->roleManager->associateRole($user, $role);
-                }
-
-                $this->om->persist($cursusUser);
-
-                $this->eventDispatcher->dispatch('log', new LogCursusUserRegistrationEvent($cursusUser));
-
-                $results[] = $cursusUser;
-            }
-        }
-        $this->om->endFlushSuite();
-
-        return $results;
-    }
-
-    /**
-     * Adds groups to a cursus.
-     */
-    public function addGroupsToCursus(Cursus $cursus, array $groups, $type = CursusGroup::TYPE_LEARNER): array
-    {
-        $results = [];
-        $registrationDate = new \DateTime();
-        $workspace = $cursus->getWorkspace();
-        $role = $workspace ? $this->roleManager->getCollaboratorRole($workspace) : null;
-
-        $this->om->startFlushSuite();
-
-        foreach ($groups as $group) {
-            $cursusGroup = $this->cursusGroupRepo->findOneBy(['cursus' => $cursus, 'group' => $group, 'groupType' => $type]);
-
-            if (empty($cursusGroup)) {
-                $cursusGroup = new CursusGroup();
-                $cursusGroup->setCursus($cursus);
-                $cursusGroup->setGroup($group);
-                $cursusGroup->setType($type);
-                $cursusGroup->setRegistrationDate($registrationDate);
-
-                // Registers group to workspace if one is associated to cursus
-                if ($role) {
-                    $this->roleManager->associateRole($group, $role);
-                }
-
-                $this->om->persist($cursusGroup);
-
-                $this->eventDispatcher->dispatch('log', new LogCursusGroupRegistrationEvent($cursusGroup));
-
-                $results[] = $cursusGroup;
-            }
-        }
-        $this->om->endFlushSuite();
-
-        return $results;
-    }
-
-    /**
      * Registers an user to default session of a course if allowed.
-     *
-     * @return CourseRegistrationQueue|CourseSessionUser|CourseSessionRegistrationQueue|null
      */
     public function registerUserToCourse(Course $course, User $user, bool $skipValidation = false)
     {
-        $validationMask = 0;
 
-        if (!$skipValidation) {
-            if ($course->getRegistrationValidation()) {
-                $validationMask += AbstractRegistrationQueue::WAITING;
-            }
-            if ($course->getUserValidation()) {
-                $validationMask += AbstractRegistrationQueue::WAITING_USER;
-            }
-        }
-
-        if (0 < $validationMask) {
-            $courseQueue = $this->courseQueueRepo->findOneBy(['course' => $course, 'user' => $user]);
-
-            if (!$courseQueue) {
-                $courseQueue = $this->createCourseQueue($course, $user, $validationMask);
-            }
-
-            return $courseQueue;
-        }
-
-        $defaultSession = $course->getDefaultSession();
-        $result = null;
-
-        if ($defaultSession && !$defaultSession->isTerminated()) {
-            $result = $this->sessionManager->registerUserToSession($defaultSession, $user, $skipValidation);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Creates a queue for course and user.
-     */
-    public function createCourseQueue(Course $course, User $user, int $mask = 0, \DateTime $date = null): CourseRegistrationQueue
-    {
-        $this->om->startFlushSuite();
-        $queue = new CourseRegistrationQueue();
-        $queue->setUser($user);
-        $queue->setCourse($course);
-        $queue->setStatus($mask);
-
-        if ($date) {
-            $queue->setApplicationDate($date);
-        }
-        $this->om->persist($queue);
-
-        $this->eventDispatcher->dispatch('log', new LogCourseQueueCreateEvent($queue));
-
-        $this->om->endFlushSuite();
-
-        return $queue;
     }
 }

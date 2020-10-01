@@ -149,11 +149,6 @@ class ResourceType
         return $this->tags;
     }
 
-    /**
-     * Set tags.
-     *
-     * @param array $tags
-     */
     public function setTags(array $tags)
     {
         $this->tags = $tags;
