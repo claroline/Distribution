@@ -115,7 +115,7 @@ class CourseSerializer
                     'tutorRoleName' => $course->getTutorRoleName(),
                     'learnerRoleName' => $course->getLearnerRoleName(),
                     'duration' => $course->getDefaultSessionDuration(),
-                    'order' => $course->getDisplayOrder(),
+                    'order' => $course->getOrder(),
                 ],
                 'restrictions' => [
                     'users' => $course->getMaxUsers(),
@@ -157,7 +157,7 @@ class CourseSerializer
         $this->sipe('meta.learnerRoleName', 'setLearnerRoleName', $data, $course);
         $this->sipe('meta.icon', 'setIcon', $data, $course);
         $this->sipe('meta.duration', 'setDefaultSessionDuration', $data, $course);
-        $this->sipe('meta.order', 'setDisplayOrder', $data, $course);
+        $this->sipe('meta.order', 'setOrder', $data, $course);
 
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $course);
 

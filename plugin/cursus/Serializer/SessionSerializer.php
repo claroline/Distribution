@@ -126,7 +126,7 @@ class SessionSerializer
                     'updated' => DateNormalizer::normalize($session->getUpdatedAt()),
                     'duration' => $duration,
                     'default' => $session->isDefaultSession(),
-                    'order' => $session->getDisplayOrder(),
+                    'order' => $session->getOrder(),
 
                     'course' => $this->courseSerializer->serialize($session->getCourse(), [Options::SERIALIZE_MINIMAL]),
                     'learnerRole' => $session->getLearnerRole() ?
@@ -165,7 +165,7 @@ class SessionSerializer
         $this->sipe('description', 'setDescription', $data, $session);
 
         $this->sipe('meta.default', 'setDefaultSession', $data, $session);
-        $this->sipe('meta.order', 'setDisplayOrder', $data, $session);
+        $this->sipe('meta.order', 'setOrder', $data, $session);
 
         $this->sipe('restrictions.users', 'setMaxUsers', $data, $session);
 

@@ -12,6 +12,7 @@
 namespace Claroline\CursusBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
+use Claroline\CursusBundle\Entity\Registration\AbstractUserRegistration;
 use Claroline\CursusBundle\Entity\Registration\SessionUser;
 use Doctrine\ORM\QueryBuilder;
 
@@ -43,9 +44,14 @@ class SessionUserFinder extends AbstractFinder
                     $qb->setParameter($filterName, $filterValue);
                     break;
 
-                case 'type':
-                    $qb->andWhere("obj.type = :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
+                case 'pending':
+                    if ($filterValue) {
+                        $qb->andWhere("obj.status = :acceptedStatus");
+                        $qb->setParameter('acceptedStatus', AbstractUserRegistration::ACCEPTED);
+                    } else {
+                        $qb->andWhere("obj.status IN (:pendingStatuses)");
+                        $qb->setParameter('pendingStatuses', [AbstractUserRegistration::REQUESTED, AbstractUserRegistration::CONFIRMED]);
+                    }
                     break;
 
                 default:

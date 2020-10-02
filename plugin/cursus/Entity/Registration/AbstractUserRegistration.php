@@ -13,7 +13,6 @@ abstract class AbstractUserRegistration extends AbstractRegistration
     const REQUESTED = 'requested';
     const CONFIRMED = 'confirmed';
     const ACCEPTED = 'accepted';
-    const DECLINED = 'declined';
 
     /**
      * @ORM\Column(name="registration_status")

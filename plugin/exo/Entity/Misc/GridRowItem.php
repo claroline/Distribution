@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\ORM\Mapping as ORM;
-use UJM\ExoBundle\Library\Model\OrderTrait;
+use Claroline\AppBundle\Entity\Meta\Order;
 
 /**
  * GridRowItem.
@@ -13,7 +13,7 @@ use UJM\ExoBundle\Library\Model\OrderTrait;
  */
 class GridRowItem
 {
-    use OrderTrait;
+    use Order;
 
     /**
      * @ORM\Id

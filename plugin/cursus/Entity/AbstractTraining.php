@@ -17,6 +17,7 @@ use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\AppBundle\Entity\Meta\CreatedAt;
 use Claroline\AppBundle\Entity\Meta\Creator;
 use Claroline\AppBundle\Entity\Meta\Description;
+use Claroline\AppBundle\Entity\Meta\Order;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
 use Claroline\AppBundle\Entity\Meta\UpdatedAt;
@@ -34,6 +35,7 @@ class AbstractTraining
 
     use Code;
     use Description;
+    use Order;
     use CreatedAt;
     use UpdatedAt;
     use Creator;
@@ -83,11 +85,6 @@ class AbstractTraining
      * @ORM\Column(name="max_users", nullable=true, type="integer")
      */
     protected $maxUsers;
-
-    /**
-     * @ORM\Column(name="display_order", type="integer", options={"default" = 1})
-     */
-    protected $displayOrder = 1;
 
     public function getName()
     {
@@ -172,15 +169,5 @@ class AbstractTraining
     public function setMaxUsers($maxUsers)
     {
         $this->maxUsers = $maxUsers;
-    }
-
-    public function getDisplayOrder()
-    {
-        return $this->displayOrder;
-    }
-
-    public function setDisplayOrder($displayOrder)
-    {
-        $this->displayOrder = $displayOrder;
     }
 }

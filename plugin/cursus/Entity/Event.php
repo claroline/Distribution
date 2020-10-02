@@ -48,8 +48,7 @@ class Event
     /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CursusBundle\Entity\Session",
-     *     inversedBy="events",
-     *     cascade={"persist"}
+     *     inversedBy="events"
      * )
      * @ORM\JoinColumn(name="session_id", nullable=false, onDelete="CASCADE")
      *
@@ -170,42 +169,6 @@ class Event
     public function setLocationExtra($locationExtra)
     {
         $this->locationExtra = $locationExtra;
-    }
-
-    /**
-     * @return User[]
-     */
-    public function getTutors()
-    {
-        return $this->tutors->toArray();
-    }
-
-    public function addTutor(User $tutor)
-    {
-        if (!$this->tutors->contains($tutor)) {
-            $this->tutors->add($tutor);
-        }
-
-        return $this;
-    }
-
-    public function removeTutor(User $tutor)
-    {
-        if ($this->tutors->contains($tutor)) {
-            $this->tutors->removeElement($tutor);
-        }
-
-        return $this;
-    }
-
-    public function emptyTutors()
-    {
-        $this->tutors->clear();
-    }
-
-    public function getSessionEventUsers()
-    {
-        return $this->sessionEventUsers->toArray();
     }
 
     public function getMaxUsers()

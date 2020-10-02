@@ -194,6 +194,29 @@ class SessionController extends AbstractCrudController
         }
         $params['hiddenFilters']['session'] = $session->getUuid();
         $params['hiddenFilters']['type'] = $type;
+        $params['hiddenFilters']['pending'] = false;
+
+        return new JsonResponse(
+            $this->finder->search(SessionUser::class, $params)
+        );
+    }
+
+    /**
+     * @Route("/{id}/pending/{type}", name="apiv2_cursus_session_list_pending", methods={"GET"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
+     */
+    public function listPendingAction(Session $session, string $type, Request $request): JsonResponse
+    {
+        $this->checkPermission('OPEN', $session, [], true);
+
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['session'] = $session->getUuid();
+        $params['hiddenFilters']['type'] = $type;
+        $params['hiddenFilters']['pending'] = true;
 
         return new JsonResponse(
             $this->finder->search(SessionUser::class, $params)
@@ -212,9 +235,9 @@ class SessionController extends AbstractCrudController
         $nbUsers = count($users);
 
         if (AbstractRegistration::LEARNER === $type && !$this->manager->checkSessionCapacity($session, $nbUsers)) {
-            $errors = [$this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus')];
-
-            return new JsonResponse(['errors' => $errors], 405);
+            return new JsonResponse(['errors' => [
+                $this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus'),
+            ]], 405);
         }
 
         $sessionUsers = $this->manager->addUsersToSession($session, $users, $type);
@@ -274,16 +297,16 @@ class SessionController extends AbstractCrudController
         }
 
         if (AbstractRegistration::LEARNER === $type && !$this->manager->checkSessionCapacity($session, $nbUsers)) {
-            $errors = [$this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus')];
-
-            return new JsonResponse(['errors' => $errors], 405);
-        } else {
-            $sessionGroups = $this->manager->addGroupsToSession($session, $groups, $type);
-
-            return new JsonResponse(array_map(function (SessionGroup $sessionGroup) {
-                return $this->serializer->serialize($sessionGroup);
-            }, $sessionGroups));
+            return new JsonResponse(['errors' => [
+                $this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus'),
+            ]], 405);
         }
+
+        $sessionGroups = $this->manager->addGroupsToSession($session, $groups, $type);
+
+        return new JsonResponse(array_map(function (SessionGroup $sessionGroup) {
+            return $this->serializer->serialize($sessionGroup);
+        }, $sessionGroups));
     }
 
     /**

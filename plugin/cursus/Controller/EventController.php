@@ -15,9 +15,9 @@ use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Claroline\CursusBundle\Entity\Registration\EventUser;
 use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Entity\Event;
-use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Manager\EventManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -86,7 +86,7 @@ class EventController extends AbstractCrudController
 
     /**
      * @Route("/{id}/users", name="apiv2_cursus_session_event_list_users", methods={"GET"})
-     * @EXT\ParamConverter("sessionEvent", class="ClarolineCursusBundle:SessionEvent", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("sessionEvent", class="Claroline\CursusBundle\Entity\Event", options={"mapping": {"id": "uuid"}})
      */
     public function listUsersAction(Event $sessionEvent, Request $request): JsonResponse
     {
@@ -97,16 +97,16 @@ class EventController extends AbstractCrudController
         if (!isset($params['hiddenFilters'])) {
             $params['hiddenFilters'] = [];
         }
-        $params['hiddenFilters']['sessionEvent'] = $sessionEvent->getUuid();
+        $params['hiddenFilters']['event'] = $sessionEvent->getUuid();
 
         return new JsonResponse(
-            $this->finder->search(SessionEventUser::class, $params)
+            $this->finder->search(EventUser::class, $params)
         );
     }
 
     /**
      * @Route("/{id}/users", name="apiv2_cursus_session_event_add_users", methods={"PATCH"})
-     * @EXT\ParamConverter("sessionEvent", class="ClarolineCursusBundle:SessionEvent", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("sessionEvent", class="Claroline\CursusBundle\Entity\Event", options={"mapping": {"id": "uuid"}})
      */
     public function addUsersAction(Event $sessionEvent, Request $request): JsonResponse
     {
@@ -116,43 +116,35 @@ class EventController extends AbstractCrudController
         $nbUsers = count($users);
 
         if (!$this->manager->checkSessionEventCapacity($sessionEvent, $nbUsers)) {
-            $errors = [$this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus')];
-
-            return new JsonResponse(['errors' => $errors], 405);
-        } else {
-            $sessionEventUsers = $this->manager->addUsersToSessionEvent($sessionEvent, $users);
-
-            return new JsonResponse(array_map(function (SessionEventUser $sessionEventUser) {
-                return $this->serializer->serialize($sessionEventUser);
-            }, $sessionEventUsers));
+            return new JsonResponse(['errors' => [
+                $this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus'),
+            ]], 405);
         }
+
+        $sessionEventUsers = $this->manager->addUsersToSessionEvent($sessionEvent, $users);
+
+        return new JsonResponse(array_map(function (EventUser $sessionEventUser) {
+            return $this->serializer->serialize($sessionEventUser);
+        }, $sessionEventUsers));
     }
 
     /**
      * @Route("/{id}/users", name="apiv2_cursus_session_event_remove_users", methods={"DELETE"})
-     * @EXT\ParamConverter("sessionEvent", class="ClarolineCursusBundle:SessionEvent", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("sessionEvent", class="Claroline\CursusBundle\Entity\Event", options={"mapping": {"id": "uuid"}})
      */
     public function removeUsersAction(Event $sessionEvent, Request $request): JsonResponse
     {
         $this->checkPermission('EDIT', $sessionEvent, [], true);
 
-        $sessionEventUsers = $this->decodeIdsString($request, SessionEventUser::class);
+        $sessionEventUsers = $this->decodeIdsString($request, EventUser::class);
         $this->manager->removeUsersFromSessionEvent($sessionEventUsers);
 
         return new JsonResponse(null, 204);
     }
 
     /**
-     * @Route(
-     *     "/{id}/self/register",
-     *     name="apiv2_cursus_session_event_self_register",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "sessionEvent",
-     *     class="ClarolineCursusBundle:SessionEvent",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
+     * @Route("/{id}/self/register", name="apiv2_cursus_session_event_self_register", methods={"PUT"})
+     * @EXT\ParamConverter("sessionEvent", class="Claroline\CursusBundle\Entity\Event", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      */
     public function selfRegisterAction(Event $sessionEvent, User $user): JsonResponse
@@ -167,7 +159,7 @@ class EventController extends AbstractCrudController
         $eventsRegistration = [];
         $eventUsers = !is_null($user) ?
             $this->finder->fetch(
-                SessionEventUser::class,
+                EventUser::class,
                 ['session' => $sessionEvent->getSession()->getUuid(), 'user' => $user->getUuid()]
             ) :
             [];
@@ -191,16 +183,8 @@ class EventController extends AbstractCrudController
     }
 
     /**
-     * @Route(
-     *     "/{id}/all/invite",
-     *     name="apiv2_cursus_session_event_invite_all",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "sessionEvent",
-     *     class="ClarolineCursusBundle:SessionEvent",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
+     * @Route("/{id}/all/invite", name="apiv2_cursus_session_event_invite_all", methods={"PUT"})
+     * @EXT\ParamConverter("sessionEvent", class="Claroline\CursusBundle\Entity\Event", options={"mapping": {"id": "uuid"}})
      */
     public function inviteAllUsersAction(Event $sessionEvent): JsonResponse
     {
@@ -212,16 +196,8 @@ class EventController extends AbstractCrudController
     }
 
     /**
-     * @Route(
-     *     "/{id}/users/invite",
-     *     name="apiv2_cursus_session_event_invite_users",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "sessionEvent",
-     *     class="ClarolineCursusBundle:SessionEvent",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
+     * @Route("/{id}/users/invite", name="apiv2_cursus_session_event_invite_users", methods={"PUT"})
+     * @EXT\ParamConverter("sessionEvent", class="Claroline\CursusBundle\Entity\Event", options={"mapping": {"id": "uuid"}})
      */
     public function inviteUsersAction(Event $sessionEvent, Request $request): JsonResponse
     {
@@ -229,49 +205,6 @@ class EventController extends AbstractCrudController
 
         $users = $this->decodeIdsString($request, User::class);
         $this->manager->sendEventInvitation($sessionEvent, $users);
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route(
-     *     "/{id}/certificate/all/generate",
-     *     name="apiv2_cursus_session_event_certificate_generate_all",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "sessionEvent",
-     *     class="ClarolineCursusBundle:SessionEvent",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
-     */
-    public function generateAllCertificatesAction(Event $sessionEvent): JsonResponse
-    {
-        $this->checkPermission('EDIT', $sessionEvent, [], true);
-
-        $this->manager->generateAllEventCertificates($sessionEvent);
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route(
-     *     "/{id}/certificate/users/generate",
-     *     name="apiv2_cursus_session_event_certificate_generate_users",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "sessionEvent",
-     *     class="ClarolineCursusBundle:SessionEvent",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
-     */
-    public function generateUsersCertificatesAction(Event $sessionEvent, Request $request): JsonResponse
-    {
-        $this->checkPermission('EDIT', $sessionEvent, [], true);
-
-        $users = $this->decodeIdsString($request, User::class);
-        $this->manager->generateEventCertificates($sessionEvent, $users);
 
         return new JsonResponse();
     }

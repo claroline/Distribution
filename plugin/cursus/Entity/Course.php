@@ -46,7 +46,7 @@ class Course extends AbstractTraining
 
     /**
      * @ORM\OneToMany(targetEntity="Claroline\CursusBundle\Entity\Course", mappedBy="parent")
-     * @ORM\OrderBy({"displayOrder" = "ASC"})
+     * @ORM\OrderBy({"order" = "ASC"})
      *
      * @var Course[]|ArrayCollection
      */
@@ -69,10 +69,7 @@ class Course extends AbstractTraining
     private $learnerRoleName;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CursusBundle\Entity\Session",
-     *     mappedBy="course"
-     * )
+     * @ORM\OneToMany(targetEntity="Claroline\CursusBundle\Entity\Session", mappedBy="course")
      *
      * @var Session[]
      */

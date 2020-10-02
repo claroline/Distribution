@@ -239,7 +239,11 @@ class SessionManager
         $this->om->startFlushSuite();
 
         foreach ($groups as $group) {
-            $sessionGroup = $this->sessionGroupRepo->findOneBy(['session' => $session, 'group' => $group, 'type' => $type]);
+            $sessionGroup = $this->sessionGroupRepo->findOneBy([
+                'session' => $session,
+                'group' => $group,
+                'type' => $type,
+            ]);
 
             if (empty($sessionGroup)) {
                 $sessionGroup = new SessionGroup();
@@ -300,29 +304,6 @@ class SessionManager
         }
 
         return null;
-    }
-
-    /**
-     * Creates a queue for session and user.
-     */
-    public function createSessionQueue(Session $session, User $user, int $mask = 0, \DateTime $date = null): CourseSessionRegistrationQueue
-    {
-        $this->om->startFlushSuite();
-        $queue = new CourseSessionRegistrationQueue();
-        $queue->setUser($user);
-        $queue->setSession($session);
-        $queue->setStatus($mask);
-
-        if ($date) {
-            $queue->setApplicationDate($date);
-        }
-        $this->om->persist($queue);
-
-        $this->eventDispatcher->dispatch(new LogSessionQueueCreateEvent($queue), 'log');
-
-        $this->om->endFlushSuite();
-
-        return $queue;
     }
 
     /**

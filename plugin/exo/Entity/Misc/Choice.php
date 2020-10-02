@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\ItemType\ChoiceQuestion;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
-use UJM\ExoBundle\Library\Model\OrderTrait;
+use Claroline\AppBundle\Entity\Meta\Order;
 
 /**
  * Choice.
@@ -15,7 +15,7 @@ use UJM\ExoBundle\Library\Model\OrderTrait;
  */
 class Choice extends AbstractChoice implements AnswerPartInterface
 {
-    use OrderTrait;
+    use Order;
     /**
      * The choice is part of the expected answer for the question.
      *

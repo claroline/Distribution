@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\Item\Item;
-use UJM\ExoBundle\Library\Model\OrderTrait;
+use Claroline\AppBundle\Entity\Meta\Order;
 
 /**
  * A stepItem represents the link between a question and an exercise step.
@@ -18,7 +18,7 @@ class StepItem
     /*
      * Keep the order of the question in the step.
      */
-    use OrderTrait;
+    use Order;
 
     /**
      * The parent step.

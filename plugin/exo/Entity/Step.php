@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Model\AttemptParametersTrait;
-use UJM\ExoBundle\Library\Model\OrderTrait;
+use Claroline\AppBundle\Entity\Meta\Order;
 
 /**
  * A step represents a group of items (questions or content) inside an exercise.
@@ -30,7 +30,7 @@ class Step
 
     use UuidTrait;
 
-    use OrderTrait;
+    use Order;
 
     use AttemptParametersTrait;
 
