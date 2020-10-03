@@ -27,6 +27,7 @@ const CatalogDetails = (props) =>
     ] : undefined}
     currentContext={props.currentContext}
     course={props.course}
+    activeSession={props.activeSession}
   >
     {props.course &&
       <Routes

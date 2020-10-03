@@ -45,13 +45,6 @@ class PlannedNotificationManager
     /** @var UserRepository */
     private $userRepo;
 
-    /**
-     * PlannedNotificationManager constructor.
-     *
-     * @param MailManager          $mailManager
-     * @param ObjectManager        $om
-     * @param ScheduledTaskManager $scheduledTaskManager
-     */
     public function __construct(
         MailManager $mailManager,
         ObjectManager $om,
@@ -169,8 +162,6 @@ class PlannedNotificationManager
     }
 
     /**
-     * @param array $data
-     *
      * @return array
      */
     public function generateManualScheduledTasks(array $data)

@@ -45,14 +45,30 @@ const reducer = combineReducers({
   }),
 
   // participants
-  courseTutors: makeListReducer(selectors.STORE_NAME+'.courseTutors', {
-    sortBy: {property: 'startDate', direction: 1}
-  }, {
+  courseTutors: makeListReducer(selectors.STORE_NAME+'.courseTutors', {}, {
     invalidated: makeReducer(false, {
       [LOAD_COURSE]: () => true,
       [LOAD_COURSE_SESSION]: () => true
     })
   }),
+  courseUsers: makeListReducer(selectors.STORE_NAME+'.courseUsers', {}, {
+    invalidated: makeReducer(false, {
+      [LOAD_COURSE]: () => true,
+      [LOAD_COURSE_SESSION]: () => true
+    })
+  }),
+  courseGroups: makeListReducer(selectors.STORE_NAME+'.courseGroups', {}, {
+    invalidated: makeReducer(false, {
+      [LOAD_COURSE]: () => true,
+      [LOAD_COURSE_SESSION]: () => true
+    })
+  }),
+  coursePending: makeListReducer(selectors.STORE_NAME+'.coursePending', {}, {
+    invalidated: makeReducer(false, {
+      [LOAD_COURSE]: () => true,
+      [LOAD_COURSE_SESSION]: () => true
+    })
+  })
 })
 
 export {

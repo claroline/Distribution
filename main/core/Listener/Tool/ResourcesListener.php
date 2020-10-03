@@ -22,6 +22,7 @@ class ResourcesListener
     private $serializer;
     /** @var ResourceNodeRepository */
     private $resourceRepository;
+
     public function __construct(
         ObjectManager $om,
         SerializerProvider $serializer

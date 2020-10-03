@@ -146,7 +146,7 @@ class SessionSerializer
                 ],
                 'participants' => [
                     'tutors' => 0, //$session->countTutors(),
-                    'learners' => 0 //$session->countLearners(),
+                    'learners' => 0, //$session->countLearners(),
                 ],
                 'resources' => array_map(function (ResourceNode $resource) {
                     return $this->resourceSerializer->serialize($resource, [Options::SERIALIZE_MINIMAL]);

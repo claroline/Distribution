@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans, displayDuration, displayDate, now} from '#/main/app/intl'
+import {Alert} from '#/main/app/alert/components/alert'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ContentHtml} from '#/main/app/content/components/html'
@@ -88,27 +89,33 @@ const CourseAbout = (props) => {
           />
         }
 
-        {getInfo(props.course, props.activeSession, 'registration.selfRegistration') &&
-          <Button
-            className="btn btn-block btn-emphasis"
-            type={MODAL_BUTTON}
-            label={trans('self-register', {}, 'actions')}
-            modal={[MODAL_COURSE_REGISTRATION, {
-              course: props.course,
-              session: props.activeSession
-            }]}
-            primary={true}
-          />
-        }
+        <section className="overview-user-actions">
+          {!getInfo(props.course, props.activeSession, 'registration.selfRegistration') &&
+            <Alert type="warning">{trans('registration_requires_manager', {}, 'cursus')}</Alert>
+          }
 
-        {!isEmpty(getInfo(props.course, props.activeSession, 'workspace')) &&
-          <Button
-            className="btn btn-block"
-            type={LINK_BUTTON}
-            label={trans('open-workspace', {}, 'actions')}
-            target={workspaceRoute(getInfo(props.course, props.activeSession, 'workspace'))}
-          />
-        }
+          {getInfo(props.course, props.activeSession, 'registration.selfRegistration') &&
+            <Button
+              className="btn btn-block btn-emphasis"
+              type={MODAL_BUTTON}
+              label={trans('self-register', {}, 'actions')}
+              modal={[MODAL_COURSE_REGISTRATION, {
+                course: props.course,
+                session: props.activeSession
+              }]}
+              primary={true}
+            />
+          }
+
+          {!isEmpty(getInfo(props.course, props.activeSession, 'workspace')) &&
+            <Button
+              className="btn btn-block"
+              type={LINK_BUTTON}
+              label={trans('open-workspace', {}, 'actions')}
+              target={workspaceRoute(getInfo(props.course, props.activeSession, 'workspace'))}
+            />
+          }
+        </section>
       </div>
 
       <div className="col-md-9">
@@ -193,7 +200,7 @@ const CourseAbout = (props) => {
           <ContentTitle
             level={3}
             displayLevel={2}
-            title="Liens utiles"
+            title={trans('useful_links')}
           />
         }
 
@@ -219,7 +226,7 @@ const CourseAbout = (props) => {
           <ContentTitle
             level={3}
             displayLevel={2}
-            title="Formations liées"
+            title={trans('linked_trainings', {}, 'cursus')}
             subtitle={props.course.parent ?
               'Cette formation fait partie de la formation' :
               'En vous inscrivant à cette formation, vous serez également inscrit aux formations suivantes'
@@ -266,7 +273,7 @@ const CourseAbout = (props) => {
           <ContentTitle
             level={3}
             displayLevel={2}
-            title="Autres sessions disponibles"
+            title={trans('other_available_session', {}, 'cursus')}
           />
         }
 

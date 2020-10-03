@@ -4,75 +4,77 @@ import get from 'lodash/get'
 import {schemeCategory20c} from 'd3-scale'
 
 import {trans} from '#/main/app/intl/translation'
-import {hasPermission} from '#/main/app/security'
-import {Button} from '#/main/app/action/components/button'
+import {LinkButton} from '#/main/app/buttons/link'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
+import {AlertBlock} from '#/main/app/alert/components/alert-block'
 import {Routes} from '#/main/app/router/components/routes'
 import {Vertical} from '#/main/app/content/tabs/components/vertical'
-import {ListData} from '#/main/app/content/list/containers/data'
-import {constants as listConst} from '#/main/app/content/list/constants'
 import {MODAL_USERS} from '#/main/core/modals/users'
-import {UserCard} from '#/main/core/user/components/card'
+import {MODAL_GROUPS} from '#/main/core/modals/groups'
 
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {constants} from '#/plugin/cursus/constants'
 
-const CourseTutors = (props) =>
-  <Fragment>
-    <ListData
-      name={selectors.STORE_NAME+'.courseTutors'}
-      fetch={{
-        url: ['apiv2_cursus_session_list_users', {type: constants.TEACHER_TYPE, id: props.activeSession.id}],
-        autoload: true
-      }}
-      delete={{
-        url: ['apiv2_cursus_session_remove_users', {type: constants.TEACHER_TYPE, id: props.activeSession.id}],
-        label: trans('unregister', {}, 'actions'),
-        displayed: (rows) => -1 !== rows.filter(row => hasPermission('edit', row))
-      }}
-      definition={[
-        {
-          name: 'user',
-          type: 'user',
-          label: trans('user'),
-          displayed: true
-        }, {
-          name: 'date',
-          type: 'date',
-          label: trans('registration_date', {}, 'cursus'),
-          options: {time: true},
-          displayed: true
-        }
-      ]}
-      card={(cardProps) => <UserCard {...cardProps} data={cardProps.data.user} />}
-      display={{
-        current: listConst.DISPLAY_TILES_SM
-      }}
-    />
+import {SessionGroups} from '#/plugin/cursus/session/components/groups'
+import {SessionUsers} from '#/plugin/cursus/session/components/users'
 
-    {hasPermission('edit', props.activeSession) &&
-      <Button
-        className="btn btn-block btn-emphasis component-container"
-        type={MODAL_BUTTON}
-        label={trans('add_tutors', {}, 'cursus')}
-        modal={[MODAL_USERS, {
-          selectAction: (selected) => ({
-            type: CALLBACK_BUTTON,
-            label: trans('register', {}, 'actions'),
-            callback: () => props.addTutors(props.activeSession.id, selected)
-          })
-        }]}
-        primary={true}
-      />
-    }
-  </Fragment>
+const CourseUsers = (props) =>
+  <SessionUsers
+    session={props.activeSession}
+    name={props.name}
+    url={['apiv2_cursus_session_list_users', {type: props.type, id: props.activeSession.id}]}
+    unregisterUrl={['apiv2_cursus_session_remove_users', {type: props.type, id: props.activeSession.id}]}
+    add={{
+      name: 'add_users',
+      type: MODAL_BUTTON,
+      label: constants.TEACHER_TYPE === props.type ? trans('add_tutors', {}, 'cursus') : trans('add_users'),
+      modal: [MODAL_USERS, {
+        selectAction: (selected) => ({
+          type: CALLBACK_BUTTON,
+          label: trans('register', {}, 'actions'),
+          callback: () => props.addUsers(props.activeSession.id, selected, props.type)
+        })
+      }]
+    }}
+  />
 
-CourseTutors.propTypes = {
+CourseUsers.propTypes = {
+  name: T.string.isRequired,
+  type: T.string.isRequired,
   activeSession: T.shape(
     SessionTypes.propTypes
   ),
-  addTutors: T.func.isRequired
+  addUsers: T.func.isRequired
+}
+
+const CourseGroups = (props) =>
+  <SessionGroups
+    session={props.activeSession}
+    name={props.name}
+    url={['apiv2_cursus_session_list_groups', {type: props.type, id: props.activeSession.id}]}
+    unregisterUrl={['apiv2_cursus_session_remove_groups', {type: props.type, id: props.activeSession.id}]}
+    add={{
+      name: 'add_groups',
+      type: MODAL_BUTTON,
+      label: trans('add_groups'),
+      modal: [MODAL_GROUPS, {
+        selectAction: (selected) => ({
+          type: CALLBACK_BUTTON,
+          label: trans('register', {}, 'actions'),
+          callback: () => props.addGroups(props.activeSession.id, selected, props.type)
+        })
+      }]
+    }}
+  />
+
+CourseGroups.propTypes = {
+  name: T.string.isRequired,
+  type: T.string.isRequired,
+  activeSession: T.shape(
+    SessionTypes.propTypes
+  ),
+  addGroups: T.func.isRequired
 }
 
 const CourseParticipants = (props) =>
@@ -148,9 +150,11 @@ const CourseParticipants = (props) =>
               exact: true,
               render() {
                 const Tutors = (
-                  <CourseTutors
+                  <CourseUsers
+                    type={constants.TEACHER_TYPE}
                     activeSession={props.activeSession}
-                    addTutors={props.addTutors}
+                    name={selectors.STORE_NAME+'.courseTutors'}
+                    addUsers={props.addUsers}
                   />
                 )
 
@@ -158,10 +162,41 @@ const CourseParticipants = (props) =>
               }
             }, {
               path: '/users',
-              component: null
+              render() {
+                const Users = (
+                  <Fragment>
+                    {get(props.activeSession, 'registration.userValidation') &&
+                      <AlertBlock title="L'inscription doit être confirmée par les utilisateurs grâce au lien fourni dans l'email d'inscription.">
+                        Temps que l'inscription n'a pas été confirmée, elle apparaîtra dans la liste d'attente.
+                        (<LinkButton target={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants/pending'}>Voir la liste d'attente</LinkButton>)
+                      </AlertBlock>
+                    }
+
+                    <CourseUsers
+                      type={constants.LEARNER_TYPE}
+                      activeSession={props.activeSession}
+                      name={selectors.STORE_NAME+'.courseUsers'}
+                      addUsers={props.addUsers}
+                    />
+                  </Fragment>
+                )
+
+                return Users
+              }
             }, {
               path: '/groups',
-              component: null
+              render() {
+                const Groups = (
+                  <CourseGroups
+                    type={constants.LEARNER_TYPE}
+                    activeSession={props.activeSession}
+                    name={selectors.STORE_NAME+'.courseGroups'}
+                    addGroups={props.addGroups}
+                  />
+                )
+
+                return Groups
+              }
             }, {
               path: '/pending',
               component: null
@@ -180,8 +215,8 @@ CourseParticipants.propTypes = {
   activeSession: T.shape(
     SessionTypes.propTypes
   ),
-  addTutors: T.func.isRequired,
-  invalidateList: T.func.isRequired
+  addUsers: T.func.isRequired,
+  addGroups: T.func.isRequired
 }
 
 export {

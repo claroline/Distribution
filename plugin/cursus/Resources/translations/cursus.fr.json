@@ -60,5 +60,8 @@
     "propagate_registration_help": "Les utilisateurs seront inscrits à la session par défaut des formations liées si il y en a une et que cette session n'est pas terminée.",
     "training_hidden": "Cette formation est cachée",
     "training_public_registration": "Les inscriptions sont publiques.",
-    "available_seats": "Places disponibles"
+    "available_seats": "Places disponibles",
+    "registration_requires_manager": "Vous devez être inscrit par un gestionnaire pour pouvoir participer à cette formation.",
+    "other_available_session": "Autres sessions disponibles",
+    "linked_trainings": "Formations liées"
 }

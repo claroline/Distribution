@@ -20,19 +20,11 @@ class PublicSessionSource
     /** @var FinderProvider */
     private $finder;
 
-    /**
-     * PublicSessionSource constructor.
-     *
-     * @param FinderProvider $finder
-     */
     public function __construct(FinderProvider $finder)
     {
         $this->finder = $finder;
     }
 
-    /**
-     * @param GetDataEvent $event
-     */
     public function getData(GetDataEvent $event)
     {
         $options = $event->getOptions();

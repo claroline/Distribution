@@ -57,14 +57,28 @@ actions.openSession = (sessionId) => (dispatch, getState) => {
   }
 }
 
-actions.addTutors = (sessionId, users) => ({
+actions.addUsers = (sessionId, users, type) => ({
   [API_REQUEST]: {
-    url: url(['apiv2_cursus_session_add_users', {id: sessionId, type: constants.TEACHER_TYPE}], {ids: users.map(user => user.id)}),
+    url: url(['apiv2_cursus_session_add_users', {id: sessionId, type: type}], {ids: users.map(user => user.id)}),
     request: {
       method: 'PATCH'
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData(selectors.STORE_NAME+'.courseTutors'))
+      dispatch(listActions.invalidateData(selectors.STORE_NAME+'.courseUsers'))
+      dispatch(listActions.invalidateData(selectors.STORE_NAME+'.coursePending'))
+    }
+  }
+})
+
+actions.addGroups = (sessionId, groups, type) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_cursus_session_add_groups', {id: sessionId, type: type}], {ids: groups.map(group => group.id)}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData(selectors.STORE_NAME+'.courseGroups'))
     }
   }
 })

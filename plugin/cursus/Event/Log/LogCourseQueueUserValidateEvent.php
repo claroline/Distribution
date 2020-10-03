@@ -12,7 +12,6 @@
 namespace Claroline\CursusBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Claroline\CursusBundle\Entity\CourseRegistrationQueue;
 
 class LogCourseQueueUserValidateEvent extends LogGenericEvent
 {

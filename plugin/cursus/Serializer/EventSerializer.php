@@ -72,7 +72,6 @@ class EventSerializer
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'meta' => [
-                    'type' => $event->getType(),
                     'session' => $this->sessionSerializer->serialize($event->getSession(), [Options::SERIALIZE_MINIMAL]),
                     'locationExtra' => $event->getLocationExtra(),
                 ],

@@ -89,8 +89,6 @@ class ResourceActionManager
 
     /**
      * Executes an action on a resource.
-     *
-     * @return Response
      */
     public function execute(ResourceNode $resourceNode, string $actionName, array $options = [], array $content = null, array $files = null): Response
     {

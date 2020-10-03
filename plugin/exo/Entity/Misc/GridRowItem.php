@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Entity\Misc;
 
-use Doctrine\ORM\Mapping as ORM;
 use Claroline\AppBundle\Entity\Meta\Order;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * GridRowItem.
@@ -45,8 +45,6 @@ class GridRowItem
 
     /**
      * Set row.
-     *
-     * @param GridRow $row
      */
     public function setRow(GridRow $row)
     {
@@ -65,8 +63,6 @@ class GridRowItem
 
     /**
      * Set item.
-     *
-     * @param GridItem $item
      */
     public function setItem(GridItem $item)
     {

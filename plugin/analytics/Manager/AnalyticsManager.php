@@ -79,14 +79,6 @@ class AnalyticsManager
     /** @var FileManager */
     private $fileManager;
 
-    /**
-     * @param TokenStorageInterface $tokenStorage
-     * @param ObjectManager         $objectManager
-     * @param LogManager            $logManager
-     * @param UserManager           $userManager
-     * @param WorkspaceManager      $workspaceManager
-     * @param FileManager           $fileManager
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         ObjectManager $objectManager,

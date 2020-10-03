@@ -40,10 +40,6 @@ class CommentActionManager
      */
     protected $wallItemManager;
 
-    /**
-     * @param EntityManager   $em
-     * @param WallItemManager $wallItemManager
-     */
     public function __construct(EntityManager $em, WallItemManager $wallItemManager)
     {
         $this->em = $em;

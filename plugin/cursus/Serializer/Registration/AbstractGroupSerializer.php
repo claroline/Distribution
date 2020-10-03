@@ -35,7 +35,7 @@ abstract class AbstractGroupSerializer
             'id' => $groupRegistration->getUuid(),
             'type' => $groupRegistration->getType(),
             'date' => DateNormalizer::normalize($groupRegistration->getDate()),
-            'user' => $this->groupSerializer->serialize($groupRegistration->getGroup(), [Options::SERIALIZE_MINIMAL]),
+            'group' => $this->groupSerializer->serialize($groupRegistration->getGroup(), [Options::SERIALIZE_MINIMAL]),
         ];
     }
 }

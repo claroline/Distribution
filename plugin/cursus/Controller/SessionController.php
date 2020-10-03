@@ -14,16 +14,14 @@ namespace Claroline\CursusBundle\Controller;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
-use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
-use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Claroline\CursusBundle\Entity\Event;
 use Claroline\CursusBundle\Entity\Registration\AbstractRegistration;
 use Claroline\CursusBundle\Entity\Registration\SessionGroup;
 use Claroline\CursusBundle\Entity\Registration\SessionUser;
 use Claroline\CursusBundle\Entity\Session;
-use Claroline\CursusBundle\Entity\Event;
 use Claroline\CursusBundle\Manager\SessionManager;
 use Dompdf\Dompdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -47,8 +45,6 @@ class SessionController extends AbstractCrudController
     private $tokenStorage;
     /** @var TranslatorInterface */
     private $translator;
-    /** @var ToolManager */
-    private $toolManager;
     /** @var SessionManager */
     private $manager;
 
@@ -56,13 +52,11 @@ class SessionController extends AbstractCrudController
         AuthorizationCheckerInterface $authorization,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        ToolManager $toolManager,
         SessionManager $manager
     ) {
         $this->authorization = $authorization;
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
-        $this->toolManager = $toolManager;
         $this->manager = $manager;
     }
 
@@ -180,28 +174,6 @@ class SessionController extends AbstractCrudController
     }
 
     /**
-     * @Route("/{id}/users/{type}", name="apiv2_cursus_session_list_users", methods={"GET"})
-     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
-     */
-    public function listUsersAction(Session $session, string $type, Request $request): JsonResponse
-    {
-        $this->checkPermission('OPEN', $session, [], true);
-
-        $params = $request->query->all();
-
-        if (!isset($params['hiddenFilters'])) {
-            $params['hiddenFilters'] = [];
-        }
-        $params['hiddenFilters']['session'] = $session->getUuid();
-        $params['hiddenFilters']['type'] = $type;
-        $params['hiddenFilters']['pending'] = false;
-
-        return new JsonResponse(
-            $this->finder->search(SessionUser::class, $params)
-        );
-    }
-
-    /**
      * @Route("/{id}/pending/{type}", name="apiv2_cursus_session_list_pending", methods={"GET"})
      * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      */
@@ -217,6 +189,28 @@ class SessionController extends AbstractCrudController
         $params['hiddenFilters']['session'] = $session->getUuid();
         $params['hiddenFilters']['type'] = $type;
         $params['hiddenFilters']['pending'] = true;
+
+        return new JsonResponse(
+            $this->finder->search(SessionUser::class, $params)
+        );
+    }
+
+    /**
+     * @Route("/{id}/users/{type}", name="apiv2_cursus_session_list_users", methods={"GET"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
+     */
+    public function listUsersAction(Session $session, string $type, Request $request): JsonResponse
+    {
+        $this->checkPermission('OPEN', $session, [], true);
+
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['session'] = $session->getUuid();
+        $params['hiddenFilters']['type'] = $type;
+        $params['hiddenFilters']['pending'] = false;
 
         return new JsonResponse(
             $this->finder->search(SessionUser::class, $params)
@@ -240,7 +234,7 @@ class SessionController extends AbstractCrudController
             ]], 405);
         }
 
-        $sessionUsers = $this->manager->addUsersToSession($session, $users, $type);
+        $sessionUsers = $this->manager->addUsers($session, $users, $type, true);
 
         return new JsonResponse(array_map(function (SessionUser $sessionUser) {
             return $this->serializer->serialize($sessionUser);
@@ -256,7 +250,7 @@ class SessionController extends AbstractCrudController
         $this->checkPermission('EDIT', $session, [], true);
 
         $sessionUsers = $this->decodeIdsString($request, SessionUser::class);
-        $this->manager->removeUsersFromSession($session, $sessionUsers);
+        $this->manager->removeUsers($session, $sessionUsers);
 
         return new JsonResponse(null, 204);
     }
@@ -265,7 +259,7 @@ class SessionController extends AbstractCrudController
      * @Route("/{id}/groups/{type}", name="apiv2_cursus_session_list_groups", methods={"GET"})
      * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      */
-    public function listGroupsAction(Session $session, $type, Request $request): JsonResponse
+    public function listGroupsAction(Session $session, string $type, Request $request): JsonResponse
     {
         $this->checkPermission('OPEN', $session, [], true);
 
@@ -274,7 +268,7 @@ class SessionController extends AbstractCrudController
             $params['hiddenFilters'] = [];
         }
         $params['hiddenFilters']['session'] = $session->getUuid();
-        $params['hiddenFilters']['type'] = intval($type);
+        $params['hiddenFilters']['type'] = $type;
 
         return new JsonResponse(
             $this->finder->search(SessionGroup::class, $params)
@@ -282,7 +276,7 @@ class SessionController extends AbstractCrudController
     }
 
     /**
-     * @Route("/{id}/groups/{type}", name="apiv2_cursus_session_add_groups")
+     * @Route("/{id}/groups/{type}", name="apiv2_cursus_session_add_groups", methods={"PATCH"})
      * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      */
     public function addGroupsAction(Session $session, string $type, Request $request): JsonResponse
@@ -302,7 +296,7 @@ class SessionController extends AbstractCrudController
             ]], 405);
         }
 
-        $sessionGroups = $this->manager->addGroupsToSession($session, $groups, $type);
+        $sessionGroups = $this->manager->addGroups($session, $groups, $type);
 
         return new JsonResponse(array_map(function (SessionGroup $sessionGroup) {
             return $this->serializer->serialize($sessionGroup);
@@ -318,7 +312,7 @@ class SessionController extends AbstractCrudController
         $this->checkPermission('EDIT', $session, [], true);
 
         $sessionGroups = $this->decodeIdsString($request, SessionGroup::class);
-        $this->manager->deleteEntities($sessionGroups);
+        $this->manager->removeGroups($session, $sessionGroups);
 
         return new JsonResponse(null, 204);
     }
@@ -342,121 +336,42 @@ class SessionController extends AbstractCrudController
     }
 
     /**
-     * @Route("/queues", name="apiv2_cursus_session_list_queues", methods={"GET"})
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     */
-    public function listSessionQueuesAction(User $user, Request $request): JsonResponse
-    {
-        $this->checkToolAccess();
-
-        $params = $request->query->all();
-
-        if (!isset($params['hiddenFilters'])) {
-            $params['hiddenFilters'] = [];
-        }
-        if (!$this->authorization->isGranted('ROLE_ADMIN')) {
-            $params['hiddenFilters']['organizations'] = array_map(function (Organization $organization) {
-                return $organization->getUuid();
-            }, $user->getAdministratedOrganizations()->toArray());
-        }
-
-        return new JsonResponse(
-            $this->finder->search(CourseSessionRegistrationQueue::class, $params)
-        );
-    }
-
-    /**
-     * @Route("/queues", name="apiv2_cursus_session_remove_queues", methods={"DELETE"})
-     */
-    public function removeQueuesAction(Request $request): JsonResponse
-    {
-        $this->checkToolAccess();
-        $sessionQueues = $this->decodeIdsString($request, CourseSessionRegistrationQueue::class);
-        $this->manager->deleteEntities($sessionQueues);
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route("/queues/{queue}/validate", name="apiv2_cursus_session_validate_queue", methods={"PUT"})
-     * @EXT\ParamConverter("queue", class="Claroline\CursusBundle\Entity\SessionRegistrationQueue", options={"mapping": {"queue": "uuid"}})
-     */
-    public function sessionQueueValidateAction(CourseSessionRegistrationQueue $queue): JsonResponse
-    {
-        $this->checkToolAccess();
-
-        if ($this->manager->checkSessionCapacity($queue->getSession())) {
-            $this->manager->validateSessionQueue($queue);
-
-            return new JsonResponse();
-        }
-
-        return new JsonResponse([
-            'errors' => [
-                $this->translator->trans('users_limit_reached', ['%count%' => 1], 'cursus'),
-            ],
-        ], 405);
-    }
-
-    /**
-     * @Route(
-     *     "/{id}/all/invite",
-     *     name="apiv2_cursus_session_invite_all",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "session",
-     *     class="Claroline\CursusBundle\Entity\Session",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
+     * @Route("/{id}/invite/all", name="apiv2_cursus_session_invite_all", methods={"PUT"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      */
     public function inviteAllAction(Session $session): JsonResponse
     {
-        $this->checkToolAccess();
+        $this->checkPermission('EDIT', $session, [], true);
+
         $this->manager->inviteAllSessionLearners($session);
 
-        return new JsonResponse();
+        return new JsonResponse(null, 204);
     }
 
     /**
-     * @Route(
-     *     "/{id}/users/invite",
-     *     name="apiv2_cursus_session_invite_users",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "session",
-     *     class="Claroline\CursusBundle\Entity\Session",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
+     * @Route("/{id}/invite/users", name="apiv2_cursus_session_invite_users", methods={"PUT"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      */
     public function inviteUsersAction(Session $session, Request $request): JsonResponse
     {
-        $this->checkToolAccess();
+        $this->checkPermission('EDIT', $session, [], true);
+
         $users = $this->decodeIdsString($request, User::class);
         $this->manager->sendSessionInvitation($session, $users);
 
-        return new JsonResponse();
+        return new JsonResponse(null, 204);
     }
 
     /**
-     * @Route(
-     *     "/{id}/groups/invite",
-     *     name="apiv2_cursus_session_invite_groups",
-     *     methods={"PUT"}
-     * )
-     * @EXT\ParamConverter(
-     *     "session",
-     *     class="Claroline\CursusBundle\Entity\Session",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
+     * @Route("/{id}/invite/groups", name="apiv2_cursus_session_invite_groups", methods={"PUT"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      */
     public function inviteGroupsAction(Session $session, Request $request): JsonResponse
     {
-        $this->checkToolAccess();
+        $this->checkPermission('EDIT', $session, [], true);
+
         $groups = $this->decodeIdsString($request, Group::class);
         $users = [];
-
         foreach ($groups as $group) {
             $groupUsers = $group->getUsers();
 
@@ -464,17 +379,9 @@ class SessionController extends AbstractCrudController
                 $users[$user->getUuid()] = $user;
             }
         }
+
         $this->manager->sendSessionInvitation($session, $users);
 
         return new JsonResponse();
-    }
-
-    private function checkToolAccess(string $rights = 'OPEN')
-    {
-        $trainingsTool = $this->toolManager->getOrderedTool('trainings', Tool::DESKTOP);
-
-        if (is_null($trainingsTool) || !$this->authorization->isGranted($rights, $trainingsTool)) {
-            throw new AccessDeniedException();
-        }
     }
 }

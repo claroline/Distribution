@@ -10,16 +10,24 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class AbstractUserRegistration extends AbstractRegistration
 {
-    const REQUESTED = 'requested';
-    const CONFIRMED = 'confirmed';
-    const ACCEPTED = 'accepted';
+    /**
+     * The registration request has been confirmed by the user.
+     *
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
+     */
+    protected $confirmed = false;
 
     /**
-     * @ORM\Column(name="registration_status")
+     * The registration request has been validated by a manager.
+     * It is false when the registration requires manual validation or if their is no more seats to validate the registration.
      *
-     * @var string
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
      */
-    protected $status = self::REQUESTED;
+    protected $validated = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
@@ -29,14 +37,24 @@ abstract class AbstractUserRegistration extends AbstractRegistration
      */
     protected $user;
 
-    public function getStatus(): string
+    public function isConfirmed(): bool
     {
-        return $this->status;
+        return $this->confirmed;
     }
 
-    public function setStatus(string $status)
+    public function setConfirmed(bool $confirmed)
     {
-        $this->status = $status;
+        $this->confirmed = $confirmed;
+    }
+
+    public function isValidated(): bool
+    {
+        return $this->validated;
+    }
+
+    public function setValidated(bool $validated)
+    {
+        $this->validated = $validated;
     }
 
     public function getUser(): User

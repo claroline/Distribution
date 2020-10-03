@@ -79,6 +79,5 @@ class CourseManager
      */
     public function registerUserToCourse(Course $course, User $user, bool $skipValidation = false)
     {
-
     }
 }

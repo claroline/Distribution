@@ -92,8 +92,8 @@ class RoleSerializer
             $serialized['meta'] = $this->serializeMeta($role);
             $serialized['restrictions'] = $this->serializeRestrictions($role);
 
-            if ($workspace = $role->getWorkspace()) {
-                $serialized['workspace'] = $this->workspaceSerializer->serialize($workspace, [Options::SERIALIZE_MINIMAL]);
+            if ($role->getWorkspace()) {
+                $serialized['workspace'] = $this->workspaceSerializer->serialize($role->getWorkspace(), [Options::SERIALIZE_MINIMAL]);
             }
 
             if (Role::USER_ROLE === $role->getType()) {

@@ -40,13 +40,6 @@ class MessageManager
     /** @var WorkspaceRepository */
     private $workspaceRepo;
 
-    /**
-     * MessageManager constructor.
-     *
-     * @param MailManager           $mailManager
-     * @param ObjectManager         $om
-     * @param TokenStorageInterface $tokenStorage
-     */
     public function __construct(
         MailManager $mailManager,
         ObjectManager $om,
@@ -89,9 +82,8 @@ class MessageManager
     }
 
     /**
-     * @param Message $message
-     * @param bool    $setAsSent
-     * @param bool    $sendMail
+     * @param bool $setAsSent
+     * @param bool $sendMail
      *
      * @return Message
      */

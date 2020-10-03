@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/app/intl/translation'
@@ -10,7 +11,8 @@ import {PageFull} from '#/main/app/page/components/full'
 import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
 
 import {route} from '#/plugin/cursus/routing'
-import {Course as CourseTypes} from '#/plugin/cursus/prop-types'
+import {getInfo} from '#/plugin/cursus/course/utils'
+import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 
 const CoursePage = (props) => {
   if (isEmpty(props.course)) {
@@ -27,8 +29,8 @@ const CoursePage = (props) => {
       showBreadcrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
       path={[].concat(getToolBreadcrumb('trainings', props.currentContext.type, props.currentContext.data), props.path)}
       title={props.course.name}
-      subtitle={props.course.code}
-      poster={props.course.poster ? props.course.poster.url : undefined}
+      subtitle={get(props.activeSession, 'name')}
+      poster={getInfo(props.course, props.activeSession, 'poster.url')}
       toolbar="edit | fullscreen more"
       actions={[
         {
@@ -70,6 +72,9 @@ CoursePage.propTypes = {
   actions: T.array,
   course: T.shape(
     CourseTypes.propTypes
+  ),
+  activeSession: T.shape(
+    SessionTypes.propTypes
   ),
   children: T.any
 }

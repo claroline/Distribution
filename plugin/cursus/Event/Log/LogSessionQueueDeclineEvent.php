@@ -12,7 +12,6 @@
 namespace Claroline\CursusBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Claroline\CursusBundle\Entity\SessionRegistrationQueue;
 
 class LogSessionQueueDeclineEvent extends LogGenericEvent
 {
@@ -33,7 +32,6 @@ class LogSessionQueueDeclineEvent extends LogGenericEvent
         $details['courseCode'] = $course->getCode();
         $details['sessionId'] = $session->getUuid();
         $details['sessionName'] = $session->getName();
-        $details['sessionType'] = $session->getType();
 
         parent::__construct(
             self::ACTION,

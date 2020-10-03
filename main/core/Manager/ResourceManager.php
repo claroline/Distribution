@@ -770,9 +770,7 @@ class ResourceManager implements LoggerAwareInterface
                 return true;
             });
 
-            throw new ResourceTypeNotFoundException(
-                sprintf('The resource type(s) %s were not found.', implode(', ', $unknownTypes))
-            );
+            throw new ResourceTypeNotFoundException(sprintf('The resource type(s) %s were not found.', implode(', ', $unknownTypes)));
         }
 
         return $validTypes;

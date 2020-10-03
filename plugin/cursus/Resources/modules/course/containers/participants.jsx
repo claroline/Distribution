@@ -1,18 +1,17 @@
 import {connect} from 'react-redux'
 
-import {actions as listActions} from '#/main/app/content/list/store'
-
+import {constants} from '#/plugin/cursus/constants'
 import {actions} from '#/plugin/cursus/tools/trainings/catalog/store'
 import {CourseParticipants as CourseParticipantsComponent} from '#/plugin/cursus/course/components/participants'
 
 const CourseParticipants = connect(
   null,
   (dispatch) => ({
-    addTutors(sessionId, users) {
-      dispatch(actions.addTutors(sessionId, users))
+    addUsers(sessionId, users, type = constants.LEARNER_TYPE) {
+      dispatch(actions.addUsers(sessionId, users, type))
     },
-    invalidateList(listName) {
-      dispatch(listActions.invalidateData(listName))
+    addGroups(sessionId, groups, type = constants.LEARNER_TYPE) {
+      dispatch(actions.addGroups(sessionId, groups, type))
     }
   })
 )(CourseParticipantsComponent)

@@ -20,13 +20,13 @@ use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CoreBundle\Manager\Workspace\WorkspaceManager;
+use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\Registration\AbstractRegistration;
 use Claroline\CursusBundle\Entity\Registration\SessionGroup;
 use Claroline\CursusBundle\Entity\Registration\SessionUser;
-use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Event\Log\LogSessionGroupRegistrationEvent;
-use Claroline\CursusBundle\Event\Log\LogSessionQueueCreateEvent;
+use Claroline\CursusBundle\Event\Log\LogSessionGroupUnregistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
@@ -153,7 +153,7 @@ class SessionManager
     /**
      * Adds users to a session.
      */
-    public function addUsersToSession(Session $session, array $users, string $type = AbstractRegistration::LEARNER): array
+    public function addUsers(Session $session, array $users, string $type = AbstractRegistration::LEARNER, bool $validated = false): array
     {
         $results = [];
 
@@ -172,6 +172,16 @@ class SessionManager
                 $sessionUser->setType($type);
                 $sessionUser->setDate($registrationDate);
 
+                if (AbstractRegistration::TUTOR === $type) {
+                    // no validation on tutors
+                    $sessionUser->setValidated(true);
+                    $sessionUser->setConfirmed(true);
+                } else {
+                    // set validations for users based on session config
+                    $sessionUser->setValidated(!$session->getRegistrationValidation() || $validated);
+                    $sessionUser->setConfirmed(!$session->getUserValidation());
+                }
+
                 // Registers user to session workspace
                 $role = AbstractRegistration::TUTOR === $type ? $session->getTutorRole() : $session->getLearnerRole();
 
@@ -186,19 +196,22 @@ class SessionManager
             }
         }
 
+        // TODO : send invitation mail if configured
+
+        // TODO : what to do with this if he goes in pending state ?
+
         // registers users to linked trainings
         if ($course->getPropagateRegistration() && !empty($course->getChildren())) {
             foreach ($course->getChildren() as $childCourse) {
                 $childSession = $childCourse->getDefaultSession();
                 if ($childSession && !$childSession->isTerminated()) {
-                    $this->addUsersToSession($childSession, $users);
+                    $this->addUsers($childSession, $users);
                 }
             }
         }
 
         // registers users to linked events
         $events = $session->getEvents();
-
         foreach ($events as $event) {
             if (Session::REGISTRATION_AUTO === $event->getRegistrationType() && !$event->isTerminated()) {
                 $this->sessionEventManager->addUsersToSessionEvent($event, $users);
@@ -210,7 +223,7 @@ class SessionManager
         return $results;
     }
 
-    public function removeUsersFromSession(Session $session, array $sessionUsers)
+    public function removeUsers(Session $session, array $sessionUsers)
     {
         foreach ($sessionUsers as $sessionUser) {
             $this->om->remove($sessionUser);
@@ -231,7 +244,7 @@ class SessionManager
     /**
      * Adds groups to a session.
      */
-    public function addGroupsToSession(Session $session, array $groups, string $type = AbstractRegistration::LEARNER): array
+    public function addGroups(Session $session, array $groups, string $type = AbstractRegistration::LEARNER): array
     {
         $results = [];
         $registrationDate = new \DateTime();
@@ -271,6 +284,24 @@ class SessionManager
         return $results;
     }
 
+    public function removeGroups(Session $session, array $sessionGroups)
+    {
+        foreach ($sessionGroups as $sessionGroup) {
+            $this->om->remove($sessionGroup);
+
+            // unregister group from the linked workspace
+            if ($session->getWorkspace()) {
+                $this->workspaceManager->unregister($sessionGroup->getGroup(), $session->getWorkspace());
+            }
+
+            // TODO : unregister from events
+
+            $this->eventDispatcher->dispatch(new LogSessionGroupUnregistrationEvent($sessionGroup), 'log');
+        }
+
+        $this->om->flush();
+    }
+
     /**
      * Registers an user to a session if allowed.
      *
@@ -300,7 +331,7 @@ class SessionManager
         }
 
         if ($this->checkSessionCapacity($session)) {
-            return $this->addUsersToSession($session, [$user]);
+            return $this->addUsers($session, [$user]);
         }
 
         return null;
@@ -360,7 +391,7 @@ class SessionManager
 
         if ($this->checkSessionCapacity($session)) {
             $this->om->startFlushSuite();
-            $this->addUsersToSession($session, [$user]);
+            $this->addUsers($session, [$user]);
             $this->om->remove($queue);
             $this->om->endFlushSuite();
         }

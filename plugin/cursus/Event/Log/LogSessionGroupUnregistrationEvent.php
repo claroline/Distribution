@@ -12,37 +12,32 @@
 namespace Claroline\CursusBundle\Event\Log;
 
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Claroline\CursusBundle\Entity\Registration\EventUser;
+use Claroline\CursusBundle\Entity\Registration\SessionGroup;
 
-class LogSessionEventUserRegistrationEvent extends LogGenericEvent
+class LogSessionGroupUnregistrationEvent extends LogGenericEvent
 {
-    const ACTION = 'session-event-user-registration';
+    const ACTION = 'course-session-group-unregistration';
 
-    public function __construct(EventUser $sessionEventUser)
+    public function __construct(SessionGroup $sessionGroup)
     {
-        $user = $sessionEventUser->getUser();
-        $sessionEvent = $sessionEventUser->getEvent();
-        $session = $sessionEvent->getSession();
+        $session = $sessionGroup->getSession();
+        $group = $sessionGroup->getGroup();
         $course = $session->getCourse();
         $details = [];
-        $details['username'] = $user->getUsername();
-        $details['firsName'] = $user->getFirstName();
-        $details['lastName'] = $user->getLastName();
-        $details['sessionEventId'] = $sessionEvent->getUuid();
-        $details['sessionEventName'] = $sessionEvent->getName();
+        $details['groupName'] = $group->getName();
         $details['sessionId'] = $session->getUuid();
         $details['sessionName'] = $session->getName();
         $details['courseId'] = $course->getUuid();
         $details['courseTitle'] = $course->getName();
         $details['courseCode'] = $course->getCode();
-        //$details['registrationStatus'] = $sessionEventUser->getStatus();
-        //$details['applicationDate'] = $sessionEventUser->getApplicationDate();
-        $details['registrationDate'] = $sessionEventUser->getDate();
+        $details['registrationDate'] = $sessionGroup->getDate()->format('d/m/Y H:i:s');
+        $details['type'] = $sessionGroup->getType();
 
         parent::__construct(
             self::ACTION,
             $details,
-            $user
+            null,
+            $group
         );
     }
 

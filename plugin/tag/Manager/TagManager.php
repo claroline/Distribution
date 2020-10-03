@@ -33,14 +33,8 @@ class TagManager
     /** @var UserRepository */
     private $userRepo;
 
-    /**
-     * TagManager constructor.
-     *
-     * @param ObjectManager $om
-     */
-    public function __construct(
-        ObjectManager $om
-    ) {
+    public function __construct(ObjectManager $om)
+    {
         $this->om = $om;
         $this->taggedObjectRepo = $om->getRepository('ClarolineTagBundle:TaggedObject');
         $this->tagRepo = $om->getRepository('ClarolineTagBundle:Tag');
@@ -175,10 +169,9 @@ class TagManager
     }
 
     /**
-     * @param string[]  $tags
-     * @param array     $data
-     * @param User|null $user
-     * @param bool      $replace
+     * @param string[] $tags
+     * @param array    $data
+     * @param bool     $replace
      *
      * @return TaggedObject[]
      */

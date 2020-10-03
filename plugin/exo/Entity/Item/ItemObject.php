@@ -2,9 +2,9 @@
 
 namespace UJM\ExoBundle\Entity\Item;
 
+use Claroline\AppBundle\Entity\Meta\Order;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Claroline\AppBundle\Entity\Meta\Order;
 
 /**
  * A Resource on which the Item is referred.

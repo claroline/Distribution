@@ -44,11 +44,6 @@ class ShareActionManager
 
     protected $router;
 
-    /**
-     * @param EntityManager                     $em
-     * @param WallItemManager                   $wallItemManager
-     * @param \Symfony\Component\Routing\Router $router
-     */
     public function __construct(EntityManager $em, WallItemManager $wallItemManager, Router $router)
     {
         $this->em = $em;
