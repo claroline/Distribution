@@ -137,7 +137,8 @@ const CourseForm = (props) =>
           {
             name: 'workspace',
             type: 'workspace',
-            label: trans('workspace')
+            label: trans('workspace'),
+            displayed: (course) => !course.workspaceModel
           }, {
             name: 'workspaceModel',
             type: 'workspace',
@@ -149,16 +150,6 @@ const CourseForm = (props) =>
               }
             },
             displayed: (course) => !course.workspace
-          }, {
-            name: 'meta.tutorRoleName',
-            type: 'string',
-            label: trans('tutor_role', {}, 'cursus'),
-            displayed: (course) => !course.workspace && !course.workspaceModel
-          }, {
-            name: 'meta.learnerRoleName',
-            type: 'string',
-            label: trans('learner_role', {}, 'cursus'),
-            displayed: (course) => !course.workspace && !course.workspaceModel
           }, {
             name: 'meta.tutorRoleName',
             type: 'choice',
