@@ -371,7 +371,7 @@ class SessionManager
     /**
      * Gets/generates workspace role for session depending on given role name and type.
      */
-    public function generateRoleForSession(Workspace $workspace, string $roleName, string $type = 'learner'): Role
+    public function generateRoleForSession(Workspace $workspace, string $roleName = null, string $type = 'learner'): Role
     {
         if (empty($roleName)) {
             if ('manager' === $type) {
