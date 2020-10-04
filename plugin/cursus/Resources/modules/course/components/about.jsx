@@ -54,7 +54,9 @@ const CurrentRegistration = (props) => {
 CurrentRegistration.propTypes = {
   sessionFull: T.bool,
   registration: T.shape({
-    type: T.string.isRequired
+    type: T.string.isRequired,
+    confirmed: T.bool,
+    validated: T.bool
   }).isRequired
 }
 
