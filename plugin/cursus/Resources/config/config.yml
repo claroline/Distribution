@@ -62,7 +62,7 @@ plugin:
               - session_trainers
 
         - name: training_session_confirmation
-            placeholders:
+          placeholders:
               - course_name
               - course_code
               - course_description
