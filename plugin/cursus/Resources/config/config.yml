@@ -69,6 +69,7 @@ plugin:
               - session_url
               - session_name
               - session_description
+              - session_poster
               - session_start
               - session_end
               - session_trainers

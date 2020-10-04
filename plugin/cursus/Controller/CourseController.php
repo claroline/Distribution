@@ -160,11 +160,7 @@ class CourseController extends AbstractCrudController
             'tempDir' => $this->config->getParameter('server.tmp_dir'),
         ]);
 
-        $domPdf->loadHtml($this->manager->generateFromTemplate(
-            $course,
-            $request->server->get('DOCUMENT_ROOT').$request->getBasePath(),
-            $request->getLocale()
-        ));
+        $domPdf->loadHtml($this->manager->generateFromTemplate($course, $request->getLocale()));
 
         // Render the HTML as PDF
         $domPdf->render();

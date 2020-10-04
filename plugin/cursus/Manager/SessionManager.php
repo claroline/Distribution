@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Manager;
 
+use Claroline\AppBundle\Manager\PlatformManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Template\Template;
@@ -44,6 +45,8 @@ class SessionManager
     private $mailManager;
     /** @var ObjectManager */
     private $om;
+    /** @var PlatformManager */
+    private $platformManager;
     /** @var RoleManager */
     private $roleManager;
     /** @var RoutingHelper */
@@ -66,6 +69,7 @@ class SessionManager
         TranslatorInterface $translator,
         MailManager $mailManager,
         ObjectManager $om,
+        PlatformManager $platformManager,
         RoleManager $roleManager,
         RoutingHelper $routingHelper,
         TemplateManager $templateManager,
@@ -77,6 +81,7 @@ class SessionManager
         $this->translator = $translator;
         $this->mailManager = $mailManager;
         $this->om = $om;
+        $this->platformManager = $platformManager;
         $this->roleManager = $roleManager;
         $this->routingHelper = $routingHelper;
         $this->templateManager = $templateManager;
@@ -104,14 +109,14 @@ class SessionManager
         $this->om->flush();
     }
 
-    public function generateFromTemplate(Session $session, string $basePath, string $locale)
+    public function generateFromTemplate(Session $session, string $locale)
     {
         $placeholders = [
             'session_url' => $this->routingHelper->desktopUrl('trainings').'/catalog/'.$session->getCourse()->getSlug().'/'.$session->getUuid(),
             'session_name' => $session->getName(),
             'session_code' => $session->getCode(),
             'session_description' => $session->getDescription(),
-            'session_poster_url' => $basePath.'/'.$session->getPoster(),
+            'session_poster' => $session->getPoster() ? '<img src="'.$this->platformManager->getUrl().'/'.$session->getPoster().'" style="max-width: 100%;" />' : '',
             'session_public_registration' => $this->translator->trans($session->getPublicRegistration() ? 'yes' : 'no', [], 'platform'),
             'session_max_users' => $session->getMaxUsers(),
             'session_start' => $session->getStartDate()->format('d/m/Y'),
@@ -469,6 +474,7 @@ class SessionManager
             'course_code' => $course->getCode(),
             'course_description' => $course->getDescription(),
             'session_url' => $this->routingHelper->desktopUrl('trainings').'/catalog/'.$session->getCourse()->getSlug().'/'.$session->getUuid(),
+            'session_poster' => $session->getPoster() ? '<img src="'.$this->platformManager->getUrl().'/'.$session->getPoster().'" style="max-width: 100%;" />' : '',
             'session_name' => $session->getName(),
             'session_description' => $session->getDescription(),
             'session_start' => $session->getStartDate()->format('d/m/Y'),

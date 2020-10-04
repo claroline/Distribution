@@ -21,6 +21,7 @@ services:
             - '@translator'
             - '@claroline.manager.mail_manager'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\AppBundle\Manager\PlatformManager'
             - '@Claroline\CoreBundle\Manager\RoleManager'
             - '@Claroline\CoreBundle\Library\RoutingHelper'
             - '@claroline.manager.template_manager'

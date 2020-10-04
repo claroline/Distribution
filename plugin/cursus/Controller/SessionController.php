@@ -139,11 +139,7 @@ class SessionController extends AbstractCrudController
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
         ]);
-        $domPdf->loadHtml($this->manager->generateFromTemplate(
-            $session,
-            $request->server->get('DOCUMENT_ROOT').$request->getBasePath(),
-            $request->getLocale())
-        );
+        $domPdf->loadHtml($this->manager->generateFromTemplate($session, $request->getLocale()));
 
         // Render the HTML as PDF
         $domPdf->render();
