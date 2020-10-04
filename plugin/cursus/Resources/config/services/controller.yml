@@ -34,6 +34,7 @@ services:
         arguments:
             - '@security.authorization_checker'
             - '@security.token_storage'
+            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
             - '@claroline.manager.tool_manager'
             - '@Claroline\CursusBundle\Manager\CourseManager'
 

@@ -16,6 +16,7 @@ services:
     Claroline\CursusBundle\Manager\SessionManager:
         arguments:
             - '@event_dispatcher'
+            - '@translator'
             - '@claroline.manager.mail_manager'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\CoreBundle\Manager\RoleManager'

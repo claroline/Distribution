@@ -32,11 +32,14 @@ use Claroline\CursusBundle\Event\Log\LogSessionUserRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserUnregistrationEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SessionManager
 {
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
+    /** @var TranslatorInterface */
+    private $translator;
     /** @var MailManager */
     private $mailManager;
     /** @var ObjectManager */
@@ -60,6 +63,7 @@ class SessionManager
 
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
+        TranslatorInterface $translator,
         MailManager $mailManager,
         ObjectManager $om,
         RoleManager $roleManager,
@@ -70,6 +74,7 @@ class SessionManager
         EventManager $sessionEventManager
     ) {
         $this->eventDispatcher = $eventDispatcher;
+        $this->translator = $translator;
         $this->mailManager = $mailManager;
         $this->om = $om;
         $this->roleManager = $roleManager;
@@ -107,10 +112,10 @@ class SessionManager
             'session_code' => $session->getCode(),
             'session_description' => $session->getDescription(),
             'session_poster_url' => $basePath.'/'.$session->getPoster(),
-            'session_public_registration' => $session->getPublicRegistration(),
+            'session_public_registration' => $this->translator->trans($session->getPublicRegistration() ? 'yes' : 'no'),
             'session_max_users' => $session->getMaxUsers(),
-            'session_start_date' => $session->getStartDate()->format('d/m/Y'),
-            'session_end_date' => $session->getEndDate()->format('d/m/Y'),
+            'session_start' => $session->getStartDate()->format('d/m/Y'),
+            'session_end' => $session->getEndDate()->format('d/m/Y'),
         ];
 
         return $this->templateManager->getTemplate('training_session', $placeholders, $locale);
@@ -194,12 +199,11 @@ class SessionManager
             }
         }
 
-        // TODO : send invitation mail if configured
+        // TODO : what to do with this if he goes in pending state ?
+
         if ($session->getRegistrationMail()) {
             $this->sendSessionInvitation($session, $users);
         }
-
-        // TODO : what to do with this if he goes in pending state ?
 
         // registers users to linked trainings
         if ($course->getPropagateRegistration() && !empty($course->getChildren())) {
