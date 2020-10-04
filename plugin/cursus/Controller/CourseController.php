@@ -21,6 +21,8 @@ use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
 use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\CursusBundle\Entity\Course;
+use Claroline\CursusBundle\Entity\Registration\SessionGroup;
+use Claroline\CursusBundle\Entity\Registration\SessionUser;
 use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Manager\CourseManager;
 use Dompdf\Dompdf;
@@ -132,6 +134,21 @@ class CourseController extends AbstractCrudController
     {
         $this->checkPermission('OPEN', $course, [], true);
 
+        $user = $this->tokenStorage->getToken()->getUser();
+        $registrations = [];
+        if ($user instanceof User) {
+            $registrations = [
+                'users' => $this->finder->search(SessionUser::class, ['filters' => [
+                    'user' => $user->getUuid(),
+                    'course' => $course->getUuid(),
+                ]])['data'],
+                'groups' => $this->finder->search(SessionGroup::class, ['filters' => [
+                    'user' => $user->getUuid(),
+                    'course' => $course->getUuid(),
+                ]])['data'],
+            ];
+        }
+
         $sessions = $this->finder->search(Session::class, [
             'filters' => [
                 'terminated' => false,
@@ -143,6 +160,7 @@ class CourseController extends AbstractCrudController
             'course' => $this->serializer->serialize($course),
             'defaultSession' => $course->getDefaultSession() ? $this->serializer->serialize($course->getDefaultSession()) : null,
             'availableSessions' => $sessions['data'],
+            'registrations' => $registrations,
         ]);
     }
 

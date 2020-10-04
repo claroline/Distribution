@@ -61,5 +61,6 @@
     "registration_user_confirmation_title": "Registration must be confirmed by users using the link provided in the registration email.",
     "registration_user_confirmation_pending_help": "As long as the registration has not been confirmed, it will appear in the pending list.",
     "registration_user_confirmation_manager_help": "As a session manager, you can still manually confirm user registrations.",
-    "show_pending_list": "Show pending list"
+    "show_pending_list": "Show pending list",
+    "not_limited": "Not limited"
 }

@@ -97,11 +97,19 @@ const SessionList = (props) =>
         label: trans('workspace'),
         sortable: false
       }, {
-        name: 'restrictions.users',
-        alias: 'maxUsers',
-        type: 'number',
-        label: trans('max_participants', {}, 'cursus'),
-        displayed: true
+        name: 'availableSeats',
+        type: 'string',
+        label: trans('available_seats', {}, 'cursus'),
+        calculated: (row) => {
+          if (get(row, 'restrictions.users')) {
+            return (get(row, 'restrictions.users') - get(row, 'participants.learners', 0)) + ' / ' + get(row, 'restrictions.users')
+          }
+
+          return trans('not_limited', {}, 'cursus')
+        },
+        displayed: true,
+        filterable: false,
+        sortable: false
       }, {
         name: 'meta.order',
         alias: 'order',

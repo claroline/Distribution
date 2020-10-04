@@ -70,7 +70,9 @@ const CourseDetails = (props) =>
                 path={props.path}
                 course={props.course}
                 activeSession={props.activeSession}
+                activeSessionRegistration={props.activeSessionRegistration}
                 availableSessions={props.availableSessions}
+                register={props.register}
               />
             )
           }
@@ -121,9 +123,13 @@ CourseDetails.propTypes = {
   activeSession: T.shape(
     SessionTypes.propTypes
   ),
+  activeSessionRegistration: T.shape({
+
+  }),
   availableSessions: T.arrayOf(T.shape(
     SessionTypes.propTypes
-  ))
+  )),
+  register: T.func.isRequired
 }
 
 export {

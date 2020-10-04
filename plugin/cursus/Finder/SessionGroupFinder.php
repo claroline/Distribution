@@ -24,12 +24,25 @@ class SessionGroupFinder extends AbstractFinder
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
+        $sessionJoin = false;
         $groupJoin = false;
-
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+                case 'course':
+                    if (!$sessionJoin) {
+                        $qb->join('obj.session', 's');
+                        $sessionJoin = true;
+                    }
+                    $qb->join('s.course', 'c');
+                    $qb->andWhere("c.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+
                 case 'session':
-                    $qb->join('obj.session', 's');
+                    if (!$sessionJoin) {
+                        $qb->join('obj.session', 's');
+                        $sessionJoin = true;
+                    }
                     $qb->andWhere("s.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
@@ -39,7 +52,19 @@ class SessionGroupFinder extends AbstractFinder
                         $qb->join('obj.group', 'g');
                         $groupJoin = true;
                     }
+
                     $qb->andWhere("g.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+
+                case 'user':
+                    if (!$groupJoin) {
+                        $qb->join('obj.group', 'g');
+                        $groupJoin = true;
+                    }
+
+                    $qb->leftJoin('g.users', 'gu');
+                    $qb->andWhere("gu.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
 

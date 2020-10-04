@@ -3,15 +3,23 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/app/intl/translation'
 import {hasPermission} from '#/main/app/security'
+import {AlertBlock} from '#/main/app/alert/components/alert-block'
 import {Button} from '#/main/app/action/components/button'
 import {ListData} from '#/main/app/content/list/containers/data'
 import {constants as listConst} from '#/main/app/content/list/constants'
 import {GroupCard} from '#/main/core/user/data/components/group-card'
 
+import {isFull} from '#/plugin/cursus/course/utils'
 import {Session as SessionTypes} from '#/plugin/cursus/prop-types'
 
 const SessionGroups = (props) =>
   <Fragment>
+    {isFull(props.session) && hasPermission('edit', props.session) &&
+      <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
+        {trans('Il n\'est plus possible d\'inscrire de nouveaux groupes.', {}, 'cursus')}
+      </AlertBlock>
+    }
+
     <ListData
       name={props.name}
       fetch={{

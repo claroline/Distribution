@@ -44,6 +44,11 @@ const reducer = combineReducers({
     })
   }),
 
+  // current user registrations to course sessions
+  courseRegistrations: makeReducer({users: [], groups: []}, {
+    [LOAD_COURSE]: (state, action) => action.registrations
+  }),
+
   // participants
   courseTutors: makeListReducer(selectors.STORE_NAME+'.courseTutors', {}, {
     invalidated: makeReducer(false, {

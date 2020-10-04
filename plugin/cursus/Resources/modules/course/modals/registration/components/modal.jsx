@@ -12,7 +12,7 @@ import {DetailsData} from '#/main/app/content/details/components/data'
 
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {route} from '#/plugin/cursus/routing'
-import {getInfo} from '#/plugin/cursus/course/utils'
+import {getInfo, isFull} from '#/plugin/cursus/course/utils'
 
 const RegistrationModal = props =>
   <Modal
@@ -32,6 +32,14 @@ const RegistrationModal = props =>
 
     {props.session &&
       <Fragment>
+        {isFull(props.session) &&
+          <div className="modal-body">
+            <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
+              {trans('Vous pouvez vous inscrire en liste d\'attente ou parcourir les autres sessions.', {}, 'cursus')}
+            </AlertBlock>
+          </div>
+        }
+
         <DetailsData
           data={props.session}
           sections={[
@@ -78,8 +86,9 @@ const RegistrationModal = props =>
       className="btn modal-btn"
       type={CALLBACK_BUTTON}
       primary={true}
-      label={trans(!props.session ? 'register_waiting_list' : 'self-register', {}, 'actions')}
+      label={trans(!props.session || isFull(props.session) ? 'register_waiting_list' : 'self-register', {}, 'actions')}
       callback={() => {
+        props.register(props.course, props.session ? props.session.id : null)
         props.fadeModal()
       }}
     />
@@ -92,6 +101,7 @@ RegistrationModal.propTypes = {
   session: T.shape(
     SessionTypes.propTypes
   ),
+  register: T.func.isRequired,
 
   // from modal
   fadeModal: T.func.isRequired

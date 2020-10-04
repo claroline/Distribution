@@ -5,6 +5,7 @@ import isEmpty from 'lodash/isEmpty'
 
 import {trans, displayDuration, displayDate, now} from '#/main/app/intl'
 import {Alert} from '#/main/app/alert/components/alert'
+import {AlertBlock} from '#/main/app/alert/components/alert-block'
 import {Button} from '#/main/app/action/components/button'
 import {LINK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {ContentHtml} from '#/main/app/content/components/html'
@@ -16,11 +17,46 @@ import {route as workspaceRoute} from '#/main/core/workspace/routing'
 import {route as resourceRoute} from '#/main/core/resource/routing'
 
 import {route} from '#/plugin/cursus/routing'
-import {getInfo} from '#/plugin/cursus/course/utils'
+import {getInfo, isFullyRegistered, isFull} from '#/plugin/cursus/course/utils'
+import {constants} from '#/plugin/cursus/constants'
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {CourseCard} from '#/plugin/cursus/course/components/card'
 import {SessionCard} from '#/plugin/cursus/session/components/card'
 import {MODAL_COURSE_REGISTRATION} from '#/plugin/cursus/course/modals/registration'
+
+const CurrentRegistration = (props) => {
+  let registrationTitle = 'Vous êtes en liste d\'attente pour cette session.'
+  if (constants.TEACHER_TYPE === props.registration.type) {
+    registrationTitle = 'Vous êtes formateur pour cette session.'
+  } else if (isFullyRegistered(props.registration)) {
+    registrationTitle = 'Vous êtes inscrit à cette session.'
+  }
+
+  return (
+    <AlertBlock
+      type={isFullyRegistered(props.registration) ? 'success' : 'warning'}
+      title={trans(registrationTitle, {}, 'cursus')}
+    >
+      {props.sessionFull &&
+        <div>La session est complète pour le moment. Il sera possible de terminer l'inscription si des places se libèrent.</div>
+      }
+
+      {!props.sessionFull && undefined !== props.registration.confirmed && !props.registration.confirmed &&
+        <div>Vous devez confirmer votre inscription grâce au lien qui vous a été envoyé.</div>
+      }
+      {!props.sessionFull && undefined !== props.registration.validated && !props.registration.validated &&
+        <div>Un gestionnaire doit valider votre demande d'inscription.</div>
+      }
+    </AlertBlock>
+  )
+}
+
+CurrentRegistration.propTypes = {
+  sessionFull: T.bool,
+  registration: T.shape({
+    type: T.string.isRequired
+  }).isRequired
+}
 
 const CourseAbout = (props) => {
   const availableSessions = props.availableSessions
@@ -38,23 +74,25 @@ const CourseAbout = (props) => {
               </span>
             </li>
 
-            {getInfo(props.course, props.activeSession, 'restrictions.users') &&
-              <li className="list-group-item">
-                {trans('available_seats', {}, 'cursus')}
+            <li className="list-group-item">
+              {trans('available_seats', {}, 'cursus')}
 
-                {!props.activeSession &&
-                  <span className="value">
-                    {get(props.course, 'restrictions.users')}
-                  </span>
-                }
+              {!getInfo(props.course, props.activeSession, 'restrictions.users') &&
+                <span className="value">{trans('not_limited', {}, 'cursus')}</span>
+              }
 
-                {props.activeSession &&
-                  <span className="value">
-                    {(get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.learners')) + ' / ' + get(props.activeSession, 'restrictions.users')}
-                  </span>
-                }
-              </li>
-            }
+              {getInfo(props.course, props.activeSession, 'restrictions.users') && !props.activeSession &&
+                <span className="value">
+                  {get(props.course, 'restrictions.users')}
+                </span>
+              }
+
+              {getInfo(props.course, props.activeSession, 'restrictions.users') && props.activeSession &&
+                <span className="value">
+                  {(get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.learners')) + ' / ' + get(props.activeSession, 'restrictions.users')}
+                </span>
+              }
+            </li>
 
             <li className="list-group-item">
               {trans('duration')}
@@ -94,20 +132,21 @@ const CourseAbout = (props) => {
             <Alert type="warning">{trans('registration_requires_manager', {}, 'cursus')}</Alert>
           }
 
-          {getInfo(props.course, props.activeSession, 'registration.selfRegistration') &&
+          {isEmpty(props.activeSessionRegistration) && getInfo(props.course, props.activeSession, 'registration.selfRegistration') &&
             <Button
               className="btn btn-block btn-emphasis"
               type={MODAL_BUTTON}
-              label={trans('self-register', {}, 'actions')}
+              label={trans(!props.activeSession || isFull(props.activeSession) ? 'register_waiting_list' : 'self-register', {}, 'actions')}
               modal={[MODAL_COURSE_REGISTRATION, {
                 course: props.course,
-                session: props.activeSession
+                session: props.activeSession,
+                register: props.register
               }]}
               primary={true}
             />
           }
 
-          {!isEmpty(getInfo(props.course, props.activeSession, 'workspace')) &&
+          {isFullyRegistered(props.activeSessionRegistration) && !isEmpty(getInfo(props.course, props.activeSession, 'workspace')) &&
             <Button
               className="btn btn-block"
               type={LINK_BUTTON}
@@ -177,6 +216,19 @@ const CourseAbout = (props) => {
               }
             </div>
           </div>
+        }
+
+        {props.activeSessionRegistration &&
+          <CurrentRegistration
+            sessionFull={isFull(props.activeSession)}
+            registration={props.activeSessionRegistration}
+          />
+        }
+
+        {!props.activeSession && isFull(props.activeSession) &&
+          <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
+            {trans('Toutes les nouvelles inscriptions seront automatiquement ajoutées en liste d\'attente.', {}, 'cursus')}
+          </AlertBlock>
         }
 
         <div className="panel panel-default">
@@ -303,9 +355,13 @@ CourseAbout.propTypes = {
   activeSession: T.shape(
     SessionTypes.propTypes
   ),
+  activeSessionRegistration: T.shape({
+
+  }),
   availableSessions: T.arrayOf(T.shape(
     SessionTypes.propTypes
-  ))
+  )),
+  register: T.func.isRequired
 }
 
 export {

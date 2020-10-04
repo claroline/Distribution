@@ -13,6 +13,7 @@ namespace Claroline\CursusBundle\Manager;
 
 use Claroline\AppBundle\Manager\PlatformManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CursusBundle\Entity\Course;
@@ -81,5 +82,10 @@ class CourseManager
         }
 
         return $content;
+    }
+
+    public function getRegistrations(Course $course, User $user)
+    {
+        return [];
     }
 }

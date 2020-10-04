@@ -45,6 +45,7 @@ const CatalogDetails = (props) =>
                   path={props.path+'/catalog'}
                   course={props.course}
                   availableSessions={props.availableSessions}
+                  register={props.register}
                 />
               )
 
@@ -63,7 +64,9 @@ const CatalogDetails = (props) =>
                   path={props.path+'/catalog'}
                   course={props.course}
                   activeSession={props.activeSession}
+                  activeSessionRegistration={props.activeSessionRegistration}
                   availableSessions={props.availableSessions}
+                  register={props.register}
                 />
               )
 
@@ -90,7 +93,11 @@ CatalogDetails.propTypes = {
   availableSessions: T.arrayOf(T.shape({
     // TODO : propTypes
   })),
-  openSession: T.func.isRequired
+  activeSessionRegistration: T.shape({
+    // TODO : propTypes
+  }),
+  openSession: T.func.isRequired,
+  register: T.func.isRequired
 }
 
 export {

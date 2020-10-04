@@ -11,11 +11,15 @@ const CatalogDetails = connect(
     currentContext: toolSelectors.context(state),
     course: selectors.course(state),
     activeSession: selectors.activeSession(state),
+    activeSessionRegistration: selectors.activeSessionRegistration(state),
     availableSessions: selectors.availableSessions(state)
   }),
   (dispatch) => ({
     openSession(sessionId) {
       dispatch(actions.openSession(sessionId))
+    },
+    register(course, sessionId) {
+      dispatch(actions.register(course, sessionId))
     }
   })
 )(CatalogDetailsComponent)

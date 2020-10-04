@@ -16,6 +16,7 @@ import {MODAL_GROUPS} from '#/main/core/modals/groups'
 import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {constants} from '#/plugin/cursus/constants'
+import {isFull} from '#/plugin/cursus/course/utils'
 
 import {SessionGroups} from '#/plugin/cursus/session/components/groups'
 import {SessionUsers} from '#/plugin/cursus/session/components/users'
@@ -80,6 +81,7 @@ const CourseGroups = (props) =>
       name: 'add_groups',
       type: MODAL_BUTTON,
       label: trans('add_groups'),
+      disabled: isFull(props.activeSession),
       modal: [MODAL_GROUPS, {
         selectAction: (selected) => ({
           type: CALLBACK_BUTTON,
@@ -198,6 +200,12 @@ const CourseParticipants = (props) =>
               render() {
                 const Users = (
                   <Fragment>
+                    {isFull(props.activeSession) &&
+                      <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
+                        {trans('Toutes les nouvelles inscriptions seront automatiquement ajoutées en liste d\'attente.', {}, 'cursus')}
+                      </AlertBlock>
+                    }
+
                     {get(props.activeSession, 'registration.userValidation') &&
                       <AlertBlock title={trans('registration_user_confirmation_title', {}, 'cursus')}>
                         {trans('registration_user_confirmation_pending_help', {}, 'cursus')}
@@ -228,7 +236,7 @@ const CourseParticipants = (props) =>
                     activeSession={props.activeSession}
                     name={selectors.STORE_NAME+'.courseGroups'}
                     addGroups={props.addGroups}
-                    inviteUsers={props.inviteGroups}
+                    inviteGroups={props.inviteGroups}
                   />
                 )
 
@@ -239,43 +247,53 @@ const CourseParticipants = (props) =>
               disabled: !hasPermission('edit', props.activeSession),
               render() {
                 const Pending = (
-                  <SessionUsers
-                    session={props.activeSession}
-                    name={selectors.STORE_NAME+'.coursePending'}
-                    url={['apiv2_cursus_session_list_pending', {id: props.activeSession.id}]}
-                    unregisterUrl={['apiv2_cursus_session_remove_users', {type: constants.LEARNER_TYPE, id: props.activeSession.id}]}
-                    actions={(rows) => [
-                      {
-                        name: 'confirm',
-                        type: CALLBACK_BUTTON,
-                        icon: 'fa fa-fw fa-user-check',
-                        label: trans('confirm_registration', {}, 'actions'),
-                        callback: () => props.confirmPending(props.activeSession.id, rows),
-                        displayed: hasPermission('edit', props.activeSession) && get (props.activeSession, 'registration.userValidation') && -1 !== rows.findIndex(row => !row.confirmed),
-                        group: trans('management')
-                      }, {
-                        name: 'validate',
-                        type: CALLBACK_BUTTON,
-                        icon: 'fa fa-fw fa-check',
-                        label: trans('validate_registration', {}, 'actions'),
-                        callback: () => props.validatePending(props.activeSession.id, rows),
-                        displayed: hasPermission('edit', props.activeSession) && -1 !== rows.findIndex(row => !row.validated),
-                        group: trans('management')
-                      }
-                    ]}
-                    add={{
-                      name: 'add_users',
-                      type: MODAL_BUTTON,
-                      label: trans('add_pending', {}, 'cursus'),
-                      modal: [MODAL_USERS, {
-                        selectAction: (selected) => ({
+                  <Fragment>
+                    {isFull(props.session) && hasPermission('edit', props.session) &&
+                      <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
+                        {trans('Il n\'est plus possible de valider les inscriptions en attente.', {}, 'cursus')}
+                      </AlertBlock>
+                    }
+
+                    <SessionUsers
+                      session={props.activeSession}
+                      name={selectors.STORE_NAME+'.coursePending'}
+                      url={['apiv2_cursus_session_list_pending', {id: props.activeSession.id}]}
+                      unregisterUrl={['apiv2_cursus_session_remove_users', {type: constants.LEARNER_TYPE, id: props.activeSession.id}]}
+                      actions={(rows) => [
+                        {
+                          name: 'confirm',
                           type: CALLBACK_BUTTON,
-                          label: trans('register', {}, 'actions'),
-                          callback: () => props.addPending(props.activeSession.id, selected)
-                        })
-                      }]
-                    }}
-                  />
+                          icon: 'fa fa-fw fa-user-check',
+                          label: trans('confirm_registration', {}, 'actions'),
+                          callback: () => props.confirmPending(props.activeSession.id, rows),
+                          disabled: isFull(props.activeSession),
+                          displayed: hasPermission('edit', props.activeSession) && get (props.activeSession, 'registration.userValidation') && -1 !== rows.findIndex(row => !row.confirmed),
+                          group: trans('management')
+                        }, {
+                          name: 'validate',
+                          type: CALLBACK_BUTTON,
+                          icon: 'fa fa-fw fa-check',
+                          label: trans('validate_registration', {}, 'actions'),
+                          callback: () => props.validatePending(props.activeSession.id, rows),
+                          disabled: isFull(props.activeSession),
+                          displayed: hasPermission('edit', props.activeSession) && -1 !== rows.findIndex(row => !row.validated),
+                          group: trans('management')
+                        }
+                      ]}
+                      add={{
+                        name: 'add_users',
+                        type: MODAL_BUTTON,
+                        label: trans('add_pending', {}, 'cursus'),
+                        modal: [MODAL_USERS, {
+                          selectAction: (selected) => ({
+                            type: CALLBACK_BUTTON,
+                            label: trans('register', {}, 'actions'),
+                            callback: () => props.addPending(props.activeSession.id, selected)
+                          })
+                        }]
+                      }}
+                    />
+                  </Fragment>
                 )
 
                 return Pending
