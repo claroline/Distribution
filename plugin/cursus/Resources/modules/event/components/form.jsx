@@ -64,10 +64,6 @@ const EventForm = (props) =>
             name: 'thumbnail',
             type: 'image',
             label: trans('thumbnail')
-          }, {
-            name: 'meta.isEvent',
-            type: 'boolean',
-            label: trans('show_in_agenda', {}, 'cursus')
           }
         ]
       }, {

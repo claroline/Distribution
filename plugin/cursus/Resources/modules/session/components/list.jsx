@@ -6,11 +6,10 @@ import get from 'lodash/get'
 import {trans} from '#/main/app/intl/translation'
 import {now} from '#/main/app/intl/date'
 import {hasPermission} from '#/main/app/security'
-import {LINK_BUTTON, MODAL_BUTTON, URL_BUTTON} from '#/main/app/buttons'
+import {LINK_BUTTON, URL_BUTTON} from '#/main/app/buttons'
 import {ListData} from '#/main/app/content/list/containers/data'
 
 import {route} from '#/plugin/cursus/routing'
-import {MODAL_SESSION_FORM} from '#/plugin/cursus/session/modals/parameters'
 import {SessionCard} from '#/plugin/cursus/session/components/card'
 
 const SessionList = (props) =>
@@ -25,15 +24,14 @@ const SessionList = (props) =>
       target: route(row.meta.course, row),
       label: trans('open', {}, 'actions')
     })}
-    delete={{
-      url: ['apiv2_cursus_session_delete_bulk']
-    }}
+    delete={props.delete}
     definition={[
       {
         name: 'status',
         type: 'choice',
         label: trans('status'),
         displayed: true,
+        order: 1,
         options: {
           noEmpty: true,
           choices: {
@@ -105,30 +103,6 @@ const SessionList = (props) =>
         label: trans('max_participants', {}, 'cursus'),
         displayed: true
       }, {
-        name: 'meta.default',
-        type: 'boolean',
-        label: trans('default')
-      }, {
-        name: 'registration.selfRegistration',
-        alias: 'publicRegistration',
-        type: 'boolean',
-        label: trans('public_registration')
-      }, {
-        name: 'registration.selfUnregistration',
-        alias: 'publicUnregistration',
-        type: 'boolean',
-        label: trans('public_unregistration')
-      }, {
-        name: 'registration.validation',
-        alias: 'registrationValidation',
-        type: 'boolean',
-        label: trans('registration_validation', {}, 'cursus')
-      }, {
-        name: 'registration.userValidation',
-        alias: 'userValidation',
-        type: 'boolean',
-        label: trans('user_validation', {}, 'cursus')
-      }, {
         name: 'meta.order',
         alias: 'order',
         type: 'number',
@@ -136,37 +110,42 @@ const SessionList = (props) =>
         displayable: false,
         filterable: false
       }
-    ]}
+    ].concat(props.definition)}
     card={SessionCard}
-    actions={(rows) => [
-      {
-        name: 'edit',
-        type: MODAL_BUTTON,
-        icon: 'fa fa-fw fa-pencil',
-        label: trans('edit', {}, 'actions'),
-        modal: [MODAL_SESSION_FORM, {
-          session: rows[0],
-          onSave: () => props.invalidate()
-        }],
-        scope: ['object'],
-        group: trans('management')
-      }, {
-        name: 'export-pdf',
-        type: URL_BUTTON,
-        icon: 'fa fa-fw fa-file-pdf-o',
-        label: trans('export-pdf', {}, 'actions'),
-        displayed: hasPermission('open', rows[0]),
-        group: trans('transfer'),
-        target: ['apiv2_cursus_session_download_pdf', {id: rows[0].id}],
-        scope: ['object']
+    actions={(rows) => {
+      let actions = [
+        {
+          name: 'export-pdf',
+          type: URL_BUTTON,
+          icon: 'fa fa-fw fa-file-pdf-o',
+          label: trans('export-pdf', {}, 'actions'),
+          displayed: hasPermission('open', rows[0]),
+          group: trans('transfer'),
+          target: ['apiv2_cursus_session_download_pdf', {id: rows[0].id}],
+          scope: ['object']
+        }
+      ]
+
+      if (props.actions) {
+        actions = [].concat(actions, props.actions(rows))
       }
-    ]}
+
+      return actions
+    }}
   />
 
 SessionList.propTypes = {
   name: T.string.isRequired,
   url: T.oneOfType([T.string, T.array]).isRequired,
-  invalidate: T.func.isRequired
+  delete: T.object,
+  definition: T.arrayOf(T.shape({
+    // TODO : list property propTypes
+  })),
+  actions: T.func
+}
+
+SessionList.defaultProps = {
+  definition: []
 }
 
 export {

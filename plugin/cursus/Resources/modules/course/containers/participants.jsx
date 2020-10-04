@@ -12,6 +12,15 @@ const CourseParticipants = connect(
     },
     addGroups(sessionId, groups, type = constants.LEARNER_TYPE) {
       dispatch(actions.addGroups(sessionId, groups, type))
+    },
+    addPending(sessionId, users) {
+      dispatch(actions.addPending(sessionId, users))
+    },
+    confirmPending(sessionId, users) {
+      dispatch(actions.confirmPending(sessionId, users))
+    },
+    validatePending(sessionId, users) {
+      dispatch(actions.validatePending(sessionId, users))
     }
   })
 )(CourseParticipantsComponent)

@@ -4,6 +4,7 @@ import get from 'lodash/get'
 import {schemeCategory20c} from 'd3-scale'
 
 import {trans} from '#/main/app/intl/translation'
+import {hasPermission} from '#/main/app/security'
 import {LinkButton} from '#/main/app/buttons/link'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {AlertBlock} from '#/main/app/alert/components/alert-block'
@@ -94,17 +95,28 @@ const CourseParticipants = (props) =>
 
         <h1 className="h3">
           <small>{trans('users')}</small>
-          {get(props.activeSession, 'participants.users', 0)}
+          {get(props.activeSession, 'participants.learners', 0)}
         </h1>
       </div>
 
+      {hasPermission('edit', props.activeSession) &&
+        <div className="analytics-card">
+          <span className="fa fa-hourglass-half" style={{backgroundColor: schemeCategory20c[9]}} />
+
+          <h1 className="h3">
+            <small>{trans('En attente')}</small>
+            {get(props.activeSession, 'participants.pending', 0)}
+          </h1>
+        </div>
+      }
+
       <div className="analytics-card">
-        <span className="fa fa-user-plus" style={{backgroundColor: schemeCategory20c[9]}} />
+        <span className="fa fa-user-plus" style={{backgroundColor: schemeCategory20c[13]}} />
 
         <h1 className="h3">
           <small>{trans('available_seats', {}, 'cursus')}</small>
           {get(props.activeSession, 'restrictions.users') ?
-            (get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.users', 0)) + ' / ' + get(props.activeSession, 'restrictions.users')
+            (get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.learners', 0)) + ' / ' + get(props.activeSession, 'restrictions.users')
             : <span className="fa fa-fw fa-infinity" />
           }
         </h1>
@@ -124,18 +136,16 @@ const CourseParticipants = (props) =>
             }, {
               icon: 'fa fa-fw fa-user',
               title: trans('users'),
-              path: '/users',
-              exact: true
+              path: '/users'
             }, {
               icon: 'fa fa-fw fa-users',
               title: trans('groups'),
-              path: '/groups',
-              exact: true
+              path: '/groups'
             }, {
-              icon: 'fa fa-fw fa-user-plus',
+              icon: 'fa fa-fw fa-hourglass-half',
               title: trans('En attente'),
               path: '/pending',
-              exact: true
+              displayed: hasPermission('edit', props.activeSession)
             }
           ]}
         />
@@ -166,9 +176,11 @@ const CourseParticipants = (props) =>
                 const Users = (
                   <Fragment>
                     {get(props.activeSession, 'registration.userValidation') &&
-                      <AlertBlock title="L'inscription doit être confirmée par les utilisateurs grâce au lien fourni dans l'email d'inscription.">
-                        Temps que l'inscription n'a pas été confirmée, elle apparaîtra dans la liste d'attente.
-                        (<LinkButton target={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants/pending'}>Voir la liste d'attente</LinkButton>)
+                      <AlertBlock title={trans('registration_user_confirmation_title', {}, 'cursus')}>
+                        {trans('registration_user_confirmation_pending_help', {}, 'cursus')}
+                        <br/>
+                        {trans('registration_user_confirmation_manager_help', {}, 'cursus')}
+                        (<LinkButton target={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants/pending'}>{trans('show_pending_list', {}, 'cursus')}</LinkButton>)
                       </AlertBlock>
                     }
 
@@ -199,7 +211,48 @@ const CourseParticipants = (props) =>
               }
             }, {
               path: '/pending',
-              component: null
+              disabled: !hasPermission('edit', props.activeSession),
+              render() {
+                const Pending = (
+                  <SessionUsers
+                    session={props.activeSession}
+                    name={selectors.STORE_NAME+'.coursePending'}
+                    url={['apiv2_cursus_session_list_pending', {id: props.activeSession.id}]}
+                    unregisterUrl={['apiv2_cursus_session_remove_users', {type: constants.LEARNER_TYPE, id: props.activeSession.id}]}
+                    actions={(rows) => [
+                      {
+                        name: 'confirm',
+                        type: CALLBACK_BUTTON,
+                        icon: 'fa fa-fw fa-user-check',
+                        label: trans('Confirmer l\'inscription', {}, 'cursus'),
+                        callback: () => props.confirmPending(props.activeSession.id, rows),
+                        displayed: hasPermission('edit', props.activeSession) && get (props.activeSession, 'registration.userValidation') && -1 !== rows.findIndex(row => !row.confirmed)
+                      }, {
+                        name: 'validate',
+                        type: CALLBACK_BUTTON,
+                        icon: 'fa fa-fw fa-check',
+                        label: trans('Valider l\'inscription', {}, 'cursus'),
+                        callback: () => props.validatePending(props.activeSession.id, rows),
+                        displayed: hasPermission('edit', props.activeSession) && -1 !== rows.findIndex(row => !row.validated)
+                      }
+                    ]}
+                    add={{
+                      name: 'add_users',
+                      type: MODAL_BUTTON,
+                      label: trans('add_pending', {}, 'cursus'),
+                      modal: [MODAL_USERS, {
+                        selectAction: (selected) => ({
+                          type: CALLBACK_BUTTON,
+                          label: trans('register', {}, 'actions'),
+                          callback: () => props.addPending(props.activeSession.id, selected)
+                        })
+                      }]
+                    }}
+                  />
+                )
+
+                return Pending
+              }
             }
           ]}
         />
@@ -216,7 +269,10 @@ CourseParticipants.propTypes = {
     SessionTypes.propTypes
   ),
   addUsers: T.func.isRequired,
-  addGroups: T.func.isRequired
+  addGroups: T.func.isRequired,
+  addPending: T.func.isRequired,
+  confirmPending: T.func.isRequired,
+  validatePending: T.func.isRequired
 }
 
 export {

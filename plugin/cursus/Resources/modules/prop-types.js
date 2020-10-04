@@ -87,7 +87,8 @@ const Session = {
     }),
     participants: T.shape({
       tutors: T.number,
-      learners: T.number
+      learners: T.number,
+      pending: T.number
     }),
     registration: T.shape({
       selfRegistration: T.bool,

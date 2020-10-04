@@ -51,7 +51,7 @@ class SessionFinder extends AbstractFinder
                             $qb->andWhere('obj.startDate < :now');
                             break;
                         case 'in_progress':
-                            $qb->andWhere('(obj.startDate >= :now AND obj.endDate >= :now)');
+                            $qb->andWhere('(obj.startDate <= :now AND obj.endDate >= :now)');
                             break;
                         case 'closed':
                             $qb->andWhere('obj.endDate < :now');
@@ -74,15 +74,24 @@ class SessionFinder extends AbstractFinder
                     break;
 
                 case 'user':
-                    $qb->leftJoin('obj.sessionUsers', 'su');
+                    $qb->leftJoin('Claroline\CursusBundle\Entity\Registration\SessionUser', 'su', 'WITH', 'su.session = obj');
                     $qb->leftJoin('su.user', 'u');
-                    $qb->leftJoin('obj.sessionGroups', 'sg');
+                    $qb->leftJoin('Claroline\CursusBundle\Entity\Registration\SessionGroup', 'sg', 'WITH', 'sg.session = obj');
                     $qb->leftJoin('sg.group', 'g');
                     $qb->leftJoin('g.users', 'gu');
+                    $qb->andWhere('su.confirmed = 1 AND su.validated = 1');
                     $qb->andWhere($qb->expr()->orX(
                         $qb->expr()->eq('u.uuid', ':userId'),
                         $qb->expr()->eq('gu.uuid', ':userId')
                     ));
+                    $qb->setParameter('userId', $filterValue);
+                    break;
+
+                case 'userPending':
+                    $qb->leftJoin('Claroline\CursusBundle\Entity\Registration\SessionUser', 'su', 'WITH', 'su.session = obj');
+                    $qb->leftJoin('su.user', 'u');
+                    $qb->andWhere('(su.confirmed = 0 AND su.validated = 0)');
+                    $qb->andWhere('u.uuid = :userId');
                     $qb->setParameter('userId', $filterValue);
                     break;
 

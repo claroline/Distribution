@@ -27,9 +27,6 @@ use Claroline\CursusBundle\Entity\Registration\SessionUser;
 use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Event\Log\LogSessionGroupRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionGroupUnregistrationEvent;
-use Claroline\CursusBundle\Event\Log\LogSessionQueueUserValidateEvent;
-use Claroline\CursusBundle\Event\Log\LogSessionQueueValidateEvent;
-use Claroline\CursusBundle\Event\Log\LogSessionQueueValidatorValidateEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserUnregistrationEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -242,6 +239,44 @@ class SessionManager
     }
 
     /**
+     * @param SessionUser[] $sessionUsers
+     */
+    public function confirmUsers(Session $session, array $sessionUsers = []): array
+    {
+        // TODO : check capacity
+
+        $this->om->startFlushSuite();
+
+        foreach ($sessionUsers as $sessionUser) {
+            $sessionUser->setConfirmed(true);
+            $this->om->persist($sessionUser);
+        }
+
+        $this->om->endFlushSuite();
+
+        return $sessionUsers;
+    }
+
+    /**
+     * @param SessionUser[] $sessionUsers
+     */
+    public function validateUsers(Session $session, array $sessionUsers = []): array
+    {
+        // TODO : check capacity
+
+        $this->om->startFlushSuite();
+
+        foreach ($sessionUsers as $sessionUser) {
+            $sessionUser->setValidated(true);
+            $this->om->persist($sessionUser);
+        }
+
+        $this->om->endFlushSuite();
+
+        return $sessionUsers;
+    }
+
+    /**
      * Adds groups to a session.
      */
     public function addGroups(Session $session, array $groups, string $type = AbstractRegistration::LEARNER): array
@@ -303,101 +338,6 @@ class SessionManager
     }
 
     /**
-     * Registers an user to a session if allowed.
-     *
-     * @return SessionUser
-     */
-    public function registerUserToSession(Session $session, User $user, bool $skipValidation = false)
-    {
-        $validationMask = 0;
-
-        if (!$skipValidation) {
-            if ($session->getRegistrationValidation()) {
-                $validationMask += AbstractRegistrationQueue::WAITING;
-            }
-            if ($session->getUserValidation()) {
-                $validationMask += AbstractRegistrationQueue::WAITING_USER;
-            }
-        }
-
-        if (0 < $validationMask) {
-            $sessionQueue = $this->sessionQueueRepo->findOneBy(['session' => $session, 'user' => $user]);
-
-            if (!$sessionQueue) {
-                $sessionQueue = $this->createSessionQueue($session, $user, $validationMask);
-            }
-
-            return $sessionQueue;
-        }
-
-        if ($this->checkSessionCapacity($session)) {
-            return $this->addUsers($session, [$user]);
-        }
-
-        return null;
-    }
-
-    /**
-     * Validates user registration to session.
-     */
-    public function validateSessionQueueByType(CourseSessionRegistrationQueue $queue, User $user, int $type)
-    {
-        $mask = $queue->getStatus();
-
-        if ($type === ($mask & $type)) {
-            $this->om->startFlushSuite();
-
-            switch ($type) {
-                case CourseSessionRegistrationQueue::WAITING:
-                    $mask -= CourseSessionRegistrationQueue::WAITING;
-                    $queue->setValidationDate(new \DateTime());
-                    $queue->setStatus($mask);
-                    $this->om->persist($queue);
-
-                    $this->eventDispatcher->dispatch(new LogSessionQueueValidateEvent($queue), 'log');
-                    break;
-                case CourseSessionRegistrationQueue::WAITING_USER:
-                    $mask -= CourseSessionRegistrationQueue::WAITING_USER;
-                    $queue->setUserValidationDate(new \DateTime());
-                    $queue->setStatus($mask);
-                    $this->om->persist($queue);
-
-                    $this->eventDispatcher->dispatch(new LogSessionQueueUserValidateEvent($queue), 'log');
-                    break;
-                case CourseSessionRegistrationQueue::WAITING_VALIDATOR:
-                    $mask -= CourseSessionRegistrationQueue::WAITING_VALIDATOR;
-                    $queue->setValidatorValidationDate(new \DateTime());
-                    $queue->setValidator($user);
-                    $queue->setStatus($mask);
-                    $this->om->persist($queue);
-
-                    $this->eventDispatcher->dispatch(new LogSessionQueueValidatorValidateEvent($queue), 'log');
-                    break;
-            }
-            $this->om->endFlushSuite();
-        }
-        if (0 === $mask) {
-            $this->validateSessionQueue($queue);
-        }
-    }
-
-    /**
-     * Registers user to session from session queue.
-     */
-    public function validateSessionQueue(CourseSessionRegistrationQueue $queue)
-    {
-        $session = $queue->getSession();
-        $user = $queue->getUser();
-
-        if ($this->checkSessionCapacity($session)) {
-            $this->om->startFlushSuite();
-            $this->addUsers($session, [$user]);
-            $this->om->remove($queue);
-            $this->om->endFlushSuite();
-        }
-    }
-
-    /**
      * Gets/generates workspace role for session depending on given role name and type.
      */
     public function generateRoleForSession(Workspace $workspace, string $roleName, string $type = 'learner'): Role
@@ -440,26 +380,14 @@ class SessionManager
      */
     public function checkSessionCapacity(Session $session, $count = 1): bool
     {
-        $hasPlace = true;
         $maxUsers = $session->getMaxUsers();
-
         if ($maxUsers) {
-            $sessionUsers = $this->sessionUserRepo->findBy(['session' => $session, 'type' => AbstractRegistration::LEARNER]);
-            $sessionGroups = $this->sessionGroupRepo->findBy(['session' => $session, 'type' => AbstractRegistration::LEARNER]);
-            $groups = [];
+            $nbUsers = $this->sessionRepo->countLearners($session);
 
-            foreach ($sessionGroups as $sessionGroup) {
-                $groups[] = $sessionGroup->getGroup();
-            }
-            $nbUsers = count($sessionUsers);
-
-            foreach ($groups as $group) {
-                $nbUsers += count($group->getUsers()->toArray());
-            }
-            $hasPlace = $nbUsers + $count <= $maxUsers;
+            return $nbUsers + $count <= $maxUsers;
         }
 
-        return $hasPlace;
+        return true;
     }
 
     /**

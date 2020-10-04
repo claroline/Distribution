@@ -97,7 +97,6 @@ class SessionController extends AbstractCrudController
     public function listPublicAction(Request $request): JsonResponse
     {
         $params = $request->query->all();
-
         $params['hiddenFilters'] = $this->getDefaultHiddenFilters();
         $params['hiddenFilters']['publicRegistration'] = true;
         $params['hiddenFilters']['terminated'] = false;
@@ -174,28 +173,6 @@ class SessionController extends AbstractCrudController
     }
 
     /**
-     * @Route("/{id}/pending/{type}", name="apiv2_cursus_session_list_pending", methods={"GET"})
-     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
-     */
-    public function listPendingAction(Session $session, string $type, Request $request): JsonResponse
-    {
-        $this->checkPermission('OPEN', $session, [], true);
-
-        $params = $request->query->all();
-
-        if (!isset($params['hiddenFilters'])) {
-            $params['hiddenFilters'] = [];
-        }
-        $params['hiddenFilters']['session'] = $session->getUuid();
-        $params['hiddenFilters']['type'] = $type;
-        $params['hiddenFilters']['pending'] = true;
-
-        return new JsonResponse(
-            $this->finder->search(SessionUser::class, $params)
-        );
-    }
-
-    /**
      * @Route("/{id}/users/{type}", name="apiv2_cursus_session_list_users", methods={"GET"})
      * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      */
@@ -204,7 +181,6 @@ class SessionController extends AbstractCrudController
         $this->checkPermission('OPEN', $session, [], true);
 
         $params = $request->query->all();
-
         if (!isset($params['hiddenFilters'])) {
             $params['hiddenFilters'] = [];
         }
@@ -231,7 +207,7 @@ class SessionController extends AbstractCrudController
         if (AbstractRegistration::LEARNER === $type && !$this->manager->checkSessionCapacity($session, $nbUsers)) {
             return new JsonResponse(['errors' => [
                 $this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus'),
-            ]], 405);
+            ]], 422); // not the best status (same as form validation errors)
         }
 
         $sessionUsers = $this->manager->addUsers($session, $users, $type, true);
@@ -293,7 +269,7 @@ class SessionController extends AbstractCrudController
         if (AbstractRegistration::LEARNER === $type && !$this->manager->checkSessionCapacity($session, $nbUsers)) {
             return new JsonResponse(['errors' => [
                 $this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus'),
-            ]], 405);
+            ]], 422); // not the best status (same as form validation errors)
         }
 
         $sessionGroups = $this->manager->addGroups($session, $groups, $type);
@@ -318,6 +294,74 @@ class SessionController extends AbstractCrudController
     }
 
     /**
+     * @Route("/{id}/pending", name="apiv2_cursus_session_list_pending", methods={"GET"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
+     */
+    public function listPendingAction(Session $session, Request $request): JsonResponse
+    {
+        $this->checkPermission('EDIT', $session, [], true);
+
+        $params = $request->query->all();
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['session'] = $session->getUuid();
+        $params['hiddenFilters']['pending'] = true;
+
+        return new JsonResponse(
+            $this->finder->search(SessionUser::class, $params)
+        );
+    }
+
+    /**
+     * @Route("/{id}/pending", name="apiv2_cursus_session_add_pending", methods={"PATCH"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
+     */
+    public function addPendingAction(Session $session, Request $request): JsonResponse
+    {
+        $this->checkPermission('EDIT', $session, [], true);
+
+        $users = $this->decodeIdsString($request, User::class);
+        $sessionUsers = $this->manager->addUsers($session, $users, AbstractRegistration::LEARNER, false);
+
+        return new JsonResponse(array_map(function (SessionUser $sessionUser) {
+            return $this->serializer->serialize($sessionUser);
+        }, $sessionUsers));
+    }
+
+    /**
+     * @Route("/{id}/pending/confirm", name="apiv2_cursus_session_confirm_pending", methods={"PUT"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
+     */
+    public function confirmPendingAction(Session $session, Request $request): JsonResponse
+    {
+        $this->checkPermission('EDIT', $session, [], true);
+
+        $users = $this->decodeIdsString($request, SessionUser::class);
+        $sessionUsers = $this->manager->confirmUsers($session, $users);
+
+        return new JsonResponse(array_map(function (SessionUser $sessionUser) {
+            return $this->serializer->serialize($sessionUser);
+        }, $sessionUsers));
+    }
+
+    /**
+     * @Route("/{id}/pending/validate", name="apiv2_cursus_session_validate_pending", methods={"PUT"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
+     */
+    public function validatePendingAction(Session $session, Request $request): JsonResponse
+    {
+        $this->checkPermission('EDIT', $session, [], true);
+
+        $users = $this->decodeIdsString($request, SessionUser::class);
+        $sessionUsers = $this->manager->validateUsers($session, $users);
+
+        return new JsonResponse(array_map(function (SessionUser $sessionUser) {
+            return $this->serializer->serialize($sessionUser);
+        }, $sessionUsers));
+    }
+
+    /**
      * @Route("/{id}/self/register", name="apiv2_cursus_session_self_register", methods={"PUT"})
      * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
@@ -330,9 +374,9 @@ class SessionController extends AbstractCrudController
             throw new AccessDeniedException();
         }
 
-        $result = $this->manager->registerUserToSession($session, $user);
+        $sessionUsers = $this->manager->addUsers($session, [$user], AbstractRegistration::LEARNER);
 
-        return new JsonResponse($this->serializer->serialize($result));
+        return new JsonResponse($this->serializer->serialize($sessionUsers[0]));
     }
 
     /**

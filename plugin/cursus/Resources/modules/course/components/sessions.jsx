@@ -16,7 +16,50 @@ const CourseSessions = (props) =>
     <SessionList
       name={selectors.STORE_NAME+'.courseSessions'}
       url={['apiv2_cursus_course_list_sessions', {id: props.course.id}]}
-      invalidate={() => props.reload(props.course.slug)}
+      delete={{
+        url: ['apiv2_cursus_session_delete_bulk']
+      }}
+      definition={[
+        {
+          name: 'meta.default',
+          type: 'boolean',
+          label: trans('default')
+        }, {
+          name: 'registration.selfRegistration',
+          alias: 'publicRegistration',
+          type: 'boolean',
+          label: trans('public_registration')
+        }, {
+          name: 'registration.selfUnregistration',
+          alias: 'publicUnregistration',
+          type: 'boolean',
+          label: trans('public_unregistration')
+        }, {
+          name: 'registration.validation',
+          alias: 'registrationValidation',
+          type: 'boolean',
+          label: trans('registration_validation', {}, 'cursus')
+        }, {
+          name: 'registration.userValidation',
+          alias: 'userValidation',
+          type: 'boolean',
+          label: trans('user_validation', {}, 'cursus')
+        }
+      ]}
+      actions={(rows) => [
+        {
+          name: 'edit',
+          type: MODAL_BUTTON,
+          icon: 'fa fa-fw fa-pencil',
+          label: trans('edit', {}, 'actions'),
+          modal: [MODAL_SESSION_FORM, {
+            session: rows[0],
+            onSave: () => props.reload(props.course.slug)
+          }],
+          scope: ['object'],
+          group: trans('management')
+        }
+      ]}
     />
 
     {hasPermission('edit', props.course) &&

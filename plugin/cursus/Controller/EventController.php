@@ -118,7 +118,7 @@ class EventController extends AbstractCrudController
         if (!$this->manager->checkSessionEventCapacity($sessionEvent, $nbUsers)) {
             return new JsonResponse(['errors' => [
                 $this->translator->trans('users_limit_reached', ['%count%' => $nbUsers], 'cursus'),
-            ]], 405);
+            ]], 422); // not the best status (same as form validation errors)
         }
 
         $sessionEventUsers = $this->manager->addUsersToSessionEvent($sessionEvent, $users);

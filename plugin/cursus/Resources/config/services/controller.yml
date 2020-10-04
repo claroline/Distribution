@@ -29,6 +29,7 @@ services:
                 arguments:
                   - '@service_container'
 
+    # Trainings
     Claroline\CursusBundle\Controller\CourseController:
         arguments:
             - '@security.authorization_checker'
@@ -49,3 +50,10 @@ services:
             - '@security.token_storage'
             - '@translator'
             - '@Claroline\CursusBundle\Manager\EventManager'
+
+    # User trainings
+    Claroline\CursusBundle\Controller\User\SessionController:
+        arguments:
+            - '@security.authorization_checker'
+            - '@security.token_storage'
+            - '@Claroline\AppBundle\API\FinderProvider'

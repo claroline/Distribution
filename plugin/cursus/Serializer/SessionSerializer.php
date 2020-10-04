@@ -28,6 +28,7 @@ use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CursusBundle\Entity\Course;
 use Claroline\CursusBundle\Entity\Session;
+use Claroline\CursusBundle\Repository\SessionRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class SessionSerializer
@@ -54,6 +55,8 @@ class SessionSerializer
     private $courseSerializer;
 
     private $courseRepo;
+    /** @var SessionRepository */
+    private $sessionRepo;
 
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -77,6 +80,7 @@ class SessionSerializer
         $this->courseSerializer = $courseSerializer;
 
         $this->courseRepo = $om->getRepository(Course::class);
+        $this->sessionRepo = $om->getRepository(Session::class);
     }
 
     public function getSchema()
@@ -144,10 +148,7 @@ class SessionSerializer
                     'mail' => $session->getRegistrationMail(),
                     'eventRegistrationType' => $session->getEventRegistrationType(),
                 ],
-                'participants' => [
-                    'tutors' => 0, //$session->countTutors(),
-                    'learners' => 0, //$session->countLearners(),
-                ],
+                'participants' => $this->sessionRepo->countParticipants($session),
                 'resources' => array_map(function (ResourceNode $resource) {
                     return $this->resourceSerializer->serialize($resource, [Options::SERIALIZE_MINIMAL]);
                 }, $session->getResources()->toArray()),
