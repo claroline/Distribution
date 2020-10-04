@@ -112,7 +112,7 @@ class SessionManager
             'session_code' => $session->getCode(),
             'session_description' => $session->getDescription(),
             'session_poster_url' => $basePath.'/'.$session->getPoster(),
-            'session_public_registration' => $this->translator->trans($session->getPublicRegistration() ? 'yes' : 'no'),
+            'session_public_registration' => $this->translator->trans($session->getPublicRegistration() ? 'yes' : 'no', [], 'platform'),
             'session_max_users' => $session->getMaxUsers(),
             'session_start' => $session->getStartDate()->format('d/m/Y'),
             'session_end' => $session->getEndDate()->format('d/m/Y'),
@@ -185,10 +185,9 @@ class SessionManager
                     $sessionUser->setConfirmed(!$session->getUserValidation());
                 }
 
-                // Registers user to session workspace
+                // grant workspace role if registration is fully validated
                 $role = AbstractRegistration::TUTOR === $type ? $session->getTutorRole() : $session->getLearnerRole();
-
-                if ($role) {
+                if ($role && $sessionUser->isValidated() && $sessionUser->isConfirmed()) {
                     $this->roleManager->associateRole($user, $role);
                 }
                 $this->om->persist($sessionUser);
@@ -258,6 +257,12 @@ class SessionManager
         foreach ($sessionUsers as $sessionUser) {
             $sessionUser->setConfirmed(true);
             $this->om->persist($sessionUser);
+
+            // grant workspace role if registration is fully validated
+            $role = AbstractRegistration::TUTOR === $sessionUser->getType() ? $session->getTutorRole() : $session->getLearnerRole();
+            if ($role && $sessionUser->isValidated() && $sessionUser->isConfirmed()) {
+                $this->roleManager->associateRole($sessionUser->getUser(), $role);
+            }
         }
 
         $this->om->endFlushSuite();
@@ -434,7 +439,7 @@ class SessionManager
     /**
      * Sends invitation to session to given users.
      */
-    public function sendSessionInvitation(Session $session, array $users, Template $template = null)
+    public function sendSessionInvitation(Session $session, array $users)
     {
         $templateName = 'training_session_invitation';
         if ($session->getUserValidation()) {
@@ -480,7 +485,7 @@ class SessionManager
                 'username' => $user->getUsername(),
             ]);
 
-            $title = $this->templateManager->getTemplate($templateName, $placeholders, $locale);
+            $title = $this->templateManager->getTemplate($templateName, $placeholders, $locale, 'title');
             $content = $this->templateManager->getTemplate($templateName, $placeholders, $locale);
 
             $this->mailManager->send($title, $content, [$user]);

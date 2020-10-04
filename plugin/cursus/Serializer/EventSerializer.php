@@ -23,11 +23,14 @@ use Claroline\CoreBundle\Repository\User\LocationRepository;
 use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Entity\Event;
 use Doctrine\Common\Persistence\ObjectRepository;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EventSerializer
 {
     use SerializerTrait;
 
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
     /** @var ObjectManager */
     private $om;
     /** @var PublicFileSerializer */
@@ -43,11 +46,13 @@ class EventSerializer
     private $sessionRepo;
 
     public function __construct(
+        AuthorizationCheckerInterface $authorization,
         ObjectManager $om,
         PublicFileSerializer $fileSerializer,
         LocationSerializer $locationSerializer,
         SessionSerializer $sessionSerializer
     ) {
+        $this->authorization = $authorization;
         $this->om = $om;
         $this->fileSerializer = $fileSerializer;
         $this->locationSerializer = $locationSerializer;
@@ -64,6 +69,11 @@ class EventSerializer
             'code' => $event->getCode(),
             'name' => $event->getName(),
             'description' => $event->getDescription(),
+            'permissions' => [
+                'open' => $this->authorization->isGranted('OPEN', $event),
+                'edit' => $this->authorization->isGranted('EDIT', $event),
+                'delete' => $this->authorization->isGranted('DELETE', $event),
+            ],
             'poster' => $this->serializePoster($event),
             'thumbnail' => $this->serializeThumbnail($event),
             'location' => $event->getLocation() ? $this->locationSerializer->serialize($event->getLocation(), [Options::SERIALIZE_MINIMAL]) : null,

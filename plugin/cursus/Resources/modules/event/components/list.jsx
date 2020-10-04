@@ -40,7 +40,7 @@ const EventList = (props) =>
     ]*/}
     delete={{
       url: ['apiv2_cursus_event_delete_bulk'],
-      displayed: (rows) => -1 !== rows.filter(row => hasPermission('delete', row))
+      displayed: (rows) => -1 !== rows.findIndex(row => hasPermission('delete', row))
     }}
     definition={[
       {

@@ -46,10 +46,6 @@ const EventForm = (props) =>
             name: 'location',
             type: 'location',
             label: trans('location')
-          }, {
-            name: 'meta.locationExtra',
-            type: 'html',
-            label: trans('extra_informations', {}, 'cursus')
           }
         ]
       }, {

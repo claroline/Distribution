@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Manager;
 
+use Claroline\AppBundle\Manager\PlatformManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\RoleManager;
@@ -18,6 +19,7 @@ use Claroline\CoreBundle\Manager\Template\TemplateManager;
 use Claroline\CursusBundle\Entity\Course;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CourseManager
 {
@@ -25,8 +27,12 @@ class CourseManager
     private $tokenStorage;
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
+    /** @var TranslatorInterface */
+    private $translator;
     /** @var ObjectManager */
     private $om;
+    /** @var PlatformManager */
+    private $platformManager;
     /** @var TemplateManager */
     private $templateManager;
     /** @var RoleManager */
@@ -37,13 +43,17 @@ class CourseManager
     public function __construct(
         TokenStorageInterface $tokenStorage,
         EventDispatcherInterface $eventDispatcher,
+        TranslatorInterface $translator,
         ObjectManager $om,
+        PlatformManager $platformManager,
         TemplateManager $templateManager,
         RoleManager $roleManager,
         SessionManager $sessionManager
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
+        $this->translator = $translator;
+        $this->platformManager = $platformManager;
         $this->roleManager = $roleManager;
         $this->tokenStorage = $tokenStorage;
         $this->templateManager = $templateManager;
@@ -56,9 +66,9 @@ class CourseManager
             'course_name' => $course->getName(),
             'course_code' => $course->getCode(),
             'course_description' => $course->getDescription(),
-            'course_poster_url' => $basePath.'/'.$course->getPoster(),
+            'course_poster_url' => $this->platformManager->getUrl().'/'.$course->getPoster(),
             'course_default_duration' => $course->getDefaultSessionDuration(),
-            'course_public_registration' => $course->getPublicRegistration(),
+            'course_public_registration' => $this->translator->trans($course->getPublicRegistration() ? 'yes' : 'no', [], 'platform'),
             'course_max_users' => $course->getMaxUsers(),
         ];
 
