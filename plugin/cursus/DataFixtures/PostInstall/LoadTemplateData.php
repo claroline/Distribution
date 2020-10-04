@@ -83,7 +83,7 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
                 $template->setTitle($this->translator->trans('training_course', [], 'template', $locale));
 
                 $content = "
-                    %course_poster_url%
+                    %course_poster%
                     <h1>%course_name% <small>%course_code%</small></h1>
                     
                     <h2>{$this->translator->trans('description', [], 'platform')}</h2>
@@ -120,7 +120,7 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
                 $template->setTitle($this->translator->trans('training_session', [], 'template', $locale));
 
                 $content = "
-                    %session_poster_url%
+                    %session_poster%
                     <h1>%session_name% <small>%session_code%</small></h1>
                     
                     <h2>{$this->translator->trans('description', [], 'platform')}</h2>
