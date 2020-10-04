@@ -145,11 +145,14 @@ class SessionManager
             $model = $this->workspaceManager->getDefaultModel();
         }
 
-        $workspace = $this->workspaceManager->copy($model, new Workspace());
-
-        $workspace->setCreator($user);
+        $workspace = new Workspace();
         $workspace->setName($session->getName());
         $workspace->setCode($this->workspaceManager->getUniqueCode($session->getCode()));
+
+        $workspace = $this->workspaceManager->copy($model, $workspace);
+
+        $workspace->setCreator($user);
+
         $workspace->setDescription($session->getDescription());
         $workspace->setPoster($session->getPoster());
         $workspace->setThumbnail($session->getThumbnail());
