@@ -68,6 +68,15 @@ actions.addUsers = (sessionId, users, type) => ({
   }
 })
 
+actions.inviteUsers = (sessionId, users) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_cursus_session_invite_users', {id: sessionId}], {ids: users.map(user => user.id)}),
+    request: {
+      method: 'PUT'
+    }
+  }
+})
+
 actions.addGroups = (sessionId, groups, type) => ({
   [API_REQUEST]: {
     url: url(['apiv2_cursus_session_add_groups', {id: sessionId, type: type}], {ids: groups.map(group => group.id)}),
@@ -77,6 +86,15 @@ actions.addGroups = (sessionId, groups, type) => ({
     success: (data, dispatch) => {
       // TODO : do something better (I need it to recompute session available space)
       dispatch(actions.openSession(sessionId, true))
+    }
+  }
+})
+
+actions.inviteGroups = (sessionId, groups) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_cursus_session_invite_groups', {id: sessionId}], {ids: groups.map(group => group.id)}),
+    request: {
+      method: 'PUT'
     }
   }
 })

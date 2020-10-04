@@ -210,7 +210,7 @@ class SessionManager
         // TODO : what to do with this if he goes in pending state ?
 
         if ($session->getRegistrationMail()) {
-            $this->sendSessionInvitation($session, $users);
+            $this->sendSessionInvitation($session, $users, AbstractRegistration::LEARNER === $type);
         }
 
         // registers users to linked trainings
@@ -308,6 +308,7 @@ class SessionManager
 
         $this->om->startFlushSuite();
 
+        $users = [];
         foreach ($groups as $group) {
             $sessionGroup = $this->sessionGroupRepo->findOneBy([
                 'session' => $session,
@@ -333,7 +334,15 @@ class SessionManager
                 $this->eventDispatcher->dispatch(new LogSessionGroupRegistrationEvent($sessionGroup), 'log');
 
                 $results[] = $sessionGroup;
+
+                foreach ($group->getUsers() as $user) {
+                    $users[$user->getUuid()] = $user;
+                }
             }
+        }
+
+        if ($session->getRegistrationMail()) {
+            $this->sendSessionInvitation($session, $users, false);
         }
 
         $this->om->endFlushSuite();
@@ -421,6 +430,7 @@ class SessionManager
         $sessionLearners = $this->sessionUserRepo->findBy([
             'session' => $session,
             'type' => AbstractRegistration::LEARNER,
+            'validated' => true,
         ]);
         /** @var SessionGroup[] $sessionGroups */
         $sessionGroups = $this->sessionGroupRepo->findBy([
@@ -442,16 +452,16 @@ class SessionManager
             }
         }
 
-        $this->sendSessionInvitation($session, $users);
+        $this->sendSessionInvitation($session, $users, false);
     }
 
     /**
      * Sends invitation to session to given users.
      */
-    public function sendSessionInvitation(Session $session, array $users)
+    public function sendSessionInvitation(Session $session, array $users, bool $confirm = true)
     {
         $templateName = 'training_session_invitation';
-        if ($session->getUserValidation()) {
+        if ($confirm && $session->getUserValidation()) {
             $templateName = 'training_session_confirmation';
         }
 

@@ -423,8 +423,10 @@ class SessionController extends AbstractCrudController
     {
         $this->checkPermission('EDIT', $session, [], true);
 
-        $users = $this->decodeIdsString($request, User::class);
-        $this->manager->sendSessionInvitation($session, $users);
+        $sessionUsers = $this->decodeIdsString($request, SessionUser::class);
+        $this->manager->sendSessionInvitation($session, array_map(function (SessionUser $sessionUser) {
+            return $sessionUser->getUser();
+        }, $sessionUsers));
 
         return new JsonResponse(null, 204);
     }
@@ -437,17 +439,17 @@ class SessionController extends AbstractCrudController
     {
         $this->checkPermission('EDIT', $session, [], true);
 
-        $groups = $this->decodeIdsString($request, Group::class);
+        $sessionGroups = $this->decodeIdsString($request, SessionGroup::class);
         $users = [];
-        foreach ($groups as $group) {
-            $groupUsers = $group->getUsers();
+        foreach ($sessionGroups as $sessionGroup) {
+            $groupUsers = $sessionGroup->getGroup()->getUsers();
 
             foreach ($groupUsers as $user) {
                 $users[$user->getUuid()] = $user;
             }
         }
 
-        $this->manager->sendSessionInvitation($session, $users);
+        $this->manager->sendSessionInvitation($session, $users, false);
 
         return new JsonResponse();
     }

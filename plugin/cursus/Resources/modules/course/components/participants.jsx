@@ -26,6 +26,16 @@ const CourseUsers = (props) =>
     name={props.name}
     url={['apiv2_cursus_session_list_users', {type: props.type, id: props.activeSession.id}]}
     unregisterUrl={['apiv2_cursus_session_remove_users', {type: props.type, id: props.activeSession.id}]}
+    actions={(rows) => [
+      {
+        name: 'invite',
+        type: CALLBACK_BUTTON,
+        icon: 'fa fa-fw fa-envelope',
+        label: trans('send_invitation', {}, 'actions'),
+        callback: () => props.inviteUsers(props.activeSession.id, rows),
+        displayed: hasPermission('edit', props.activeSession)
+      }
+    ]}
     add={{
       name: 'add_users',
       type: MODAL_BUTTON,
@@ -46,7 +56,8 @@ CourseUsers.propTypes = {
   activeSession: T.shape(
     SessionTypes.propTypes
   ),
-  addUsers: T.func.isRequired
+  addUsers: T.func.isRequired,
+  inviteUsers: T.func.isRequired
 }
 
 const CourseGroups = (props) =>
@@ -55,6 +66,16 @@ const CourseGroups = (props) =>
     name={props.name}
     url={['apiv2_cursus_session_list_groups', {type: props.type, id: props.activeSession.id}]}
     unregisterUrl={['apiv2_cursus_session_remove_groups', {type: props.type, id: props.activeSession.id}]}
+    actions={(rows) => [
+      {
+        name: 'invite',
+        type: CALLBACK_BUTTON,
+        icon: 'fa fa-fw fa-envelope',
+        label: trans('send_invitation', {}, 'actions'),
+        callback: () => props.inviteGroups(props.activeSession.id, rows),
+        displayed: hasPermission('edit', props.activeSession)
+      }
+    ]}
     add={{
       name: 'add_groups',
       type: MODAL_BUTTON,
@@ -75,7 +96,8 @@ CourseGroups.propTypes = {
   activeSession: T.shape(
     SessionTypes.propTypes
   ),
-  addGroups: T.func.isRequired
+  addGroups: T.func.isRequired,
+  inviteGroups: T.func.isRequired
 }
 
 const CourseParticipants = (props) =>
@@ -165,6 +187,7 @@ const CourseParticipants = (props) =>
                     activeSession={props.activeSession}
                     name={selectors.STORE_NAME+'.courseTutors'}
                     addUsers={props.addUsers}
+                    inviteUsers={props.inviteUsers}
                   />
                 )
 
@@ -189,6 +212,7 @@ const CourseParticipants = (props) =>
                       activeSession={props.activeSession}
                       name={selectors.STORE_NAME+'.courseUsers'}
                       addUsers={props.addUsers}
+                      inviteUsers={props.inviteUsers}
                     />
                   </Fragment>
                 )
@@ -204,6 +228,7 @@ const CourseParticipants = (props) =>
                     activeSession={props.activeSession}
                     name={selectors.STORE_NAME+'.courseGroups'}
                     addGroups={props.addGroups}
+                    inviteUsers={props.inviteGroups}
                   />
                 )
 
@@ -226,14 +251,16 @@ const CourseParticipants = (props) =>
                         icon: 'fa fa-fw fa-user-check',
                         label: trans('confirm_registration', {}, 'actions'),
                         callback: () => props.confirmPending(props.activeSession.id, rows),
-                        displayed: hasPermission('edit', props.activeSession) && get (props.activeSession, 'registration.userValidation') && -1 !== rows.findIndex(row => !row.confirmed)
+                        displayed: hasPermission('edit', props.activeSession) && get (props.activeSession, 'registration.userValidation') && -1 !== rows.findIndex(row => !row.confirmed),
+                        group: trans('management')
                       }, {
                         name: 'validate',
                         type: CALLBACK_BUTTON,
                         icon: 'fa fa-fw fa-check',
                         label: trans('validate_registration', {}, 'actions'),
                         callback: () => props.validatePending(props.activeSession.id, rows),
-                        displayed: hasPermission('edit', props.activeSession) && -1 !== rows.findIndex(row => !row.validated)
+                        displayed: hasPermission('edit', props.activeSession) && -1 !== rows.findIndex(row => !row.validated),
+                        group: trans('management')
                       }
                     ]}
                     add={{
