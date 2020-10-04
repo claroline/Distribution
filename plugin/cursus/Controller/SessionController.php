@@ -384,7 +384,7 @@ class SessionController extends AbstractCrudController
     /**
      * This is the endpoint used by confirmation email.
      *
-     * @Route("/{id}/self/confirm", name="apiv2_cursus_session_self_confirm", methods={"PUT"})
+     * @Route("/{id}/self/confirm", name="apiv2_cursus_session_self_confirm", methods={"GET"})
      * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      */
