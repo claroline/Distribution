@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
+use Claroline\CoreBundle\Library\RoutingHelper;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\CursusBundle\Entity\Event;
 use Claroline\CursusBundle\Entity\Registration\AbstractRegistration;
@@ -26,6 +27,7 @@ use Claroline\CursusBundle\Manager\SessionManager;
 use Dompdf\Dompdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,6 +47,8 @@ class SessionController extends AbstractCrudController
     private $tokenStorage;
     /** @var TranslatorInterface */
     private $translator;
+    /** @var RoutingHelper */
+    private $routingHelper;
     /** @var SessionManager */
     private $manager;
 
@@ -52,11 +56,13 @@ class SessionController extends AbstractCrudController
         AuthorizationCheckerInterface $authorization,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
+        RoutingHelper $routingHelper,
         SessionManager $manager
     ) {
         $this->authorization = $authorization;
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
+        $this->routingHelper = $routingHelper;
         $this->manager = $manager;
     }
 
@@ -373,6 +379,27 @@ class SessionController extends AbstractCrudController
         $sessionUsers = $this->manager->addUsers($session, [$user], AbstractRegistration::LEARNER);
 
         return new JsonResponse($this->serializer->serialize($sessionUsers[0]));
+    }
+
+    /**
+     * This is the endpoint used by confirmation email.
+     *
+     * @Route("/{id}/self/confirm", name="apiv2_cursus_session_self_confirm", methods={"PUT"})
+     * @EXT\ParamConverter("session", class="Claroline\CursusBundle\Entity\Session", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     */
+    public function selfConfirmAction(Session $session, User $user): RedirectResponse
+    {
+        $this->checkPermission('OPEN', $session, [], true);
+
+        $sessionUser = $this->om->getRepository(SessionUser::class)->findOneBy(['session' => $session, 'user' => $user]);
+        if ($sessionUser && !$sessionUser->isConfirmed()) {
+            $this->manager->confirmUsers($session, [$sessionUser]);
+        }
+
+        return new RedirectResponse(
+            $this->routingHelper->desktopUrl('trainings').'/catalog/'.$session->getCourse()->getSlug().'/'.$session->getUuid()
+        );
     }
 
     /**

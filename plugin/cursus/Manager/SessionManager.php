@@ -14,7 +14,6 @@ namespace Claroline\CursusBundle\Manager;
 use Claroline\AppBundle\Manager\PlatformManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Role;
-use Claroline\CoreBundle\Entity\Template\Template;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\RoutingHelper;
@@ -32,6 +31,7 @@ use Claroline\CursusBundle\Event\Log\LogSessionGroupUnregistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserUnregistrationEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -45,6 +45,8 @@ class SessionManager
     private $mailManager;
     /** @var ObjectManager */
     private $om;
+    /** @var UrlGeneratorInterface */
+    private $router;
     /** @var PlatformManager */
     private $platformManager;
     /** @var RoleManager */
@@ -69,6 +71,7 @@ class SessionManager
         TranslatorInterface $translator,
         MailManager $mailManager,
         ObjectManager $om,
+        UrlGeneratorInterface $router,
         PlatformManager $platformManager,
         RoleManager $roleManager,
         RoutingHelper $routingHelper,
@@ -81,6 +84,7 @@ class SessionManager
         $this->translator = $translator;
         $this->mailManager = $mailManager;
         $this->om = $om;
+        $this->router = $router;
         $this->platformManager = $platformManager;
         $this->roleManager = $roleManager;
         $this->routingHelper = $routingHelper;
@@ -320,10 +324,10 @@ class SessionManager
 
                 // Registers group to session workspace
                 $role = AbstractRegistration::TUTOR === $type ? $session->getTutorRole() : $session->getLearnerRole();
-
                 if ($role) {
                     $this->roleManager->associateRole($group, $role);
                 }
+
                 $this->om->persist($sessionGroup);
 
                 $this->eventDispatcher->dispatch(new LogSessionGroupRegistrationEvent($sessionGroup), 'log');
@@ -480,7 +484,7 @@ class SessionManager
             'session_start' => $session->getStartDate()->format('d/m/Y'),
             'session_end' => $session->getEndDate()->format('d/m/Y'),
             'session_trainers' => $trainersList,
-            'registration_confirmation_url' => null, // TODO
+            'registration_confirmation_url' => $this->router->generate('apiv2_cursus_session_self_confirm', ['id' => $session->getUuid()], UrlGeneratorInterface::ABSOLUTE_URL), // TODO
         ];
 
         foreach ($users as $user) {
