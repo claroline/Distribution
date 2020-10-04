@@ -44,25 +44,6 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
         $this->createCourseTemplates();
         $this->createSessionTemplates();
 
-        $sessionInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'training_session_invitation']);
-        $templates = $this->templateRepo->findBy(['name' => 'training_session_invitation']);
-        if ($sessionInvitationType && empty($templates)) {
-            foreach ($this->availableLocales as $locale) {
-                $template = new Template();
-                $template->setType($sessionInvitationType);
-                $template->setName('training_session_invitation');
-                $template->setLang($locale);
-                $template->setTitle($this->translator->trans('training_session_invitation', [], 'template', $locale));
-                $content = '%session_name%<br/>';
-                $content .= '[%session_start% -> %session_end%]<br/>';
-                $content .= '%session_description%';
-                $template->setContent($content);
-                $om->persist($template);
-            }
-            $sessionInvitationType->setDefaultTemplate('training_session_invitation');
-            $om->persist($sessionInvitationType);
-        }
-
         $eventInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'training_event_invitation']);
         $templates = $this->templateRepo->findBy(['name' => 'training_event_invitation']);
         if ($eventInvitationType && empty($templates)) {
@@ -159,6 +140,45 @@ class LoadTemplateData extends AbstractFixture implements ContainerAwareInterfac
 
             $templateType->setDefaultTemplate('training_session');
             $this->om->persist($templateType);
+        }
+
+        $sessionInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'training_session_invitation']);
+        $templates = $this->templateRepo->findBy(['name' => 'training_session_invitation']);
+        if ($sessionInvitationType && empty($templates)) {
+            foreach ($this->availableLocales as $locale) {
+                $template = new Template();
+                $template->setType($sessionInvitationType);
+                $template->setName('training_session_invitation');
+                $template->setLang($locale);
+                $template->setTitle($this->translator->trans('training_session_invitation', [], 'template', $locale));
+                $content = '%session_name%<br/>';
+                $content .= '[%session_start% -> %session_end%]<br/>';
+                $content .= '%session_description%';
+                $template->setContent($content);
+                $this->om->persist($template);
+            }
+            $sessionInvitationType->setDefaultTemplate('training_session_invitation');
+            $this->om->persist($sessionInvitationType);
+        }
+
+        $sessionInvitationType = $this->templateTypeRepo->findOneBy(['name' => 'training_session_confirmation']);
+        $templates = $this->templateRepo->findBy(['name' => 'training_session_confirmation']);
+        if ($sessionInvitationType && empty($templates)) {
+            foreach ($this->availableLocales as $locale) {
+                $template = new Template();
+                $template->setType($sessionInvitationType);
+                $template->setName('training_session_confirmation');
+                $template->setLang($locale);
+                $template->setTitle($this->translator->trans('training_session_confirmation', [], 'template', $locale));
+                $content = '%session_name%<br/>';
+                $content .= '[%session_start% -> %session_end%]<br/>';
+                $content .= '%session_description%<br/><br/>';
+                $content .= '<a href="%registration_confirmation_url%">'.$this->translator->trans('confirm_registration', [], 'actions').'</a>';
+                $template->setContent($content);
+                $this->om->persist($template);
+            }
+            $sessionInvitationType->setDefaultTemplate('training_session_confirmation');
+            $this->om->persist($sessionInvitationType);
         }
     }
 }

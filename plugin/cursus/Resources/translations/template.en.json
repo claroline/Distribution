@@ -24,5 +24,6 @@
     "session_end_desc": "The start date of the training session",
     "session_name_desc": "The name of the training session",
     "session_start_desc": "The end date of the training session",
-    "session_trainers_desc": "The list of the trainers of the training session"
+    "session_trainers_desc": "The list of the trainers of the training session",
+    "registration_confirmation_url": "The registration confirmation link"
 }

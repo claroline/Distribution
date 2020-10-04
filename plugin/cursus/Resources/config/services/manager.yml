@@ -19,7 +19,7 @@ services:
             - '@claroline.manager.mail_manager'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\CoreBundle\Manager\RoleManager'
-            - '@router'
+            - '@Claroline\CoreBundle\Library\RoutingHelper'
             - '@claroline.manager.template_manager'
             - '@security.token_storage'
             - '@Claroline\CoreBundle\Manager\Workspace\WorkspaceManager'

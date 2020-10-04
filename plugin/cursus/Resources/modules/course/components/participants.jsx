@@ -224,14 +224,14 @@ const CourseParticipants = (props) =>
                         name: 'confirm',
                         type: CALLBACK_BUTTON,
                         icon: 'fa fa-fw fa-user-check',
-                        label: trans('Confirmer l\'inscription', {}, 'cursus'),
+                        label: trans('confirm_registration', {}, 'actions'),
                         callback: () => props.confirmPending(props.activeSession.id, rows),
                         displayed: hasPermission('edit', props.activeSession) && get (props.activeSession, 'registration.userValidation') && -1 !== rows.findIndex(row => !row.confirmed)
                       }, {
                         name: 'validate',
                         type: CALLBACK_BUTTON,
                         icon: 'fa fa-fw fa-check',
-                        label: trans('Valider l\'inscription', {}, 'cursus'),
+                        label: trans('validate_registration', {}, 'actions'),
                         callback: () => props.validatePending(props.activeSession.id, rows),
                         displayed: hasPermission('edit', props.activeSession) && -1 !== rows.findIndex(row => !row.validated)
                       }

@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Template\Template;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\RoutingHelper;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\Template\TemplateManager;
@@ -30,7 +31,6 @@ use Claroline\CursusBundle\Event\Log\LogSessionGroupUnregistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserRegistrationEvent;
 use Claroline\CursusBundle\Event\Log\LogSessionUserUnregistrationEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SessionManager
@@ -43,8 +43,8 @@ class SessionManager
     private $om;
     /** @var RoleManager */
     private $roleManager;
-    /** @var UrlGeneratorInterface */
-    private $router;
+    /** @var RoutingHelper */
+    private $routingHelper;
     /** @var TemplateManager */
     private $templateManager;
     /** @var TokenStorageInterface */
@@ -63,7 +63,7 @@ class SessionManager
         MailManager $mailManager,
         ObjectManager $om,
         RoleManager $roleManager,
-        UrlGeneratorInterface $router,
+        RoutingHelper $routingHelper,
         TemplateManager $templateManager,
         TokenStorageInterface $tokenStorage,
         WorkspaceManager $workspaceManager,
@@ -73,7 +73,7 @@ class SessionManager
         $this->mailManager = $mailManager;
         $this->om = $om;
         $this->roleManager = $roleManager;
-        $this->router = $router;
+        $this->routingHelper = $routingHelper;
         $this->templateManager = $templateManager;
         $this->tokenStorage = $tokenStorage;
         $this->workspaceManager = $workspaceManager;
@@ -102,6 +102,7 @@ class SessionManager
     public function generateFromTemplate(Session $session, string $basePath, string $locale)
     {
         $placeholders = [
+            'session_url' => $this->routingHelper->desktopUrl('trainings').'/catalog/'.$session->getCourse()->getSlug().'/'.$session->getUuid(),
             'session_name' => $session->getName(),
             'session_code' => $session->getCode(),
             'session_description' => $session->getDescription(),
@@ -194,6 +195,9 @@ class SessionManager
         }
 
         // TODO : send invitation mail if configured
+        if ($session->getRegistrationMail()) {
+            $this->sendSessionInvitation($session, $users);
+        }
 
         // TODO : what to do with this if he goes in pending state ?
 
@@ -393,7 +397,7 @@ class SessionManager
     /**
      * Sends invitation to all session learners.
      */
-    public function inviteAllSessionLearners(Session $session, Template $template = null)
+    public function inviteAllSessionLearners(Session $session)
     {
         /** @var SessionUser[] $sessionLearners */
         $sessionLearners = $this->sessionUserRepo->findBy([
@@ -420,7 +424,7 @@ class SessionManager
             }
         }
 
-        $this->sendSessionInvitation($session, $users, $template);
+        $this->sendSessionInvitation($session, $users);
     }
 
     /**
@@ -428,6 +432,11 @@ class SessionManager
      */
     public function sendSessionInvitation(Session $session, array $users, Template $template = null)
     {
+        $templateName = 'training_session_invitation';
+        if ($session->getUserValidation()) {
+            $templateName = 'training_session_confirmation';
+        }
+
         $course = $session->getCourse();
         $trainersList = '';
         /** @var SessionUser[] $sessionTrainers */
@@ -445,15 +454,18 @@ class SessionManager
             }
             $trainersList .= '</ul>';
         }
+
         $basicPlaceholders = [
             'course_name' => $course->getName(),
             'course_code' => $course->getCode(),
             'course_description' => $course->getDescription(),
+            'session_url' => $this->routingHelper->desktopUrl('trainings').'/catalog/'.$session->getCourse()->getSlug().'/'.$session->getUuid(),
             'session_name' => $session->getName(),
             'session_description' => $session->getDescription(),
-            'session_start' => $session->getStartDate()->format('Y-m-d'),
-            'session_end' => $session->getEndDate()->format('Y-m-d'),
+            'session_start' => $session->getStartDate()->format('d/m/Y'),
+            'session_end' => $session->getEndDate()->format('d/m/Y'),
             'session_trainers' => $trainersList,
+            'registration_confirmation_url' => null, // TODO
         ];
 
         foreach ($users as $user) {
@@ -463,12 +475,10 @@ class SessionManager
                 'last_name' => $user->getLastName(),
                 'username' => $user->getUsername(),
             ]);
-            $title = $template ?
-                $this->templateManager->getTemplateContent($template, $placeholders, 'title') :
-                $this->templateManager->getTemplate('training_session_invitation', $placeholders, $locale);
-            $content = $template ?
-                $this->templateManager->getTemplateContent($template, $placeholders) :
-                $this->templateManager->getTemplate('training_session_invitation', $placeholders, $locale);
+
+            $title = $this->templateManager->getTemplate($templateName, $placeholders, $locale);
+            $content = $this->templateManager->getTemplate($templateName, $placeholders, $locale);
+
             $this->mailManager->send($title, $content, [$user]);
         }
     }

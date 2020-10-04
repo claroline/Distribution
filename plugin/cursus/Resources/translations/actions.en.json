@@ -1,4 +1,6 @@
 {
   "show_other_sessions": "Show other sessions",
-  "register_waiting_list": "Join the waiting list"
+  "register_waiting_list": "Join the waiting list",
+  "confirm_registration": "Confirm registration",
+  "validate_registration": "Validate registration"
 }

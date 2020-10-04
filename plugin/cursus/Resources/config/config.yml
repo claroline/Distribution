@@ -39,6 +39,7 @@ plugin:
               - course_name
               - course_code
               - course_description
+              - session_url
               - session_name
               - session_code
               - session_description
@@ -53,11 +54,25 @@ plugin:
               - course_name
               - course_code
               - course_description
+              - session_url
               - session_name
               - session_description
               - session_start
               - session_end
               - session_trainers
+
+        - name: training_session_confirmation
+            placeholders:
+              - course_name
+              - course_code
+              - course_description
+              - session_url
+              - session_name
+              - session_description
+              - session_start
+              - session_end
+              - session_trainers
+              - registration_confirmation_url
 
         - name: training_event_invitation
           placeholders:
