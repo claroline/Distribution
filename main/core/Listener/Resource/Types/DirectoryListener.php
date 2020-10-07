@@ -17,6 +17,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\Resource\CreateResourceEvent;
@@ -145,7 +146,13 @@ class DirectoryListener
             foreach ($data['resourceNode']['rights'] as $rights) {
                 /** @var Role $role */
                 $role = $this->om->getRepository(Role::class)->findOneBy(['name' => $rights['name']]);
-                $this->rightsManager->editPerms($rights['permissions'], $role, $resourceNode);
+
+                $creation = [];
+                if (!empty($rights['permissions']['create']) && $resource instanceof Directory) {
+                    // only forward creation rights to resource which can handle it (only directories atm)
+                    $creation = $rights['permissions']['create'];
+                }
+                $this->rightsManager->editPerms($rights['permissions'], $role, $resourceNode, false, $creation);
             }
         } else {
             // todo : initialize default rights
