@@ -514,8 +514,8 @@ class ResourceManager
     {
         foreach ($nodes as $node) {
             $this->crud->update(ResourceNode::class, [
-              'id' => $node->getUuid(),
-              'meta' => ['published' => $arePublished],
+                'id' => $node->getUuid(),
+                'meta' => ['published' => $arePublished],
             ]);
 
             //do it on every children aswell
@@ -1119,10 +1119,10 @@ class ResourceManager
         if ($resource) {
             /** @var LoadResourceEvent $event */
             $event = $this->dispatcher->dispatch(
-              'resource.load',
-              LoadResourceEvent::class,
-              [$resource, $embedded]
-          );
+                'resource.load',
+                LoadResourceEvent::class,
+                [$resource, $embedded]
+            );
 
             return $event->getData();
         }
