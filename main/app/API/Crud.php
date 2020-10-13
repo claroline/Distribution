@@ -214,12 +214,12 @@ class Crud
             $this->checkPermission('COPY', $object, [], true);
         }
 
-        $class = get_class($object);
+        $class = $this->getRealClass($object);
         $new = new $class();
 
         //default option for copy
         $options[] = Options::REFRESH_UUID;
-        $serializer = $this->serializer->get($object);
+        $serializer = $this->serializer->get($new);
 
         if (method_exists($serializer, 'getCopyOptions')) {
             $options = array_merge($options, $serializer->getCopyOptions());
@@ -368,19 +368,20 @@ class Crud
      */
     public function dispatch($action, $when, array $args)
     {
+        $className = $this->getRealClass($args[0]);
+
         $name = 'crud_'.$when.'_'.$action.'_object';
         $eventClass = ucfirst($action);
         /** @var CrudEvent $generic */
         $generic = $this->dispatcher->dispatch($name, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
 
-        $className = $this->om->getMetadataFactory()->getMetadataFor(get_class($args[0]))->getName();
         $serializedName = $name.'_'.strtolower(str_replace('\\', '_', $className));
         /** @var CrudEvent $specific */
         $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
         $isAllowed = $specific->isAllowed();
 
-        if ($this->serializer->has(get_class($args[0]))) {
-            $serializer = $this->serializer->get(get_class($args[0]));
+        if ($this->serializer->has($className)) {
+            $serializer = $this->serializer->get($className);
 
             if (method_exists($serializer, 'getName')) {
                 $shortName = 'crud.'.$when.'.'.$action.'.'.$serializer->getName();
@@ -389,5 +390,10 @@ class Crud
         }
 
         return $generic->isAllowed() && $specific->isAllowed() && $isAllowed;
+    }
+
+    private function getRealClass($object)
+    {
+        return $this->om->getMetadataFactory()->getMetadataFor(get_class($object))->getName();
     }
 }
