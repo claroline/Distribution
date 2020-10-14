@@ -659,39 +659,26 @@ class ResourceManager
     }
 
     /**
-     * Returns every children of every resource (includes the startnode).
+     * Returns every children of every resource (includes the start node).
      *
      * @param ResourceNode[] $nodes
      *
      * @return ResourceNode[]
-     *
-     * @throws \Exception
      */
-    public function expandResources(array $nodes)
+    private function expandResources(array $nodes, bool $onlyActive = false)
     {
-        $dirs = [];
-        $ress = [];
-        $toAppend = [];
-
+        $resources = [];
         foreach ($nodes as $node) {
-            $resourceTypeName = $node->getResourceType()->getName();
-            ('directory' === $resourceTypeName) ? $dirs[] = $node : $ress[] = $node;
-        }
-
-        foreach ($dirs as $dir) {
-            $children = $this->resourceNodeRepo->findDescendants($dir);
-
-            foreach ($children as $child) {
-                if ($child->isActive() &&
-                    'directory' !== $child->getResourceType()->getName()) {
-                    $toAppend[] = $child;
+            if (!$onlyActive || ($node->isActive() && $node->isPublished())) {
+                if ('directory' === $node->getResourceType()->getName() && $node->getChildren()) {
+                    $resources = array_merge($resources, $this->expandResources($node->getChildren(), true));
+                } else {
+                    $resources[] = $node;
                 }
             }
         }
 
-        $merge = array_merge($toAppend, $ress);
-
-        return $merge;
+        return $resources;
     }
 
     /**
