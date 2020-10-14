@@ -9,8 +9,8 @@ use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use UJM\LtiBundle\Entity\LtiApp;
 use Twig\Environment;
+use UJM\LtiBundle\Entity\LtiApp;
 
 class LtiListener
 {
@@ -25,13 +25,6 @@ class LtiListener
 
     private $ltiAppRepo;
 
-    /**
-     * @param AuthorizationCheckerInterface $authorization
-     * @param ObjectManager                 $om
-     * @param SerializerProvider            $serializer
-     * @param Environment                    $templating
-     * @param ToolManager                   $toolManager
-     */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         ObjectManager $om,
@@ -49,8 +42,6 @@ class LtiListener
 
     /**
      * Loads a LTI resource.
-     *
-     * @param LoadResourceEvent $event
      */
     public function onLoad(LoadResourceEvent $event)
     {

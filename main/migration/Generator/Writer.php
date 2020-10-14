@@ -30,9 +30,6 @@ class Writer
 
     /**
      * Writer constructor.
-     *
-     * @param Filesystem  $fileSystem
-     * @param Environment $environment
      */
     public function __construct(
         Filesystem $fileSystem,
@@ -45,10 +42,8 @@ class Writer
     /**
      * Writes a bundle migration class for a given driver.
      *
-     * @param Bundle $bundle
      * @param string $driverName
      * @param string $version
-     * @param array  $queries
      */
     public function writeMigrationClass(Bundle $bundle, $driverName, $version, array $queries)
     {
@@ -84,7 +79,6 @@ class Writer
      * Deletes bundle migration classes for a given driver which are above a
      * reference version.
      *
-     * @param Bundle $bundle
      * @param string $driverName
      * @param string $referenceVersion
      *
@@ -96,6 +90,7 @@ class Writer
         $deletedVersions = [];
 
         foreach ($migrations as $migration) {
+            $matches = [];
             if (preg_match('#Version(\d+)\.php#', $migration->getFilename(), $matches)) {
                 if ($matches[1] > $referenceVersion) {
                     $this->fileSystem->remove([$migration->getPathname()]);

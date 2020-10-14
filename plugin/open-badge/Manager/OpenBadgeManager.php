@@ -28,12 +28,6 @@ class OpenBadgeManager
 
     /**
      * OpenBadgeManager constructor.
-     *
-     * @param Packages         $assets
-     * @param ObjectManager    $om
-     * @param TemplateManager  $templateManager
-     * @param WorkspaceManager $workspaceManager
-     * @param Environment  $templating
      */
     public function __construct(
         Packages $assets,

@@ -47,13 +47,6 @@ class AnnouncementListener
 
     /**
      * AnnouncementListener constructor.
-     *
-     * @param ObjectManager                 $om
-     * @param Environment                    $templating
-     * @param AnnouncementManager           $manager
-     * @param SerializerProvider            $serializer
-     * @param Crud                          $crud
-     * @param AuthorizationCheckerInterface $authorization
      */
     public function __construct(
         ObjectManager $om,
@@ -73,8 +66,6 @@ class AnnouncementListener
 
     /**
      * Loads an Announcement resource.
-     *
-     * @param LoadResourceEvent $event
      */
     public function load(LoadResourceEvent $event)
     {
@@ -93,9 +84,6 @@ class AnnouncementListener
         $event->stopPropagation();
     }
 
-    /**
-     * @param CopyResourceEvent $event
-     */
     public function copy(CopyResourceEvent $event)
     {
         /** @var AnnouncementAggregate $aggregate */
@@ -148,9 +136,6 @@ class AnnouncementListener
         $this->om->persist($announcement);
     }
 
-    /**
-     * @param DeleteResourceEvent $event
-     */
     public function delete(DeleteResourceEvent $event)
     {
         $this->crud->delete($event->getResource());

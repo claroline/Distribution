@@ -12,8 +12,6 @@ class PluginListener
 
     /**
      * VideoPlayerListener constructor.
-     *
-     * @param Environment $templating
      */
     public function __construct(
         Environment $templating
@@ -21,9 +19,6 @@ class PluginListener
         $this->templating = $templating;
     }
 
-    /**
-     * @param InjectJavascriptEvent $event
-     */
     public function onInjectJs(InjectJavascriptEvent $event)
     {
         $event->addContent(

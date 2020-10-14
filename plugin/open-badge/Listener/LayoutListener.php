@@ -18,8 +18,6 @@ class LayoutListener
 {
     /**
      * LayoutListener constructor.
-     *
-     * @param Environment    $templating
      */
     public function __construct(
         Environment $templating
@@ -28,8 +26,6 @@ class LayoutListener
     }
 
     /**
-     * @param InjectJavascriptEvent $event
-     *
      * @return string
      */
     public function onInjectJs(InjectJavascriptEvent $event)

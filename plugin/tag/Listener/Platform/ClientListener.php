@@ -12,17 +12,12 @@ class ClientListener
 
     /**
      * ClientListener constructor.
-     *
-     * @param Environment $templating
      */
     public function __construct(Environment $templating)
     {
         $this->templating = $templating;
     }
 
-    /**
-     * @param InjectStylesheetEvent $event
-     */
     public function onInjectCss(InjectStylesheetEvent $event)
     {
         $content = $this->templating->render('ClarolineTagBundle:layout:stylesheets.html.twig', []);

@@ -16,9 +16,9 @@ use Claroline\AppBundle\API\Utils\ArrayUtils;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Library\RoutingHelper;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
-use Twig\Environment;
 
 class LogTranslatorExtension extends AbstractExtension
 {

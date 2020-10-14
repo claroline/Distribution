@@ -35,14 +35,6 @@ class BlogController
 
     /**
      * BlogController constructor.
-     *
-     * @param BlogSerializer               $blogSerializer
-     * @param BlogOptionsSerializer        $blogOptionsSerializer
-     * @param BlogManager                  $blogManager
-     * @param PostManager                  $postManager
-     * @param UrlGeneratorInterface        $router
-     * @param PlatformConfigurationHandler $configHandler
-     * @param TokenStorageInterface        $tokenStorage
      */
     public function __construct(
         BlogSerializer $blogSerializer,

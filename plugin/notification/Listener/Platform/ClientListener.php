@@ -17,9 +17,6 @@ class ClientListener
 
     /**
      * ClientListener constructor.
-     *
-     * @param Environment                   $templating
-     * @param PlatformConfigurationHandler $configHandler
      */
     public function __construct(
         Environment $templating,
@@ -31,8 +28,6 @@ class ClientListener
 
     /**
      * Appends notifications configuration to the global config object.
-     *
-     * @param GenericDataEvent $event
      */
     public function onConfig(GenericDataEvent $event)
     {
@@ -44,9 +39,6 @@ class ClientListener
         ]);
     }
 
-    /**
-     * @param InjectStylesheetEvent $event
-     */
     public function onInjectCss(InjectStylesheetEvent $event)
     {
         $content = $this->templating->render('IcapNotificationBundle:layout:stylesheets.html.twig', []);

@@ -45,14 +45,6 @@ class ClientController
 
     /**
      * ClientController constructor.
-     *
-     * @param TokenStorageInterface        $tokenStorage
-     * @param Environment                  $templating
-     * @param StrictDispatcher             $dispatcher
-     * @param PlatformConfigurationHandler $configHandler
-     * @param SecurityManager              $securityManager
-     * @param SerializerProvider           $serializer
-     * @param ClientSerializer             $clientSerializer
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,

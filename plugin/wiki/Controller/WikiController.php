@@ -33,11 +33,6 @@ class WikiController
 
     /**
      * WikiController constructor.
-     *
-     * @param AuthorizationCheckerInterface $authorization
-     * @param Environment               $templating
-     * @param WikiManager                   $wikiManager
-     * @param SectionManager                $sectionManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -54,9 +49,6 @@ class WikiController
     /**
      * @Route("/", name="apiv2_wiki_update", methods={"PUT"})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
-     *
-     * @param Wiki    $wiki
-     * @param Request $request
      *
      * @return JsonResponse
      */
@@ -76,9 +68,6 @@ class WikiController
     /**
      * @Route("/pdf", name="apiv2_wiki_export_pdf")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
-     *
-     * @param Wiki      $wiki
-     * @param User|null $user
      *
      * @return JsonResponse
      */
