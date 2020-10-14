@@ -34,7 +34,6 @@ use Claroline\CoreBundle\Manager\UserManager;
 use Dompdf\Dompdf;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -43,6 +42,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Environment;
 
 class ClacoFormController
 {
@@ -75,7 +75,7 @@ class ClacoFormController
         LocationManager $locationManager,
         ObjectManager $om,
         RequestStack $request,
-        TwigEngine $templating,
+        Environment $templating,
         TranslatorInterface $translator,
         SerializerProvider $serializer,
         TokenStorageInterface $tokenStorage,

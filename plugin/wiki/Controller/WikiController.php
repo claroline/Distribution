@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * @Route("/wiki/{id}")
@@ -22,7 +22,7 @@ class WikiController
 {
     use PermissionCheckerTrait;
 
-    /** @var EngineInterface */
+    /** @var Environment */
     private $templating;
 
     /** @var WikiManager */
@@ -35,13 +35,13 @@ class WikiController
      * WikiController constructor.
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param EngineInterface               $templating
+     * @param Environment               $templating
      * @param WikiManager                   $wikiManager
      * @param SectionManager                $sectionManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        EngineInterface $templating,
+        Environment $templating,
         WikiManager $wikiManager,
         SectionManager $sectionManager
     ) {

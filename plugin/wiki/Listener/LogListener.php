@@ -3,22 +3,22 @@
 namespace Icap\WikiBundle\Listener;
 
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
-use Symfony\Bundle\TwigBundle\TwigEngine;
+use Twig\Environment;
 
 /**
  * LogListener.
  */
 class LogListener
 {
-    /** @var TwigEngine */
+    /** @var Environment */
     private $templating;
 
     /**
      * LogListener constructor.
      *
-     * @param TwigEngine $templating
+     * @param Environment $templating
      */
-    public function __construct(TwigEngine $templating)
+    public function __construct(Environment $templating)
     {
         $this->templating = $templating;
     }

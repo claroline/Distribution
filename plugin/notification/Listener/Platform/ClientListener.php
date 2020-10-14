@@ -5,11 +5,11 @@ namespace Icap\NotificationBundle\Listener\Platform;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\Layout\InjectStylesheetEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Symfony\Bundle\TwigBundle\TwigEngine;
+use Twig\Environment;
 
 class ClientListener
 {
-    /** @var TwigEngine */
+    /** @var Environment */
     private $templating;
 
     /** @var PlatformConfigurationHandler */
@@ -18,11 +18,11 @@ class ClientListener
     /**
      * ClientListener constructor.
      *
-     * @param TwigEngine                   $templating
+     * @param Environment                   $templating
      * @param PlatformConfigurationHandler $configHandler
      */
     public function __construct(
-        TwigEngine $templating,
+        Environment $templating,
         PlatformConfigurationHandler $configHandler
     ) {
         $this->templating = $templating;

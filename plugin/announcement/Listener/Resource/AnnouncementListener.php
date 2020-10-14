@@ -27,8 +27,8 @@ use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Ramsey\Uuid\Uuid;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 class AnnouncementListener
 {
@@ -36,7 +36,7 @@ class AnnouncementListener
 
     /** @var ObjectManager */
     private $om;
-    /** @var TwigEngine */
+    /** @var Environment */
     private $templating;
     /** @var AnnouncementManager */
     private $manager;
@@ -49,7 +49,7 @@ class AnnouncementListener
      * AnnouncementListener constructor.
      *
      * @param ObjectManager                 $om
-     * @param TwigEngine                    $templating
+     * @param Environment                    $templating
      * @param AnnouncementManager           $manager
      * @param SerializerProvider            $serializer
      * @param Crud                          $crud
@@ -57,7 +57,7 @@ class AnnouncementListener
      */
     public function __construct(
         ObjectManager $om,
-        TwigEngine $templating,
+        Environment $templating,
         AnnouncementManager $manager,
         SerializerProvider $serializer,
         Crud $crud,

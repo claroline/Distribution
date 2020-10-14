@@ -3,20 +3,20 @@
 namespace Claroline\VideoPlayerBundle\Listener;
 
 use Claroline\CoreBundle\Event\Layout\InjectJavascriptEvent;
-use Symfony\Bridge\Twig\TwigEngine;
+use Twig\Environment;
 
 class PluginListener
 {
-    /** @var TwigEngine */
+    /** @var Environment */
     private $templating;
 
     /**
      * VideoPlayerListener constructor.
      *
-     * @param TwigEngine $templating
+     * @param Environment $templating
      */
     public function __construct(
-        TwigEngine $templating
+        Environment $templating
     ) {
         $this->templating = $templating;
     }

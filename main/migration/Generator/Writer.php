@@ -12,7 +12,6 @@
 namespace Claroline\MigrationBundle\Generator;
 
 use Claroline\MigrationBundle\Twig\SqlFormatterExtension;
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Twig\Environment;
@@ -26,8 +25,6 @@ class Writer
     private $fileSystem;
     /** @var Environment */
     private $twigEnvironment;
-    /** @var TwigEngine */
-    private $twigEngine;
     /** @var bool */
     private $hasSqlExtension = false;
 
@@ -36,16 +33,13 @@ class Writer
      *
      * @param Filesystem  $fileSystem
      * @param Environment $environment
-     * @param TwigEngine  $engine
      */
     public function __construct(
         Filesystem $fileSystem,
-        Environment $environment,
-        TwigEngine $engine
+        Environment $environment
     ) {
         $this->fileSystem = $fileSystem;
         $this->twigEnvironment = $environment;
-        $this->twigEngine = $engine;
     }
 
     /**
@@ -72,7 +66,7 @@ class Writer
             $this->fileSystem->mkdir($targetDir);
         }
 
-        $content = $this->twigEngine->render(
+        $content = $this->twigEnvironment->render(
             'ClarolineMigrationBundle::migration_class.html.twig',
             [
                 'namespace' => $namespace,
