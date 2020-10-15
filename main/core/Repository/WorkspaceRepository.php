@@ -22,6 +22,7 @@ class WorkspaceRepository extends EntityRepository
         return $this->createQueryBuilder('w')
             ->where('(UPPER(w.name) LIKE :search OR UPPER(w.code) LIKE :search)')
             ->andWhere('w.displayable = true')
+            ->andWhere('w.archived = false')
             ->setFirstResult(0)
             ->setMaxResults($nbResults)
             ->setParameter('search', '%'.strtoupper($search).'%')

@@ -89,7 +89,7 @@ class ResourceNodeController extends AbstractCrudController
         if ($parent) {
             // grab directory content
             /** @var ResourceNode $parentNode */
-            $parentNode = $this->finder->get(ResourceNode::class)->findOneBy(['uuid_or_slug' => $parent]);
+            $parentNode = $this->om->getRepository(ResourceNode::class)->findOneByUuidOrSlug($parent);
 
             if ($all) {
                 $options['hiddenFilters']['path.after'] = $parentNode ? $parentNode->getPath() : null;
