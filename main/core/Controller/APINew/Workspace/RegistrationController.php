@@ -452,15 +452,16 @@ class RegistrationController extends AbstractApiController
      */
     public function selfRegisterAction(Workspace $workspace, User $currentUser)
     {
-        if (!$workspace->getSelfRegistration()) {
+        if (!$workspace->getSelfRegistration() || $workspace->isArchived()) {
             throw new AccessDeniedException();
         }
+
         if (!$workspace->getRegistrationValidation()) {
             $this->workspaceManager->addUser($workspace, $currentUser);
         } elseif (!$this->workspaceManager->isUserInValidationQueue($workspace, $currentUser)) {
             $this->workspaceManager->addUserQueue($workspace, $currentUser);
         }
 
-        return new JsonResponse();
+        return new JsonResponse(null, 204);
     }
 }
