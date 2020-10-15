@@ -17,7 +17,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\SendMessageEvent;
-use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\RoleManager;
 use ICal\ICal;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -46,7 +45,6 @@ class AgendaManager
         AuthorizationCheckerInterface $authorization,
         RoleManager $rm,
         TranslatorInterface $translator,
-        Utilities $su,
         ContainerInterface $container
     ) {
         $this->projectDir = $projectDir;

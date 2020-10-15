@@ -16,7 +16,6 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\DataSource;
 use Claroline\CoreBundle\Event\DataSource\GetDataEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Role\Role;
 
 class AnnouncementSource
 {
@@ -55,8 +54,8 @@ class AnnouncementSource
         } else {
             // filter by current user roles
             $options['hiddenFilters']['roles'] = array_map(
-                function (Role $role) { return $role->getRole(); },
-                $this->tokenStorage->getToken()->getRoles()
+                function (string $role) { return $role; },
+                $this->tokenStorage->getToken()->getRoleNames()
             );
         }
 

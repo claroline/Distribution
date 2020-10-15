@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * @Route(options={"expose"=true})
@@ -146,9 +145,9 @@ class FileController extends AbstractApiController
             ResourceNode::class, [
                 'filters' => [
                     'meta.uploadDestination' => true,
-                    'roles' => array_map(function (Role $role) {
-                        return $role->getRole();
-                    }, $this->tokenStorage->getToken()->getRoles()),
+                    'roles' => array_map(function (string $role) {
+                        return $role;
+                    }, $this->tokenStorage->getToken()->getRoleNames()),
                 ],
             ],
             [Options::SERIALIZE_MINIMAL]

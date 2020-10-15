@@ -152,8 +152,8 @@ class WorkspaceVoter extends AbstractVoter
 
     protected function isWorkspaceCreator(TokenInterface $token)
     {
-        foreach ($token->getRoles() as $role) {
-            if (PlatformRoles::WS_CREATOR === $role->getRole()) {
+        foreach ($token->getRoleNames() as $role) {
+            if (PlatformRoles::WS_CREATOR === $role) {
                 return true;
             }
         }

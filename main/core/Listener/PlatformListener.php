@@ -125,8 +125,8 @@ class PlatformListener
             $isAdmin = false;
             $token = $this->tokenStorage->getToken();
             if ($token) {
-                foreach ($token->getRoles() as $role) {
-                    if ('ROLE_ADMIN' === $role->getRole()) {
+                foreach ($token->getRoleNames() as $role) {
+                    if ('ROLE_ADMIN' === $role) {
                         $isAdmin = true;
                         break;
                     }

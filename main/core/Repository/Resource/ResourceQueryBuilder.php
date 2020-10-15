@@ -12,10 +12,10 @@
 namespace Claroline\CoreBundle\Repository\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Repository\Exception\MissingSelectClauseException;
-use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Builder for DQL queries on AbstractResource entities.

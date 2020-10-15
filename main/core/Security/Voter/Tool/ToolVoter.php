@@ -19,7 +19,6 @@ use Claroline\CoreBundle\Repository\Tool\ToolRightsRepository;
 use Claroline\CoreBundle\Security\Voter\AbstractVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * ATTENTION : it does not work with Workspace tools. For them, it's the OrderedToolVoter or WorkspaceVoter.
@@ -54,9 +53,9 @@ class ToolVoter extends AbstractVoter
 
         $decoder = $this->maskManager->getMaskDecoderByToolAndName($object, $attributes[0]);
         if ($decoder) {
-            $mask = $this->rightsRepository->findMaximumRights(array_map(function (Role $role) {
-                return $role->getRole();
-            }, $token->getRoles()), $object);
+            $mask = $this->rightsRepository->findMaximumRights(array_map(function (string $role) {
+                return $role;
+            }, $token->getRoleNames()), $object);
 
             if ($mask & $decoder->getValue()) {
                 return VoterInterface::ACCESS_GRANTED;

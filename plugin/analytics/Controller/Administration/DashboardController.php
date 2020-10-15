@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * @Route("/tools/admin/analytics")
@@ -154,9 +153,9 @@ class DashboardController extends AbstractSecurityController
             ],
         ];
 
-        $roles = array_map(function (Role $role) {
-            return $role->getRole();
-        }, $this->tokenStorage->getToken()->getRoles());
+        $roles = array_map(function (string $role) {
+            return $role;
+        }, $this->tokenStorage->getToken()->getRoleNames());
 
         if (!in_array('ROLE_ADMIN', $roles)) {
             $options['hiddenFilters']['roles'] = $roles;

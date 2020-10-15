@@ -294,7 +294,6 @@ services:
           - '@security.token_storage'
           - '@twig'
           - '@Claroline\AppBundle\API\FinderProvider'
-          - '@Claroline\CoreBundle\Library\Security\Utilities'
           - '@Claroline\AppBundle\API\SerializerProvider'
           - '@claroline.manager.resource_manager'
           - '@claroline.manager.resource_action'
