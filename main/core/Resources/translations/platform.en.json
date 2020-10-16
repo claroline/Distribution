@@ -1701,5 +1701,9 @@
     "active": "Active",
     "inactive": "Inactive",
     "per_day": "per day",
-    "per_day_short": "/day"
+    "per_day_short": "/day",
+    "internal_note": "Internal note",
+    "file_opening_download": "Suggest file download",
+    "file_opening_browser": "Open file with browser player",
+    "file_opening_player": "Open file with Claroline player"
 }
