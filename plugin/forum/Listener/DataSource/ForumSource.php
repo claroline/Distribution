@@ -53,10 +53,7 @@ class ForumSource
             $options['hiddenFilters']['roles'] = ['ROLE_ANONYMOUS'];
         } else {
             // filter by current user roles
-            $options['hiddenFilters']['roles'] = array_map(
-                function (string $role) { return $role; },
-                $this->tokenStorage->getToken()->getRoleNames()
-            );
+            $options['hiddenFilters']['roles'] = $this->tokenStorage->getToken()->getRoleNames();
         }
 
         if (DataSource::CONTEXT_WORKSPACE === $event->getContext()) {

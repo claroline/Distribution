@@ -58,10 +58,7 @@ class ResourceSource
 
         $roles = DataSource::CONTEXT_HOME === $event->getContext() ?
             ['ROLE_ANONYMOUS'] :
-            array_map(
-                function (string $role) { return $role; },
-                $this->tokenStorage->getToken()->getRoleNames()
-            );
+            $this->tokenStorage->getToken()->getRoleNames();
 
         if (!in_array('ROLE_ADMIN', $roles)) {
             $options['hiddenFilters']['roles'] = $roles;

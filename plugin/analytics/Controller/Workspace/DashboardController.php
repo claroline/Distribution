@@ -175,9 +175,7 @@ class DashboardController
             ],
         ];
 
-        $roles = array_map(function (string $role) {
-            return $role;
-        }, $this->tokenStorage->getToken()->getRoleNames());
+        $roles = $this->tokenStorage->getToken()->getRoleNames();
 
         if (!in_array('ROLE_ADMIN', $roles)) {
             $options['hiddenFilters']['roles'] = $roles;

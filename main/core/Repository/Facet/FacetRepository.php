@@ -31,9 +31,7 @@ class FacetRepository extends EntityRepository
         // retrieves current user roles
         $roleNames = [];
         if ($token) {
-            $roleNames = array_map(function (string $role) {
-                return $role;
-            }, $token->getRoleNames());
+            $roleNames = $token->getRoleNames();
         }
 
         $qb = $this->createQueryBuilder('f');

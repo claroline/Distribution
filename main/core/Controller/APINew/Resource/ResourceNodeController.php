@@ -111,10 +111,7 @@ class ResourceNodeController extends AbstractCrudController
         //directly in the finder
         //it currently work (altough we can see stuff we shouldnt do through the api)
 
-        $roles = array_map(
-            function (string $role) { return $role; },
-            $this->token->getToken()->getRoleNames()
-        );
+        $roles = $this->token->getToken()->getRoleNames();
 
         if (!in_array('ROLE_ADMIN', $roles) || empty($options['hiddenFilters']['parent'])) {
             $options['hiddenFilters']['roles'] = $roles;

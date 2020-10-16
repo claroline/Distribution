@@ -163,8 +163,6 @@ class Role
 
     public function __construct()
     {
-        parent::__construct('');
-
         $this->refreshUuid();
 
         $this->users = new ArrayCollection();

@@ -145,9 +145,7 @@ class FileController extends AbstractApiController
             ResourceNode::class, [
                 'filters' => [
                     'meta.uploadDestination' => true,
-                    'roles' => array_map(function (string $role) {
-                        return $role;
-                    }, $this->tokenStorage->getToken()->getRoleNames()),
+                    'roles' => $this->tokenStorage->getToken()->getRoleNames(),
                 ],
             ],
             [Options::SERIALIZE_MINIMAL]

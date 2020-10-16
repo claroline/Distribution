@@ -53,9 +53,7 @@ class ToolVoter extends AbstractVoter
 
         $decoder = $this->maskManager->getMaskDecoderByToolAndName($object, $attributes[0]);
         if ($decoder) {
-            $mask = $this->rightsRepository->findMaximumRights(array_map(function (string $role) {
-                return $role;
-            }, $token->getRoleNames()), $object);
+            $mask = $this->rightsRepository->findMaximumRights($token->getRoleNames(), $object);
 
             if ($mask & $decoder->getValue()) {
                 return VoterInterface::ACCESS_GRANTED;

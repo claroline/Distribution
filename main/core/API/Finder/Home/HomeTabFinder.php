@@ -47,9 +47,7 @@ class HomeTabFinder extends AbstractFinder
         $qb->leftJoin('obj.homeTabConfigs', 'config');
 
         // only grab tabs accessible by user
-        $roleNames = array_map(function (string $role) {
-            return $role;
-        }, $this->tokenStorage->getToken()->getRoleNames());
+        $roleNames = $this->tokenStorage->getToken()->getRoleNames();
 
         $isAdmin = in_array('ROLE_ADMIN', $roleNames) || (isset($searches['workspace']) && in_array('ROLE_MANAGER_'.$searches['workspace'], $roleNames));
         if (!$isAdmin) {

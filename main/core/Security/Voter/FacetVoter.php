@@ -63,13 +63,10 @@ class FacetVoter
 
     public function checkPanelView(TokenInterface $token, PanelFacet $panel)
     {
-        $userRoles = array_map(function (string $el) {
-            return $el;
-        }, $token->getRoleNames());
         $panelRoles = $panel->getPanelFacetsRole();
 
         foreach ($panelRoles as $panelRole) {
-            if (in_array($panelRole->getRole()->getName(), $userRoles)) {
+            if (in_array($panelRole->getRole()->getName(), $token->getRoleNames())) {
                 if ($panelRole->canOpen()) {
                     return  VoterInterface::ACCESS_GRANTED;
                 }
@@ -81,13 +78,10 @@ class FacetVoter
 
     public function checkPanelEdit(TokenInterface $token, PanelFacet $panel)
     {
-        $userRoles = array_map(function (string $el) {
-            return $el;
-        }, $token->getRoleNames());
         $panelRoles = $panel->getPanelFacetsRole();
 
         foreach ($panelRoles as $panelRole) {
-            if (in_array($panelRole->getRole()->getName(), $userRoles)) {
+            if (in_array($panelRole->getRole()->getName(), $token->getRoleNames())) {
                 if ($panelRole->canEdit()) {
                     return  VoterInterface::ACCESS_GRANTED;
                 }

@@ -306,9 +306,7 @@ class BadgeClassSerializer
         $isOrganizationManager = false;
         $allowedUserIds = [];
 
-        $roles = array_map(function (string $role) {
-            return $role;
-        }, $this->tokenStorage->getToken()->getRoleNames());
+        $roles = $this->tokenStorage->getToken()->getRoleNames();
 
         //check if user manager of badge organization (issuer)
         $administratedOrganizationsIds = array_map(function (Organization $organization) {

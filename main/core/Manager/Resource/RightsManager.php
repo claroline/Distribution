@@ -243,9 +243,7 @@ class RightsManager implements LoggerAwareInterface
             return false;
         }
 
-        $roleNames = array_map(function (string $role) {
-            return $role;
-        }, $token->getRoleNames());
+        $roleNames = $token->getRoleNames();
 
         $isWorkspaceUsurp = in_array('ROLE_USURPATE_WORKSPACE_ROLE', $roleNames);
 
@@ -271,11 +269,7 @@ class RightsManager implements LoggerAwareInterface
     //maybe use that one in the voter later because it's going to be useful
     public function getCurrentPermissionArray(ResourceNode $resourceNode)
     {
-        $currentRoles = $this->tokenStorage->getToken()->getRoleNames();
-
-        $roleNames = array_map(function (string $roleName) {
-            return $roleName;
-        }, $currentRoles);
+        $roleNames = $this->tokenStorage->getToken()->getRoleNames();
 
         $creatable = [];
         if ($this->isManager($resourceNode)) {
