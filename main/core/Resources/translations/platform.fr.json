@@ -1734,5 +1734,9 @@
     "active": "Actif",
     "inactive": "Inactif",
     "per_day": "par jour",
-    "per_day_short": "/jour"
+    "per_day_short": "/jour",
+    "internal_note": "Note interne",
+    "file_opening_download": "Proposer le téléchargement du fichier",
+    "file_opening_browser": "Ouvrir le fichier avec le lecteur du navigateur",
+    "file_opening_player": "Ouvrir le fichier avec le lecteur Claroline"
 }
