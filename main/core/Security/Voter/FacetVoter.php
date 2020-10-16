@@ -22,18 +22,13 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 class FacetVoter
 {
-    private $em;
-    private $container;
-
     const VIEW = 'view';
     const EDIT = 'edit';
 
     /**
      * Attributes can either be "open" or "edit".
      *
-     * @param TokenInterface $token
      * @param $object
-     * @param array $attributes
      */
     public function vote(TokenInterface $token, $object, array $attributes)
     {

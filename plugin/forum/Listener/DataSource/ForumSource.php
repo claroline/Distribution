@@ -25,12 +25,6 @@ class ForumSource
     /** @var FinderProvider */
     private $finder;
 
-    /**
-     * ForumSource constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param FinderProvider        $finder
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         FinderProvider $finder
@@ -39,9 +33,6 @@ class ForumSource
         $this->finder = $finder;
     }
 
-    /**
-     * @param GetDataEvent $event
-     */
     public function getData(GetDataEvent $event)
     {
         $options = $event->getOptions() ? $event->getOptions() : [];

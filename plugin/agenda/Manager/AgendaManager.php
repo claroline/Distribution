@@ -34,7 +34,6 @@ class AgendaManager
     private $authorization;
     private $rm;
     private $translator;
-    private $su;
     private $container;
     private $projectDir;
 
@@ -53,7 +52,6 @@ class AgendaManager
         $this->authorization = $authorization;
         $this->rm = $rm;
         $this->translator = $translator;
-        $this->su = $su;
         $this->container = $container;
     }
 

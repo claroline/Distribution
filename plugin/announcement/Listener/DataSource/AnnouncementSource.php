@@ -25,12 +25,6 @@ class AnnouncementSource
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
-    /**
-     * AnnouncementSource constructor.
-     *
-     * @param FinderProvider        $finder
-     * @param TokenStorageInterface $tokenStorage
-     */
     public function __construct(
       FinderProvider $finder,
       TokenStorageInterface $tokenStorage
@@ -39,9 +33,6 @@ class AnnouncementSource
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param GetDataEvent $event
-     */
     public function getData(GetDataEvent $event)
     {
         $options = $event->getOptions() ? $event->getOptions() : [];

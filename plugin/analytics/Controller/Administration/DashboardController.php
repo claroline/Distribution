@@ -38,15 +38,6 @@ class DashboardController extends AbstractSecurityController
     /** @var FinderProvider */
     private $finder;
 
-    /**
-     * DashboardController constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param SerializerProvider    $serializer
-     * @param FinderProvider        $finder
-     * @param AnalyticsManager      $analyticsManager
-     * @param EventManager          $eventManager
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         SerializerProvider $serializer,
@@ -64,8 +55,6 @@ class DashboardController extends AbstractSecurityController
 
     /**
      * @Route("/activity", name="apiv2_admin_tool_analytics_activity")
-     *
-     * @param Request $request
      *
      * @return JsonResponse
      */
@@ -88,8 +77,6 @@ class DashboardController extends AbstractSecurityController
 
     /**
      * @Route("/actions", name="apiv2_admin_tool_analytics_actions")
-     *
-     * @param Request $request
      *
      * @return JsonResponse
      */

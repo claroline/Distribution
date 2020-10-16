@@ -64,24 +64,10 @@ class FileController extends AbstractApiController
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
-    /**
-     * FileController constructor.
-     *
-     * @param SessionInterface              $session
-     * @param ObjectManager                 $om
-     * @param string                        $fileDir
-     * @param ResourceNodeSerializer        $serializer
-     * @param ResourceManager               $resourceManager
-     * @param RoleManager                   $roleManager
-     * @param FileUtilities                 $fileUtils
-     * @param FinderProvider                $finder
-     * @param TokenStorageInterface         $tokenStorage
-     * @param AuthorizationCheckerInterface $authorization
-     */
     public function __construct(
         SessionInterface $session,
         ObjectManager $om,
-        $fileDir,
+        string $fileDir,
         ResourceNodeSerializer $serializer,
         ResourceManager $resourceManager,
         RoleManager $roleManager,
@@ -105,8 +91,6 @@ class FileController extends AbstractApiController
     /**
      * @Route("/stream/{id}", name="claro_file_stream", methods={"GET"})
      *
-     * @param ResourceNode $resourceNode
-     *
      * @return BinaryFileResponse
      */
     public function streamAction(ResourceNode $resourceNode)
@@ -116,8 +100,6 @@ class FileController extends AbstractApiController
 
     /**
      * @Route("/resource/media/{node}", name="claro_file_get_media", methods={"GET"})
-     *
-     * @param ResourceNode $node
      *
      * @return Response
      *
@@ -134,8 +116,6 @@ class FileController extends AbstractApiController
      *     defaults ={"workspace"=null},
      *     methods={"GET"}
      *     )
-     *
-     * @param Workspace $workspace
      *
      * @return JsonResponse
      */
@@ -159,9 +139,6 @@ class FileController extends AbstractApiController
      *
      * @Route("/tinymce/upload", name="claro_tinymce_file_upload", methods={"POST"})
      * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
-     *
-     * @param Request $request
-     * @param User    $user
      *
      * @throws \Exception
      *
@@ -230,8 +207,6 @@ class FileController extends AbstractApiController
      *
      * @Route("/public/upload", name="upload_public_file", methods={"POST"})
      *
-     * @param Request $request
-     *
      * @return JsonResponse
      *
      * @deprecated only used in quiz content items. Use new file upload route instead.
@@ -262,8 +237,6 @@ class FileController extends AbstractApiController
 
     /**
      * Streams a resource file to the user browser.
-     *
-     * @param ResourceNode $resourceNode
      *
      * @return BinaryFileResponse|JsonResponse
      */

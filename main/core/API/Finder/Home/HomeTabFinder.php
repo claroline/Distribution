@@ -23,8 +23,6 @@ class HomeTabFinder extends AbstractFinder
 
     /**
      * WorkspaceFinder constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(TokenStorageInterface $tokenStorage)
     {

@@ -31,12 +31,6 @@ class ToolVoter extends AbstractVoter
     /** @var ToolRightsRepository */
     private $rightsRepository;
 
-    /**
-     * ToolVoter constructor.
-     *
-     * @param ObjectManager          $om
-     * @param ToolMaskDecoderManager $maskManager
-     */
     public function __construct(
         ObjectManager $om,
         ToolMaskDecoderManager $maskManager
