@@ -169,6 +169,7 @@ class FileListener
 
             $file->setMimeType($data['file']['mimeType']);
             $node->setMimeType($data['file']['mimeType']);
+            $node->setModificationDate(new \DateTime());
 
             $this->om->persist($file);
             $this->om->persist($node);
