@@ -150,7 +150,7 @@ class ApiLoader extends Loader
                         foreach ($this->makeRouteMap($controller, $routes, $prefix, $ignore) as $name => $options) {
                             $pattern = '';
 
-                            if ('' !== $options[0]) {
+                            if (!empty($options[0])) {
                                 $pattern = $options[0];
                             }
 

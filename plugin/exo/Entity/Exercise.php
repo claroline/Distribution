@@ -222,11 +222,22 @@ class Exercise extends AbstractResource
     private $successScore = 50;
 
     /**
+     * Displays step numbering.
+     *
      * @var string
      *
      * @ORM\Column(type="string")
      */
     private $numbering = ExerciseNumbering::NONE;
+
+    /**
+     * Displays question numbering.
+     *
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     */
+    private $questionNumbering = ExerciseNumbering::NONE;
 
     /**
      * Displays step titles.
@@ -236,6 +247,15 @@ class Exercise extends AbstractResource
      * @var bool
      */
     private $showTitles = true;
+
+    /**
+     * Displays question titles.
+     *
+     * @ORM\Column(type="boolean")
+     *
+     * @var bool
+     */
+    private $showQuestionTitles = true;
 
     /**
      * Number of papers allowed.
@@ -789,6 +809,16 @@ class Exercise extends AbstractResource
         return $this->numbering;
     }
 
+    public function setQuestionNumbering($numbering)
+    {
+        $this->questionNumbering = $numbering;
+    }
+
+    public function getQuestionNumbering()
+    {
+        return $this->questionNumbering;
+    }
+
     public function setShowTitles($showTitles)
     {
         $this->showTitles = $showTitles;
@@ -797,6 +827,16 @@ class Exercise extends AbstractResource
     public function getShowTitles()
     {
         return $this->showTitles;
+    }
+
+    public function setShowQuestionTitles($showTitles)
+    {
+        $this->showQuestionTitles = $showTitles;
+    }
+
+    public function getShowQuestionTitles()
+    {
+        return $this->showQuestionTitles;
     }
 
     public function setPicking($picking)
