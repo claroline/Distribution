@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -427,14 +428,33 @@ class UserRepository extends ServiceEntityRepository implements UserProviderInte
      */
     public function findByRoles(array $roles, $getQuery = false)
     {
-        $dql = '
-            SELECT u FROM Claroline\CoreBundle\Entity\User u
-            JOIN u.roles r WHERE r IN (:roles) AND u.isRemoved = false
-            ORDER BY u.lastName
-        ';
+        $rsm = new ResultSetMappingBuilder($this->_em);
+        $rsm->addRootEntityFromClassMetadata(User::class, 'u');
 
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('roles', $roles);
+        $query = $this->_em
+            ->createNativeQuery('
+                (
+                    SELECT u.* 
+                    FROM claro_user AS u
+                    LEFT JOIN claro_user_role AS ur ON (u.id = ur.user_id)
+                    WHERE (ur.role_id IN (:roles)) 
+                    AND u.is_removed = false 
+                    AND u.is_enabled = true
+                )
+                UNION DISTINCT
+                (
+                    SELECT u.* 
+                    FROM claro_user AS u
+                    LEFT JOIN claro_user_group AS ug ON (u.id = ug.user_id)
+                    LEFT JOIN claro_group_role AS gr ON (ug.group_id = gr.group_id)
+                    WHERE (gr.role_id IN (:roles)) 
+                    AND u.is_removed = false 
+                    AND u.is_enabled = true
+                )
+            ', $rsm)
+            ->setParameter('roles', array_map(function (Role $role) {
+                return $role->getId();
+            }, $roles));
 
         return ($getQuery) ? $query : $query->getResult();
     }
