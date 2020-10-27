@@ -14,6 +14,8 @@ namespace Claroline\DropZoneBundle\Controller\API;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\DropZoneBundle\Entity\Document;
@@ -108,7 +110,7 @@ class DropController
     {
         $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
 
-        $data = $this->finder->search('Claroline\DropZoneBundle\Entity\Drop', array_merge(
+        $data = $this->finder->search(Drop::class, array_merge(
             $request->query->all(),
             ['hiddenFilters' => ['dropzone' => $dropzone->getUuid()]]
         ));
@@ -523,6 +525,73 @@ class DropController
         $response->headers->set('Connection', 'close');
 
         return $response->send();
+    }
+
+    /**
+     * @EXT\Route("/{id}/drops/csv", name="claro_dropzone_drops_csv")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("dropzone", class="ClarolineDropZoneBundle:Dropzone", options={"mapping": {"id": "uuid"}})
+     */
+    public function exportDropsCsvAction(Dropzone $dropzone): StreamedResponse
+    {
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+
+        $fileName = "results-{$dropzone->getResourceNode()->getSlug()}";
+        $fileName = TextNormalizer::toKey($fileName);
+
+        $drops = $this->finder->searchEntities(Drop::class, [
+            'filters' => ['dropzone' => $dropzone->getUuid()],
+        ]);
+
+        return new StreamedResponse(function () use ($drops) {
+            // Prepare CSV file
+            $handle = fopen('php://output', 'w+');
+
+            // Create header
+            fputcsv($handle, [
+                'first_name',
+                'last_name',
+                'score',
+                'date',
+                'finished',
+                'corrector_first_name',
+                'corrector_last_name',
+                'corrector_score',
+                'corrector_comment',
+            ], ';', '"');
+
+            /** @var Drop $drop */
+            foreach ($drops['data'] as $drop) {
+                $dropData = [
+                    $drop->getUser()->getFirstName(),
+                    $drop->getUser()->getLastName(),
+                    $drop->getScore(),
+                    DateNormalizer::normalize($drop->getDropDate()),
+                    $drop->isFinished(),
+                ];
+
+                if (empty($drop->getCorrections())) {
+                    fputcsv($handle, array_merge($dropData, [null, null, null, null]), ';', '"');
+                } else {
+                    // add a line for each correction
+                    foreach ($drop->getCorrections() as $correction) {
+                        fputcsv($handle, array_merge($dropData, [
+                            $correction->getUser()->getFirstName(),
+                            $correction->getUser()->getLastName(),
+                            $correction->getScore(),
+                            $correction->getComment(),
+                        ]), ';', '"');
+                    }
+                }
+            }
+
+            fclose($handle);
+
+            return $handle;
+        }, 200, [
+            'Content-Type' => 'application/force-download',
+            'Content-Disposition' => 'attachment; filename="'.$fileName.'.csv"',
+        ]);
     }
 
     /**
