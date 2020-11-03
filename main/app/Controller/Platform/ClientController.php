@@ -13,6 +13,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Claroline\CoreBundle\Manager\Tool\ToolManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -37,6 +38,9 @@ class ClientController
     /** @var SecurityManager */
     private $securityManager;
 
+    /** @var ToolManager */
+    private $toolManager;
+
     /** @var SerializerProvider */
     private $serializer;
 
@@ -60,6 +64,7 @@ class ClientController
         StrictDispatcher $dispatcher,
         PlatformConfigurationHandler $configHandler,
         SecurityManager $securityManager,
+        ToolManager $toolManager,
         SerializerProvider $serializer,
         ClientSerializer $clientSerializer
     ) {
@@ -68,6 +73,7 @@ class ClientController
         $this->dispatcher = $dispatcher;
         $this->configHandler = $configHandler;
         $this->securityManager = $securityManager;
+        $this->toolManager = $toolManager;
         $this->serializer = $serializer;
         $this->clientSerializer = $clientSerializer;
     }
@@ -97,6 +103,7 @@ class ClientController
                 ],
                 'currentUser' => $currentUser,
                 'impersonated' => $this->securityManager->isImpersonated(),
+                'administration' => !empty($this->toolManager->getAdminToolsByRoles($this->tokenStorage->getToken()->getRoles())),
 
                 'header' => [
                     'menus' => array_unique(array_values($this->configHandler->getParameter('header'))),
