@@ -1,0 +1,14 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: false
+
+    # Tools
+    Claroline\BookingBundle\Listener\Tool\MaterialsListener:
+        tags:
+            - { name: kernel.event_listener, event: open_tool_desktop_materials, method: onDisplayDesktop }
+
+    Claroline\BookingBundle\Listener\Tool\RoomsListener:
+        tags:
+            - { name: kernel.event_listener, event: open_tool_desktop_rooms, method: onDisplayDesktop }

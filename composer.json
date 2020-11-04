@@ -137,6 +137,7 @@
             "Claroline\\SlideshowBundle\\": "plugin/slideshow",
             "Claroline\\AudioPlayerBundle\\": "plugin/audio-player",
             "Claroline\\CursusBundle\\": "plugin/cursus",
+            "Claroline\\BookingBundle\\": "plugin/booking",
             "Claroline\\BigBlueButtonBundle\\": "integration/big-blue-button"
         }
     },
@@ -187,6 +188,7 @@
             "Claroline\\AudioPlayerBundle\\ClarolineAudioPlayerBundle",
             "Claroline\\SamlBundle\\ClarolineSamlBundle",
             "Claroline\\CursusBundle\\ClarolineCursusBundle",
+            "Claroline\\BookingBundle\\ClarolineBookingBundle",
             "Claroline\\BigBlueButtonBundle\\ClarolineBigBlueButtonBundle"
         ]
     }

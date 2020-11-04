@@ -1,0 +1,23 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: true
+        tags: ['claroline.serializer']
+
+    # Trainings
+    Claroline\BookingBundle\Serializer\MaterialSerializer:
+        arguments:
+            - '@security.authorization_checker'
+            - '@security.token_storage'
+            - '@event_dispatcher'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
+
+    Claroline\BookingBundle\Serializer\RoomSerializer:
+        arguments:
+            - '@security.authorization_checker'
+            - '@security.token_storage'
+            - '@event_dispatcher'
+            - '@Claroline\AppBundle\Persistence\ObjectManager'
+            - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
