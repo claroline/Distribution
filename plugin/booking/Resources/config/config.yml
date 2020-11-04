@@ -1,0 +1,13 @@
+plugin:
+    has_options: false
+
+    tools:
+        - name: rooms
+          is_displayable_in_workspace: false
+          is_displayable_in_desktop: true
+          class: door-open
+
+        - name: materials
+          is_displayable_in_workspace: false
+          is_displayable_in_desktop: true
+          class: toolbox
