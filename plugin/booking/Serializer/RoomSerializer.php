@@ -59,7 +59,7 @@ class RoomSerializer
 
     public function serialize(Room $room, array $options = []): array
     {
-        $serialized = [
+        return [
             'id' => $room->getUuid(),
             'code' => $room->getCode(),
             'name' => $room->getName(),
@@ -73,8 +73,6 @@ class RoomSerializer
                 'delete' => $this->authorization->isGranted('DELETE', $room),
             ],
         ];
-
-        return $serialized;
     }
 
     public function deserialize(array $data, Room $room, array $options): Room
@@ -84,7 +82,6 @@ class RoomSerializer
         $this->sipe('name', 'setName', $data, $room);
         $this->sipe('description', 'setDescription', $data, $room);
         $this->sipe('capacity', 'setCapacity', $data, $room);
-        $this->sipe('meta.icon', 'setIcon', $data, $room);
 
         if (isset($data['poster'])) {
             $room->setPoster($data['poster']['url'] ?? null);

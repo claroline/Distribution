@@ -14,7 +14,7 @@ class Version20201110100432 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE claro_bookingbundle_material (
                 id INT AUTO_INCREMENT NOT NULL, 
                 event_name VARCHAR(255) NOT NULL, 
@@ -28,8 +28,8 @@ class Version20201110100432 extends AbstractMigration
                 UNIQUE INDEX UNIQ_F88E699477153098 (code), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE `UTF8_unicode_ci` ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE TABLE claro_bookingbundle_room (
                 id INT AUTO_INCREMENT NOT NULL, 
                 location_id INT DEFAULT NULL, 
@@ -46,8 +46,8 @@ class Version20201110100432 extends AbstractMigration
                 INDEX IDX_2083E96964D218E (location_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE `UTF8_unicode_ci` ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             CREATE TABLE claro_bookingbundle_room_booking (
                 id INT AUTO_INCREMENT NOT NULL, 
                 room_id INT DEFAULT NULL, 
@@ -58,35 +58,35 @@ class Version20201110100432 extends AbstractMigration
                 INDEX IDX_943D1D8554177093 (room_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET UTF8 COLLATE `UTF8_unicode_ci` ENGINE = InnoDB
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_bookingbundle_room 
             ADD CONSTRAINT FK_2083E96964D218E FOREIGN KEY (location_id) 
             REFERENCES claro__location (id) 
             ON DELETE SET NULL
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             ALTER TABLE claro_bookingbundle_room_booking 
             ADD CONSTRAINT FK_943D1D8554177093 FOREIGN KEY (room_id) 
             REFERENCES claro_bookingbundle_room (id) 
             ON DELETE SET NULL
-        ");
+        ');
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql("
+        $this->addSql('
             ALTER TABLE claro_bookingbundle_room_booking 
             DROP FOREIGN KEY FK_943D1D8554177093
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_bookingbundle_material
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_bookingbundle_room
-        ");
-        $this->addSql("
+        ');
+        $this->addSql('
             DROP TABLE claro_bookingbundle_room_booking
-        ");
+        ');
     }
 }

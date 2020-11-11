@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="claro_bookingbundle_room_booking")
  */
-final class RoomBooking
+class RoomBooking
 {
     use Id;
     use Uuid;
