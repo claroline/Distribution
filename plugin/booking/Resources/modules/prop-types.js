@@ -9,9 +9,7 @@ const Room = {
     capacity: T.number,
   },
   defaultProps: {
-    code: '',
-    title: '',
-    capacity: 10,
+    capacity: 10
   }
 }
 
@@ -24,9 +22,7 @@ const Material = {
     quantity: T.number,
   },
   defaultProps: {
-    code: '',
-    title: '',
-    quantity: 1,
+    quantity: 1
   }
 }
 

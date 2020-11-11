@@ -64,7 +64,7 @@ class MaterialSerializer
             'code' => $material->getCode(),
             'name' => $material->getName(),
             'description' => $material->getDescription(),
-            'quantity' => $material->getQ(),
+            'quantity' => $material->getQuantity(),
             'poster' => $this->serializePoster($material),
             'thumbnail' => $this->serializeThumbnail($material),
             'permissions' => [
@@ -83,8 +83,7 @@ class MaterialSerializer
         $this->sipe('code', 'setCode', $data, $material);
         $this->sipe('name', 'setName', $data, $material);
         $this->sipe('description', 'setDescription', $data, $material);
-        $this->sipe('capacity', 'setCapacity', $data, $material);
-        $this->sipe('meta.icon', 'setIcon', $data, $material);
+        $this->sipe('quantity', 'setQuantity', $data, $material);
 
         if (isset($data['poster'])) {
             $material->setPoster($data['poster']['url'] ?? null);

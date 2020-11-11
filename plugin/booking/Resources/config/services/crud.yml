@@ -9,14 +9,14 @@ services:
         arguments:
             - '@event_dispatcher'
         tags:
-            - { name: kernel.event_listener, event: crud_post_create_object_claroline_BookingBundle_entity_room, method: postCreate }
-            - { name: kernel.event_listener, event: crud_post_update_object_claroline_BookingBundle_entity_room, method: postUpdate }
-            - { name: kernel.event_listener, event: crud_pre_delete_object_claroline_BookingBundle_entity_room, method: preDelete }
+            - { name: kernel.event_listener, event: crud_post_create_object_claroline_bookingbundle_entity_room, method: postCreate }
+            - { name: kernel.event_listener, event: crud_post_update_object_claroline_bookingbundle_entity_room, method: postUpdate }
+            - { name: kernel.event_listener, event: crud_pre_delete_object_claroline_bookingbundle_entity_room, method: preDelete }
 
     Claroline\BookingBundle\Crud\MaterialCrud:
         arguments:
             - '@event_dispatcher'
         tags:
-            - { name: kernel.event_listener, event: crud_post_create_object_claroline_BookingBundle_entity_material, method: postCreate }
-            - { name: kernel.event_listener, event: crud_post_update_object_claroline_BookingBundle_entity_material, method: postUpdate }
-            - { name: kernel.event_listener, event: crud_pre_delete_object_claroline_BookingBundle_entity_material, method: preDelete }
+            - { name: kernel.event_listener, event: crud_post_create_object_claroline_bookingbundle_entity_material, method: postCreate }
+            - { name: kernel.event_listener, event: crud_post_update_object_claroline_bookingbundle_entity_material, method: postUpdate }
+            - { name: kernel.event_listener, event: crud_pre_delete_object_claroline_bookingbundle_entity_material, method: preDelete }

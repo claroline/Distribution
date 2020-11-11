@@ -5,10 +5,6 @@ services:
         public: false
 
     # Tools
-    Claroline\BookingBundle\Listener\Tool\MaterialsListener:
+    Claroline\BookingBundle\Listener\Tool\BookingListener:
         tags:
-            - { name: kernel.event_listener, event: open_tool_desktop_materials, method: onDisplayDesktop }
-
-    Claroline\BookingBundle\Listener\Tool\RoomsListener:
-        tags:
-            - { name: kernel.event_listener, event: open_tool_desktop_rooms, method: onDisplayDesktop }
+            - { name: kernel.event_listener, event: open_tool_desktop_booking, method: onDisplayDesktop }
