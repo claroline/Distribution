@@ -6,19 +6,18 @@ import {Routes} from '#/main/app/router/components/routes'
 import {LINK_BUTTON} from '#/main/app/buttons'
 import {ContentTabs} from '#/main/app/content/components/tabs'
 import {ToolPage} from '#/main/core/tool/containers/page'
-import {route as workspaceRoute} from '#/main/core/workspace/routing'
 
-import {SessionList} from '#/plugin/cursus/session/components/list'
-import {selectors} from '#/plugin/cursus/tools/trainings/session/store/selectors'
+import {EventList} from '#/plugin/cursus/event/components/list'
+import {selectors} from '#/plugin/cursus/tools/events/store'
 
-const SessionMain = (props) =>
+const EventsRegistered = (props) =>
   <ToolPage
     path={[{
       type: LINK_BUTTON,
-      label: trans('my_courses', {}, 'cursus'),
+      label: trans('my_events', {}, 'cursus'),
       target: `${props.path}/registered`
     }]}
-    subtitle={trans('my_courses', {}, 'cursus')}
+    subtitle={trans('my_events', {}, 'cursus')}
   >
     <header className="row content-heading">
       <ContentTabs
@@ -53,19 +52,10 @@ const SessionMain = (props) =>
           onEnter: () => props.invalidateList(),
           render: () => {
             const Current = (
-              <SessionList
-                name={selectors.STORE_NAME}
-                url={['apiv2_cursus_my_sessions_active']}
-                actions={(rows) => [
-                  {
-                    type: LINK_BUTTON,
-                    icon: 'fa fa-fw fa-book',
-                    label: trans('open-workspace', {}, 'actions'),
-                    target: workspaceRoute(rows[0].workspace),
-                    displayed: !!rows[0].workspace,
-                    scope: ['object']
-                  }
-                ]}
+              <EventList
+                path={props.path}
+                name={selectors.LIST_NAME}
+                url={['apiv2_cursus_my_events_active', {workspace: props.contextId}]}
               />
             )
 
@@ -76,20 +66,10 @@ const SessionMain = (props) =>
           onEnter: () => props.invalidateList(),
           render: () => {
             const Ended = (
-              <SessionList
-                name={selectors.STORE_NAME}
-                url={['apiv2_cursus_my_sessions_ended']}
-                actions={(rows) => [
-                  {
-                    name: 'open-workspace',
-                    type: LINK_BUTTON,
-                    icon: 'fa fa-fw fa-book',
-                    label: trans('open-workspace', {}, 'actions'),
-                    target: workspaceRoute(rows[0].workspace),
-                    displayed: !!rows[0].workspace,
-                    scope: ['object']
-                  }
-                ]}
+              <EventList
+                path={props.path}
+                name={selectors.LIST_NAME}
+                url={['apiv2_cursus_my_events_ended', {workspace: props.contextId}]}
               />
             )
 
@@ -100,12 +80,10 @@ const SessionMain = (props) =>
           onEnter: () => props.invalidateList(),
           render: () => {
             const Pending = (
-              <SessionList
-                name={selectors.STORE_NAME}
-                url={['apiv2_cursus_my_sessions_pending']}
-                actions={() => [
-
-                ]}
+              <EventList
+                path={props.path}
+                name={selectors.LIST_NAME}
+                url={['apiv2_cursus_my_events_pending', {workspace: props.contextId}]}
               />
             )
 
@@ -116,11 +94,12 @@ const SessionMain = (props) =>
     />
   </ToolPage>
 
-SessionMain.propTypes = {
+EventsRegistered.propTypes = {
   path: T.string.isRequired,
+  contextId: T.string,
   invalidateList: T.func.isRequired
 }
 
 export {
-  SessionMain
+  EventsRegistered
 }

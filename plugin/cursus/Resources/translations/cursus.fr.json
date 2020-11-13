@@ -68,5 +68,8 @@
     "session_registration_pending": "Vous êtes en liste d'attente pour cette session.",
     "session_registration_full_help": "La session est complète pour le moment. Il sera possible de terminer l'inscription si des places se libèrent.",
     "session_registration_pending_help": "Vous devez confirmer votre inscription grâce au lien qui vous a été envoyé.",
-    "session_registration_manager_help": "Un gestionnaire doit valider votre demande d'inscription."
+    "session_registration_manager_help": "Un gestionnaire doit valider votre demande d'inscription.",
+    "my_events": "Mes séances",
+    "public_events": "Séances publiques",
+    "all_events": "Toutes les séances"
 }

@@ -89,6 +89,7 @@ class EventSerializer
                     'users' => $event->getMaxUsers(),
                     'dates' => DateRangeNormalizer::normalize($event->getStartDate(), $event->getEndDate()),
                 ],
+                'participants' => [],
                 'registration' => [
                     'registrationType' => $event->getRegistrationType(),
                 ],

@@ -228,7 +228,7 @@ const CourseAbout = (props) => {
           />
         }
 
-        {!props.activeSession && isFull(props.activeSession) &&
+        {!props.activeSessionRegistration && isFull(props.activeSession) &&
           <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
             {trans('Toutes les nouvelles inscriptions seront automatiquement ajoutées en liste d\'attente.', {}, 'cursus')}
           </AlertBlock>

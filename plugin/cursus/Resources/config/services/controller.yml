@@ -59,3 +59,9 @@ services:
             - '@security.authorization_checker'
             - '@security.token_storage'
             - '@Claroline\AppBundle\API\FinderProvider'
+
+    Claroline\CursusBundle\Controller\User\EventController:
+        arguments:
+            - '@security.authorization_checker'
+            - '@security.token_storage'
+            - '@Claroline\AppBundle\API\FinderProvider'

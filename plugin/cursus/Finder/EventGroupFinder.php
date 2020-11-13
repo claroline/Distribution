@@ -12,31 +12,45 @@
 namespace Claroline\CursusBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\CursusBundle\Entity\Registration\EventUser;
+use Claroline\CursusBundle\Entity\Registration\EventGroup;
 use Doctrine\ORM\QueryBuilder;
 
-class EventUserFinder extends AbstractFinder
+class EventGroupFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return EventUser::class;
+        return EventGroup::class;
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null, array $options = ['count' => false, 'page' => 0, 'limit' => -1])
     {
-        $userJoin = false;
-
+        $groupJoin = false;
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'event':
-                    $qb->join('obj.event', 'se');
-                    $qb->andWhere("se.uuid = :{$filterName}");
+                    $qb->join('obj.event', 'e');
+                    $qb->andWhere("e.uuid = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+
+                case 'group':
+                    if (!$groupJoin) {
+                        $qb->join('obj.group', 'g');
+                        $groupJoin = true;
+                    }
+
+                    $qb->andWhere("g.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
 
                 case 'user':
-                    $qb->join('obj.user', 'u');
-                    $qb->andWhere("u.uuid = :{$filterName}");
+                    if (!$groupJoin) {
+                        $qb->join('obj.group', 'g');
+                        $groupJoin = true;
+                    }
+
+                    $qb->leftJoin('g.users', 'gu');
+                    $qb->andWhere("gu.uuid = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                     break;
 

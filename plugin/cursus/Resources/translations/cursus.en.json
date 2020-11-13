@@ -68,5 +68,8 @@
     "session_registration_pending": "Vous êtes en liste d'attente pour cette session.",
     "session_registration_full_help": "The session is full at the moment. It will be possible to complete the registration if places become available.",
     "session_registration_pending_help": "You must confirm your registration using the link that was sent to you.",
-    "session_registration_manager_help": "A manager must validate your registration request."
+    "session_registration_manager_help": "A manager must validate your registration request.",
+    "my_events": "My session events",
+    "public_events": "Public session events",
+    "all_events": "All session events"
 }

@@ -14,8 +14,10 @@ namespace Claroline\CursusBundle\Controller;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\CursusBundle\Entity\Event;
+use Claroline\CursusBundle\Entity\Registration\EventGroup;
 use Claroline\CursusBundle\Entity\Registration\EventUser;
 use Claroline\CursusBundle\Entity\Session;
 use Claroline\CursusBundle\Manager\EventManager;
@@ -26,7 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/cursus_event")
@@ -66,7 +68,7 @@ class EventController extends AbstractCrudController
 
     public function getIgnore()
     {
-        return ['copyBulk'];
+        return ['list', 'copyBulk'];
     }
 
     protected function getDefaultHiddenFilters()
@@ -82,6 +84,75 @@ class EventController extends AbstractCrudController
         }
 
         return [];
+    }
+
+    /**
+     * @Route("/{workspace}", name="apiv2_cursus_event_list", methods={"GET"})
+     * @EXT\ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"mapping": {"workspace": "uuid"}})
+     */
+    public function listAction(Request $request, $class = Event::class, Workspace $workspace = null): JsonResponse
+    {
+        $query = $request->query->all();
+        $options = $this->options['list'];
+
+        $query['hiddenFilters'] = $this->getDefaultHiddenFilters();
+        if ($workspace) {
+            $query['hiddenFilters']['workspace'] = $workspace->getUuid();
+        }
+
+        return new JsonResponse(
+            $this->finder->search($class, $query, $options ?? [])
+        );
+    }
+
+    /**
+     * @Route("/public/{workspace}", name="apiv2_cursus_event_public", methods={"GET"})
+     * @EXT\ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"mapping": {"workspace": "uuid"}})
+     */
+    public function listPublicAction(Request $request, Workspace $workspace = null): JsonResponse
+    {
+        $query = $request->query->all();
+        $options = $this->options['list'];
+
+        $query['hiddenFilters'] = $this->getDefaultHiddenFilters();
+        $query['hiddenFilters']['registrationType'] = Session::REGISTRATION_PUBLIC;
+        $query['hiddenFilters']['terminated'] = false;
+        if ($workspace) {
+            $query['hiddenFilters']['workspace'] = $workspace->getUuid();
+        }
+
+        return new JsonResponse(
+            $this->finder->search(Event::class, $query, $options ?? [])
+        );
+    }
+
+    /**
+     * @Route("/{id}/open", name="apiv2_cursus_event_open", methods={"GET"})
+     * @EXT\ParamConverter("sessionEvent", class="Claroline\CursusBundle\Entity\Event", options={"mapping": {"id": "uuid"}})
+     */
+    public function openAction(Event $sessionEvent): JsonResponse
+    {
+        $this->checkPermission('OPEN', $sessionEvent, [], true);
+
+        $user = $this->tokenStorage->getToken()->getUser();
+        $registrations = [];
+        if ($user instanceof User) {
+            $registrations = [
+                'users' => $this->finder->search(EventUser::class, ['filters' => [
+                    'user' => $user->getUuid(),
+                    'event' => $sessionEvent->getUuid(),
+                ]])['data'],
+                'groups' => $this->finder->search(EventGroup::class, ['filters' => [
+                    'user' => $user->getUuid(),
+                    'event' => $sessionEvent->getUuid(),
+                ]])['data'],
+            ];
+        }
+
+        return new JsonResponse([
+            'course' => $this->serializer->serialize($sessionEvent),
+            'registrations' => $registrations,
+        ]);
     }
 
     /**
