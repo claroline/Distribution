@@ -670,8 +670,8 @@ class ResourceManager
         $resources = [];
         foreach ($nodes as $node) {
             if (!$onlyActive || ($node->isActive() && $node->isPublished())) {
-                if ('directory' === $node->getResourceType()->getName() && $node->getChildren()) {
-                    $resources = array_merge($resources, $this->expandResources($node->getChildren(), true));
+                if ('directory' === $node->getResourceType()->getName() && !empty($node->getChildren())) {
+                    $resources = array_merge($resources, $this->expandResources($node->getChildren()->toArray(), true));
                 } else {
                     $resources[] = $node;
                 }
