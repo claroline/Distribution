@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Library\Mailing;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Transport\SendmailTransport;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mailer\Transport\Smtp\SmtpTransport;
@@ -21,6 +22,7 @@ use Symfony\Component\Mailer\Transport\Smtp\SmtpTransport;
 class TransportFactory
 {
     private const COMMAND = '/usr/sbin/sendmail -bs';
+    private const TIME_OUT = 30;
 
     private $configHandler;
 
@@ -39,39 +41,33 @@ class TransportFactory
                 new EventDispatcher(),
                 new Logger('mailer')
             );
-        } elseif ('smtp' === $type) {
-            $transport = $this->getBaseSmtpTransport();
-            //$transport->setEncryption($this->configHandler->getParameter('mailer_encryption'));
-            $transport->setUsername($this->configHandler->getParameter('mailer_username'));
-            $transport->setPassword($this->configHandler->getParameter('mailer_password'));
-            //$transport->setAuthMode($this->configHandler->getParameter('mailer_auth_mode'));
-            // should probably be configurable too
-//            $transport->setTimeout(30);
-//            $transport->setSourceIp(null);
-
-            return $transport;
         } elseif ('gmail' === $type) {
-            $transport = $this->getBaseSmtpTransport();
-//            $transport->setEncryption('ssl');
-//            $transport->setAuthMode('login');
+            $transport = new GmailSmtpTransport(
+                $this->configHandler->getParameter('mailer_username'),
+                $this->configHandler->getParameter('mailer_password'),
+                new EventDispatcher(),
+                new Logger('mailer')
+            );
             $transport->setUsername($this->configHandler->getParameter('mailer_username'));
             $transport->setPassword($this->configHandler->getParameter('mailer_password'));
 
             return $transport;
         }
 
-        //default
-        return $this->getBaseSmtpTransport();
-    }
-
-    private function getBaseSmtpTransport()
-    {
-        return new EsmtpTransport(
+        // Default smtp
+        $transport = new EsmtpTransport(
             $this->configHandler->getParameter('mailer_host'),
             $this->configHandler->getParameter('mailer_port'),
             $this->configHandler->getParameter('mailer_tls'),
             new EventDispatcher(),
             new Logger('mailer')
         );
+        $transport->setUsername($this->configHandler->getParameter('mailer_username'));
+        $transport->setPassword($this->configHandler->getParameter('mailer_password'));
+        // should probably be configurable too
+        $transport->getStream()->setTimeout(self::TIME_OUT);
+        $transport->setSourceIp(null);
+
+        return $transport;
     }
 }
