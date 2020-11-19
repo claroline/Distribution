@@ -62,6 +62,7 @@
         "symfony/http-client": "4.4.*",
         "symfony/inflector": "4.4.*",
         "symfony/intl": "4.4.*",
+        "symfony/mailer": "4.4",
         "symfony/monolog-bridge": "4.4.*",
         "symfony/process": "4.4.*",
         "symfony/routing": "4.4.*",
