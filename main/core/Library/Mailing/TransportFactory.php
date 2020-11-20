@@ -55,10 +55,15 @@ class TransportFactory
         }
 
         // Default smtp
+        $encryption = null;
+        if (!empty($this->configHandler->getParameter('mailer_encryption')) && 'none' !== $this->configHandler->getParameter('mailer_encryption')) {
+            $encryption = (bool) $this->configHandler->getParameter('mailer_encryption');
+        }
+
         $transport = new EsmtpTransport(
             $this->configHandler->getParameter('mailer_host'),
             $this->configHandler->getParameter('mailer_port'),
-            $this->configHandler->getParameter('mailer_tls'),
+            $encryption,
             new EventDispatcher(),
             new Logger('mailer')
         );

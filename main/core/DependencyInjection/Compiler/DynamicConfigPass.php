@@ -34,8 +34,8 @@ class DynamicConfigPass implements CompilerPassInterface
             new Reference('Claroline\CoreBundle\Library\Mailing\TransportFactory'),
             'getTransport', ]
         );
-        $container->removeDefinition('swiftmailer.mailer.default.transport');
-        $container->setDefinition('swiftmailer.mailer.default.transport', $transport);
+        $container->removeDefinition('mailer.default_transport');
+        $container->setDefinition('mailer.default_transport', $transport);
 
         //notification
         $container->setAlias('icap.notification.orm.entity_manager', 'Claroline\AppBundle\Persistence\ObjectManager');
