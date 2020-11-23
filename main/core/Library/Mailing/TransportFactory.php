@@ -25,10 +25,18 @@ class TransportFactory
     private const TIME_OUT = 30;
 
     private $configHandler;
+    private $eventDispatcher;
+    private $logger;
 
-    public function __construct(PlatformConfigurationHandler $configHandler)
+    public function __construct(
+        PlatformConfigurationHandler $configHandler,
+        EventDispatcher $eventDispatcher,
+        Logger $logger
+    )
     {
         $this->configHandler = $configHandler;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->logger = $logger;
     }
 
     public function getTransport()
@@ -38,15 +46,15 @@ class TransportFactory
         if ('sendmail' === $type) {
             return new SendmailTransport(
                 self::COMMAND,
-                new EventDispatcher(),
-                new Logger('mailer')
+                $this->eventDispatcher,
+                $this->logger
             );
         } elseif ('gmail' === $type) {
             $transport = new GmailSmtpTransport(
                 $this->configHandler->getParameter('mailer_username'),
                 $this->configHandler->getParameter('mailer_password'),
-                new EventDispatcher(),
-                new Logger('mailer')
+                $this->eventDispatcher,
+                $this->logger
             );
             $transport->setUsername($this->configHandler->getParameter('mailer_username'));
             $transport->setPassword($this->configHandler->getParameter('mailer_password'));
@@ -64,8 +72,8 @@ class TransportFactory
             $this->configHandler->getParameter('mailer_host'),
             $this->configHandler->getParameter('mailer_port'),
             $encryption,
-            new EventDispatcher(),
-            new Logger('mailer')
+            $this->eventDispatcher,
+            $this->logger
         );
         $transport->setUsername($this->configHandler->getParameter('mailer_username'));
         $transport->setPassword($this->configHandler->getParameter('mailer_password'));
