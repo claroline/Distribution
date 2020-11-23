@@ -13,11 +13,10 @@ namespace Claroline\CoreBundle\Library\Mailing;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Monolog\Logger;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Transport\SendmailTransport;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
-use Symfony\Component\Mailer\Transport\Smtp\SmtpTransport;
 
 class TransportFactory
 {
@@ -30,10 +29,9 @@ class TransportFactory
 
     public function __construct(
         PlatformConfigurationHandler $configHandler,
-        EventDispatcher $eventDispatcher,
+        EventDispatcherInterface $eventDispatcher,
         Logger $logger
-    )
-    {
+    ) {
         $this->configHandler = $configHandler;
         $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger;
