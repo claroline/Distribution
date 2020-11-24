@@ -94,9 +94,6 @@ services:
         tags: ['claroline.mailing']
         arguments:
             - '@mailer'
-            - '@Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler'
-            - '@event_dispatcher'
-            - '@logger'
 
     Claroline\CoreBundle\Library\Mailing\Client\Postal:
         tags: ['claroline.mailing']
