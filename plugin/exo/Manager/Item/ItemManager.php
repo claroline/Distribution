@@ -444,4 +444,9 @@ class ItemManager
 
         return count($items);
     }
+
+    public function isQuestionType(string $type): bool
+    {
+        return $this->itemDefinitions->isQuestionType($type);
+    }
 }
