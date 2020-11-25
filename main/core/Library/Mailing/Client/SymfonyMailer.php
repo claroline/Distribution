@@ -3,12 +3,12 @@
 namespace Claroline\CoreBundle\Library\Mailing\Client;
 
 use Claroline\CoreBundle\Library\Mailing\Message;
-use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 class SymfonyMailer
 {
-    public function __construct(Mailer $mailer)
+    public function __construct(MailerInterface $mailer)
     {
         $this->mailer = $mailer;
     }
