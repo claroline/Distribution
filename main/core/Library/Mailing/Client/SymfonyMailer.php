@@ -3,37 +3,53 @@
 namespace Claroline\CoreBundle\Library\Mailing\Client;
 
 use Claroline\CoreBundle\Library\Mailing\Message;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Exception\ExceptionInterface;
 
 class SymfonyMailer
 {
-    public function __construct(MailerInterface $mailer)
+    private $mailer;
+    private $logger;
+
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger)
     {
         $this->mailer = $mailer;
+        $this->logger = $logger;
+    }
+
+    public function getTransports()
+    {
+        return ['smtp', 'gmail', 'sendmail'];
     }
 
     public function send(Message $message)
     {
-        $email = (new Email())
-            ->subject($message->getAttribute('subject'))
-            ->from($message->getAttribute('from'))
-            ->replyTo($message->getAttribute('reply_to'))
-            ->html($message->getAttribute('body'))
-            ->bcc(...$message->getAttribute('bcc'))
-            ->to(...$message->getAttribute('to'));
+        $email = new Email();
+        $email->subject($message->getAttribute('subject'));
+        $email->from($message->getAttribute('from'));
+        $email->to(...$message->getAttribute('to'));
+        $email->html($message->getAttribute('body'));
+
+        if ($message->getAttribute('reply_to')) {
+            $email->replyTo($message->getAttribute('reply_to'));
+        }
+        if ($message->getAttribute('bcc')) {
+            $email->bcc(...$message->getAttribute('bcc'));
+        }
 
         foreach ($message->getAttribute('attachments') as $attachment) {
-            $email->attachFromPath(
-                $attachment['path']
-            );
+            $email->attachFromPath($attachment['path']);
         }
 
         try {
             $this->mailer->send($message);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (ExceptionInterface $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+
             return false;
         }
     }

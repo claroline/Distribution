@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class DynamicConfigPass implements CompilerPassInterface
 {
@@ -29,7 +30,7 @@ class DynamicConfigPass implements CompilerPassInterface
     {
         //mailing
         $transport = new Definition();
-        $transport->setClass('Swift_Transport');
+        $transport->setClass(TransportInterface::class);
         $transport->setFactory([
             new Reference('Claroline\CoreBundle\Library\Mailing\TransportFactory'),
             'getTransport', ]

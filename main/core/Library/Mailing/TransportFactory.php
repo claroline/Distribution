@@ -12,16 +12,16 @@
 namespace Claroline\CoreBundle\Library\Mailing;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Monolog\Logger;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Transport\SendmailTransport;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class TransportFactory
 {
     private const COMMAND = '/usr/sbin/sendmail -bs';
-    private const TIME_OUT = 30;
+    private const TIMEOUT = 30;
 
     private $configHandler;
     private $eventDispatcher;
@@ -30,7 +30,7 @@ class TransportFactory
     public function __construct(
         PlatformConfigurationHandler $configHandler,
         EventDispatcherInterface $eventDispatcher,
-        Logger $logger
+        LoggerInterface $logger
     ) {
         $this->configHandler = $configHandler;
         $this->eventDispatcher = $eventDispatcher;
@@ -54,15 +54,13 @@ class TransportFactory
                 $this->eventDispatcher,
                 $this->logger
             );
-            $transport->setUsername($this->configHandler->getParameter('mailer_username'));
-            $transport->setPassword($this->configHandler->getParameter('mailer_password'));
 
             return $transport;
         }
 
         // Default smtp
-        $encryption = null;
-        if (!empty($this->configHandler->getParameter('mailer_encryption')) && 'none' !== $this->configHandler->getParameter('mailer_encryption')) {
+        $encryption = 'none' === $this->configHandler->getParameter('mailer_encryption') ? false : null; // null lets the transport choose the best value based on the platform.
+        if (!empty($this->configHandler->getParameter('mailer_encryption'))) {
             $encryption = (bool) $this->configHandler->getParameter('mailer_encryption');
         }
 
@@ -76,8 +74,7 @@ class TransportFactory
         $transport->setUsername($this->configHandler->getParameter('mailer_username'));
         $transport->setPassword($this->configHandler->getParameter('mailer_password'));
         // should probably be configurable too
-        $transport->getStream()->setTimeout(self::TIME_OUT);
-        $transport->setSourceIp(null);
+        $transport->getStream()->setTimeout(self::TIMEOUT);
 
         return $transport;
     }
