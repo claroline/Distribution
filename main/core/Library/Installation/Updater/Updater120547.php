@@ -60,12 +60,14 @@ class Updater120547 extends Updater
                         /** @var ResourceNode $node */
                         $node = $this->om->getRepository(ResourceNode::class)->find($value['value']);
 
-                        // update value
-                        $filters[$index]['value'] = $node->getUuid();
-                        $widget->setFilters($filters);
+                        if (!empty($node)) {
+                            // update value
+                            $filters[$index]['value'] = $node->getUuid();
+                            $widget->setFilters($filters);
 
-                        $this->om->persist($widget);
-                        break;
+                            $this->om->persist($widget);
+                            break;
+                        }
                     }
                 }
             }
