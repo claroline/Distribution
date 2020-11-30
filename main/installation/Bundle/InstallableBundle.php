@@ -67,7 +67,7 @@ abstract class InstallableBundle extends Bundle implements InstallableInterface
     {
         $installed = $this->getInstalled();
 
-        foreach ($installed['packages'] as $package) {
+        foreach ($installed as $package) {
             if ($package['name'] === $this->getComposerParameter('name')) {
                 return $package['version'];
             }
