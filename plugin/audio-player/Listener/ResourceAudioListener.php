@@ -58,6 +58,7 @@ class ResourceAudioListener
         $audioParams = $this->manager->getAudioParams($resourceNode);
         $audioData = $this->serializer->serialize($audioParams);
 
+        $audioData['sections'] = [];
         switch ($audioParams->getSectionsType()) {
             case AudioParams::MANAGER_TYPE:
                 $audioData['sections'] = array_values(array_map(function (Section $section) use ($user) {
