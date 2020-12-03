@@ -6,7 +6,6 @@ use Claroline\CoreBundle\Library\Mailing\Message;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\Exception\ExceptionInterface;
 
 class SymfonyMailer
 {
@@ -43,14 +42,6 @@ class SymfonyMailer
             $email->attachFromPath($attachment['path']);
         }
 
-        try {
-            $this->mailer->send($message);
-
-            return true;
-        } catch (ExceptionInterface $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
-
-            return false;
-        }
+        $this->mailer->send($email);
     }
 }
