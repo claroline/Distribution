@@ -108,7 +108,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
         if ($request->isXmlHttpRequest()) {
             return new JsonResponse([
                 'user' => $this->serializer->serialize($user),
-                'administration' => !empty($this->toolManager->getAdminToolsByRoles($token->getRoleNames())),
+                'administration' => !empty($this->toolManager->getAdminToolsByRoles($token->getRoles())),
                 'redirect' => $redirect,
                 'messages' => $this->messageManager->getConnectionMessagesByUser($user),
             ]);
