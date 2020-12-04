@@ -124,7 +124,12 @@ class EventManager
         $maxUsers = $event->getMaxUsers();
 
         if (Session::REGISTRATION_AUTO !== $event->getRegistrationType() && $maxUsers) {
-            $eventUsers = $this->eventUserRepo->findBy(['sessionEvent' => $event, 'registrationStatus' => SessionEventUser::REGISTERED]);
+            // only get fully registered users
+            $eventUsers = $this->eventUserRepo->findBy([
+                'sessionEvent' => $event,
+                'confirmed' => true,
+                'validated' => true,
+            ]);
             $nbUsers = count($eventUsers);
             $hasPlace = $nbUsers + $count <= $maxUsers;
         }
@@ -137,9 +142,11 @@ class EventManager
      */
     public function inviteAllSessionEventUsers(Event $event, Template $template = null)
     {
+        // only get fully registered users
         $eventUsers = $this->eventUserRepo->findBy([
             'sessionEvent' => $event,
-            'registrationStatus' => SessionEventUser::REGISTERED,
+            'confirmed' => true,
+            'validated' => true,
         ]);
         $users = array_map(function (EventUser $eventUser) {
             return $eventUser->getUser();

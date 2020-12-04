@@ -2,7 +2,7 @@
 
 namespace UJM\ExoBundle\Entity\Misc;
 
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 
@@ -25,7 +25,7 @@ class GridItem
      */
     private $id;
 
-    use UuidTrait;
+    use Uuid;
 
     use ContentTrait;
 

@@ -11,7 +11,7 @@
 
 namespace Claroline\ThemeBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Theme
 {
-    use UuidTrait;
+    use Uuid;
 
     /**
      * Unique identifier of the theme.
@@ -209,8 +209,6 @@ class Theme
 
     /**
      * Set plugin.
-     *
-     * @param Plugin $plugin
      */
     public function setPlugin(Plugin $plugin)
     {
@@ -239,8 +237,6 @@ class Theme
 
     /**
      * Set user.
-     *
-     * @param User $user
      */
     public function setUser(User $user)
     {

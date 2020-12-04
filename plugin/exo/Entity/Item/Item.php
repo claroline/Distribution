@@ -128,19 +128,19 @@ class Item
     /**
      * Allows other user to edit a question.
      *
-     * @var string
      *
      * @ORM\Column(name="protect_update", type="boolean")
+     *
+     * @var bool
      */
     private $protectUpdate = false;
 
     /**
      * The is answer mandatory to continue the quiz.
      *
-     * @var string
-     *
      * @ORM\Column(name="mandatory", type="boolean")
      *
+     * @var string
      * @deprecated. Moved on StepQuestion.
      */
     private $mandatory = false;
@@ -254,9 +254,6 @@ class Item
         return $this->objects;
     }
 
-    /**
-     * @param ItemObject $object
-     */
     public function addObject(ItemObject $object)
     {
         if (!$this->objects->contains($object)) {
@@ -265,9 +262,6 @@ class Item
         }
     }
 
-    /**
-     * @param ItemObject $object
-     */
     public function removeObject(ItemObject $object)
     {
         if ($this->objects->contains($object)) {
@@ -289,9 +283,6 @@ class Item
         return $this->resources;
     }
 
-    /**
-     * @param ItemResource $resource
-     */
     public function addResource(ItemResource $resource)
     {
         if (!$this->resources->contains($resource)) {
@@ -300,9 +291,6 @@ class Item
         }
     }
 
-    /**
-     * @param ItemResource $resource
-     */
     public function removeResource(ItemResource $resource)
     {
         if ($this->resources->contains($resource)) {
@@ -369,9 +357,6 @@ class Item
         return $this->creator;
     }
 
-    /**
-     * @param User $creator
-     */
     public function setCreator(User $creator)
     {
         $this->creator = $creator;
@@ -385,9 +370,6 @@ class Item
         return $this->hints;
     }
 
-    /**
-     * @param Hint $hint
-     */
     public function addHint(Hint $hint)
     {
         if (!$this->hints->contains($hint)) {
@@ -396,9 +378,6 @@ class Item
         }
     }
 
-    /**
-     * @param Hint $hint
-     */
     public function removeHint(Hint $hint)
     {
         if ($this->hints->contains($hint)) {
@@ -430,9 +409,6 @@ class Item
         return $this->interaction;
     }
 
-    /**
-     * @param AbstractItem $interaction
-     */
     public function setInteraction(AbstractItem $interaction)
     {
         $this->interaction = $interaction;

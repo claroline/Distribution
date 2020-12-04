@@ -11,7 +11,7 @@
 
 namespace Claroline\PlannedNotificationBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,7 +27,7 @@ class PlannedNotification
     const TYPE_WORKSPACE_GROUP_REGISTRATION = 'workspace-role-subscribe_group';
     const TYPE_WORKSPACE_FIRST_CONNECTION = 'workspace-enter';
 
-    use UuidTrait;
+    use Uuid;
 
     /**
      * @ORM\Id

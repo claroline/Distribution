@@ -14,7 +14,6 @@ namespace Claroline\MessageBundle\Controller;
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\MessageBundle\Entity\Message;
 use Claroline\MessageBundle\Entity\UserMessage;
 use Claroline\MessageBundle\Manager\MessageManager;
@@ -22,22 +21,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/message")
  */
 class MessageController extends AbstractCrudController
 {
+    private $tokenStorage;
     /** @var MessageManager */
     private $messageManager;
 
-    /**
-     * Constructor.
-     *
-     * @param MessageManager $messageManager
-     */
-    public function __construct(MessageManager $messageManager)
-    {
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        MessageManager $messageManager
+    ) {
+        $this->tokenStorage = $tokenStorage;
         $this->messageManager = $messageManager;
     }
 
@@ -311,8 +310,7 @@ class MessageController extends AbstractCrudController
 
     public function getAction(Request $request, $id, $class)
     {
-        $tokenStorage = $this->container->get('security.token_storage');
-        $currentUser = $tokenStorage->getToken()->getUser();
+        $currentUser = $this->tokenStorage->getToken()->getUser();
 
         $query = $request->query->all();
         $object = $this->find($class, $id);

@@ -2,7 +2,7 @@
 
 namespace UJM\ExoBundle\Entity\Misc;
 
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\ItemType\SelectionQuestion;
@@ -27,7 +27,7 @@ class Selection implements AnswerPartInterface
      */
     private $id;
 
-    use UuidTrait;
+    use Uuid;
 
     use ScoreTrait;
 
@@ -89,9 +89,6 @@ class Selection implements AnswerPartInterface
         return $this->interactionSelection;
     }
 
-    /**
-     * @param SelectionQuestion $interactionSelection
-     */
     public function setInteractionSelection(SelectionQuestion $interactionSelection)
     {
         $this->interactionSelection = $interactionSelection;
@@ -129,8 +126,6 @@ class Selection implements AnswerPartInterface
 
     /**
      * Adds a color selection.
-     *
-     * @param ColorSelection $colorSelection
      */
     public function addColorSelection(ColorSelection $colorSelection)
     {
@@ -142,8 +137,6 @@ class Selection implements AnswerPartInterface
 
     /**
      * Removes a color selection.
-     *
-     * @param ColorSelection $colorSelection
      */
     public function removeColorSelection(ColorSelection $colorSelection)
     {

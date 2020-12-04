@@ -2,7 +2,7 @@
 
 namespace UJM\ExoBundle\Entity\Misc;
 
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
@@ -18,7 +18,7 @@ use UJM\ExoBundle\Library\Model\ScoreTrait;
  */
 class OrderingItem implements AnswerPartInterface
 {
-    use UuidTrait;
+    use Uuid;
 
     use ContentTrait;
 
@@ -91,7 +91,7 @@ class OrderingItem implements AnswerPartInterface
     /**
      * Get question.
      *
-     * @return Ordering
+     * @return OrderingQuestion
      */
     public function getQuestion()
     {
@@ -100,8 +100,6 @@ class OrderingItem implements AnswerPartInterface
 
     /**
      * Set question.
-     *
-     * @param OrderingQuestion $question
      */
     public function setQuestion(OrderingQuestion $question)
     {

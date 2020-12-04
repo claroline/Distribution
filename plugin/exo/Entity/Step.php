@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Entity;
 
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\AppBundle\Entity\Meta\Order;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -28,7 +28,7 @@ class Step
      */
     private $id;
 
-    use UuidTrait;
+    use Uuid;
 
     use Order;
 

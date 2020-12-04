@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Entity\Organization;
 
+use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Model\CodeTrait;
 use Claroline\CoreBundle\Entity\Model\GroupsTrait;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Organization
 {
-    use UuidTrait;
+    use Uuid;
     use CodeTrait;
     use GroupsTrait;
 
@@ -352,9 +352,6 @@ class Organization
         return $this->children;
     }
 
-    /**
-     * @param Group $group
-     */
     public function addGroup(Group $group)
     {
         if (!$this->groups->contains($group)) {
@@ -363,9 +360,6 @@ class Organization
         }
     }
 
-    /**
-     * @param Group $group
-     */
     public function removeGroup(Group $group)
     {
         $this->groups->removeElement($group);
