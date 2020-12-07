@@ -18,7 +18,7 @@ const CatalogDetails = (props) =>
       {
         type: LINK_BUTTON,
         label: trans('catalog', {}, 'cursus'),
-        target: `${props.path}/catalog`
+        target: props.path
       }, {
         type: LINK_BUTTON,
         label: props.course.name,
@@ -31,7 +31,7 @@ const CatalogDetails = (props) =>
   >
     {props.course &&
       <Routes
-        path={props.path+'/catalog'+'/'+props.course.slug}
+        path={route(props.path, props.course)}
         redirect={[
           {from: '/', exact: true, to: '/'+get(props.activeSession, 'id'), disabled: !props.activeSession}
         ]}
@@ -42,7 +42,7 @@ const CatalogDetails = (props) =>
             render() {
               const CurrentCourse = (
                 <CourseDetails
-                  path={props.path+'/catalog'}
+                  path={props.path}
                   course={props.course}
                   availableSessions={props.availableSessions}
                   register={props.register}
@@ -61,7 +61,7 @@ const CatalogDetails = (props) =>
             render() {
               const CurrentCourse = (
                 <CourseDetails
-                  path={props.path+'/catalog'}
+                  path={props.path}
                   course={props.course}
                   activeSession={props.activeSession}
                   activeSessionRegistration={props.activeSessionRegistration}

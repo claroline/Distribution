@@ -20,11 +20,11 @@ import {Event as EventTypes} from '#/plugin/cursus/prop-types'
 import {MODAL_COURSE_REGISTRATION} from '#/plugin/cursus/course/modals/registration'
 
 const CurrentRegistration = (props) => {
-  let registrationTitle = 'Vous êtes en liste d\'attente pour cette session.'
+  let registrationTitle = trans('session_registration_pending', {}, 'cursus')
   if (constants.TEACHER_TYPE === props.registration.type) {
-    registrationTitle = 'Vous êtes formateur pour cette session.'
+    registrationTitle = trans('session_registration_tutor', {}, 'cursus')
   } else if (isFullyRegistered(props.registration)) {
-    registrationTitle = 'Vous êtes inscrit à cette session.'
+    registrationTitle = trans('session_registration', {}, 'cursus')
   }
 
   return (
@@ -33,14 +33,14 @@ const CurrentRegistration = (props) => {
       title={trans(registrationTitle, {}, 'cursus')}
     >
       {props.sessionFull &&
-        <div>La session est complète pour le moment. Il sera possible de terminer l'inscription si des places se libèrent.</div>
+        <div>{trans('session_registration_full_help', {}, 'cursus')}</div>
       }
 
       {!props.sessionFull && undefined !== props.registration.confirmed && !props.registration.confirmed &&
-        <div>Vous devez confirmer votre inscription grâce au lien qui vous a été envoyé.</div>
+        <div>{trans('session_registration_pending_help', {}, 'cursus')}</div>
       }
       {!props.sessionFull && undefined !== props.registration.validated && !props.registration.validated &&
-        <div>Un gestionnaire doit valider votre demande d'inscription.</div>
+        <div>{trans('session_registration_manager_help', {}, 'cursus')}</div>
       }
     </AlertBlock>
   )
