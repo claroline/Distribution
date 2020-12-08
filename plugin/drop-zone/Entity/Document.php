@@ -187,9 +187,6 @@ class Document
         return $this->file;
     }
 
-    /**
-     * @param array|null $file
-     */
     public function setFile(array $file = null)
     {
         $this->file = $file;

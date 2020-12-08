@@ -16,9 +16,9 @@ use UJM\ExoBundle\Library\Model\ContentTrait;
  */
 class Proposal
 {
-    use Uuid;
-    use Order;
     use ContentTrait;
+    use Order;
+    use Uuid;
 
     /**
      * @var int

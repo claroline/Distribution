@@ -24,11 +24,9 @@ class Section implements AnswerPartInterface
      */
     private $id;
 
-    use Uuid;
-
-    use ScoreTrait;
-
     use FeedbackTrait;
+    use ScoreTrait;
+    use Uuid;
 
     /**
      * @ORM\Column(name="section_start", type="float", nullable=false)

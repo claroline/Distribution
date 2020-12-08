@@ -25,9 +25,8 @@ class GridItem
      */
     private $id;
 
-    use Uuid;
-
     use ContentTrait;
+    use Uuid;
 
     /**
      * X coordinate of the item in the grid.

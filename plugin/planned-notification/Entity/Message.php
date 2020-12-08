@@ -149,9 +149,6 @@ class Message
         return $this->notifications;
     }
 
-    /**
-     * @param PlannedNotification $notification
-     */
     public function addNotification(PlannedNotification $notification)
     {
         if (!$this->notifications->contains($notification)) {
@@ -159,9 +156,6 @@ class Message
         }
     }
 
-    /**
-     * @param PlannedNotification $notification
-     */
     public function removeNotification(PlannedNotification $notification)
     {
         if ($this->notifications->contains($notification)) {

@@ -305,7 +305,7 @@ class Post extends Statusable
     }
 
     /**
-     * Set comments
+     * Set comments.
      *
      * @return Post
      */

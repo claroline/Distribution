@@ -143,9 +143,6 @@ class PlannedNotification
         return $this->roles;
     }
 
-    /**
-     * @param Role $role
-     */
     public function addRole(Role $role)
     {
         if (!$this->roles->contains($role)) {
@@ -153,9 +150,6 @@ class PlannedNotification
         }
     }
 
-    /**
-     * @param Role $role
-     */
     public function removeRole(Role $role)
     {
         if ($this->roles->contains($role)) {

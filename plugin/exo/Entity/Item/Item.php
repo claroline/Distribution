@@ -128,7 +128,6 @@ class Item
     /**
      * Allows other user to edit a question.
      *
-     *
      * @ORM\Column(name="protect_update", type="boolean")
      *
      * @var bool

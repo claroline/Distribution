@@ -25,11 +25,9 @@ class Label
      */
     private $id;
 
-    use Uuid;
-
-    use Order;
-
     use ContentTrait;
+    use Order;
+    use Uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="UJM\ExoBundle\Entity\ItemType\MatchQuestion", inversedBy="labels")

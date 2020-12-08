@@ -37,7 +37,7 @@ const EventsMenu = (props) =>
           type: LINK_BUTTON,
           label: trans('pending_registrations'),
           target: props.path + '/pending',
-          displayed: props.canAdministrate
+          displayed: false && props.canAdministrate
         }
       ]}
       onClick={props.autoClose}

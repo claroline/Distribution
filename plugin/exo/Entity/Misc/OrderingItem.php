@@ -18,13 +18,10 @@ use UJM\ExoBundle\Library\Model\ScoreTrait;
  */
 class OrderingItem implements AnswerPartInterface
 {
-    use Uuid;
-
     use ContentTrait;
-
-    use ScoreTrait;
-
     use FeedbackTrait;
+    use ScoreTrait;
+    use Uuid;
 
     /**
      * Unique identifier of the item.

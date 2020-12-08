@@ -1,13 +1,14 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 
 import {Routes} from '#/main/app/router'
 
-import {EventDetails} from '#/plugin/cursus/event/containers/details'
 import {EventsAll} from '#/plugin/cursus/tools/events/components/all'
 import {EventsRegistered} from '#/plugin/cursus/tools/events/components/registered'
 import {EventsPublic} from '#/plugin/cursus/tools/events/components/public'
 import {EventsPending} from '#/plugin/cursus/tools/events/components/pending'
+import {EventsDetails} from '#/plugin/cursus/tools/events/containers/details'
 
 const EventsTool = (props) =>
   <Routes
@@ -32,7 +33,7 @@ const EventsTool = (props) =>
         render: () => (
           <EventsPublic
             path={props.path}
-            contextId={props.contextId}
+            contextId={get(props.currentContext, 'data.id')}
           />
         )
       }, {
@@ -41,7 +42,7 @@ const EventsTool = (props) =>
         render: () => (
           <EventsAll
             path={props.path}
-            contextId={props.contextId}
+            contextId={get(props.currentContext, 'data.id')}
           />
         ),
         disabled: !props.canEdit
@@ -51,13 +52,13 @@ const EventsTool = (props) =>
         render: () => (
           <EventsPending
             path={props.path}
-            contextId={props.contextId}
+            contextId={get(props.currentContext, 'data.id')}
           />
         ),
         disabled: !props.canAdministrate
       }, {
         path: '/:id',
-        component: EventDetails,
+        component: EventsDetails,
         onEnter: (params = {}) => props.open(params.id)
       }
     ]}
@@ -65,7 +66,10 @@ const EventsTool = (props) =>
 
 EventsTool.propTypes = {
   path: T.string.isRequired,
-  contextId: T.string,
+  currentContext: T.shape({
+    type: T.string,
+    data: T.object
+  }).isRequired,
   canEdit: T.bool.isRequired,
   canAdministrate: T.bool.isRequired,
   invalidateList: T.func.isRequired,

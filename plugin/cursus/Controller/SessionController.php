@@ -432,6 +432,6 @@ class SessionController extends AbstractCrudController
 
         $this->manager->sendSessionInvitation($session, $users, false);
 
-        return new JsonResponse();
+        return new JsonResponse(null, 204);
     }
 }

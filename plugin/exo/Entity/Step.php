@@ -28,11 +28,9 @@ class Step
      */
     private $id;
 
-    use Uuid;
-
-    use Order;
-
     use AttemptParametersTrait;
+    use Order;
+    use Uuid;
 
     /**
      * @var int

@@ -37,7 +37,8 @@ const EventsRegistered = (props) =>
             name: 'pending',
             type: LINK_BUTTON,
             label: trans('pending_registrations'),
-            target: `${props.path}/registered/pending`
+            target: `${props.path}/registered/pending`,
+            displayed: false
           }
         ]}
       />

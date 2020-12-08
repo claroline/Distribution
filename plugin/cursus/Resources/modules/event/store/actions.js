@@ -1,6 +1,8 @@
 import isEmpty from 'lodash/isEmpty'
+
 import {makeActionCreator} from '#/main/app/store/actions'
-import {API_REQUEST} from '#/main/app/api'
+import {API_REQUEST, url} from '#/main/app/api'
+import {constants as actionConstants} from '#/main/app/action/constants'
 
 import {selectors} from '#/plugin/cursus/event/store/selectors'
 
@@ -31,5 +33,51 @@ actions.register = (id) => ({
       method: 'PUT'
     },
     success: (response, dispatch) => dispatch(actions.open(id, true))
+  }
+})
+
+actions.addUsers = (eventId, users, type) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_cursus_event_add_users', {id: eventId, type: type}], {ids: users.map(user => user.id)}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      // TODO : do something better (I need it to recompute event available space)
+      dispatch(actions.open(eventId, true))
+    }
+  }
+})
+
+actions.inviteUsers = (eventId, users) => ({
+  [API_REQUEST]: {
+    type: actionConstants.ACTION_SEND,
+    url: url(['apiv2_cursus_event_invite_users', {id: eventId}], {ids: users.map(user => user.id)}),
+    request: {
+      method: 'PUT'
+    }
+  }
+})
+
+actions.addGroups = (eventId, groups, type) => ({
+  [API_REQUEST]: {
+    url: url(['apiv2_cursus_event_add_groups', {id: eventId, type: type}], {ids: groups.map(group => group.id)}),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      // TODO : do something better (I need it to recompute session available space)
+      dispatch(actions.open(eventId, true))
+    }
+  }
+})
+
+actions.inviteGroups = (eventId, groups) => ({
+  [API_REQUEST]: {
+    type: actionConstants.ACTION_SEND,
+    url: url(['apiv2_cursus_event_invite_groups', {id: eventId}], {ids: groups.map(group => group.id)}),
+    request: {
+      method: 'PUT'
+    }
   }
 })

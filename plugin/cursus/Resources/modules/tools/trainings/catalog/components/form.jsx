@@ -16,6 +16,7 @@ const CatalogForm = (props) => {
   if (!props.isNew) {
     return (
       <CoursePage
+        basePath={props.path}
         path={[
           {
             type: LINK_BUTTON,

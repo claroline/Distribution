@@ -14,6 +14,7 @@ import {CourseDetails} from '#/plugin/cursus/course/components/details'
 
 const CatalogDetails = (props) =>
   <CoursePage
+    basePath={props.path}
     path={props.course ? [
       {
         type: LINK_BUTTON,

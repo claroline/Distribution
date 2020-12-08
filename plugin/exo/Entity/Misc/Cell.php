@@ -291,8 +291,6 @@ class Cell
 
     /**
      * Sets choices collection.
-     *
-     * @param array $choices
      */
     public function setChoices(array $choices)
     {

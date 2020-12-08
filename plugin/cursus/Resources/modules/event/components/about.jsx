@@ -14,7 +14,7 @@ import {LocationCard} from '#/main/core/user/data/components/location-card'
 import {ResourceCard} from '#/main/core/resource/components/card'
 import {route as resourceRoute} from '#/main/core/resource/routing'
 
-import {isFullyRegistered, isFull} from '#/plugin/cursus/course/utils'
+import {isFullyRegistered, isFull} from '#/plugin/cursus/utils'
 import {constants} from '#/plugin/cursus/constants'
 import {Event as EventTypes} from '#/plugin/cursus/prop-types'
 import {MODAL_COURSE_REGISTRATION} from '#/plugin/cursus/course/modals/registration'
@@ -80,13 +80,6 @@ const EventAbout = (props) =>
               </span>
             }
           </li>
-
-          <li className="list-group-item">
-            {trans('duration')}
-            <span className="value">
-                TO COMPUTE
-            </span>
-          </li>
         </ul>
       </div>
 
@@ -134,12 +127,12 @@ const EventAbout = (props) =>
         }
 
         {isFullyRegistered(props.registration) && !isEmpty(get(props.event, 'primaryResource')) &&
-        <Button
-          className="btn btn-block"
-          type={LINK_BUTTON}
-          label={trans('open-resource', {}, 'actions')}
-          target={resourceRoute(get(props.event, 'primaryResource'))}
-        />
+          <Button
+            className="btn btn-block"
+            type={LINK_BUTTON}
+            label={trans('open-resource', {}, 'actions')}
+            target={resourceRoute(get(props.event, 'primaryResource'))}
+          />
         }
       </section>
     </div>

@@ -375,7 +375,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *     }
      * )
      *
-     * @param string  $class
+     * @param string $class
      *
      * @return JsonResponse
      */
@@ -405,7 +405,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *     response={"$array"}
      * )
      *
-     * @param string  $class
+     * @param string $class
      *
      * @return JsonResponse
      */
@@ -423,7 +423,7 @@ abstract class AbstractCrudController extends AbstractApiController
             $options
         );
 
-        return new JsonResponse(array_map(function ($copy) use ($options) {
+        return new JsonResponse(array_map(function ($copy) {
             return $this->serializer->serialize($copy, $this->options['get']);
         }, $copies), 200);
     }

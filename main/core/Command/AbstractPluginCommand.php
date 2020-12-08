@@ -27,7 +27,6 @@ abstract class AbstractPluginCommand extends Command
 {
     use BaseCommandTrait;
 
-    private $params = ['bundle' => 'the bundle name'];
     protected $pluginInstaller;
 
     public function __construct(Installer $pluginInstaller)

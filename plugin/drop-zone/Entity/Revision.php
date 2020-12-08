@@ -115,9 +115,6 @@ class Revision
         return $this->creator;
     }
 
-    /**
-     * @param User|null $creator
-     */
     public function setCreator(User $creator = null)
     {
         $this->creator = $creator;

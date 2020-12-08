@@ -17,7 +17,7 @@ import {route as workspaceRoute} from '#/main/core/workspace/routing'
 import {route as resourceRoute} from '#/main/core/resource/routing'
 
 import {route} from '#/plugin/cursus/routing'
-import {getInfo, isFullyRegistered, isFull} from '#/plugin/cursus/course/utils'
+import {getInfo, isFullyRegistered, isFull} from '#/plugin/cursus/utils'
 import {constants} from '#/plugin/cursus/constants'
 import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
 import {CourseCard} from '#/plugin/cursus/course/components/card'

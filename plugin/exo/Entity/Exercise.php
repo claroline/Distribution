@@ -19,9 +19,8 @@ use UJM\ExoBundle\Library\Options\ShowScoreAt;
  */
 class Exercise extends AbstractResource
 {
-    use Uuid;
-
     use AttemptParametersTrait;
+    use Uuid;
 
     /**
      * Type of the Exercise.

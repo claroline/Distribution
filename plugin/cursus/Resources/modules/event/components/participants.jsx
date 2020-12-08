@@ -5,7 +5,6 @@ import {schemeCategory20c} from 'd3-scale'
 
 import {trans} from '#/main/app/intl/translation'
 import {hasPermission} from '#/main/app/security'
-import {LinkButton} from '#/main/app/buttons/link'
 import {CALLBACK_BUTTON, MODAL_BUTTON} from '#/main/app/buttons'
 import {AlertBlock} from '#/main/app/alert/components/alert-block'
 import {Routes} from '#/main/app/router/components/routes'
@@ -13,28 +12,28 @@ import {Vertical} from '#/main/app/content/tabs/components/vertical'
 import {MODAL_USERS} from '#/main/core/modals/users'
 import {MODAL_GROUPS} from '#/main/core/modals/groups'
 
-import {selectors} from '#/plugin/cursus/tools/trainings/catalog/store/selectors'
-import {Course as CourseTypes, Session as SessionTypes} from '#/plugin/cursus/prop-types'
+import {Event as EventTypes} from '#/plugin/cursus/prop-types'
 import {constants} from '#/plugin/cursus/constants'
-import {isFull} from '#/plugin/cursus/course/utils'
+import {isFull} from '#/plugin/cursus/utils'
 
+import {selectors} from '#/plugin/cursus/event/store'
 import {SessionGroups} from '#/plugin/cursus/session/components/groups'
 import {SessionUsers} from '#/plugin/cursus/session/components/users'
 
-const CourseUsers = (props) =>
+const EventUsers = (props) =>
   <SessionUsers
-    session={props.activeSession}
+    session={props.event}
     name={props.name}
-    url={['apiv2_cursus_session_list_users', {type: props.type, id: props.activeSession.id}]}
-    unregisterUrl={['apiv2_cursus_session_remove_users', {type: props.type, id: props.activeSession.id}]}
+    url={['apiv2_cursus_event_list_users', {type: props.type, id: props.event.id}]}
+    unregisterUrl={['apiv2_cursus_event_remove_users', {type: props.type, id: props.event.id}]}
     actions={(rows) => [
       {
         name: 'invite',
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-envelope',
         label: trans('send_invitation', {}, 'actions'),
-        callback: () => props.inviteUsers(props.activeSession.id, rows),
-        displayed: hasPermission('edit', props.activeSession)
+        callback: () => props.inviteUsers(props.event.id, rows),
+        displayed: hasPermission('edit', props.event)
       }
     ]}
     add={{
@@ -45,58 +44,58 @@ const CourseUsers = (props) =>
         selectAction: (selected) => ({
           type: CALLBACK_BUTTON,
           label: trans('register', {}, 'actions'),
-          callback: () => props.addUsers(props.activeSession.id, selected, props.type)
+          callback: () => props.addUsers(props.event.id, selected, props.type)
         })
       }]
     }}
   />
 
-CourseUsers.propTypes = {
+EventUsers.propTypes = {
   name: T.string.isRequired,
   type: T.string.isRequired,
-  activeSession: T.shape(
-    SessionTypes.propTypes
+  event: T.shape(
+    EventTypes.propTypes
   ),
   addUsers: T.func.isRequired,
   inviteUsers: T.func.isRequired
 }
 
-const CourseGroups = (props) =>
+const EventGroups = (props) =>
   <SessionGroups
-    session={props.activeSession}
+    session={props.event}
     name={props.name}
-    url={['apiv2_cursus_session_list_groups', {type: props.type, id: props.activeSession.id}]}
-    unregisterUrl={['apiv2_cursus_session_remove_groups', {type: props.type, id: props.activeSession.id}]}
+    url={['apiv2_cursus_event_list_groups', {type: props.type, id: props.event.id}]}
+    unregisterUrl={['apiv2_cursus_event_remove_groups', {type: props.type, id: props.event.id}]}
     actions={(rows) => [
       {
         name: 'invite',
         type: CALLBACK_BUTTON,
         icon: 'fa fa-fw fa-envelope',
         label: trans('send_invitation', {}, 'actions'),
-        callback: () => props.inviteGroups(props.activeSession.id, rows),
-        displayed: hasPermission('edit', props.activeSession)
+        callback: () => props.inviteGroups(props.event.id, rows),
+        displayed: hasPermission('edit', props.event)
       }
     ]}
     add={{
       name: 'add_groups',
       type: MODAL_BUTTON,
       label: trans('add_groups'),
-      disabled: isFull(props.activeSession),
+      disabled: isFull(props.event),
       modal: [MODAL_GROUPS, {
         selectAction: (selected) => ({
           type: CALLBACK_BUTTON,
           label: trans('register', {}, 'actions'),
-          callback: () => props.addGroups(props.activeSession.id, selected, props.type)
+          callback: () => props.addGroups(props.event.id, selected, props.type)
         })
       }]
     }}
   />
 
-CourseGroups.propTypes = {
+EventGroups.propTypes = {
   name: T.string.isRequired,
   type: T.string.isRequired,
-  activeSession: T.shape(
-    SessionTypes.propTypes
+  event: T.shape(
+    EventTypes.propTypes
   ),
   addGroups: T.func.isRequired,
   inviteGroups: T.func.isRequired
@@ -110,7 +109,7 @@ const EventParticipants = (props) =>
 
         <h1 className="h3">
           <small>{trans('tutors', {}, 'cursus')}</small>
-          {get(props.activeSession, 'participants.tutors', 0)}
+          {get(props.event, 'participants.tutors', 0)}
         </h1>
       </div>
 
@@ -119,28 +118,17 @@ const EventParticipants = (props) =>
 
         <h1 className="h3">
           <small>{trans('users')}</small>
-          {get(props.activeSession, 'participants.learners', 0)}
+          {get(props.event, 'participants.learners', 0)}
         </h1>
       </div>
 
-      {hasPermission('edit', props.activeSession) &&
-        <div className="analytics-card">
-          <span className="fa fa-hourglass-half" style={{backgroundColor: schemeCategory20c[9]}} />
-
-          <h1 className="h3">
-            <small>{trans('En attente')}</small>
-            {get(props.activeSession, 'participants.pending', 0)}
-          </h1>
-        </div>
-      }
-
       <div className="analytics-card">
-        <span className="fa fa-user-plus" style={{backgroundColor: schemeCategory20c[13]}} />
+        <span className="fa fa-user-plus" style={{backgroundColor: schemeCategory20c[9]}} />
 
         <h1 className="h3">
           <small>{trans('available_seats', {}, 'cursus')}</small>
-          {get(props.activeSession, 'restrictions.users') ?
-            (get(props.activeSession, 'restrictions.users') - get(props.activeSession, 'participants.learners', 0)) + ' / ' + get(props.activeSession, 'restrictions.users')
+          {get(props.event, 'restrictions.users') ?
+            (get(props.event, 'restrictions.users') - get(props.event, 'participants.learners', 0)) + ' / ' + get(props.event, 'restrictions.users')
             : <span className="fa fa-fw fa-infinity" />
           }
         </h1>
@@ -150,7 +138,7 @@ const EventParticipants = (props) =>
     <div className="row">
       <div className="col-md-3">
         <Vertical
-          basePath={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants'}
+          basePath={props.path+'/'+props.event.id+'/participants'}
           tabs={[
             {
               icon: 'fa fa-fw fa-chalkboard-teacher',
@@ -165,11 +153,6 @@ const EventParticipants = (props) =>
               icon: 'fa fa-fw fa-users',
               title: trans('groups'),
               path: '/groups'
-            }, {
-              icon: 'fa fa-fw fa-hourglass-half',
-              title: trans('En attente'),
-              path: '/pending',
-              displayed: hasPermission('edit', props.activeSession)
             }
           ]}
         />
@@ -177,17 +160,17 @@ const EventParticipants = (props) =>
 
       <div className="col-md-9">
         <Routes
-          path={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants'}
+          path={props.path+'/'+props.event.id+'/participants'}
           routes={[
             {
               path: '/',
               exact: true,
               render() {
                 const Tutors = (
-                  <CourseUsers
+                  <EventUsers
                     type={constants.TEACHER_TYPE}
-                    activeSession={props.activeSession}
-                    name={selectors.STORE_NAME+'.courseTutors'}
+                    name={selectors.STORE_NAME+'.tutors'}
+                    event={props.event}
                     addUsers={props.addUsers}
                     inviteUsers={props.inviteUsers}
                   />
@@ -200,25 +183,16 @@ const EventParticipants = (props) =>
               render() {
                 const Users = (
                   <Fragment>
-                    {isFull(props.activeSession) &&
-                      <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
-                        {trans('Toutes les nouvelles inscriptions seront automatiquement ajoutées en liste d\'attente.', {}, 'cursus')}
+                    {isFull(props.event) &&
+                      <AlertBlock type="warning" title={trans('La séance est complète.', {}, 'cursus')}>
+                        {trans('Les inscriptions ne sont plus possible pour cette séance..', {}, 'cursus')}
                       </AlertBlock>
                     }
 
-                    {get(props.activeSession, 'registration.userValidation') &&
-                      <AlertBlock title={trans('registration_user_confirmation_title', {}, 'cursus')}>
-                        {trans('registration_user_confirmation_pending_help', {}, 'cursus')}
-                        <br/>
-                        {trans('registration_user_confirmation_manager_help', {}, 'cursus')}
-                        (<LinkButton target={props.path+'/'+props.course.slug+(props.activeSession ? '/'+props.activeSession.id : '')+'/participants/pending'}>{trans('show_pending_list', {}, 'cursus')}</LinkButton>)
-                      </AlertBlock>
-                    }
-
-                    <CourseUsers
+                    <EventUsers
                       type={constants.LEARNER_TYPE}
-                      activeSession={props.activeSession}
-                      name={selectors.STORE_NAME+'.courseUsers'}
+                      name={selectors.STORE_NAME+'.users'}
+                      event={props.event}
                       addUsers={props.addUsers}
                       inviteUsers={props.inviteUsers}
                     />
@@ -231,72 +205,16 @@ const EventParticipants = (props) =>
               path: '/groups',
               render() {
                 const Groups = (
-                  <CourseGroups
+                  <EventGroups
                     type={constants.LEARNER_TYPE}
-                    activeSession={props.activeSession}
-                    name={selectors.STORE_NAME+'.courseGroups'}
+                    name={selectors.STORE_NAME+'.groups'}
+                    event={props.event}
                     addGroups={props.addGroups}
                     inviteGroups={props.inviteGroups}
                   />
                 )
 
                 return Groups
-              }
-            }, {
-              path: '/pending',
-              disabled: !hasPermission('edit', props.activeSession),
-              render() {
-                const Pending = (
-                  <Fragment>
-                    {isFull(props.activeSession) && hasPermission('edit', props.activeSession) &&
-                      <AlertBlock type="warning" title={trans('La session est complète.', {}, 'cursus')}>
-                        {trans('Il n\'est plus possible de valider les inscriptions en attente.', {}, 'cursus')}
-                      </AlertBlock>
-                    }
-
-                    <SessionUsers
-                      session={props.activeSession}
-                      name={selectors.STORE_NAME+'.coursePending'}
-                      url={['apiv2_cursus_session_list_pending', {id: props.activeSession.id}]}
-                      unregisterUrl={['apiv2_cursus_session_remove_users', {type: constants.LEARNER_TYPE, id: props.activeSession.id}]}
-                      actions={(rows) => [
-                        {
-                          name: 'confirm',
-                          type: CALLBACK_BUTTON,
-                          icon: 'fa fa-fw fa-user-check',
-                          label: trans('confirm_registration', {}, 'actions'),
-                          callback: () => props.confirmPending(props.activeSession.id, rows),
-                          disabled: isFull(props.activeSession),
-                          displayed: hasPermission('edit', props.activeSession) && get (props.activeSession, 'registration.userValidation') && -1 !== rows.findIndex(row => !row.confirmed),
-                          group: trans('management')
-                        }, {
-                          name: 'validate',
-                          type: CALLBACK_BUTTON,
-                          icon: 'fa fa-fw fa-check',
-                          label: trans('validate_registration', {}, 'actions'),
-                          callback: () => props.validatePending(props.activeSession.id, rows),
-                          disabled: isFull(props.activeSession),
-                          displayed: hasPermission('edit', props.activeSession) && -1 !== rows.findIndex(row => !row.validated),
-                          group: trans('management')
-                        }
-                      ]}
-                      add={{
-                        name: 'add_users',
-                        type: MODAL_BUTTON,
-                        label: trans('add_pending', {}, 'cursus'),
-                        modal: [MODAL_USERS, {
-                          selectAction: (selected) => ({
-                            type: CALLBACK_BUTTON,
-                            label: trans('register', {}, 'actions'),
-                            callback: () => props.addPending(props.activeSession.id, selected)
-                          })
-                        }]
-                      }}
-                    />
-                  </Fragment>
-                )
-
-                return Pending
               }
             }
           ]}
@@ -307,19 +225,13 @@ const EventParticipants = (props) =>
 
 EventParticipants.propTypes = {
   path: T.string.isRequired,
-  course: T.shape(
-    CourseTypes.propTypes
+  event: T.shape(
+    EventTypes.propTypes
   ).isRequired,
-  activeSession: T.shape(
-    SessionTypes.propTypes
-  ),
   addUsers: T.func.isRequired,
   inviteUsers: T.func.isRequired,
   addGroups: T.func.isRequired,
-  inviteGroups: T.func.isRequired,
-  addPending: T.func.isRequired,
-  confirmPending: T.func.isRequired,
-  validatePending: T.func.isRequired
+  inviteGroups: T.func.isRequired
 }
 
 export {

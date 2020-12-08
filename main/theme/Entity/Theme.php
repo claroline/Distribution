@@ -115,9 +115,6 @@ class Theme
     }
 
     /**
-     * Theme constructor.
-     */
-    /**
      * Get id.
      *
      * @return int

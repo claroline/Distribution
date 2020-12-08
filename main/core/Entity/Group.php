@@ -30,8 +30,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Group extends AbstractRoleSubject
 {
-    use Uuid;
     use OrganizationsTrait;
+    use Uuid;
 
     /**
      * @ORM\Id

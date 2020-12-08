@@ -49,10 +49,8 @@ class MessageController extends AbstractCrudController
     /**
      * @Route("/count/unread", name="apiv2_message_count_unread", methods={"GET"})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     *
-     * @return JsonResponse
      */
-    public function countUnreadAction()
+    public function countUnreadAction(): JsonResponse
     {
         return new JsonResponse(
             $this->finder->fetch(Message::class, [
@@ -74,12 +72,8 @@ class MessageController extends AbstractCrudController
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function getReceivedAction(Request $request)
+    public function getReceivedAction(Request $request): JsonResponse
     {
         return new JsonResponse(
           $this->finder->search($this->getClass(), array_merge(
@@ -100,12 +94,8 @@ class MessageController extends AbstractCrudController
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function getRemovedAction(Request $request)
+    public function getRemovedAction(Request $request): JsonResponse
     {
         return new JsonResponse(
           $this->finder->search($this->getClass(), array_merge(
@@ -127,12 +117,8 @@ class MessageController extends AbstractCrudController
      *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function getSentAction(Request $request)
+    public function getSentAction(Request $request): JsonResponse
     {
         return new JsonResponse(
           $this->finder->search($this->getClass(), array_merge(
@@ -150,12 +136,8 @@ class MessageController extends AbstractCrudController
      *         {"name": "ids", "type": "array", "description": "The message ids list."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function softDeleteAction(Request $request)
+    public function softDeleteAction(Request $request): JsonResponse
     {
         $messages = $this->decodeIdsString($request, UserMessage::class);
 
@@ -178,12 +160,8 @@ class MessageController extends AbstractCrudController
      *         {"name": "ids", "type": "array", "description": "The message ids list."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function hardDeleteAction(Request $request)
+    public function hardDeleteAction(Request $request): JsonResponse
     {
         $messages = $this->decodeIdsString($request, UserMessage::class);
 
@@ -204,12 +182,8 @@ class MessageController extends AbstractCrudController
      *         {"name": "ids", "type": "array", "description": "The message ids list."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function restoreAction(Request $request)
+    public function restoreAction(Request $request): JsonResponse
     {
         $messages = $this->decodeIdsString($request, UserMessage::class);
 
@@ -232,20 +206,15 @@ class MessageController extends AbstractCrudController
      *         {"name": "ids", "type": "array", "description": "The message ids list."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function readAction(Request $request)
+    public function readAction(Request $request): JsonResponse
     {
         $messages = $this->decodeIdsString($request, UserMessage::class);
-        $updated = [];
 
         $this->om->startFlushSuite();
 
         foreach ($messages as $message) {
-            $updated[] = $this->crud->replace($message, 'isRead', true);
+            $this->crud->replace($message, 'isRead', true);
         }
 
         $this->om->endFlushSuite();
@@ -263,20 +232,15 @@ class MessageController extends AbstractCrudController
      *         {"name": "ids", "type": "array", "description": "The message ids list."}
      *     }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function unreadAction(Request $request)
+    public function unreadAction(Request $request): JsonResponse
     {
         $messages = $this->decodeIdsString($request, UserMessage::class);
-        $updated = [];
 
         $this->om->startFlushSuite();
 
         foreach ($messages as $message) {
-            $updated[] = $this->crud->replace($message, 'isRead', false);
+            $this->crud->replace($message, 'isRead', false);
         }
 
         $this->om->endFlushSuite();
@@ -296,10 +260,8 @@ class MessageController extends AbstractCrudController
      * )
      *
      * @param int|string $id
-     *
-     * @return JsonResponse
      */
-    public function getRootAction($id)
+    public function getRootAction($id): JsonResponse
     {
         $message = $this->find($this->getClass(), $id);
         $rootId = $message->getRoot();

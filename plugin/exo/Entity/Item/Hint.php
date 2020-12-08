@@ -25,11 +25,9 @@ class Hint implements PenaltyItemInterface
      */
     private $id;
 
-    use Uuid;
-
     use ContentTrait;
-
     use PenaltyTrait;
+    use Uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="Item", inversedBy="hints")

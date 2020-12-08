@@ -43,10 +43,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class WorkspaceController extends AbstractCrudController
 {
+    use HasGroupsTrait;
     use HasOrganizationsTrait;
     use HasRolesTrait;
     use HasUsersTrait;
-    use HasGroupsTrait;
 
     /** @var TokenStorageInterface */
     private $tokenStorage;

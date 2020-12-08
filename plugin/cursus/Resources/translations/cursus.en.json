@@ -48,6 +48,7 @@
     "registration_user_validation": "Ask the user to confirm their registration",
     "registration_user_validation_help": "The user will have to click on the link sent in the email to complete their registration.",
     "training_loading": "We are loading the training...",
+    "event_loading": "We are loading the event...",
     "default_session_help": "The default session is displayed when opening the training in the catalog.",
     "default_session_help_registration": "The default session is used when automatically registering users from a parent training.",
     "propagate_registration": "Automatically register users to linked trainings",

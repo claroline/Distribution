@@ -201,8 +201,6 @@ class Hole
 
     /**
      * Sets keywords collection.
-     *
-     * @param array $keywords
      */
     public function setKeywords(array $keywords)
     {

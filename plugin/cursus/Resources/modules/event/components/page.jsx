@@ -10,7 +10,6 @@ import {ContentLoader} from '#/main/app/content/components/loader'
 import {PageFull} from '#/main/app/page/components/full'
 import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
 
-import {route} from '#/plugin/cursus/routing'
 import {Event as EventTypes} from '#/plugin/cursus/prop-types'
 
 const EventPage = (props) => {
@@ -26,7 +25,7 @@ const EventPage = (props) => {
   return (
     <PageFull
       showBreadcrumb={showToolBreadcrumb(props.currentContext.type, props.currentContext.data)}
-      path={[].concat(getToolBreadcrumb('trainings', props.currentContext.type, props.currentContext.data), props.path)}
+      path={[].concat(getToolBreadcrumb('training_events', props.currentContext.type, props.currentContext.data), props.path)}
       title={get(props.event, 'name')}
       poster={get(props.event, 'poster.url')}
       toolbar="edit | fullscreen more"
@@ -36,7 +35,7 @@ const EventPage = (props) => {
           type: LINK_BUTTON,
           icon: 'fa fa-fw fa-pencil',
           label: trans('edit', {}, 'actions'),
-          target: route(props.event) + '/edit',
+          target: props.basePath + '/' + props.event.id + '/edit',
           displayed: hasPermission('edit', props.event),
           primary: true
         }, {
@@ -50,8 +49,8 @@ const EventPage = (props) => {
         }
       ]}
 
-      header={{
-        title: `${trans('trainings', {}, 'tools')} - ${props.event.name}`,
+      meta={{
+        title: `${trans('training_events', {}, 'tools')} - ${props.event.name}`,
         description: props.event.description
       }}
     >
@@ -62,6 +61,7 @@ const EventPage = (props) => {
 
 EventPage.propTypes = {
   path: T.array,
+  basePath: T.string.isRequired,
   currentContext: T.shape({
     type: T.oneOf(['administration', 'desktop', 'workspace']),
     data: T.object

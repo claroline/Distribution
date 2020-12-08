@@ -30,9 +30,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class OrganizationController extends AbstractCrudController
 {
+    use HasGroupsTrait;
     use HasParentTrait;
     use HasUsersTrait;
-    use HasGroupsTrait;
     use HasWorkspacesTrait;
 
     /** @var AuthorizationCheckerInterface */

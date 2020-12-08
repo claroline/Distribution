@@ -22,13 +22,10 @@ abstract class AbstractChoice
      */
     protected $id;
 
-    use Uuid;
-
-    use ScoreTrait;
-
-    use FeedbackTrait;
-
     use ContentTrait;
+    use FeedbackTrait;
+    use ScoreTrait;
+    use Uuid;
 
     public function __construct()
     {

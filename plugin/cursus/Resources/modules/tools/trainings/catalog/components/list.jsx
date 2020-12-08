@@ -48,18 +48,18 @@ class CatalogList extends Component {
           <ContentTabs
             sections={[
               {
-                name: 'all',
-                type: CALLBACK_BUTTON,
-                label: trans('Toutes les formations', {}, 'cursus'),
-                callback: () => this.setState({section: 'all'}),
-                active: 'all' === this.state.section
-              }, {
                 name: 'available',
                 type: CALLBACK_BUTTON,
                 label: trans('Formations disponibles', {}, 'cursus'),
                 target: `${this.props.path}/available`,
                 callback: () => this.setState({section: 'available'}),
                 active: 'available' === this.state.section
+              }, {
+                name: 'all',
+                type: CALLBACK_BUTTON,
+                label: trans('Toutes les formations', {}, 'cursus'),
+                callback: () => this.setState({section: 'all'}),
+                active: 'all' === this.state.section
               }
             ]}
           />

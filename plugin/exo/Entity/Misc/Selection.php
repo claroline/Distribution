@@ -27,11 +27,9 @@ class Selection implements AnswerPartInterface
      */
     private $id;
 
-    use Uuid;
-
-    use ScoreTrait;
-
     use FeedbackTrait;
+    use ScoreTrait;
+    use Uuid;
 
     /**
      * The starting position.

@@ -25,11 +25,9 @@ class CellChoice implements AnswerPartInterface
      */
     private $id;
 
-    use Uuid;
-
-    use ScoreTrait;
-
     use FeedbackTrait;
+    use ScoreTrait;
+    use Uuid;
 
     /**
      * @var string

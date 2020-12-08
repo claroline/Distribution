@@ -40,7 +40,6 @@ class MyObjectiveController
      * )
      * @EXT\ParamConverter("user", options={"authenticatedUser"=true})
      *
-     *
      * @return JsonResponse
      */
     public function objectiveCompetencyAction(Objective $objective, Competency $competency, User $user)

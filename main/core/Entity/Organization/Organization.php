@@ -33,9 +33,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Organization
 {
-    use Uuid;
     use CodeTrait;
     use GroupsTrait;
+    use Uuid;
 
     const TYPE_EXTERNAL = 'external';
     const TYPE_INTERNAL = 'internal';
@@ -90,7 +90,7 @@ class Organization
      *
      * @var int
      */
-    private $lft;
+    protected $lft;
 
     /**
      * @Gedmo\TreeLevel
@@ -98,7 +98,7 @@ class Organization
      *
      * @var int
      */
-    private $lvl;
+    protected $lvl;
 
     /**
      * @Gedmo\TreeRight
@@ -106,7 +106,7 @@ class Organization
      *
      * @var int
      */
-    private $rgt;
+    protected $rgt;
 
     /**
      * @Gedmo\TreeRoot
@@ -114,7 +114,7 @@ class Organization
      *
      * @var int
      */
-    private $root;
+    protected $root;
 
     /**
      * @Gedmo\TreeParent
@@ -123,7 +123,7 @@ class Organization
      *
      * @var Organization
      */
-    private $parent;
+    protected $parent;
 
     /**
      * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Organization\Organization", mappedBy="parent")
@@ -131,7 +131,7 @@ class Organization
      *
      * @var Organization[]|ArrayCollection
      */
-    private $children;
+    protected $children;
 
     /**
      * @ORM\ManyToMany(
@@ -192,21 +192,21 @@ class Organization
      *
      * @var ArrayCollection
      */
-    private $userOrganizationReferences;
+    protected $userOrganizationReferences;
 
     /**
      * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Cryptography\CryptographicKey", mappedBy="organization")
      */
-    private $keys;
+    protected $keys;
 
     /**
      * @ORM\Column(type="integer")
      *
      * @var int
      */
-    private $maxUsers = -1;
+    protected $maxUsers = -1;
 
-    private $referencesToRemove;
+    protected $referencesToRemove;
 
     public function __construct()
     {
