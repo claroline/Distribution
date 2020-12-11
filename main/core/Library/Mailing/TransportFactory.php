@@ -66,13 +66,17 @@ class TransportFactory
 
         $transport = new EsmtpTransport(
             $this->configHandler->getParameter('mailer_host'),
-            $this->configHandler->getParameter('mailer_port'),
+            $this->configHandler->getParameter('mailer_port') ?? 0,
             $encryption,
             $this->eventDispatcher,
             $this->logger
         );
-        $transport->setUsername($this->configHandler->getParameter('mailer_username'));
-        $transport->setPassword($this->configHandler->getParameter('mailer_password'));
+        if ($this->configHandler->getParameter('mailer_username')) {
+            $transport->setUsername($this->configHandler->getParameter('mailer_username'));
+        }
+        if ($this->configHandler->getParameter('mailer_password')) {
+            $transport->setPassword($this->configHandler->getParameter('mailer_password'));
+        }
         // should probably be configurable too
         $transport->getStream()->setTimeout(self::TIMEOUT);
 
