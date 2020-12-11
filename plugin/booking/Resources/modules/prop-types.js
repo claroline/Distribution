@@ -13,6 +13,15 @@ const Room = {
   }
 }
 
+const RoomBooking = {
+  propTypes: {
+    id: T.string,
+    dates: T.arrayOf(T.string),
+    description: T.string
+  },
+  defaultProps: {}
+}
+
 const Material = {
   propTypes: {
     id: T.string,
@@ -26,7 +35,18 @@ const Material = {
   }
 }
 
+const MaterialBooking = {
+  propTypes: {
+    id: T.string,
+    dates: T.arrayOf(T.string),
+    description: T.string
+  },
+  defaultProps: {}
+}
+
 export {
   Room,
-  Material
+  RoomBooking,
+  Material,
+  MaterialBooking
 }

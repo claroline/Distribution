@@ -11,13 +11,14 @@
 
 namespace Claroline\BookingBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
+use Claroline\CoreBundle\API\Serializer\User\LocationSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\BookingBundle\Entity\Room;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Claroline\CoreBundle\Entity\Organization\Location;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class RoomSerializer
@@ -26,30 +27,23 @@ class RoomSerializer
 
     /** @var AuthorizationCheckerInterface */
     private $authorization;
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
     /** @var ObjectManager */
     private $om;
     /** @var PublicFileSerializer */
     private $fileSerializer;
-    private $roomRepo;
+    /** @var LocationSerializer */
+    private $locationSerializer;
 
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        TokenStorageInterface $tokenStorage,
-        EventDispatcherInterface $eventDispatcher,
         ObjectManager $om,
-        PublicFileSerializer $fileSerializer
+        PublicFileSerializer $fileSerializer,
+        LocationSerializer $locationSerializer
     ) {
         $this->authorization = $authorization;
-        $this->tokenStorage = $tokenStorage;
-        $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
         $this->fileSerializer = $fileSerializer;
-
-        $this->roomRepo = $om->getRepository(Room::class);
+        $this->locationSerializer = $locationSerializer;
     }
 
     public function getSchema()
@@ -67,6 +61,7 @@ class RoomSerializer
             'capacity' => $room->getCapacity(),
             'poster' => $this->serializePoster($room),
             'thumbnail' => $this->serializeThumbnail($room),
+            'location' => $room->getLocation() ? $this->locationSerializer->serialize($room->getLocation(), [Options::SERIALIZE_MINIMAL]) : null,
             'permissions' => [
                 'open' => $this->authorization->isGranted('OPEN', $room),
                 'edit' => $this->authorization->isGranted('EDIT', $room),
@@ -82,6 +77,15 @@ class RoomSerializer
         $this->sipe('name', 'setName', $data, $room);
         $this->sipe('description', 'setDescription', $data, $room);
         $this->sipe('capacity', 'setCapacity', $data, $room);
+
+        if (isset($data['location'])) {
+            $location = null;
+            if (isset($data['location']['id'])) {
+                $location = $this->om->getRepository(Location::class)->findOneBy(['uuid' => $data['location']['id']]);
+            }
+
+            $room->setLocation($location);
+        }
 
         if (isset($data['poster'])) {
             $room->setPoster($data['poster']['url'] ?? null);

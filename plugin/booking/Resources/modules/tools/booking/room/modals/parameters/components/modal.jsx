@@ -1,38 +1,26 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
-import {ContentTitle} from '#/main/app/content/components/title'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {Button} from '#/main/app/action/components/button'
 import {FormData} from '#/main/app/content/form/containers/data'
+import {Modal} from '#/main/app/overlays/modal/components/modal'
 
+import {selectors} from '#/plugin/booking/tools/booking/room/modals/parameters/store'
 import {Room as RoomTypes} from '#/plugin/booking/prop-types'
-import {selectors} from '#/plugin/booking/tools/booking/room/store/selectors'
 
-const RoomForm = (props) =>
-  <Fragment>
-    <ContentTitle
-      backAction={{
-        type: LINK_BUTTON,
-        label: trans('back'),
-        target: props.path+'/rooms',
-        exact: true
-      }}
-      title={props.room && props.room.id ? props.room.name : trans('new_room', {}, 'booking')}
-    />
-
+const RoomParametersModal = props =>
+  <Modal
+    {...omit(props, 'room', 'saveEnabled', 'loadRoom', 'saveRoom', 'onSave')}
+    icon={props.room && props.room.id ? 'fa fa-fw fa-cog' : 'fa fa-fw fa-plus'}
+    title={trans('room', {}, 'booking')}
+    subtitle={props.room && props.room.id ? props.room.name : trans('new_room', {}, 'booking')}
+    onEntering={() => props.loadRoom(props.room)}
+  >
     <FormData
-      name={selectors.FORM_NAME}
-      buttons={true}
-      target={(data, isNew) => isNew ?
-        ['apiv2_booking_room_create'] :
-        ['apiv2_booking_room_update', {id: data.id}]
-      }
-      cancel={{
-        type: LINK_BUTTON,
-        target: props.path+'/rooms' + (props.room && props.room.id ? '/'+props.room.id : ''),
-        exact: true
-      }}
+      name={selectors.STORE_NAME}
       sections={[
         {
           title: trans('general'),
@@ -67,9 +55,14 @@ const RoomForm = (props) =>
               type: 'html',
               label: trans('description')
             }, {
+              name: 'location',
+              type: 'location',
+              label: trans('location')
+            }, {
               name: 'organizations',
               type: 'organizations',
-              label: trans('organizations')
+              label: trans('organizations'),
+              displayed: false
             }
           ]
         }, {
@@ -88,16 +81,35 @@ const RoomForm = (props) =>
           ]
         }
       ]}
-    />
-  </Fragment>
+    >
+      <Button
+        className="modal-btn btn"
+        type={CALLBACK_BUTTON}
+        htmlType="submit"
+        primary={true}
+        label={trans('save', {}, 'actions')}
+        disabled={!props.saveEnabled}
+        callback={() => props.saveRoom(props.room ? props.room.id : null, (data) => {
+          props.onSave(data)
+          props.fadeModal()
+        })}
+      />
+    </FormData>
+  </Modal>
 
-RoomForm.propTypes = {
-  path: T.string.isRequired,
+RoomParametersModal.propTypes = {
   room: T.shape(
     RoomTypes.propTypes
-  )
+  ),
+  saveEnabled: T.bool.isRequired,
+  loadRoom: T.func.isRequired,
+  saveRoom: T.func.isRequired,
+  onSave: T.func.isRequired,
+
+  // from modal
+  fadeModal: T.func.isRequired
 }
 
 export {
-  RoomForm
+  RoomParametersModal
 }

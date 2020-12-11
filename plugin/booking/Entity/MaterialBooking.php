@@ -18,21 +18,21 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_bookingbundle_room_booking")
+ * @ORM\Table(name="claro_bookingbundle_material_booking")
  */
-class RoomBooking
+class MaterialBooking
 {
     use Id;
     use Uuid;
     use Description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\BookingBundle\Entity\Room")
-     * @ORM\JoinColumn(name="room_id", nullable=true, onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Claroline\BookingBundle\Entity\Material")
+     * @ORM\JoinColumn(name="material_id", nullable=true, onDelete="CASCADE")
      *
-     * @var Room
+     * @var Material
      */
-    private $room;
+    private $material;
 
     /**
      * @ORM\Column(name="start_date", type="datetime", nullable=false)
@@ -53,14 +53,14 @@ class RoomBooking
         $this->refreshUuid();
     }
 
-    public function getRoom(): Room
+    public function getMaterial(): Material
     {
-        return $this->room;
+        return $this->material;
     }
 
-    public function setRoom(Room $room)
+    public function setMaterial(Material $material)
     {
-        $this->room = $room;
+        return $material;
     }
 
     public function getStartDate(): \DateTimeInterface

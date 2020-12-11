@@ -12,12 +12,12 @@
 namespace Claroline\BookingBundle\Finder;
 
 use Claroline\AppBundle\API\Finder\AbstractFinder;
-use Claroline\BookingBundle\Entity\Material;
+use Claroline\BookingBundle\Entity\RoomBooking;
 
-class MaterialFinder extends AbstractFinder
+class RoomBookingFinder extends AbstractFinder
 {
     public function getClass()
     {
-        return Material::class;
+        return RoomBooking::class;
     }
 }

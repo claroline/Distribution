@@ -12,7 +12,11 @@ const reducer = combineReducers({
       [FORM_SUBMIT_SUCCESS+'/'+selectors.FORM_NAME]: () => true
     })
   }),
-  current: makeFormReducer(selectors.FORM_NAME)
+  current: makeFormReducer(selectors.FORM_NAME, {}, {
+    bookings: makeListReducer(selectors.FORM_NAME+'.bookings', {
+      sortBy: {property: 'startDate', direction: -1}
+    })
+  })
 })
 
 export {

@@ -16,8 +16,6 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BookingBundle\Entity\Material;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class MaterialSerializer
@@ -26,30 +24,19 @@ class MaterialSerializer
 
     /** @var AuthorizationCheckerInterface */
     private $authorization;
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
     /** @var ObjectManager */
     private $om;
     /** @var PublicFileSerializer */
     private $fileSerializer;
-    private $materialRepo;
 
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        TokenStorageInterface $tokenStorage,
-        EventDispatcherInterface $eventDispatcher,
         ObjectManager $om,
         PublicFileSerializer $fileSerializer
     ) {
         $this->authorization = $authorization;
-        $this->tokenStorage = $tokenStorage;
-        $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
         $this->fileSerializer = $fileSerializer;
-
-        $this->materialRepo = $om->getRepository(Material::class);
     }
 
     public function getSchema()
@@ -59,7 +46,7 @@ class MaterialSerializer
 
     public function serialize(Material $material, array $options = []): array
     {
-        $serialized = [
+        return [
             'id' => $material->getUuid(),
             'code' => $material->getCode(),
             'name' => $material->getName(),
@@ -73,8 +60,6 @@ class MaterialSerializer
                 'delete' => $this->authorization->isGranted('DELETE', $material),
             ],
         ];
-
-        return $serialized;
     }
 
     public function deserialize(array $data, Material $material, array $options): Material

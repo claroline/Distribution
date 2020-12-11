@@ -5,19 +5,19 @@ services:
         public: true
         tags: ['claroline.serializer']
 
-    # Trainings
     Claroline\BookingBundle\Serializer\MaterialSerializer:
         arguments:
             - '@security.authorization_checker'
-            - '@security.token_storage'
-            - '@event_dispatcher'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
 
     Claroline\BookingBundle\Serializer\RoomSerializer:
         arguments:
             - '@security.authorization_checker'
-            - '@security.token_storage'
-            - '@event_dispatcher'
             - '@Claroline\AppBundle\Persistence\ObjectManager'
             - '@Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer'
+            - '@Claroline\CoreBundle\API\Serializer\User\LocationSerializer'
+
+    Claroline\BookingBundle\Serializer\MaterialBookingSerializer: ~
+
+    Claroline\BookingBundle\Serializer\RoomBookingSerializer: ~

@@ -29,4 +29,6 @@ services:
 
     Claroline\BookingBundle\Controller\MaterialController: ~
 
-    Claroline\BookingBundle\Controller\RoomController: ~
+    Claroline\BookingBundle\Controller\RoomController:
+        arguments:
+          - '@security.authorization_checker'

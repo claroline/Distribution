@@ -18,9 +18,6 @@ use Claroline\AppBundle\Entity\Meta\Description;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
 use Claroline\CoreBundle\Entity\Organization\Location;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -53,11 +50,6 @@ class Room
     private $location;
 
     /**
-     * @ORM\Column(name="location_extra", type="text", nullable=true)
-     */
-    private $locationExtra;
-
-    /**
      * @ORM\Column(name="capacity", nullable=false, type="integer")
      * @Assert\NotBlank()
      * @Assert\PositiveOrZero()
@@ -87,16 +79,6 @@ class Room
     public function setLocation(Location $location = null): void
     {
         $this->location = $location;
-    }
-
-    public function getLocationExtra(): ?string
-    {
-        return $this->locationExtra;
-    }
-
-    public function setLocationExtra(?string $locationExtra): void
-    {
-        $this->locationExtra = $locationExtra;
     }
 
     public function getCapacity(): int

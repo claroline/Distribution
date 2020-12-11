@@ -21,6 +21,7 @@ const MaterialDetails = (props) => {
       />
     )
   }
+
   return (
     <Fragment>
       <ContentTitle
