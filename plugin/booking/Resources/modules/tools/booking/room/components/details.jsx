@@ -28,6 +28,10 @@ const RoomAbout = (props) =>
             label: trans('description'),
             required: true
           }, {
+            name: 'location',
+            type: 'location',
+            label: trans('location')
+          }, {
             name: 'capacity',
             type: 'number',
             label: trans('capacity'),

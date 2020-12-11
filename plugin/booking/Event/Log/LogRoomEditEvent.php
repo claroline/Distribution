@@ -11,8 +11,8 @@
 
 namespace Claroline\BookingBundle\Event\Log;
 
-use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\BookingBundle\Entity\Room;
+use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 
 class LogRoomEditEvent extends LogGenericEvent
 {

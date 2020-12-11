@@ -13,7 +13,7 @@ namespace Claroline\BookingBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\BookingBundle\Entity\MaterialBooking;
-use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 
 class MaterialBookingSerializer
 {
@@ -24,8 +24,7 @@ class MaterialBookingSerializer
         return [
             'id' => $materialBooking->getUuid(),
             'description' => $materialBooking->getDescription(),
-            'start' => $materialBooking->getStartDate() ? DateNormalizer::normalize($materialBooking->getStartDate()) : null,
-            'end' => $materialBooking->getEndDate() ? DateNormalizer::normalize($materialBooking->getEndDate()) : null,
+            'dates' => DateRangeNormalizer::normalize($materialBooking->getStartDate(), $materialBooking->getEndDate()),
         ];
     }
 
@@ -35,12 +34,10 @@ class MaterialBookingSerializer
         $this->sipe('description', 'setDescription', $data, $materialBooking);
         $this->sipe('capacity', 'setCapacity', $data, $materialBooking);
 
-        if (isset($data['start'])) {
-            $materialBooking->setStartDate(DateNormalizer::denormalize($data['start']));
-        }
-
-        if (isset($data['end'])) {
-            $materialBooking->setEndDate(DateNormalizer::denormalize($data['end']));
+        if (isset($data['dates'])) {
+            $period = DateRangeNormalizer::denormalize($data['dates']);
+            $materialBooking->setStartDate($period[0]);
+            $materialBooking->setEndDate($period[1]);
         }
 
         return $materialBooking;

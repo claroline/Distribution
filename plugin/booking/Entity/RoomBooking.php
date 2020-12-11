@@ -18,17 +18,17 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_bookingbundle_room_booking")
+ * @ORM\Table(name="claro_booking_room_booking")
  */
 class RoomBooking
 {
+    use Description;
     use Id;
     use Uuid;
-    use Description;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\BookingBundle\Entity\Room")
-     * @ORM\JoinColumn(name="room_id", nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="room_id", nullable=false, onDelete="CASCADE")
      *
      * @var Room
      */
@@ -81,12 +81,5 @@ class RoomBooking
     public function setEndDate(\DateTimeInterface $endDate)
     {
         $this->endDate = $endDate;
-    }
-
-    public function isTerminated(): bool
-    {
-        $now = new \DateTime();
-
-        return $this->endDate && $now > $this->endDate;
     }
 }

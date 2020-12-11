@@ -1,38 +1,26 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
 
 import {trans} from '#/main/app/intl/translation'
-import {LINK_BUTTON} from '#/main/app/buttons'
-import {ContentTitle} from '#/main/app/content/components/title'
+import {CALLBACK_BUTTON} from '#/main/app/buttons'
+import {Button} from '#/main/app/action/components/button'
 import {FormData} from '#/main/app/content/form/containers/data'
+import {Modal} from '#/main/app/overlays/modal/components/modal'
 
+import {selectors} from '#/plugin/booking/tools/booking/material/modals/parameters/store'
 import {Material as MaterialTypes} from '#/plugin/booking/prop-types'
-import {selectors} from '#/plugin/booking/tools/booking/material/store/selectors'
 
-const MaterialForm = (props) =>
-  <Fragment>
-    <ContentTitle
-      backAction={{
-        type: LINK_BUTTON,
-        label: trans('back'),
-        target: props.path+'/materials',
-        exact: true
-      }}
-      title={props.material && props.material.id ? props.material.name : trans('new_material', {}, 'booking')}
-    />
-
+const MaterialParametersModal = props =>
+  <Modal
+    {...omit(props, 'material', 'saveEnabled', 'loadMaterial', 'saveMaterial', 'onSave')}
+    icon={props.material && props.material.id ? 'fa fa-fw fa-cog' : 'fa fa-fw fa-plus'}
+    title={trans('material', {}, 'booking')}
+    subtitle={props.material && props.material.id ? props.material.name : trans('new_material', {}, 'booking')}
+    onEntering={() => props.loadMaterial(props.material)}
+  >
     <FormData
-      name={selectors.FORM_NAME}
-      buttons={true}
-      target={(data, isNew) => isNew ?
-        ['apiv2_booking_material_create'] :
-        ['apiv2_booking_material_update', {id: data.id}]
-      }
-      cancel={{
-        type: LINK_BUTTON,
-        target: props.path+'/materials' + (props.material && props.material.id ? '/'+props.material.id : ''),
-        exact: true
-      }}
+      name={selectors.STORE_NAME}
       sections={[
         {
           title: trans('general'),
@@ -69,7 +57,8 @@ const MaterialForm = (props) =>
             }, {
               name: 'organizations',
               type: 'organizations',
-              label: trans('organizations')
+              label: trans('organizations'),
+              displayed: false
             }
           ]
         }, {
@@ -88,16 +77,35 @@ const MaterialForm = (props) =>
           ]
         }
       ]}
-    />
-  </Fragment>
+    >
+      <Button
+        className="modal-btn btn"
+        type={CALLBACK_BUTTON}
+        htmlType="submit"
+        primary={true}
+        label={trans('save', {}, 'actions')}
+        disabled={!props.saveEnabled}
+        callback={() => props.saveMaterial(props.material ? props.material.id : null, (data) => {
+          props.onSave(data)
+          props.fadeModal()
+        })}
+      />
+    </FormData>
+  </Modal>
 
-MaterialForm.propTypes = {
-  path: T.string.isRequired,
+MaterialParametersModal.propTypes = {
   material: T.shape(
     MaterialTypes.propTypes
-  )
+  ),
+  saveEnabled: T.bool.isRequired,
+  loadMaterial: T.func.isRequired,
+  saveMaterial: T.func.isRequired,
+  onSave: T.func.isRequired,
+
+  // from modal
+  fadeModal: T.func.isRequired
 }
 
 export {
-  MaterialForm
+  MaterialParametersModal
 }

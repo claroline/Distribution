@@ -17,26 +17,21 @@ use Claroline\AppBundle\Entity\Identifier\Uuid;
 use Claroline\AppBundle\Entity\Meta\Description;
 use Claroline\AppBundle\Entity\Meta\Poster;
 use Claroline\AppBundle\Entity\Meta\Thumbnail;
-use Claroline\CoreBundle\Entity\Organization\Location;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_bookingbundle_material")
+ * @ORM\Table(name="claro_booking_material")
  */
 class Material
 {
-    use Id;
-    use Uuid;
-
     use Code;
     use Description;
+    use Id;
     use Poster;
     use Thumbnail;
+    use Uuid;
 
     /**
      * @ORM\Column(name="event_name")

@@ -27,8 +27,10 @@ services:
                 arguments:
                   - '@service_container'
 
-    Claroline\BookingBundle\Controller\MaterialController: ~
+    Claroline\BookingBundle\Controller\MaterialController:
+        arguments:
+            - '@security.authorization_checker'
 
     Claroline\BookingBundle\Controller\RoomController:
         arguments:
-          - '@security.authorization_checker'
+            - '@security.authorization_checker'

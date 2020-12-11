@@ -7,6 +7,9 @@ const Room = {
     name: T.string,
     description: T.string,
     capacity: T.number,
+    location: T.shape({
+      // Location prop-types
+    })
   },
   defaultProps: {
     capacity: 10
@@ -28,7 +31,7 @@ const Material = {
     code: T.string,
     name: T.string,
     description: T.string,
-    quantity: T.number,
+    quantity: T.number
   },
   defaultProps: {
     quantity: 1

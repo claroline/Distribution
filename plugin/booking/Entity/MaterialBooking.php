@@ -18,17 +18,17 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_bookingbundle_material_booking")
+ * @ORM\Table(name="claro_booking_material_booking")
  */
 class MaterialBooking
 {
+    use Description;
     use Id;
     use Uuid;
-    use Description;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\BookingBundle\Entity\Material")
-     * @ORM\JoinColumn(name="material_id", nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="material_id", nullable=false, onDelete="CASCADE")
      *
      * @var Material
      */
@@ -60,7 +60,7 @@ class MaterialBooking
 
     public function setMaterial(Material $material)
     {
-        return $material;
+        $this->material = $material;
     }
 
     public function getStartDate(): \DateTimeInterface
@@ -81,12 +81,5 @@ class MaterialBooking
     public function setEndDate(\DateTimeInterface $endDate)
     {
         $this->endDate = $endDate;
-    }
-
-    public function isTerminated(): bool
-    {
-        $now = new \DateTime();
-
-        return $this->endDate && $now > $this->endDate;
     }
 }

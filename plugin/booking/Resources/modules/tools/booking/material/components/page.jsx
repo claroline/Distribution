@@ -9,16 +9,16 @@ import {PageFull} from '#/main/app/page/components/full'
 import {ContentLoader} from '#/main/app/content/components/loader'
 import {getToolBreadcrumb, showToolBreadcrumb} from '#/main/core/tool/utils'
 
-import {Room as RoomTypes} from '#/plugin/booking/prop-types'
-import {MODAL_ROOM_BOOKING} from '#/plugin/booking/tools/booking/room/modals/booking'
-import {MODAL_ROOM_PARAMETERS} from '#/plugin/booking/tools/booking/room/modals/parameters'
+import {Material as MaterialTypes} from '#/plugin/booking/prop-types'
+import {MODAL_MATERIAL_BOOKING} from '#/plugin/booking/tools/booking/material/modals/booking'
+import {MODAL_MATERIAL_PARAMETERS} from '#/plugin/booking/tools/booking/material/modals/parameters'
 
-const RoomPage = (props) => {
-  if (isEmpty(props.room)) {
+const MaterialPage = (props) => {
+  if (isEmpty(props.material)) {
     return (
       <ContentLoader
         size="lg"
-        description={trans('room_loading', {}, 'booking')}
+        description={trans('material_loading', {}, 'booking')}
       />
     )
   }
@@ -29,18 +29,18 @@ const RoomPage = (props) => {
       path={[].concat(getToolBreadcrumb('booking', props.currentContext.type, props.currentContext.data), [
         {
           type: LINK_BUTTON,
-          label: trans('rooms', {}, 'booking'),
-          target: `${props.path}/rooms`
+          label: trans('materials', {}, 'booking'),
+          target: `${props.path}/materials`
         }, {
           type: LINK_BUTTON,
-          label: get(props.room, 'name'),
-          target: `${props.path}/rooms/${get(props.room, 'id')}`,
-          displayed: !!props.room
+          label: get(props.material, 'name'),
+          target: `${props.path}/materials/${get(props.material, 'id')}`,
+          displayed: !!props.material
         }
       ])}
-      poster={get(props.room, 'poster.url')}
-      title={get(props.room, 'name') || trans('booking', {}, 'tools')}
-      subtitle={get(props.room, 'code') || trans('rooms', {}, 'booking')}
+      poster={get(props.material, 'poster.url')}
+      title={get(props.material, 'name') || trans('booking', {}, 'tools')}
+      subtitle={get(props.material, 'code') || trans('materials', {}, 'booking')}
       toolbar="book | edit | fullscreen more"
       actions={[
         {
@@ -48,8 +48,8 @@ const RoomPage = (props) => {
           type: MODAL_BUTTON,
           icon: 'fa fa-fw fa-calendar-plus',
           label: trans('book', {}, 'actions'),
-          modal: [MODAL_ROOM_BOOKING, {
-            room: props.room,
+          modal: [MODAL_MATERIAL_BOOKING, {
+            material: props.material,
             onSave: () => props.invalidateBookings()
           }],
           primary: true
@@ -58,8 +58,8 @@ const RoomPage = (props) => {
           type: MODAL_BUTTON,
           icon: 'fa fa-fw fa-pencil',
           label: trans('edit', {}, 'actions'),
-          modal: [MODAL_ROOM_PARAMETERS, {
-            room: props.room,
+          modal: [MODAL_MATERIAL_PARAMETERS, {
+            material: props.material,
             onSave: () => true // TODO : reload
           }],
           displayed: props.editable,
@@ -72,14 +72,14 @@ const RoomPage = (props) => {
   )
 }
 
-RoomPage.propTypes = {
+MaterialPage.propTypes = {
   path: T.string.isRequired,
   currentContext: T.shape({
     type: T.string.isRequired,
     data: T.object
   }).isRequired,
-  room: T.shape(
-    RoomTypes.propTypes
+  material: T.shape(
+    MaterialTypes.propTypes
   ),
   editable: T.bool.isRequired,
   bookable: T.bool.isRequired,
@@ -88,5 +88,5 @@ RoomPage.propTypes = {
 }
 
 export {
-  RoomPage
+  MaterialPage
 }

@@ -48,14 +48,15 @@ const RoomList = (props) =>
           label: trans('name'),
           displayed: true
         }, {
+          name: 'description',
+          type: 'html',
+          label: trans('description'),
+          displayed: true
+        }, {
           name: 'capacity',
           type: 'number',
           label: trans('capacity'),
           displayed: true
-        }, {
-          name: 'description',
-          type: 'html',
-          label: trans('description')
         }
       ]}
       primaryAction={(row) => ({
@@ -73,6 +74,7 @@ const RoomList = (props) =>
             room: rows[0],
             onSave: () => props.invalidateList()
           }],
+          displayed: props.editable,
           group: trans('management'),
           scope: ['object']
         }

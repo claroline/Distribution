@@ -16,7 +16,6 @@ const RoomMain = (props) =>
         component: RoomList
       }, {
         path: '/:id',
-        exact: true,
         onEnter: (params = {}) => props.open(params.id),
         component: RoomDetails
       }

@@ -14,10 +14,10 @@ namespace Claroline\BookingBundle\Serializer;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\BookingBundle\Entity\Room;
 use Claroline\CoreBundle\API\Serializer\File\PublicFileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\LocationSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
-use Claroline\BookingBundle\Entity\Room;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -66,6 +66,7 @@ class RoomSerializer
                 'open' => $this->authorization->isGranted('OPEN', $room),
                 'edit' => $this->authorization->isGranted('EDIT', $room),
                 'delete' => $this->authorization->isGranted('DELETE', $room),
+                'book' => $this->authorization->isGranted('BOOK', $room),
             ],
         ];
     }

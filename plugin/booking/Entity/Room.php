@@ -23,17 +23,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_bookingbundle_room")
+ * @ORM\Table(name="claro_booking_room")
  */
 class Room
 {
-    use Id;
-    use Uuid;
-
     use Code;
     use Description;
+    use Id;
     use Poster;
     use Thumbnail;
+    use Uuid;
 
     /**
      * @ORM\Column(name="event_name")
