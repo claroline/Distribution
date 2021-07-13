@@ -1,8 +1,10 @@
-# Distribution
+# ATTENTION : This is the legacy Claroline repository
+
+For the current version of the Claroline Connect LMS please check : https://github.com/claroline/Claroline.
 
 [![Build Status](https://travis-ci.org/claroline/Distribution.svg?branch=master)](https://travis-ci.org/claroline/Distribution)
 [![Join the chat at https://gitter.im/claroline/Claroline](https://img.shields.io/badge/GITTER-join%20chat-green.svg)](https://gitter.im/claroline/Claroline)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f3aeba81-4e0a-4394-96f8-2152271bd925/mini.png)](https://insight.sensiolabs.com/projects/f3aeba81-4e0a-4394-96f8-2152271bd925)
+
 
 Also Tested with [BrowserStack](https://www.browserstack.com/)
 
